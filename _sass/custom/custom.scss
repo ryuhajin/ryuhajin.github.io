@@ -1,6 +1,22 @@
+// @import url('https://fonts.googleapis.com/css2?family=Darumadrop+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Doto&display=swap');
+
+// body > div.side-bar > div.site-header > a.site-title {
+//     color: rgb(74, 74, 74);
+//     font-family: "Darumadrop One", sans-serif;
+//     font-weight: 400;
+//     font-style: normal;
+// }  
+
 body > div.side-bar > div.site-header > a.site-title {
-    color: #4e4e4e;
-}
+    color: rgb(74, 74, 74);
+    font-family: "Doto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-variation-settings:
+      "ROND" 0;
+}  
 
 .site-nav > .nav-list > .nav-list-item > .nav-list > .nav-list-item > .nav-list-link {
     color: #606060;
