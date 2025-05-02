@@ -1,0 +1,12 @@
+* text=auto
+
+# 특정 확장자에 대해 LF 강제
+*.sh text eol=lf
+*.rb text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+
+# 바이너리는 자동 처리 안함
+*.png binary
+*.jpg binary
