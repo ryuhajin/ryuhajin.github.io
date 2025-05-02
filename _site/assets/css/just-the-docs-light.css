@@ -7345,4 +7345,16 @@ div.opaque {
   background-color: #fff;
 }
 
+body > div.side-bar > div.site-header > a.site-title {
+  color: #4e4e4e;
+}
+
+.site-nav > .nav-list > .nav-list-item > .nav-list > .nav-list-item > .nav-list-link {
+  color: #606060;
+}
+
+.site-nav > .nav-list > .nav-list-item > .nav-list > .nav-list-item > .nav-list > .nav-list-item > .nav-list-link {
+  color: #898989;
+}
+
 /*# sourceMappingURL=just-the-docs-light.css.map */

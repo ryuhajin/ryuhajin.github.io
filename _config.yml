@@ -1,11 +1,14 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: RyuHaJin's Note
+description: RyuHaJin's Note
 theme: just-the-docs
 
 url: https://ryuhajin.github.io
 baseurl: ""
 
-source: docs
+github:
+  username: ryuhajin
+
+nav_enabled: true
 
 aux_links:
   Template Repository: https://github.com/just-the-docs/just-the-docs-template
