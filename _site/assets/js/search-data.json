@@ -1,0 +1,16 @@
+{"0": {
+    "doc": "1.Material Basic",
+    "title": "1.Material Basic",
+    "content": "1. Data Types . | constant - 1 float | constant2Vector - 2 floats | constant3Vector - 3 floats | . 어떤 포지션과 묶느냐에 따라 floats 값이 RGB or XYZ 가 될 수 있다. | Base Color에 1 vector, 2 vector 를 넣어도 엔진에서 자동으로 입력을 처리한다. (r 1, g 0, b 0) 이런 식 | . 2. Roghness . 표면의 반사 정도를 제어 . | 0 : 거울 반사 (정반사) | 1 : 완전 무광 (난반사) . | constant 1Vector value 값 . | 0 (black) - 1 (white) | . | . 3. Lerp . Linear Interpolation (선형 보간법) 약어 . | Alpha 속성 . | 0 : 첫번째 값 A 출력 | 1 : 두번째 값 B 출력 | 기본: 0.5 (A, B 혼합) 출력 | . | . UV Mapping . 2D 이미지를 3D 모델 표면에 투영하는 것 . | u : 수평 | v : 수직 . | Texture coordinate Node . | tiling : 크기가 커질수록 텍스쳐는 작아지고 반복됨 | mutilply 사용으로도 타일링 가능 | . | . component mask . 벡터 배열 중 가져오고 싶은 인덱스만 마스킹 . append . 값1, 값2 합쳐서 매개변수로 사용하고 싶을때 쓰임 . 4. Opacity . 투명도를 주고싶으면 블렌드 모드를 바꿔야 함. (디폴트 Opaque(불투명)) . | material blend mode -&gt; Translucent(반투명) 변경 -&gt; Opacity 속성 활성화 | . 5. moving texture . | speed (음수로 두면 -&gt; 방향으로 감) | time | distance = speed * time | subtract . | ’-‘로도 검색 가능 | append를 쓰면 speed에 음수로 방향 | subtract를 쓰면 speed는 늘 양수 (subtract가 뺄셈처리) | . | . 6. Panner . 위 무빙 텍스쳐를 쉽게 하나로 만든 형태 . | coordinate : U,V 타일링 플러그 | . 왜 speed를 양수로 하면 왼쪽으로 가는것 처럼 보일까? . - Speed X 값이 양수일 때, 위의 계산에 따라 UV 좌표의 U 값이 증가 - 이는 텍스처의 샘플링 위치가 오른쪽으로 이동함을 의미 - 따라서 실제로 화면에서 보이는 텍스처는 왼쪽으로 이동하는 것처럼 보임 . 7. Material Instance . | M_material | MI_materialInstance | 머티리얼 인스턴스를 만들고 머티리얼 파라미터를 추가해 빠르게 머티리얼을 수정할 수 있다. | 머티리얼 인스턴스는 창이 다름 | . 오늘 배운 단축키 . | 숫자 1, 2, 3, 4 키 + 좌클릭 = 해당 constant vector 노드 생성 | L + 좌클릭 = lerp | m + 좌클릭 = multiply | alt -&gt; 기즈모 이동 = 오브젝트 복사 | ctrl + D = 이전 행동 다시 반복 | 좌클릭 + f2 = 파일 이름 변경 | S + 좌클릭 = 머티리얼 파라미터 추가 | . ",
+    "url": "/Unreal%20Engine%205/Material/1.%20Material%20Basic.html",
+    
+    "relUrl": "/Unreal%20Engine%205/Material/1.%20Material%20Basic.html"
+  },"1": {
+    "doc": "Linear Algebra",
+    "title": "Linear Algebra",
+    "content": " ",
+    "url": "/Math/linear%20algebra/",
+    
+    "relUrl": "/Math/linear%20algebra/"
+  }
+}
