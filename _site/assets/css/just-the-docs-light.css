@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Darumadrop+One&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap");
 .highlight,
 pre.highlight {
   background: #f9f9f9;
@@ -7348,6 +7349,331 @@ div.opaque {
   background-color: #fff;
 }
 
+p.warning, blockquote.warning {
+  background: rgba(247, 126, 126, 0.2);
+  border-left: 4px solid #dd2e2e;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+}
+p.warning::before, blockquote.warning::before {
+  color: #dd2e2e;
+  content: "Warning";
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+p.warning > .warning-title, blockquote.warning > .warning-title {
+  color: #dd2e2e;
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+
+p.warning-title, blockquote.warning-title {
+  background: rgba(247, 126, 126, 0.2);
+  border-left: 4px solid #dd2e2e;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+}
+p.warning-title > p:first-child, blockquote.warning-title > p:first-child {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: #dd2e2e;
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+
+blockquote.warning {
+  margin-left: 0;
+  margin-right: 0;
+}
+blockquote.warning > p:first-child {
+  margin-top: 0;
+}
+blockquote.warning > p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote.warning-title {
+  margin-left: 0;
+  margin-right: 0;
+}
+blockquote.warning-title > p:nth-child(2) {
+  margin-top: 0;
+}
+blockquote.warning-title > p:last-child {
+  margin-bottom: 0;
+}
+
+p.highlight, blockquote.highlight {
+  background: rgba(255, 235, 130, 0.2);
+  border-left: 4px solid #e7af06;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+}
+p.highlight::before, blockquote.highlight::before {
+  color: #e7af06;
+  content: "highlight";
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+p.highlight > .highlight-title, blockquote.highlight > .highlight-title {
+  color: #e7af06;
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+
+p.highlight-title, blockquote.highlight-title {
+  background: rgba(255, 235, 130, 0.2);
+  border-left: 4px solid #e7af06;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+}
+p.highlight-title > p:first-child, blockquote.highlight-title > p:first-child {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: #e7af06;
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+
+blockquote.highlight {
+  margin-left: 0;
+  margin-right: 0;
+}
+blockquote.highlight > p:first-child {
+  margin-top: 0;
+}
+blockquote.highlight > p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote.highlight-title {
+  margin-left: 0;
+  margin-right: 0;
+}
+blockquote.highlight-title > p:nth-child(2) {
+  margin-top: 0;
+}
+blockquote.highlight-title > p:last-child {
+  margin-bottom: 0;
+}
+
+p.note, blockquote.note {
+  background: rgba(114, 83, 237, 0.2);
+  border-left: 4px solid #381885;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+}
+p.note::before, blockquote.note::before {
+  color: #381885;
+  content: "note";
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+p.note > .note-title, blockquote.note > .note-title {
+  color: #381885;
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+
+p.note-title, blockquote.note-title {
+  background: rgba(114, 83, 237, 0.2);
+  border-left: 4px solid #381885;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+}
+p.note-title > p:first-child, blockquote.note-title > p:first-child {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: #381885;
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+
+blockquote.note {
+  margin-left: 0;
+  margin-right: 0;
+}
+blockquote.note > p:first-child {
+  margin-top: 0;
+}
+blockquote.note > p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote.note-title {
+  margin-left: 0;
+  margin-right: 0;
+}
+blockquote.note-title > p:nth-child(2) {
+  margin-top: 0;
+}
+blockquote.note-title > p:last-child {
+  margin-bottom: 0;
+}
+
+p.important, blockquote.important {
+  background: rgba(44, 132, 250, 0.2);
+  border-left: 4px solid #183385;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+}
+p.important::before, blockquote.important::before {
+  color: #183385;
+  content: "important";
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+p.important > .important-title, blockquote.important > .important-title {
+  color: #183385;
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+
+p.important-title, blockquote.important-title {
+  background: rgba(44, 132, 250, 0.2);
+  border-left: 4px solid #183385;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+}
+p.important-title > p:first-child, blockquote.important-title > p:first-child {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: #183385;
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+
+blockquote.important {
+  margin-left: 0;
+  margin-right: 0;
+}
+blockquote.important > p:first-child {
+  margin-top: 0;
+}
+blockquote.important > p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote.important-title {
+  margin-left: 0;
+  margin-right: 0;
+}
+blockquote.important-title > p:nth-child(2) {
+  margin-top: 0;
+}
+blockquote.important-title > p:last-child {
+  margin-bottom: 0;
+}
+
+p.new, blockquote.new {
+  background: rgba(65, 214, 147, 0.2);
+  border-left: 4px solid #026e57;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+}
+p.new::before, blockquote.new::before {
+  color: #026e57;
+  content: "new";
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+p.new > .new-title, blockquote.new > .new-title {
+  color: #026e57;
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+
+p.new-title, blockquote.new-title {
+  background: rgba(65, 214, 147, 0.2);
+  border-left: 4px solid #026e57;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+}
+p.new-title > p:first-child, blockquote.new-title > p:first-child {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: #026e57;
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  padding-bottom: 0.125rem;
+}
+
+blockquote.new {
+  margin-left: 0;
+  margin-right: 0;
+}
+blockquote.new > p:first-child {
+  margin-top: 0;
+}
+blockquote.new > p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote.new-title {
+  margin-left: 0;
+  margin-right: 0;
+}
+blockquote.new-title > p:nth-child(2) {
+  margin-top: 0;
+}
+blockquote.new-title > p:last-child {
+  margin-bottom: 0;
+}
+
 body > div.side-bar > div.site-header > a.site-title {
   color: rgb(74, 74, 74);
   font-family: "Darumadrop One", sans-serif;
@@ -7372,7 +7698,6 @@ body > div.side-bar > div.site-header > a.site-title {
 .main-content-wrap h6,
 .main-content-wrap p,
 .main-content-wrap li,
-.main-content-wrap blockquote,
 .main-content-wrap code,
 .main-content-wrap pre,
 .main-content-wrap th,
@@ -7394,11 +7719,15 @@ body > div.side-bar > div.site-header > a.site-title {
 }
 
 .main-content-wrap blockquote {
+  font-family: "IBM Plex Sans KR", sans-serif !important;
+  font-weight: 600 !important;
+  font-style: normal !important;
+}
+
+.main-content-wrap blockquote.note {
   color: #606060 !important;
   background-color: #f5f6fa !important;
-  border-left: 7px solid #a1a0fe !important;
-  padding: 3px 0 3px 20px !important;
-  border-radius: 5px !important;
+  border-left-color: #a1a0fe !important;
 }
 
 .main-content-wrap h1 {
@@ -7643,6 +7972,44 @@ body > div.side-bar > div.site-header > a.site-title {
 
 .main-content-wrap .highlight .il {
   color: #005cc5;
+}
+
+/* 마크다운 표 커스터마이징: .main-content-wrap 내에서만 적용 */
+.main-content-wrap table {
+  font-family: "IBM Plex Sans KR", sans-serif !important;
+  font-weight: 600 !important;
+  font-style: bold !important;
+  border-collapse: collapse !important;
+  border: none !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.main-content-wrap table th {
+  color: #FFFFFF;
+  background-color: #a1a0fe !important;
+  border-bottom: none !important;
+}
+
+.main-content-wrap table td {
+  border: 1px solid rgb(206, 206, 206) !important;
+}
+
+.main-content-wrap tbody tr td:first-of-type {
+  border-left: 0 !important;
+}
+
+.main-content-wrap tbody tr td:last-of-type {
+  border-right: 0 !important;
+}
+
+.main-content-wrap tbody > tr:first-child td {
+  border-top: 1px solid rgb(206, 206, 206) !important;
+}
+
+.main-content-wrap a.btn-purple {
+  background-image: linear-gradient(0deg, #a1a0fe 0%, #b8b7ff 100%) !important;
 }
 
 /*# sourceMappingURL=just-the-docs-light.css.map */

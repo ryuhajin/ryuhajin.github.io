@@ -7,12 +7,8 @@
 // code
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
-// body {
-//     font-family: "Noto Sans KR", sans-serif;
-//     font-optical-sizing: auto;
-//     font-weight: 600;
-//     font-style: normal;
-//   }
+//table
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap');
 
 body > div.side-bar > div.site-header > a.site-title {
     color: rgb(74, 74, 74);
@@ -29,6 +25,7 @@ body > div.side-bar > div.site-header > a.site-title {
     color: #898989;
   }
 
+  //markdown font
   .main-content-wrap,
   .main-content-wrap h1,
   .main-content-wrap h2,
@@ -38,7 +35,6 @@ body > div.side-bar > div.site-header > a.site-title {
   .main-content-wrap h6,
   .main-content-wrap p,
   .main-content-wrap li,
-  .main-content-wrap blockquote,
   .main-content-wrap code,
   .main-content-wrap pre,
   .main-content-wrap th,
@@ -60,12 +56,19 @@ body > div.side-bar > div.site-header > a.site-title {
   }
 
   .main-content-wrap blockquote {
+    font-family:  "IBM Plex Sans KR", sans-serif !important;
+    font-weight: 600 !important;
+    font-style: normal !important;
+  }
+  
+  .main-content-wrap blockquote.note {
     color: #606060 !important;
     // background-color: rgb(241,241,241) !important;
     background-color: #f5f6fa !important;
-    border-left: 7px solid #a1a0fe !important;;
-    padding: 3px 0 3px 20px !important;
-    border-radius: 5px !important;
+    // border-left: 7px solid #a1a0fe !important;
+    border-left-color: #a1a0fe !important;
+    // padding: 3px 0 3px 20px !important;
+    // border-radius: 5px !important; 
   }
   
   .main-content-wrap h1 {
@@ -147,3 +150,42 @@ body > div.side-bar > div.site-header > a.site-title {
 .main-content-wrap .highlight .vg    { color: #005cc5 }
 .main-content-wrap .highlight .vi    { color: #005cc5 }
 .main-content-wrap .highlight .il    { color: #005cc5 }
+
+/* 마크다운 표 커스터마이징: .main-content-wrap 내에서만 적용 */
+.main-content-wrap table {
+  font-family: "IBM Plex Sans KR", sans-serif !important;
+  font-weight: 600 !important;
+  font-style: bold !important;
+  border-collapse: collapse !important;
+  border: none !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.main-content-wrap table th {
+  color: #FFFFFF;
+  background-color: #a1a0fe !important;
+  border-bottom: none !important;
+}
+
+.main-content-wrap table td {
+  border: 1px solid rgb(206, 206, 206) !important;
+}
+
+.main-content-wrap tbody tr td:first-of-type {
+  border-left: 0 !important;
+}
+
+.main-content-wrap tbody tr td:last-of-type {
+  border-right: 0 !important;
+}
+
+.main-content-wrap tbody > tr:first-child td {
+  border-top: 1px solid rgb(206, 206, 206)!important;
+}
+
+// 링크 버튼 컬러 변경
+.main-content-wrap a.btn-purple {
+  background-image: linear-gradient(0deg, #a1a0fe 0%, #b8b7ff 100%) !important;
+}

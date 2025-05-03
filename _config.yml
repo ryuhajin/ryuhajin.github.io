@@ -10,5 +10,22 @@ github:
 
 nav_enabled: true
 
+callouts:
+  warning:
+    title: Warning
+    color: red
+  highlight:
+    title: highlight
+    color: yellow
+  note:
+    title: note
+    color: purple
+  important:
+    title: important
+    color: blue
+  new:
+    title: new
+    color: green
+
 aux_links:
   Template Repository: https://github.com/just-the-docs/just-the-docs-template
