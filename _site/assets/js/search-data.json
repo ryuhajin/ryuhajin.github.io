@@ -8,28 +8,28 @@
   },"1": {
     "doc": "1. Material Basic",
     "title": "1. Data Types",
-    "content": ". | constant - 1 float | constant2Vector - 2 floats | constant3Vector - 3 floats | . 어떤 포지션과 묶느냐에 따라 floats 값이 RGB or XYZ 가 될 수 있다. | Base Color에 1 vector, 2 vector 를 넣어도 엔진에서 자동으로 입력을 처리한다. (r 1, g 0, b 0) 이런 식 | . ",
+    "content": "constant - 1 float . constant2Vector - 2 floats . constant3Vector - 3 floats . 어떤 포지션과 묶느냐에 따라 floats 값이 RGB or XYZ 가 될 수 있다. | Base Color에 1 vector, 2 vector 를 넣어도 엔진에서 자동으로 입력을 처리한다. | (r 1, g 0, b 0) 이런 식 | . | Color에서 constant value 값 . | 0 : black | 1 : white | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#1-data-types",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#1-data-types"
   },"2": {
     "doc": "1. Material Basic",
     "title": "2. Roghness",
-    "content": ". | 표면의 반사 정도를 제어 | 0 : 거울 반사 (정반사) | 1 : 완전 무광 (난반사) . | constant 1Vector value 값 . | 0 (black) - 1 (white) | . | . ",
+    "content": "표면의 반사 정도를 제어 . | 0 : 거울 반사 (정반사) | 1 : 완전 무광 (난반사) | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#2-roghness",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#2-roghness"
   },"3": {
     "doc": "1. Material Basic",
     "title": "3. Lerp",
-    "content": "Linear Interpolation (선형 보간법) 약어 . | Alpha 속성 . | 0 : 첫번째 값 A 출력 | 1 : 두번째 값 B 출력 | 기본: 0.5 (A, B 혼합) 출력 | . | . ",
+    "content": "Linear Interpolation (선형 보간법) 약어 . | 입력 A : 시작 포인트 | 입력 B : 끝 포인트 | 알파 : 보간 계수 (두 값 사이에서 어느 지점에 위치하는지를 나타내는 비율이자 가중치) | 리턴 : 보간된 값 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#3-lerp",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#3-lerp"
   },"4": {
     "doc": "1. Material Basic",
     "title": "UV Mapping",
-    "content": "2D 이미지를 3D 모델 표면에 투영하는 것 . | u : 수평 | v : 수직 . | Texture coordinate Node . | tiling : 크기가 커질수록 텍스쳐는 작아지고 반복됨 | mutilply 사용으로도 타일링 가능 | . | . ",
+    "content": "2D 이미지를 3D 모델 표면에 투영하는 것 . | u : 수평 | v : 수직 | . | Texture coordinate Node . | tiling : 크기가 커질수록 텍스쳐는 작아지고 반복됨 | mutilply 사용으로도 타일링 가능 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#uv-mapping",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#uv-mapping"
@@ -57,74 +57,95 @@
   },"8": {
     "doc": "1. Material Basic",
     "title": "5. moving texture",
-    "content": ". | speed (음수로 두면 -&gt; 방향으로 감) | time | distance = speed * time | subtract . | ’-‘로도 검색 가능 | append를 쓰면 speed에 음수로 방향 | subtract를 쓰면 speed는 늘 양수 (subtract가 뺄셈처리) | . | . ",
+    "content": ". | speed (음수로 두면 -&gt; 방향으로 감) | time | distance = speed * time | subtract . | -로도 검색 가능 | append를 쓰면 speed에 음수로 방향 | subtract를 쓰면 speed는 늘 양수 (subtract가 뺄셈처리) | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#5-moving-texture",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#5-moving-texture"
   },"9": {
     "doc": "1. Material Basic",
     "title": "6. Panner",
-    "content": "위 무빙 텍스쳐를 쉽게 하나로 만든 형태 . | coordinate : U,V 타일링 플러그 | . 왜 speed를 양수로 하면 왼쪽으로 가는것 처럼 보일까? . | Speed X 값이 양수일 때, 위의 계산에 따라 UV 좌표의 U 값이 증가 | 이는 텍스처의 샘플링 위치가 오른쪽으로 이동함을 의미 | 따라서 실제로 화면에서 보이는 텍스처는 왼쪽으로 이동하는 것처럼 보임 | . ",
+    "content": "위 무빙 텍스쳐를 쉽게 하나로 만든 형태 . | 입력 coordinate : 텍스쳐 UV 좌표 | 입력 Time : UV 이동에 사용할 시간 값 | 입력 Speed : UV 좌표의 이동 속도를 설정하는 2D vector | 출력 UV : 입력된 UV 좌표를 시간과 속도에 따라 변형한 결과를 출력 | . ❓ 왜 speed 를 양수로 하면 왼쪽으로 가는것 처럼 보일까? . | Speed X 값이 양수일 때, 위의 계산에 따라 UV 좌표의 U 값이 증가 | 이는 텍스처의 샘플링 위치가 오른쪽으로 이동함을 의미 | 따라서 실제로 화면에서 보이는 텍스처는 왼쪽으로 이동하는 것처럼 보임 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#6-panner",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#6-panner"
   },"10": {
     "doc": "1. Material Basic",
     "title": "7. Material Instance",
-    "content": ". | M_material | MI_materialInstance | 머티리얼 인스턴스를 만들고 머티리얼 파라미터를 추가해 빠르게 머티리얼을 수정할 수 있다. | 머티리얼 인스턴스는 창이 다름 | . 📌 오늘 배운 단축키 . | 숫자 1, 2, 3, 4 키 + 좌클릭 = 해당 constant vector 노드 생성 | L + 좌클릭 = lerp | m + 좌클릭 = multiply | alt -&gt; 기즈모 이동 = 오브젝트 복사 | ctrl + D = 이전 행동 다시 반복 | 좌클릭 + f2 = 파일 이름 변경 | S + 좌클릭 = 머티리얼 파라미터 추가 | . ",
+    "content": ". | M_material | MI_materialInstance | . | 머티리얼 인스턴스를 만들고 머티리얼 파라미터를 추가해 빠르게 머티리얼을 수정할 수 있다. | 머티리얼 인스턴스는 창이 다름 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#7-material-instance",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#7-material-instance"
   },"11": {
+    "doc": "1. Material Basic",
+    "title": "8. Comment",
+    "content": ". | 노드 클릭 / 드래그 후 C 버튼 눌러서 주석 달기 가능 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#8-comment",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#8-comment"
+  },"12": {
+    "doc": "1. Material Basic",
+    "title": "9. Sine 표현식",
+    "content": "사인 함수를 호출하는 노드 . | 입력 : 라디안 단위 각도 | 출력 : 입력의 라디안 사인을 계산한 결과 (-1 ~ 1) | . | 객체를 상하로 흔들거나 파도, 진동 등 주기적 변동 구현에 사용 | 입력값을 라디안 단위로 해석하여 사용함 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#9-sine-%ED%91%9C%ED%98%84%EC%8B%9D",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#9-sine-표현식"
+  },"13": {
+    "doc": "1. Material Basic",
+    "title": "10. Saturate",
+    "content": "0 ~ 1 범위로 한정 시킴 = 클램핑 . 클램핑이 뭐야 ❓Clamp wiki Link . | 입력 : 클램핑할 값 | 출력 : 0 이하 = 0 / 1 이상 = 1 / 그 외 = 원본값 유지 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#10-saturate",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#10-saturate"
+  },"14": {
+    "doc": "1. Material Basic",
+    "title": "11. Sine_Remapped",
+    "content": ". | 입력 sine Phase : 보간 계수 | 입력 Value1 (V3) : 0으로 맵핑될 때 반환할 시작 벡터 | 입력 Value2 (V3) : 1로 맵핑될 때 반환할 목표 벡터 | 출력 Remapped Sine (Vec3) : lerp(val1, val2, (sin(Sine Phase) + 1) / 2) 로 선형보간한 결과 | . | Sine Phase(실수)를 사인파로 계산한 뒤 [-1,1] 범위의 출력을 Value 1 (V3)와 Value 2 (V3) 사이의 벡터로 선형 보간하여 반환 | 내부적으로 sin(Sine Phase)의 결과에 +1을 더해 0~2로 이동시킨 뒤 0.5로 스케일링 하여 0~1 범위로 remap | . 📌 오늘 배운 단축키 . | 단축키 | 동작 | . | 숫자 1, 2, 3, 4 키 + 좌클릭 | 해당 constant vector 노드 생성 | . | T + 좌클릭 | texture sample | . | L + 좌클릭 | lerp | . | m + 좌클릭 | multiply | . | alt -&gt; 기즈모 이동 | 오브젝트 복사 | . | ctrl + D | 이전 행동 다시 반복 | . | 좌클릭 + f2 | 파일 이름 변경 | . | S + 좌클릭 | 머티리얼 파라미터 추가 | . | c + 좌클릭 | comment 주석달기 | . | Alt + 핀 클릭 | 모든 연결 끊기 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#11-sine_remapped",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#11-sine_remapped"
+  },"15": {
     "doc": "Linear Algebra",
     "title": "Linear Algebra",
     "content": " ",
     "url": "/docs/Math/linear%20algebra/",
     
     "relUrl": "/docs/Math/linear%20algebra/"
-  },"12": {
+  },"16": {
     "doc": "Math",
     "title": "Math",
     "content": " ",
     "url": "/docs/Math/",
     
     "relUrl": "/docs/Math/"
-  },"13": {
+  },"17": {
     "doc": "Computer Graphics",
     "title": "Computer Graphics",
     "content": " ",
     "url": "/docs/Computer%20Graphics/",
     
     "relUrl": "/docs/Computer%20Graphics/"
-  },"14": {
+  },"18": {
     "doc": "Material",
     "title": "Material",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"15": {
+  },"19": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"16": {
+  },"20": {
     "doc": "Home",
     "title": "Home",
-    "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ",
+    "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ",
     "url": "/",
     
     "relUrl": "/"
-  },"17": {
-    "doc": "C++",
-    "title": "C++ 강의 정리",
-    "content": " ",
-    "url": "/docs/C++/#c-%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC",
-    
-    "relUrl": "/docs/C++/#c-강의-정리"
-  },"18": {
+  },"21": {
     "doc": "C++",
     "title": "C++",
     "content": " ",
