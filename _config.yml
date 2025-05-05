@@ -10,6 +10,8 @@ github:
 
 nav_enabled: true
 
+favicon_ico: "/images/cat_yellow_bg.ico"
+
 callouts:
   warning:
     title: Warning

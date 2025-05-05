@@ -26,3 +26,8 @@ nav_order: 1
     - 링크 버튼 : btn-purple color 변경  
     - 인용 블록 종류 추가 : warning, highlight, note, important, new
 {: .fs-2}
+
+###### ✨2025-05-06
+- 로고 추가
+- 푸터 추가
+{: .fs-2}

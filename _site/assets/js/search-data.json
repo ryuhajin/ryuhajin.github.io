@@ -1,156 +1,275 @@
 {"0": {
+    "doc": "1. GPU 특성",
+    "title": "1. GPU 특성",
+    "content": ". ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html"
+  },"1": {
+    "doc": "1. GPU 특성",
+    "title": "1. Design: GPU vs. CPU",
+    "content": ". GPU는 원래 그래픽 렌더링을 위해 설계되었다. 3D 객체를 구성하는 수천 개의 독립적인 폴리곤을 셰이딩, 텍스처링, 렌더링하는 데 매우 효과적이다. | Core (녹색 영역) : 명령어 실행 및 계산 처리 (연산, 레지스터 조작 등) | Control (금색 영역) : 명령어 해석 및 실행 제어 (제어 신호 생성, 흐름 제어 등) | L1 Cache (보라 영역) : 데이터 / 명령어 저장 (코어에 가장 가까운 고속 캐시 메모리) | L2/L3 chache (파랑 영역) : L1 보다 느리지만 더 큼. L3는 여러 코어 간 공유되는 경우가 많음 | . ☑️ 위 그림으로 알수 있는 점 . | CPU는 GPU만큼 산술 논리 장치나 부동 소수점 장치가 많지 않다. (Core 녹색 영역) . | 하지만 CPU 코어의 ALU와 FPU는 더 많은 기능을 갖추고 있다. | . | CPU는 GPU보다 캐시 메모리가 더 많다. | GPU는 병렬화 될 수 있는 워크로드를 위해 설계되었다. | core의 각 행마다 Control이 하나씩 있는 것으로 나타난다. | . | . | 특징 | CPU | GPU | . | 목적 | 범용 컴퓨팅 (다양한 작업 처리) | 병렬 컴퓨팅 (그래픽 및 대량 데이터 처리) | . | 코어 수 | 적음 (일반적으로 2~64개) | 매우 많음 (수백 ~ 수천 개의 코어) | . | 작업 유형 | 직렬 처리에 최적화 | 병렬 처리에 최적화 | . | 사용 사례 | 운영체제, 일반 소프트웨어, 논리 연산 | 그래픽 렌더링, 머신러닝, 과학 계산 | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#1-design-gpu-vs-cpu",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#1-design-gpu-vs-cpu"
+  },"2": {
+    "doc": "1. GPU 특성",
+    "title": "2. Performance: GPU vs. CPU",
+    "content": ". 아래의 그림은 연산 능력을 초당 수십억 번의 부동 소수점 연산( Gflop/s )으로 측정하여 보여준다. | Single Precision (단정밀도) : 부동 소수점 수의 32비트 표현 | Double Percision (배정밀도) : 부동 소수점 수의 64비트 표현 | . 단정밀도는 배정밀도보다 두 배 빠르게 처리될 수 있는 경우가 많다. ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#2-performance-gpu-vs-cpu",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#2-performance-gpu-vs-cpu"
+  },"3": {
+    "doc": "1. GPU 특성",
+    "title": "3. Threads, Cores 재정의",
+    "content": ". GPU는 그래픽 파이프라인의 두 가지 핵심 속성을 통해 속도가 가속화된다. | 렌더링은 일반적으로 많은 독립적인 오브젝트 (예:표면을 근사화하는 작은 삼각형 메시)로 구성된다. | 각 오브젝트를 렌더링하는데 필요한 단계의 순서는 기본적으로 모든 오브젝트에 동일하다. | 따라서 계산 단계가 모든 오브젝트에 대해 한번번에 병렬로 수행될 수 있다. | . | . GPU와 CPU 간의 용어 비교 . | GPU 용어 | GPU에서의 간단한 정의 | CPU에서의 대응 개념 | . | Thread | 하나의 CUDA 코어에서 실행되는 명령어와 데이터의 흐름. SIMT 모델에서 실행됨. | 일반적으로 명시적 대응 없음. | . | CUDA Core | SIMT 명령어의 일부를 처리하는 단일 연산 유닛. | 벡터 유닛 내의 벡터 레인 | . | Warp | 32개의 스레드로 구성된 그룹. 서로 다른 데이터에 동일한 명령어 스트림을 함께 실행한다. | 벡터 연산에서의 벡터 | . | Kernel | GPU에서 실행되는 함수. 커널은 여러 스레드 블록으로 구성될 수 있다. | CPU의 스레드 | . | Streaming Multiprocessor (SM) | 스레드 블록을 실행할 수 있는 단위. GPU의 물리적 유닛. | CPU의 코어 | . ❓ 스레드 블록 . | 스레드 블록 (Thread Block) . | 여러 스레드가 모여 하나의 논리적 단위로 구성되는 실행 단위 | . | CUDA 프로그래밍에서 스레드는 블록 단위로 묶여 실행된다. | 하나의 블록은 n ~ n백개의 스레드를 포함할 수 있다. | 블록은 SM(Streaming Multiprocessor)에 배정된다. | . ❓ 명령어 스트림 . | 명령어 스트림 (Instruction Stream) . | 스레드들이 공유하는 명령어의 흐름 (제어 흐름 분기(조건문)가 영향을 줌) | . | 스트림(stream)이라는 말은 일련의 명령어가 순차적으로 흐르는 데이터 흐름을 의미 | SIMT 모델에서 말하는 “명령어 스트림”은 모든 스레드가 따르는 동일한 명령어 흐름 | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#3-threads-cores-%EC%9E%AC%EC%A0%95%EC%9D%98",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#3-threads-cores-재정의"
+  },"4": {
+    "doc": "1. GPU 특성",
+    "title": "4. SIMT (Single Instruction, Multiple Threads)",
+    "content": ". | 한 명령어를 여러 스레드가 동시에 실행하는 GPU 실행 모델 | . __global__ void add(int *a, int *b, int *c) { int idx = threadIdx.x; c[idx] = a[idx] + b[idx]; } . | 위 함수가 32개의 스레드에서 실행되면 모든 스레드가 같은 c[idx] = a[idx] + b[idx] 명령어 수행. | 각 스레드는 자신만의 idx 값을 사용해서 다른 데이터에 접근함. | . SIMT에서 제어 흐름 분기 예시 . | SIMT에서는 선택한 스레드를 활성화 또는 비활성화할 수 있다 | . | 활성 스레드: 명령과 데이터 처리. | 비활성 스레드: 아무런 작업도 수행하지 않음. 로컬 데이터가 변경되지 않은 상태로 유지됨. | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#4-simt-single-instruction-multiple-threads",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#4-simt-single-instruction-multiple-threads"
+  },"5": {
+    "doc": "1. GPU 특성",
+    "title": "5. Warps",
+    "content": ". | 런타임 시, 스레드 블록은 SIMT 실행을 위해 워프로 나뉜다. | 하나의 완전한 워프는 연속된 스레드 인덱스를 가진 32개의 스레드 묶음으로 구성된다. | 워프에 포함된 스레드들은 32개의 CUDA 코어 집합에 의해 함께 처리된다. | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#5-warps",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#5-warps"
+  },"6": {
+    "doc": "1. GPU 특성",
+    "title": "6. Kernels (in software)",
+    "content": ". 연결된 GPU 에서 병렬로 실행되도록 설계된 함수를 커널이라고 한다. | C++ 함수 선언 앞에 __global__ 지정자가 있는 것으로 식별된다. | . | 커널은 한 번만 실행되는 것이 아니라, GPU의 N개의 서로 다른 스레드 에 의해 N번 병렬로 실행된다. | 각 스레드에는 메모리 주소를 계산하고 제어 결정을 내리는 데 사용할 수 있는 고유 ID(실제로는 인덱스)가 할당된다. | . CUDA 커널이 스레드 배열에 의해 실행되는 방식 . 커널 호출은 GPU에서 사용할 스레드 수를 지정하는 특수 인수를 제공해야 한다. 특수 인수는 아래와 같다. func&lt;&lt;&lt;1, N&gt;&gt;&gt;(x, y, z) . // 커널 함수 정의: 두 벡터를 더해서 결과 저장 __global__ void addVectors(int *a, int *b, int *c, int N) { int idx = threadIdx.x; if (idx &lt; N) { c[idx] = a[idx] + b[idx]; } } int main() { const int N = 256; // 커널 호출: 블록 1개, 스레드 256개로 구성 addVectors&lt;&lt;&lt;1, N&gt;&gt;&gt;(d_a, d_b, d_c, N); } . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#6-kernels-in-software",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#6-kernels-in-software"
+  },"7": {
+    "doc": "1. GPU 특성",
+    "title": "7. Streaming multiprocessors (in hardware)",
+    "content": ". GPU에서 커널 호출은 하나 이상의 스트리밍 멀티프로세서에 의해 실행된다. 각 SM의 CUDA 코어는 항상 32개 세트로 배열되어 SM이 스레드의 전체 워프를 실행하는 데 사용할 수 있다. | GPU가 커널 호출을 실행하는 데 실제로 사용하는 SM의 수는 호출에 지정된 스레드 블록 수로 제한된다. | 예를 들어 fun&lt;&lt;&lt;M, N&gt;&gt;&gt;(x, y, z) 이 있을 때, 각 SM에 할당할 수 있는 블록은 최대 M개이다. | 스레드 블록은 여러 SM으로 분할될 수 없다. | 사용 가능한 SM보다 블록이 많은 경우, 동일한 SM에 여러 블록을 할당할 수 있다. | . | . | 매 사이클 마다 각 SM의 스케줄러 는 사용 가능한 32개의 CUDA 코어 세트에서 실행될 스레드의 전체 워프를 할당한다. | SM에는 레지스터 , L1 캐시 , 상수 캐시, 공유 메모리가 포함된다. | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#7-streaming-multiprocessors-in-hardware",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#7-streaming-multiprocessors-in-hardware"
+  },"8": {
+    "doc": "1. GPU 특성",
+    "title": "☑️ 정리",
+    "content": "[Kernel] ↓ ┌────────┐ │ Thread Block 1 │ ←→ SM 1 │ Thread Block 2 │ ←→ SM 2 │ ... │ │ Thread Block N │ ←→ SM n └────────┘ ↓ ↓ Warp 1 Warp 2 ... (각 32개 Thread) ↓ CUDA Core (Thread 실행) . | 하나의 커널(GPU 함수)은 수많은 스레드 블록으로 구성 | 각 스레드 블록은 하나의 SM에 할당되어 실행된다. | SM이 스레드 블록을 실행한다 = 스케줄링, 메모리, 명령어 분배 등 전체 실행을 관리한다 | . | 스레드 블록 내부의 스레드들은 32개 단위로 워프로 나뉨 | 각 스레드는 CUDA 코어에서 개별적으로 연산을 수행한다. | CUDA Core가 연산을 수행한다 = 각 스레드의 명령을 ALU 단위에서 실제 계산으로 처리한다 | . | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#%EF%B8%8F-%EC%A0%95%EB%A6%AC",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#️-정리"
+  },"9": {
     "doc": "1. Material Basic",
     "title": "1. Material Basic",
     "content": ". ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html"
-  },"1": {
+  },"10": {
     "doc": "1. Material Basic",
     "title": "1. Data Types",
     "content": "constant - 1 float . constant2Vector - 2 floats . constant3Vector - 3 floats . 어떤 포지션과 묶느냐에 따라 floats 값이 RGB or XYZ 가 될 수 있다. | Base Color에 1 vector, 2 vector 를 넣어도 엔진에서 자동으로 입력을 처리한다. | (r 1, g 0, b 0) 이런 식 | . | Color에서 constant value 값 . | 0 : black | 1 : white | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#1-data-types",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#1-data-types"
-  },"2": {
+  },"11": {
     "doc": "1. Material Basic",
     "title": "2. Roghness",
     "content": "표면의 반사 정도를 제어 . | 0 : 거울 반사 (정반사) | 1 : 완전 무광 (난반사) | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#2-roghness",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#2-roghness"
-  },"3": {
+  },"12": {
     "doc": "1. Material Basic",
     "title": "3. Lerp",
     "content": "Linear Interpolation (선형 보간법) 약어 . | 입력 A : 시작 포인트 | 입력 B : 끝 포인트 | 알파 : 보간 계수 (두 값 사이에서 어느 지점에 위치하는지를 나타내는 비율이자 가중치) | 리턴 : 보간된 값 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#3-lerp",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#3-lerp"
-  },"4": {
+  },"13": {
     "doc": "1. Material Basic",
     "title": "UV Mapping",
     "content": "2D 이미지를 3D 모델 표면에 투영하는 것 . | u : 수평 | v : 수직 | . | Texture coordinate Node . | tiling : 크기가 커질수록 텍스쳐는 작아지고 반복됨 | mutilply 사용으로도 타일링 가능 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#uv-mapping",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#uv-mapping"
-  },"5": {
+  },"14": {
     "doc": "1. Material Basic",
     "title": "component mask",
     "content": "벡터 배열 중 가져오고 싶은 인덱스만 마스킹 . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#component-mask",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#component-mask"
-  },"6": {
+  },"15": {
     "doc": "1. Material Basic",
     "title": "append",
     "content": "값1, 값2 합쳐서 매개변수로 사용하고 싶을때 쓰임 . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#append",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#append"
-  },"7": {
+  },"16": {
     "doc": "1. Material Basic",
     "title": "4. Opacity",
     "content": "투명도를 주고싶으면 블렌드 모드를 바꿔야 함. (디폴트 Opaque(불투명)) . | material blend mode -&gt; Translucent(반투명) 변경 -&gt; Opacity 속성 활성화 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#4-opacity",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#4-opacity"
-  },"8": {
+  },"17": {
     "doc": "1. Material Basic",
     "title": "5. moving texture",
     "content": ". | speed (음수로 두면 -&gt; 방향으로 감) | time | distance = speed * time | subtract . | -로도 검색 가능 | append를 쓰면 speed에 음수로 방향 | subtract를 쓰면 speed는 늘 양수 (subtract가 뺄셈처리) | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#5-moving-texture",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#5-moving-texture"
-  },"9": {
+  },"18": {
     "doc": "1. Material Basic",
     "title": "6. Panner",
     "content": "위 무빙 텍스쳐를 쉽게 하나로 만든 형태 . | 입력 coordinate : 텍스쳐 UV 좌표 | 입력 Time : UV 이동에 사용할 시간 값 | 입력 Speed : UV 좌표의 이동 속도를 설정하는 2D vector | 출력 UV : 입력된 UV 좌표를 시간과 속도에 따라 변형한 결과를 출력 | . ❓ 왜 speed 를 양수로 하면 왼쪽으로 가는것 처럼 보일까? . | Speed X 값이 양수일 때, 위의 계산에 따라 UV 좌표의 U 값이 증가 | 이는 텍스처의 샘플링 위치가 오른쪽으로 이동함을 의미 | 따라서 실제로 화면에서 보이는 텍스처는 왼쪽으로 이동하는 것처럼 보임 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#6-panner",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#6-panner"
-  },"10": {
+  },"19": {
     "doc": "1. Material Basic",
     "title": "7. Material Instance",
     "content": ". | M_material | MI_materialInstance | . | 머티리얼 인스턴스를 만들고 머티리얼 파라미터를 추가해 빠르게 머티리얼을 수정할 수 있다. | 머티리얼 인스턴스는 창이 다름 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#7-material-instance",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#7-material-instance"
-  },"11": {
+  },"20": {
     "doc": "1. Material Basic",
     "title": "8. Comment",
     "content": ". | 노드 클릭 / 드래그 후 C 버튼 눌러서 주석 달기 가능 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#8-comment",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#8-comment"
-  },"12": {
+  },"21": {
     "doc": "1. Material Basic",
     "title": "9. Sine 표현식",
     "content": "사인 함수를 호출하는 노드 . | 입력 : 라디안 단위 각도 | 출력 : 입력의 라디안 사인을 계산한 결과 (-1 ~ 1) | . | 객체를 상하로 흔들거나 파도, 진동 등 주기적 변동 구현에 사용 | 입력값을 라디안 단위로 해석하여 사용함 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#9-sine-%ED%91%9C%ED%98%84%EC%8B%9D",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#9-sine-표현식"
-  },"13": {
+  },"22": {
     "doc": "1. Material Basic",
     "title": "10. Saturate",
     "content": "0 ~ 1 범위로 한정 시킴 = 클램핑 . 클램핑이 뭐야 ❓Clamp wiki Link . | 입력 : 클램핑할 값 | 출력 : 0 이하 = 0 / 1 이상 = 1 / 그 외 = 원본값 유지 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#10-saturate",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#10-saturate"
-  },"14": {
+  },"23": {
     "doc": "1. Material Basic",
     "title": "11. Sine_Remapped",
-    "content": ". | 입력 sine Phase : 보간 계수 | 입력 Value1 (V3) : 0으로 맵핑될 때 반환할 시작 벡터 | 입력 Value2 (V3) : 1로 맵핑될 때 반환할 목표 벡터 | 출력 Remapped Sine (Vec3) : lerp(val1, val2, (sin(Sine Phase) + 1) / 2) 로 선형보간한 결과 | . | Sine Phase(실수)를 사인파로 계산한 뒤 [-1,1] 범위의 출력을 Value 1 (V3)와 Value 2 (V3) 사이의 벡터로 선형 보간하여 반환 | 내부적으로 sin(Sine Phase)의 결과에 +1을 더해 0~2로 이동시킨 뒤 0.5로 스케일링 하여 0~1 범위로 remap | . 📌 오늘 배운 단축키 . | 단축키 | 동작 | . | 숫자 1, 2, 3, 4 키 + 좌클릭 | 해당 constant vector 노드 생성 | . | T + 좌클릭 | texture sample | . | L + 좌클릭 | lerp | . | m + 좌클릭 | multiply | . | alt -&gt; 기즈모 이동 | 오브젝트 복사 | . | ctrl + D | 이전 행동 다시 반복 | . | 좌클릭 + f2 | 파일 이름 변경 | . | S + 좌클릭 | 머티리얼 파라미터 추가 | . | c + 좌클릭 | comment 주석달기 | . | Alt + 핀 클릭 | 모든 연결 끊기 | . ",
+    "content": ". | 입력 sine Phase : 보간 계수 | 입력 Value1 (V3) : 0으로 맵핑될 때 반환할 시작 벡터 | 입력 Value2 (V3) : 1로 맵핑될 때 반환할 목표 벡터 | 출력 Remapped Sine (Vec3) : lerp(val1, val2, (sin(Sine Phase) + 1) / 2) 로 선형보간한 결과 | . | Sine Phase(실수)를 사인파로 계산한 뒤 [-1,1] 범위의 출력을 Value 1 (V3)와 Value 2 (V3) 사이의 벡터로 선형 보간하여 반환 | 내부적으로 sin(Sine Phase)의 결과에 +1을 더해 0~2로 이동시킨 뒤 0.5로 스케일링 하여 0~1 범위로 remap | . ",
     "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#11-sine_remapped",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#11-sine_remapped"
-  },"15": {
-    "doc": "Linear Algebra",
-    "title": "Linear Algebra",
-    "content": " ",
-    "url": "/docs/Math/linear%20algebra/",
+  },"24": {
+    "doc": "1. Material Basic",
+    "title": "12. world position offset",
+    "content": ". | 입력 World Position Offset (V3) : 오브젝트 버텍스에 더해질 월드 공간 오프셋 벡터 | 출력 (V3): 최종 버텍스 위치 | . | 간단한 이동 애니메이션이나 주기적 바운스 효과(Sind_Remapped 사용) 를 줄 때 사용한다 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#12-world-position-offset",
     
-    "relUrl": "/docs/Math/linear%20algebra/"
-  },"16": {
-    "doc": "Math",
-    "title": "Math",
-    "content": " ",
-    "url": "/docs/Math/",
+    "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#12-world-position-offset"
+  },"25": {
+    "doc": "1. Material Basic",
+    "title": "13. CheapContrast",
+    "content": ". | 입력 in (Scalar) : 대비를 조정할 입력 채널 (흑백 값) | 입력 Contrast (Scalar) : 대비 증가 강도. 값이 커질수록 대비 강도 증가 | . | 흑백 마스크 대비 보정할 때 사용 | 내부 동작 수식 Remapped = ( (In – 0.5) * (1 + Contrast) ) + 0.5 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#13-cheapcontrast",
     
-    "relUrl": "/docs/Math/"
-  },"17": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#13-cheapcontrast"
+  },"26": {
+    "doc": "1. Material Basic",
+    "title": "Texture Sample UVs 혼합하기",
+    "content": "❓ 흑백 텍스쳐 샘플 노드가 2개 있을 때, 1번 텍스쳐 샘플의 R 채널과 0을 2번 텍스쳐 샘플의 UV로 넣는 과정은 어떤 결과가 나올까? . | (R, 0)은 “2번 텍스쳐의 수평 위치를 1번 택스쳐의 R값으로 조정”한다는 뜻! | 예: R = 0.3 → 2번 텍스쳐의 30% 위치의 색상을 가져옴. | 수직은 0으로 고정이므로 R 값에 따라 수평으로만 왜곡시키는 효과를 냄 | . 과정 상세 설명 . | 1번 텍스쳐 (흑백) / R 채널만 사용 (흑백이므로 R=G=B). 값은 0 ~ 1 사이 | Append 노드로 (R, 0) 생성 / 예 픽셀 R은 0.7 → (0.7, 0) | 2번 텍스쳐에 (R, 0)을 UV로 입력 | 원래 UV가 (0.5, 0.5)라면, 새 UV는 (0.5 + 0.7, 0.5 + 0) = (1.2, 0.5) 같은 식으로 계산. | . 결과 . | 1번 텍스쳐의 밝은 부분(R≈1) → 2번 텍스쳐가 오른쪽으로 밀림. | 어두운 부분(R≈0) → 2번 텍스쳐가 왼쪽으로 수축. | 수직(V) 방향은 0으로 고정되므로 위아래 왜곡은 없음. | . UV 혼합은 그라데이션 왜곡, 노이즈 패턴 변형, 동적 텍스쳐 오프셋 등에 활용 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#texture-sample-uvs-%ED%98%BC%ED%95%A9%ED%95%98%EA%B8%B0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#texture-sample-uvs-혼합하기"
+  },"27": {
+    "doc": "1. Material Basic",
+    "title": "14. Name Reroute Node",
+    "content": "Material Editor 전용으로 제공되는 노드. 와이어가 얽히지 않도록 중앙 리루트 지점을 만들어 그래프를 깔끔하게 유지 할 수 있다. | Declaration (선언) 노드 : 오직 입력(Input) 만 갖고, 값을 ‘이름’으로 보관 | Usage: 오직 출력(Output) 만 갖고, 해당 이름의 값을 그래프 전역에 사용 가능. | . 사용방법 . | 와이어 두번 클릭 | 마우스 오른쪽 버튼 클릭 | 이름을 가진 경유 노드로 변환 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#14-name-reroute-node",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#14-name-reroute-node"
+  },"28": {
+    "doc": "1. Material Basic",
+    "title": "15. 1-x / OneMinus",
+    "content": "색상 반전, 마스크 반전에 쓰임 . | 입력 input (float) : 연산 대상 X의 값. 스칼라일 경우 단일 채널, 벡터일 경우 각 채널별로 처리 | 출력 float : 계산 결과 1 - Input을 각 채널에 적용한 값 출력 | . | 출력 예시 : OneMinus((0.2, 0.5, 1.0)) → (0.8, 0.5, 0.0) | . 📌 단축키 . | 단축키 | 동작 | . | 숫자 1, 2, 3, 4 키 + 좌클릭 | 해당 constant vector 노드 생성 | . | T + 좌클릭 | texture sample | . | L + 좌클릭 | lerp | . | m + 좌클릭 | multiply | . | alt -&gt; 기즈모 이동 | 오브젝트 복사 | . | ctrl + D | 이전 행동 다시 반복 | . | 좌클릭 + f2 | 파일 이름 변경 | . | S + 좌클릭 | 머티리얼 파라미터 추가 | . | c + 좌클릭 | comment 주석달기 | . | Alt + 핀 클릭 | 모든 연결 끊기 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#15-1-x--oneminus",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#15-1-x--oneminus"
+  },"29": {
+    "doc": "GPU Architecture",
+    "title": "GPU Architecture",
+    "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
+  },"30": {
+    "doc": "Computer architecture",
+    "title": "Computer architecture",
+    "content": " ",
+    "url": "/docs/Computer%20architecture/",
+    
+    "relUrl": "/docs/Computer%20architecture/"
+  },"31": {
+    "doc": "Graphics rendering pipeline",
+    "title": "Graphics rendering pipeline",
+    "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
+    "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
+    
+    "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
+  },"32": {
     "doc": "Computer Graphics",
     "title": "Computer Graphics",
     "content": " ",
     "url": "/docs/Computer%20Graphics/",
     
     "relUrl": "/docs/Computer%20Graphics/"
-  },"18": {
-    "doc": "Material",
-    "title": "Material",
+  },"33": {
+    "doc": "Linear Algebra",
+    "title": "Linear Algebra",
     "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Material/",
+    "url": "/docs/Math/linear%20algebra/",
     
-    "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"19": {
-    "doc": "Unreal Engine 5",
-    "title": "Unreal Engine 5",
+    "relUrl": "/docs/Math/linear%20algebra/"
+  },"34": {
+    "doc": "Math",
+    "title": "Math",
     "content": " ",
-    "url": "/docs/Unreal%20Engine%205/",
+    "url": "/docs/Math/",
     
-    "relUrl": "/docs/Unreal%20Engine%205/"
-  },"20": {
-    "doc": "Home",
-    "title": "Home",
-    "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ",
-    "url": "/",
-    
-    "relUrl": "/"
-  },"21": {
+    "relUrl": "/docs/Math/"
+  },"35": {
     "doc": "C++",
     "title": "C++",
     "content": " ",
     "url": "/docs/C++/",
     
     "relUrl": "/docs/C++/"
+  },"36": {
+    "doc": "Material",
+    "title": "Material",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Material/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/"
+  },"37": {
+    "doc": "Unreal Engine 5",
+    "title": "Unreal Engine 5",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/"
+  },"38": {
+    "doc": "Home",
+    "title": "Home",
+    "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ",
+    "url": "/",
+    
+    "relUrl": "/"
   }
 }
