@@ -57,7 +57,7 @@
   },"8": {
     "doc": "1. GPU 특성",
     "title": "☑️ 정리",
-    "content": "[Kernel] ↓ ┌────────┐ │ Thread Block 1 │ ←→ SM 1 │ Thread Block 2 │ ←→ SM 2 │ ... │ │ Thread Block N │ ←→ SM n └────────┘ ↓ ↓ Warp 1 Warp 2 ... (각 32개 Thread) ↓ CUDA Core (Thread 실행) . | 하나의 커널(GPU 함수)은 수많은 스레드 블록으로 구성 | 각 스레드 블록은 하나의 SM에 할당되어 실행된다. | SM이 스레드 블록을 실행한다 = 스케줄링, 메모리, 명령어 분배 등 전체 실행을 관리한다 | . | 스레드 블록 내부의 스레드들은 32개 단위로 워프로 나뉨 | 각 스레드는 CUDA 코어에서 개별적으로 연산을 수행한다. | CUDA Core가 연산을 수행한다 = 각 스레드의 명령을 ALU 단위에서 실제 계산으로 처리한다 | . | . ",
+    "content": "[Kernel] ↓ [Grid] (커널의 전체 작업 공간 = 스레드 블록 집합) ┌─────────────────┐ │ Thread Block 1 │ → SM 0 (리소스 여유 있을 시 SM 1에도 할당 가능) │ Thread Block 2 │ → SM 0 or 다른 SM │ ... │ (한 SM이 여러 블록을 동시에 실행 가능) │ Thread Block N │ → SM m (m ≤ n, SM 수 ≤ 블록 수) └─────────────────┘ ↓ ↓ [Warp 0] [Warp 1] ... (각 32스레드) ↓ ↓ CUDA Cores (SIMT 방식으로 워프 단위 병렬 처리 실행) ↓ ALU/FPU/Tensor Cores (실제 연산) . | 하나의 커널(GPU 함수)은 수많은 스레드 블록으로 구성 | 각 스레드 블록은 SM에 할당되어 실행된다. | SM이 스레드 블록을 실행한다 = SM은 워프 스케줄링, 메모리, 명령어 분배 등 전체 실행을 관리한다 | 한 SM이 여러 블록을 동시에 실행 가능 (SM의 자원이 충분하다면 여러 블록을 동시에 수용 가능) | . | 스레드 블록 내부의 스레드들은 32개 단위로 워프로 나뉨 | 각 스레드는 CUDA 코어에서 개별적으로 연산을 수행한다. | CUDA Core가 연산을 수행한다 = 각 스레드의 연산은 CUDA 코어에서 처리된다. 각 스레드의 명령은 워프 단위로 동기화(SIMT)되어 CUDA Core에 할당되며, 워프 내 스레드의 명령어를 ALU/FPU에 전달해 연산을 수행한다. | CUDA Core 자체가 ALU나 FPU를 내장하고 있거나, 복합적으로 연결되어 있다. | . | Tensor Core는 행렬 곱 연산(Matrix Multiply) 등에 최적화된 특수 연산 유닛으로, 워프 단위에서만 활성화되며 CUDA Core와 독립적으로 존재 | . | 구성 요소 | 설명 | 예시 용어 | . | Kernel | GPU에서 실행되는 함 | myKernel&lt;&lt;&lt;grid, block&gt;&gt;&gt;(...) | . | Grid | 모든 스레드 블록의 집합 | 논리적 실행 단위 | . | Thread Block | 스레드의 집합, SM에 할당됨 | blockDim.x, blockIdx.x 등으로 접근 | . | SM | Streaming Multiprocessor. 블록을 실행하는 하드웨어 유닛 | Warp Scheduler, CUDA Cores 포함 | . | Warp | 32개 스레드로 구성된 실행 단위 | SIMT 방식 실행 | . | CUDA Core | 실제 산술/논리 연산을 수행하는 유닛 | ALU/FPU로 구성된 연산 유닛의 논리적 집합 | . | Tensor Core | 고속 행렬 곱셈 (AI 특화) | SM 내부에 있는 별도 유닛으로 워프 단위 처리 | . FPU vs ALU vs Tensor Core . | 유닛 | 연산 타입 | 주요 용도 | 예시 | . | FPU | 부동소수점 (실수) | 물리 시뮬레이션, 3D 렌더링 | float x = y * 1.5; | . | ALU | 정수/논리 연산 | 인덱스 계산, 조건문 | int i = j + 1; | . | Tensor Core | 행렬 연산 | AI 학습/추론, DLSS | A = B × C (행렬 곱셈) | . ",
     "url": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#%EF%B8%8F-%EC%A0%95%EB%A6%AC",
     
     "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/1.%20GPU%20%ED%8A%B9%EC%84%B1.html#️-정리"
@@ -202,181 +202,272 @@
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#15-1-x--oneminus"
   },"29": {
+    "doc": "2. GPU 메모리",
+    "title": "2. GPU 메모리",
+    "content": ". ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/2.%20GPU%20%EB%A9%94%EB%AA%A8%EB%A6%AC.html",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/2.%20GPU%20%EB%A9%94%EB%AA%A8%EB%A6%AC.html"
+  },"30": {
+    "doc": "2. GPU 메모리",
+    "title": "1. Memory Levels",
+    "content": " ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/2.%20GPU%20%EB%A9%94%EB%AA%A8%EB%A6%AC.html#1-memory-levels",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/2.%20GPU%20%EB%A9%94%EB%AA%A8%EB%A6%AC.html#1-memory-levels"
+  },"31": {
     "doc": "2. Master Material",
     "title": "2. Master Material",
     "content": ". ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html"
-  },"30": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html"
+  },"32": {
     "doc": "2. Master Material",
     "title": "1. Master Material",
     "content": "마스터 머티리얼을 만들고 이 마스터 머티리얼의 여러 인스턴스만 사용하는 방법을 통해 공간 절약, 씬의 성능 상향이 가능함. ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#1-master-material",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#1-master-material",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#1-master-material"
-  },"31": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#1-master-material"
+  },"33": {
     "doc": "2. Master Material",
     "title": "2. Albedo vs Diffuse",
     "content": "베이스 컬러에 쓰이는 텍스쳐가 두 가지 용어를 혼합하여 쓰길래 두 키워드의 차이점이 무엇인지 궁금해졌다. ❓베이스 컬러에 들어가는 알베도와 디퓨즈의 차이점이 뭐지? . | Albedo : 물리 기반 렌더링(PBR)에서 도입. 표면이 반사하는 확산 반사 비율 또는 색상을 의미 | Diffuse : 전통적인 3D 그래픽스에서 디퓨즈 맵은 표면의 기본 색상을 정의한다. 빛의 영향을 받아 명암이 생기는 재질 표현에 사용 | . Albedo vs Diffuse 정리 . | 항목 | Albedo | Diffuse | . | 정의 | 순수한 반사율 (빛의 간섭 없음) | 빛의 난반사로 인한 색상 + 명암 | . | 사용 예 | PBR (물리 기반 렌더링) | 전통적 라이팅 모델 (램버트 반사 등) | . | 데이터 | 환경광의 영향이 제거된 순수 색상 | 그림자/광택 일부 포함 가능 | . | 예시 | Unreal, Unity등에서 PBR 재질의 Base Color로 사용 | Photoshop 등에서 조명까지 표현한 diffuse map 제작 가능 | . | Diffuse 텍스처에는 실제 광원이 없어도 명암이 들어감. | 조명 대응 불가 (광원 위치를 바꿔도 그림자는 바뀌지 않음) | . | . | 텍스처에 조명, 그림자, 반사 등을 “베이크”해서 포함시킨 것 = diffuse map | 조명과 독립적인 순수한 색상. 빛은 셰이더에서 계산함 = Albedo | . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#2-albedo-vs-diffuse",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#2-albedo-vs-diffuse",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#2-albedo-vs-diffuse"
-  },"32": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#2-albedo-vs-diffuse"
+  },"34": {
     "doc": "2. Master Material",
     "title": "3. Texture Coordinate",
     "content": "UV 매핑을 제어하는 노드로 머티리얼이 메시 표면에 어떻게 텍스쳐를 투영할지 결정한다. | 모델의 각 정점(Vertex)에는 UV 좌표(0~1 범위의 2D 좌표)가 할당되어 있으며, 이 노드는 해당 좌표를 조정하거나 변형할 때 사용할 수 있다. | . | 기본 출력: UV 채널의 2D 벡터(X, Y). 각 성분은 일반적으로 0.0 ~ 1.0 범위 . | X(U): 가로 축 좌표 (좌 → 우) | Y(V): 세로 축 좌표 (하 → 상) | . | Coordinate Index: 다중 UV 채널을 선택할 수 있다. | 정적 메시의 Lightmap UV(UV1) 등 추가 좌표 계층을 활용할 때 유용 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#3-texture-coordinate",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#3-texture-coordinate",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#3-texture-coordinate"
-  },"33": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#3-texture-coordinate"
+  },"35": {
     "doc": "2. Master Material",
     "title": "4. Vector4",
     "content": ". | Vector4 노드의 R,G,B,A에 각각 U tile, V tile, U offset, V offset 이라고 이름을 붙여 텍스쳐 타일링에 사용할 수 있다. | 타일링 *= multiply | 오프셋 += add | . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#4-vector4",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#4-vector4",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#4-vector4"
-  },"34": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#4-vector4"
+  },"36": {
     "doc": "2. Master Material",
     "title": "5. static swich parameter",
     "content": "머티리얼 그래프 내에서 분기를 정의하고, 머티리얼 인스턴스 에디터에서 체크박스로 설정 가능하게 해준다. | 정적(static) 이 붙은 이유 : 런타임에 변경되지 않고 머티리얼 컴파일 타임에 결정됨 | 사용되지 않는 쪽의 분기는 완전히 제거되어 실행 시간이 최적화 | . | 입력 A : A 로직 (스위치가 True일 때 적용) | 입력 B : B 로직 (스위치가 False일 때 적용) | 출력 : True는 A, False는 B 출력 | . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#5-static-swich-parameter",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#5-static-swich-parameter",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#5-static-swich-parameter"
-  },"35": {
-    "doc": "2. Master Material",
-    "title": "Color Control",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#color-control",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#color-control"
-  },"36": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#5-static-swich-parameter"
+  },"37": {
     "doc": "2. Master Material",
     "title": "RGB 표현",
     "content": "❓언리얼 엔진에서는 RGB가 0~255 값이 아니라고? . | 언리얼에서는 RGB 표현을 정규화된 0~1 범위로 사용한다. | 0~255 와 0~1 두 범위 모두 동일한 색상을 나타내지만, 사용하는 컨텍스트와 시스템에 따라 다른 스케일로 표현된다. | . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#rgb-%ED%91%9C%ED%98%84",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rgb-%ED%91%9C%ED%98%84",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#rgb-표현"
-  },"37": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rgb-표현"
+  },"38": {
     "doc": "2. Master Material",
     "title": "왜 언리얼 엔진은 0~1 범위를 사용할까?",
     "content": ". | 수학적 일관성 . | 3D 그래픽스에서는 벡터 연산이 빈번하게 일어남 | 0~1 범위는 퍼센트 개념과 연결되며, 모든 계산을 비율 기반으로 통일할 수 있다. | 예: 0.5 = 50% 밝기 -&gt; 0.5 * 2.0 = 1.0 (100%) | . | . | HDR (High Dynamic Range) 지원 . | 0~1 범위를 벗어나는 값 (예: 2.0) 으로 더 밝은 빛을 표현할 수 있다. | . | GPU 친화적 . | 현대 GPU는 부동소수점(float) 계산에 최적화되어 있어 0~1 범위가 셰이더 연산과 호환성이 좋다. | . | . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#%EC%99%9C-%EC%96%B8%EB%A6%AC%EC%96%BC-%EC%97%94%EC%A7%84%EC%9D%80-01-%EB%B2%94%EC%9C%84%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%A0%EA%B9%8C",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EC%99%9C-%EC%96%B8%EB%A6%AC%EC%96%BC-%EC%97%94%EC%A7%84%EC%9D%80-01-%EB%B2%94%EC%9C%84%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%A0%EA%B9%8C",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#왜-언리얼-엔진은-01-범위를-사용할까"
-  },"38": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#왜-언리얼-엔진은-01-범위를-사용할까"
+  },"39": {
     "doc": "2. Master Material",
     "title": "RGB 정규화 방법",
     "content": ". | 0~255 -&gt; 0~1 (정규화) = 값 / 255 | . RGB(255, 127, 0) -&gt; RGB(1.0, 0.498, 0.0) . | 0~1 -&gt; 0~255 (역정규화) = 값 * 255 (반올림 적용) | . RGB(0.5, 0.75, 1.0) -&gt; RGB(128, 191, 255) . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#rgb-%EC%A0%95%EA%B7%9C%ED%99%94-%EB%B0%A9%EB%B2%95",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rgb-%EC%A0%95%EA%B7%9C%ED%99%94-%EB%B0%A9%EB%B2%95",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#rgb-정규화-방법"
-  },"39": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rgb-정규화-방법"
+  },"40": {
+    "doc": "2. Master Material",
+    "title": "Color Control",
+    "content": ". ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#color-control",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#color-control"
+  },"41": {
     "doc": "2. Master Material",
     "title": "1. 밝기: Brightness",
     "content": ". | RGB 값에 1보다 큰 수를 곱하는 것으로 설정 가능. | RGB는 0.0 ~ 1.0 범위로 표현됨 . | 0.0 = 완전한 어둠 (검정) | 1.0 = 최대 밝기 (순수한 색상) | . | R * 2 = R의 밝기 2배 증가 | R * 0.5 = R의 밝기 50% 감소 | . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#1-%EB%B0%9D%EA%B8%B0-brightness",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#1-%EB%B0%9D%EA%B8%B0-brightness",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#1-밝기-brightness"
-  },"40": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#1-밝기-brightness"
+  },"42": {
     "doc": "2. Master Material",
     "title": "2. 채도: Satration",
     "content": " ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#2-%EC%B1%84%EB%8F%84-satration",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#2-%EC%B1%84%EB%8F%84-satration",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#2-채도-satration"
-  },"41": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#2-채도-satration"
+  },"43": {
     "doc": "2. Master Material",
     "title": "desaturation (탈색)",
     "content": "특정 색상을 흑백(grayscale)에 가깝게 변환하는 데 사용되는 노드. 이 노드를 사용하여 채도를 조절한다. | 입력 input (V3) : 일반적으로 텍스쳐의 RGB가 입력됨 | 입력 Fraction (V1) : 채도를 얼마나 줄일지 결정하는 값. | 0 : 원본 색상 유지 | 1 : 완전히 회색 | . | 출력 (V3) : desaturation 적용 결과 | . 내부 연산 공식 . Gray = R * 0.3 + G * 0.59 + B * 0.11 Output = lerp(Input, Gray, Fraction) . | Gray는 NTSC 표준 기반의 가중 평균. 인간의 눈이 가장 민감한 녹색에 높은 가중치를 둠 | . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#desaturation-%ED%83%88%EC%83%89",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#desaturation-%ED%83%88%EC%83%89",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#desaturation-탈색"
-  },"42": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#desaturation-탈색"
+  },"44": {
     "doc": "2. Master Material",
     "title": "3. 대비: Contrast",
     "content": " ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#3-%EB%8C%80%EB%B9%84-contrast",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#3-%EB%8C%80%EB%B9%84-contrast",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#3-대비-contrast"
-  },"43": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#3-대비-contrast"
+  },"45": {
     "doc": "2. Master Material",
     "title": "power",
     "content": "입력 값의 지수 승(power/exponentiation) 을 계산하는 노드 . Output = Base ^ Exponent . | 입력 Base (V,V3) : 일반적으로 RGB 텍스쳐 입력 | 입력 Exponent (V) : 지수 값. | 출력 (V, V3): 계산된 결과 값 (Base의 Exponent 승) | . ❓왜 Contrast 조절에 Power를 쓰는거야? . | power는 단순 곱셈으로는 할 수 없는 비선형적인 변화를 제공하기 때문이다 | . 곱셈 (Multiply) vs 지수승 (Power) . | 특성 | 곱셈 | 지수승 | . | 수학적 표현 | RGB × Scale | RGB ^ Gamma | . | 연산 유형 | 모든 픽셀의 밝기를 균일하게 스케일링 어두운 영역과 밝은 영역이 동일한 비율로 변화 | 비선형변환으로 밝기 분포를 비균형적으로 조정 | . | 밝기 변화 | 모든 픽셀 균일하게 스케일링 | 밝은 픽셀은 더 밝게 어두운 픽셀은 더 어둡게 (분포 왜곡) | . | 대비(Contrast) 영향 | 대비 유지 | 대비 증가 (Gamma &gt; 1) 대비 감소 (Gamma &lt; 1) | . | 시각적 효과 | 전체적으로 밝아지거나 어두워짐 | 어두운 영역과 밝은 영역의 차이 강조 or 완화 | . | 사용 예시 | 밝기 조정, 라이트 강도 증감 | Contrast 조정, 감마 보정 | . RGB (0.2, 0.5, 0.8) Power(2.0) -&gt; RGB(0.04, 0.25, 0.64) // 어두운 부분은 급격히 어두워지고 밝은 픽셀은 상대적으로 덜 영향받음. = 대비 강해짐 . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#power",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#power",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#power"
-  },"44": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#power"
+  },"46": {
     "doc": "2. Master Material",
     "title": "4. 색조: Tint",
     "content": "Base color의 RGB에 다른 색상의 RGB를 곱해서 얻을 수 있다. | 채널별 스케일링 . | 곱해지는 색상의 각 채널 값이 원본 색상의 해당 채널을 강화하거나 약화시킴 | 1.0 : 해당 채널 100% 유지 | 0.5 : 해당 채널 50% 감소 | 0.0 : 해당 채널 완전히 제거 | . | . // 원본 색상 RGB(0.8, 0.5, 0.2) // Tint 색상 RGB(1.0, 0.3, 0.3) // 결과 -&gt; R은 유지, G/B는 감소 (0.8*1.0, 0.5*0.3, 0.2*0.3) = (0.8, 0.15, 0.06) . ",
-    "url": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#4-%EC%83%89%EC%A1%B0-tint",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#4-%EC%83%89%EC%A1%B0-tint",
     
-    "relUrl": "/docs/Unreal%20Engine%205/2.%20Master%20Material.html#4-색조-tint"
-  },"45": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#4-색조-tint"
+  },"47": {
+    "doc": "2. Master Material",
+    "title": "6. MI Organize Paramaters",
+    "content": "파라미터 노드를 그룹화 하여 마테리얼 인스턴스의 파라미터들을 원하는 순서대로 분류할 수 있다. | 파라미터 노드 클릭 | Details 창의 Material Expression 에서 Group 설정 . | 그룹은 0 - Z 알파벳 네임 순서대로 정렬되므로 00 Global Control, 01 Base Color 등으로 순서를 정함. | . | 그룹에 들어가길 원하는 파라미터 노드를 설정한 그룹에 넣어줌 | 그룹 하위 파라미터 노드들은 Sort Priority (정렬 우선순위)의 낮은 수 순서대로 마테리얼 인스턴스 그룹 목록에 정렬됨 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#6-mi-organize-paramaters",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#6-mi-organize-paramaters"
+  },"48": {
+    "doc": "2. Master Material",
+    "title": "7. Metallic",
+    "content": "머티리얼 에디터에서 Metallic 소켓은 표면이 금속성인지 여부를 정의하는 입력값이다. 입력 값 범위: 0.0에서 1.0 사이의 스칼라(float) 값. | 0.0: 비금속(non-metal) 재질. (예: 나무, 플라스틱, 돌 등.) | 1.0: 금속(metal) 재질. (예: 철, 금, 알루미늄 등.) | 0.0과 1.0 사이의 값: 녹슨 금속과 같은 재질을 표현할 때 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#7-metallic",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#7-metallic"
+  },"49": {
+    "doc": "2. Master Material",
+    "title": "8. Specular",
+    "content": "표면이 반사하는 거울 반사(specular reflection)의 강도를 조절하는 소켓. 디폴트 값은 0.5이다. Specular 값은 비금속 재질의 반사 특성을 조절하며, 금속 재질(Metallic)에는 영향을 주지 않는다. | 0.0: 표면이 전혀 반사하지 않음 (완전한 확산 반사) | 0.5: 표면이 약 4%의 빛을 반사함 (일반적인 비금속 재질의 기본값) | 1.0: 표면이 최대 8%의 빛을 반사함 (매우 반짝이는 비금속 재질) | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#8-specular",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#8-specular"
+  },"50": {
+    "doc": "2. Master Material",
+    "title": "9. Roughness",
+    "content": "표면의 거칠기를 정의하는 소켓으로 빛이 표면에 어떻게 반사되는지를 결정한다. 디폴트 값은 0.5이다. | 0.0: 매우 매끄러운 표면. 반사가 거울처럼 선명함 (예: 유리, 금속) | 0.5: 중간 정도 거칠기 반사가 흐릿하고 부드럽게 번짐 | 1.0: 매우 거친 표면. 반사가 거의 없거나 전혀 없음 (예: 콘크리트, 모래) | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#9-roughness",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#9-roughness"
+  },"51": {
+    "doc": "2. Master Material",
+    "title": "Metallic vs Specular Workflow",
+    "content": "메탈릭 워크플로우와 스페큘러 워크플로우는 PBR에서 재질을 표현하는 두 가지 다른 방식이며, 계산 공식과 입력값이 근본적으로 다르다. | UE5는 메탈릭/러프니스(Metallic/Roughness) 워크플로우에 최적화되어있다. | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#metallic-vs-specular-workflow",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#metallic-vs-specular-workflow"
+  },"52": {
+    "doc": "2. Master Material",
+    "title": "Metallic/Roughness 주요 맵 설명",
+    "content": "| 맵(Map) | 설명 | 형식 | 비고 | . | BaseColor | 비금속: 재질의 기본 색상(Diffuse) 금속: 반사 색상(Fresnel F₀) | RGB | 금속은 diffuse(산란) 사용 X. 반사 색상이 사용됨 | . | Metallic | 재질이 금속인지 여부를 정의. 0: 비금속 1: 금속 | Grayscale | - 흰색: 금속 - 검은색: 비금속 | . | Roughness | 표면의 거칠기를 정의 0: 매끄러움 1: 거칠음 | Grayscale | Glossiness와 반대 | . | 메탈릭은 Metallic 맵으로 금속/비금속을 강제 분리해 물리적 일관성을 확보함 . | Metallic 파라미터 (0,1)로 재질 타입을 이진화 | 금속 (Metallic = 1) . | BaseColor = Fresnel 반사 색상 (F0). | Diffuse 성분 = 0 (물리적으로 정확한 금속 모델). | . | 비금속 (Metallic = 0) . | BaseColor = Diffuse 알베도. | Specular는 고정값 (~0.04) 또는 Specular 입력으로 미세 조정 | . | . | 메모리 효율적 (Specular 맵 불필요), 실시간 렌더링에 최적화. | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#metallicroughness-%EC%A3%BC%EC%9A%94-%EB%A7%B5-%EC%84%A4%EB%AA%85",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#metallicroughness-주요-맵-설명"
+  },"53": {
+    "doc": "2. Master Material",
+    "title": "Specular/Glossiness 주요 맵 설명",
+    "content": "| 맵(Map) | 설명 | 형식 | 비고 | . | Diffuse | 비금속 재질의 기본 색상. 금속: 디퓨즈 맵 사용 X | RGB | 메탈릭 워크플로우의 BaseColor와 유사하지만, 금속에서는 무시됨. | . | Specular | 모든 재질의 반사 색상 및 강도 금속: RGB 비금속: Grayscale | RGB / Grayscale | 메탈릭 워크플로우의 Metallic + BaseColor 역할을 동시에 함. | . | Glossiness | 표면 광택도 0: 거칠음 1: 매끄러움 | Grayscale | Roughness와 반대 | . | 스페큘라는 Specular 맵으로 반사 색상과 강도를 직접 제어함 | 반사 색상의 자유도 높음, 오프라인 렌더링(V-Ray)과 호환됨 | . 참고하면 좋은 링크 . | Metalness Maps and Workflow Explained . | PBR: metallic vs specular workflow . | Specular vs Metalness Workflows for PBR Shading in Blender . | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#specularglossiness-%EC%A3%BC%EC%9A%94-%EB%A7%B5-%EC%84%A4%EB%AA%85",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#specularglossiness-주요-맵-설명"
+  },"54": {
+    "doc": "2. Master Material",
+    "title": "RMA MAP",
+    "content": "하나의 RGB 텍스처에 Grayscale 속성 맵 3개를 각각의 채널(R/G/B)에 패킹해서 저장하는 방식이다. 실시간 렌더링에서 텍스처 메모리와 샘플 호출을 절약하는 데 매우 유리하다. ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-map",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-map"
+  },"55": {
+    "doc": "2. Master Material",
+    "title": "RMA 텍스쳐 구성 (Metallic/Roughness 워크플로우에서만 사용)",
+    "content": "| 채널 | 저장 정보 | 설명 | . | R | Roughness | 표면의 거칠기. 0은 매끄러움, 1은 거침 | . | G | Metallic | 재질의 금속성. 0은 비금속, 1은 금속 | . | B | Ambient Occlusion (AO) | 환경광 차폐 정보. 어두운 음영 영역을 강조 | . | 경우에 따라 Alpha 채널에 다른 정보(예: Height, Opacity)를 저장하기도 한다. | RMA 패킹 시 원본 맵의 명암비, 선명도가 유지되는지 확인해야 한다. | . | 장점 . | 메모리 절약: 3개의 별도 텍스처 대신 단일 텍스처로 관리 → VRAM 사용량 감소. | 성능 향상: 쉐이더에서 텍스처 샘플링 횟수 줄어듦 → 실시간 렌더링(게임)에 유리. | . | 단점 . | 텍스쳐 압축 알고리즘 특성 상 채널 간 데이터가 서로 영향을 미침 → Metallic(G) 채널의 강한 경계가 Roughness(R) 채널의 값을 흐리게 만들 수 있음 | 8비트 텍스처 (0~255)는 채널당 256단계만 표현 가능하므로 각 채널의 정밀도가 떨어진다. | 예: AO(B) 값의 127과 128 사이의 미세한 차이를 잃을 수 있음 | . | . | . 따라서 고퀄리티 아트워크에서는 RMA 대신 별도 맵 사용을 고려해야 한다. | 모바일 게임: RMA로 메모리 절약. | 시네마틱 렌더링: Roughness, Metallic, AO를 별도로 관리. | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-%ED%85%8D%EC%8A%A4%EC%B3%90-%EA%B5%AC%EC%84%B1-metallicroughness-%EC%9B%8C%ED%81%AC%ED%94%8C%EB%A1%9C%EC%9A%B0%EC%97%90%EC%84%9C%EB%A7%8C-%EC%82%AC%EC%9A%A9",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-텍스쳐-구성-metallicroughness-워크플로우에서만-사용"
+  },"56": {
+    "doc": "2. Master Material",
+    "title": "sRGB (standard Red Green Blue)",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#srgb-standard-red-green-blue",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#srgb-standard-red-green-blue"
+  },"57": {
+    "doc": "2. Master Material",
+    "title": "Texture Compression Settings (텍스쳐 압축 세팅)",
+    "content": "텍스쳐를 더블 클릭하면 열리는 창으로 텍스쳐 압축 세팅 설정 가능. 참고 링크 . | Texture Compression Settings | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#texture-compression-settings-%ED%85%8D%EC%8A%A4%EC%B3%90-%EC%95%95%EC%B6%95-%EC%84%B8%ED%8C%85",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#texture-compression-settings-텍스쳐-압축-세팅"
+  },"58": {
     "doc": "GPU Architecture",
     "title": "GPU Architecture",
     "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
     "url": "/docs/Computer%20architecture/GPU%20Architecture/",
     
     "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
-  },"46": {
+  },"59": {
     "doc": "Computer Graphics",
     "title": "Computer Graphics",
     "content": " ",
     "url": "/docs/Computer%20Graphics/",
     
     "relUrl": "/docs/Computer%20Graphics/"
-  },"47": {
+  },"60": {
     "doc": "Linear Algebra",
     "title": "Linear Algebra",
     "content": " ",
     "url": "/docs/Math/linear%20algebra/",
     
     "relUrl": "/docs/Math/linear%20algebra/"
-  },"48": {
+  },"61": {
     "doc": "Math",
     "title": "Math",
     "content": " ",
     "url": "/docs/Math/",
     
     "relUrl": "/docs/Math/"
-  },"49": {
+  },"62": {
     "doc": "Graphics rendering pipeline",
     "title": "Graphics rendering pipeline",
     "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
-  },"50": {
+  },"63": {
     "doc": "Computer architecture",
     "title": "Computer architecture",
     "content": " ",
     "url": "/docs/Computer%20architecture/",
     
     "relUrl": "/docs/Computer%20architecture/"
-  },"51": {
-    "doc": "Material",
-    "title": "Material",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Material/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"52": {
+  },"64": {
     "doc": "C++",
     "title": "C++",
     "content": " ",
     "url": "/docs/C++/",
     
     "relUrl": "/docs/C++/"
-  },"53": {
+  },"65": {
+    "doc": "Material",
+    "title": "Material",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Material/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/"
+  },"66": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"54": {
+  },"67": {
     "doc": "Home",
     "title": "Home",
     "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ",
