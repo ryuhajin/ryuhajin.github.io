@@ -393,81 +393,144 @@
   },"56": {
     "doc": "2. Master Material",
     "title": "sRGB (standard Red Green Blue)",
-    "content": " ",
+    "content": "sRGB는 모니터, TV 등 대부분의 디스플레이에서 사용하는 표준 색 공간이다. | 사람이 인지하는 색감을 기준으로 설계됨 . | 인간의 눈은 어두운 색상의 변화에 더 민감함 | sRGB는 이를 반영해 암부(어두운 영역)의 색상 정보를 강조하는 비선형 곡선을 사용 | . | 감마 보정이 포함되어 있음 (약 γ = 2.2) . | 즉 색상 데이터가 밝게 저장됨 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#srgb-standard-red-green-blue",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#srgb-standard-red-green-blue"
   },"57": {
     "doc": "2. Master Material",
+    "title": "Gamma vs inear Workflow",
+    "content": ". | 감마 워크플로우 (Gamma Workflow) . | 전통적인 방식으로, sRGB 공간에서 렌더링을 수행 | 텍스처와 최종 출력이 sRGB로 가정되기 때문에, 라이팅 계산 시 자동으로 리니어로 변환되지 않음 | 실시간 라이팅 계산이 부정함 (예: 어두운 영역에서 색상 밴딩 발생) | PBR(물리 기반 렌더링)과 호환성이 떨어짐 | . | 리니어 워크플로우 (Linear Workflow) . | 리니어 컬러 스페이스에서 렌더링을 수행 | 텍스처는 sRGB에서 로드될 때 자동으로 리니어로 변환되고, 최종 출력 시 다시 sRGB로 감마 보정 | 물리적으로 정확한 라이팅 계산이 가능 | . | . 감마, 리니어 워크플로우 처리과정 . | 감마 워크플로우 . | 텍스처(sRGB) → (감마 보정 해제 없음) → 라이팅 계산 → 출력(sRGB) | . | 리니어 워크플로우 . | 텍스처(sRGB) → 자동 리니어 변환 → 물리적 라이팅 계산 → sRGB로 출력 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#gamma-vs-inear-workflow",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#gamma-vs-inear-workflow"
+  },"58": {
+    "doc": "2. Master Material",
+    "title": "☑️결론",
+    "content": "언리얼 엔진 5에서의 동작 . 텍스처 . | sRGB 플래그가 켜진 텍스처 (알베도, 디퓨즈)는 리니어로 변환되어 쉐이더에서 사용 | sRGB 플래그가 꺼진 텍스처 (메탈릭, 러프니스)는 변환 없이 리니어로 읽힘 | . 라이팅 계산 . | 모든 쉐이더 연산은 리니어 공간에서 이루어짐 | 실시간 광원, GI, 반사 등이 물리적으로 정확하게 계산 | . 최종 출력 . | 최종 프레임 버퍼는 모니터 표준(sRGB)에 맞게 자동 감마 보정되어 출력 | . 참고하면 좋은 링크 . | computer color is broken | Gamma Vs. Linear Workflow for KeyShot Users | UNDERSTANDING GAMMA CORRECTION | Gamma Color space와 Linear Color space란? | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EF%B8%8F%EA%B2%B0%EB%A1%A0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#️결론"
+  },"59": {
+    "doc": "2. Master Material",
     "title": "Texture Compression Settings (텍스쳐 압축 세팅)",
-    "content": "텍스쳐를 더블 클릭하면 열리는 창으로 텍스쳐 압축 세팅 설정 가능. 참고 링크 . | Texture Compression Settings | . ",
+    "content": "텍스쳐를 더블 클릭하면 열리는 창으로 텍스쳐 압축 세팅 설정 가능. | 알파가 없는 텍스쳐는 알파 없이 압축 체크 (Compress Without Alpha) | sRGB가 아닌 텍스쳐는 sRGB 체크 해제 | Compression Settings 에서 세팅 설정 . | Masks (no sRGB) | . | . 텍스쳐 샘플러 노드의 설정으로 샘플러 타입 설정 가능. | 텍스쳐가 sRGB라면 Sampler Type = color | 텍스쳐가 sRGB가 아니아면 Sampler Type = Linear color . | BlackPlaceholder | . | . 압축 설정과 샘플러 타입 설정이 모두 같게 설정 되어야 한다. (sRGB가 아닌경우 샘플러 Linear) . 참고하면 좋은 링크 . | Texture Compression Settings | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#texture-compression-settings-%ED%85%8D%EC%8A%A4%EC%B3%90-%EC%95%95%EC%B6%95-%EC%84%B8%ED%8C%85",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#texture-compression-settings-텍스쳐-압축-세팅"
-  },"58": {
+  },"60": {
+    "doc": "2. Master Material",
+    "title": "10. Normal",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#10-normal",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#10-normal"
+  },"61": {
+    "doc": "2. Master Material",
+    "title": "로우 폴리 vs 하이 폴리 모델",
+    "content": ". | 로우 폴리 모델은 표면이 평평하고 법선이 단순. | 하이 폴리 모델은 표면이 복잡하고 법선이 다양. | . 노멀 맵은 하이 폴리 모델의 법선 정보를 로우 폴리 모델에 “옮기는” 기술이다. | 로우 폴리 모델의 정점 법선은 평평해 보이지만, 노멀 맵으로 인해 픽셀 단위로 법선이 조정되어 하이 폴리 같은 디테일이 나온다. | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EB%A1%9C%EC%9A%B0-%ED%8F%B4%EB%A6%AC-vs-%ED%95%98%EC%9D%B4-%ED%8F%B4%EB%A6%AC-%EB%AA%A8%EB%8D%B8",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#로우-폴리-vs-하이-폴리-모델"
+  },"62": {
+    "doc": "2. Master Material",
+    "title": "노멀 맵의 좌표계 (탄젠트 공간)",
+    "content": "노멀 맵은 탄젠트 공간에 저장된다. | 노멀 맵의 픽셀 값 (R, G, B)은 탄젠트 공간에서의 법선 방향을 나타냄 | Z축은 “표면 바깥쪽”을 가리킨다. (일반적으로 (0,0,1)이 기본 법선) | 탄젠트 공간은 각 정점마다 다르다. | 노멀 맵의 법선 벡터는 각 정점의 탄젠트 공간(= 각 정점의 로컬 좌표계) 기준으로 저장된다. | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EB%85%B8%EB%A9%80-%EB%A7%B5%EC%9D%98-%EC%A2%8C%ED%91%9C%EA%B3%84-%ED%83%84%EC%A0%A0%ED%8A%B8-%EA%B3%B5%EA%B0%84",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#노멀-맵의-좌표계-탄젠트-공간"
+  },"63": {
+    "doc": "2. Master Material",
+    "title": "노멀 맵의 생성 과정",
+    "content": "노멀 맵은 하이 폴리 모델의 법선을 로우 폴리 모델의 탄젠트 공간에 투영하여 저장한다. 1.하이 폴리 모델의 법선 추출 . | 하이 폴리 모델의 각 정점 법선을 계산 | 하이 폴리 모델의 법선은 월드 공간 또는 오브젝트 공간에 있음 | . 2.로우 폴리 모델의 탄젠트 공간 계산 . | 로우 폴리 모델의 각 정점에서 TBN 기저(basis)를 계산 | 로우 폴리 모델의 각 정점은 자신만의 T, B, N 벡터를 가진다. | 노멀 맵을 탄젠트 공간에 저장하기 위한 기준 좌표계를 제공 . | T (Tangent): UV의 U 방향 (텍스처 가로) | B (Bitangent): UV의 V 방향 (텍스처 세로) | N (Normal): 로우 폴리 모델의 표면 법선 | . | . 3.하이 폴리의 법선 → 로우 폴리의 탄젠트 공간으로 변환 . | 하이 폴리 법선을 로우 폴리 모델의 TBN 행렬의 역행렬로 변환한다. | 하이 폴리 법선을 탄젠트 공간으로 변환한 결과 값은 -1 ~ 1 범위를 가짐 | 변환된 법선을 RGB 값 (0 ~ 1)으로 리매핑해 저장 | . // 하이 폴리 법선 (오브젝트 공간) vec3 normal_high = normalize(hitNormal); // 탄젠트 공간으로 변환 (TBN은 로우 폴리의 기저) vec3 normal_tangent = transpose(TBN) * normal_high; // 노멀 맵 저장 (0~1 리매핑) vec3 normalMapValue = normal_tangent * 0.5 + 0.5; . | 채널 | 벡터 구성요소 | 설명 | . | R | X | Tangent(가로) 방향의 법선 벡터 성분 | . | G | Y | Bitangent(세로) 방향의 법선 벡터 성분 | . | B | Z | Surface Normal(법선) 방향의 법선 벡터 성분 | . 4.노멀 맵 데이터 생성 . | 노멀 맵에 “하이 폴리 법선이 로우 폴리 모델의 탄젠트 공간에서 어떻게 변형되어야 하는지”가 데이터로 저장됨. | . 5.노멀 맵의 사용 렌더링 시에는 노멀맵의 값을 다시 TBN 행렬을 통해 월드 공간 법선으로 복원한다. | 노말맵은 법선을 0 ~ 1로 리매핑해 저장된 상태. | 실제로 렌더링에 사용할 때는 다시 -1 ~ 1로 복원 | . // 노멀 맵에서 법선 추출 (0~1 → -1~1) vec3 normal_tangent = texture(normalMap, uv).rgb * 2.0 - 1.0; // 월드 공간 법선으로 변환 vec3 normal_world = normalize(TBN * normal_tangent); // 조명 계산 (예: Lambertian Diffuse) float diffuse = max(0.0, dot(normal_world, lightDir)); . 추가로 알면 좋은 점 . | 노멀맵이 대부분 파란 이유 . | 평평한 표면의 벡터가 (0, 0, 1)이기 때문 | 색 변화가 의미하는 것 = 파랑 외의 색은 법선이 좌우(X), 상하(Y)로 기울어진 정도를 의미 | . | 스무딩 그룹(Smoothing Groups) . | 로우 폴리 모델의 정점 법선을 보간할지 말지 결정 | 보간 O (같은 스무딩 그룹): 정점 사이가 부드럽게 연결 | 보간 X (다른 스무딩 그룹): 정점 사이가 날카롭게 끊어짐 | 로우 폴리의 법선이 스무딩 그룹에 따라 변하면 노멀맵에 저장되는 차이도 달라진다. | . | . 참고하면 좋은 링크 . | Tutorial: How Normal Maps Work &amp; Baking Process | Deconstructing a Normal Map | Normal Mapping | OpenGL Tutorial - Normal Maps | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EB%85%B8%EB%A9%80-%EB%A7%B5%EC%9D%98-%EC%83%9D%EC%84%B1-%EA%B3%BC%EC%A0%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#노멀-맵의-생성-과정"
+  },"64": {
+    "doc": "2. Master Material",
+    "title": "Flatten Normal",
+    "content": "노멀 벡터의 Z(Depth) 성분을 조절해 노멀맵을 평탄화 하는 노드 . | 입력 Normal (V3) (XYZ) : 탄젠트 공간에서의 노멀 벡터. 원본 노말 맵 | 입력 Flatten Strength (Scalr) : Float (0.0 ~ 1.0), 평탄화 강도 (1.0에 가까울수록 Z가 약해짐) | 출력 Result (V3) : 평탄화가 완료된 노멀 벡터터 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#flatten-normal",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#flatten-normal"
+  },"65": {
+    "doc": "2. Master Material",
+    "title": "Flip Green Channel",
+    "content": "텍스처의 노멀 맵에서 G(Green) 채널을 반전시키는 옵션 . | 노멀 맵이 OpenGL 방식과 DirectX 방식 중 어떤 포맷으로 저장되었는지에 따라 옵션 사용 유무가 달라진다. | OpenGL과 DirectX는 Y(Green) 좌표계가 반대기 때문 | . 언리얼 엔진은 DirectX 기반이다. | OpenGL 기반 툴 (Blender, Substance Painter 등)에서 내보낸 노멀 맵을 언리얼에서 사용할 때 . | Flip Green Channel ☑️ (체크) | . | DirectX 기반 툴 (3ds Max, Maya 등)에서 내보낸 노멀 맵 . | Flip Green Channel ❌ (체크하지 않음) | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#flip-green-channel",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#flip-green-channel"
+  },"66": {
+    "doc": "2. Master Material",
+    "title": "11. Ambient Occlusion",
+    "content": "곱셈 * 스칼라 강도 조절 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#11-ambient-occlusion",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#11-ambient-occlusion"
+  },"67": {
     "doc": "GPU Architecture",
     "title": "GPU Architecture",
     "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
     "url": "/docs/Computer%20architecture/GPU%20Architecture/",
     
     "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
-  },"59": {
+  },"68": {
     "doc": "Computer Graphics",
     "title": "Computer Graphics",
     "content": " ",
     "url": "/docs/Computer%20Graphics/",
     
     "relUrl": "/docs/Computer%20Graphics/"
-  },"60": {
+  },"69": {
     "doc": "Linear Algebra",
     "title": "Linear Algebra",
     "content": " ",
     "url": "/docs/Math/linear%20algebra/",
     
     "relUrl": "/docs/Math/linear%20algebra/"
-  },"61": {
+  },"70": {
     "doc": "Math",
     "title": "Math",
     "content": " ",
     "url": "/docs/Math/",
     
     "relUrl": "/docs/Math/"
-  },"62": {
+  },"71": {
     "doc": "Graphics rendering pipeline",
     "title": "Graphics rendering pipeline",
     "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
-  },"63": {
+  },"72": {
     "doc": "Computer architecture",
     "title": "Computer architecture",
     "content": " ",
     "url": "/docs/Computer%20architecture/",
     
     "relUrl": "/docs/Computer%20architecture/"
-  },"64": {
+  },"73": {
     "doc": "C++",
     "title": "C++",
     "content": " ",
     "url": "/docs/C++/",
     
     "relUrl": "/docs/C++/"
-  },"65": {
+  },"74": {
     "doc": "Material",
     "title": "Material",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"66": {
+  },"75": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"67": {
+  },"76": {
     "doc": "Home",
     "title": "Home",
     "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ",
