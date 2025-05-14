@@ -428,7 +428,7 @@
   },"61": {
     "doc": "2. Master Material",
     "title": "노멀 맵의 생성 과정",
-    "content": "노멀 맵은 하이 폴리 모델의 법선을 로우 폴리 모델의 탄젠트 공간에 투영하여 저장한다. 1.하이 폴리 모델의 법선 추출 . | 하이 폴리 모델의 각 정점 법선을 계산 | 하이 폴리 모델의 법선은 월드 공간 또는 오브젝트 공간에 있음 | . 2.로우 폴리 모델의 탄젠트 공간 계산 . | 로우 폴리 모델의 각 정점에서 TBN 기저(basis)를 계산 | 로우 폴리 모델의 각 정점은 자신만의 T, B, N 벡터를 가진다. | 노멀 맵을 탄젠트 공간에 저장하기 위한 기준 좌표계를 제공 . | T (Tangent): UV의 U 방향 (텍스처 가로) | B (Bitangent): UV의 V 방향 (텍스처 세로) | N (Normal): 로우 폴리 모델의 표면 법선 | . | . 3.하이 폴리의 법선 → 로우 폴리의 탄젠트 공간으로 변환 . | 하이 폴리 법선을 로우 폴리 모델의 TBN 행렬의 역행렬로 변환한다. | 하이 폴리 법선을 탄젠트 공간으로 변환한 결과 값은 -1 ~ 1 범위를 가짐 | 변환된 법선을 RGB 값 (0 ~ 1)으로 리매핑해 저장 | . // 하이 폴리 법선 (오브젝트 공간) vec3 normal_high = normalize(hitNormal); // 탄젠트 공간으로 변환 (TBN은 로우 폴리의 기저) vec3 normal_tangent = transpose(TBN) * normal_high; // 노멀 맵 저장 (0~1 리매핑) vec3 normalMapValue = normal_tangent * 0.5 + 0.5; . | 채널 | 벡터 구성요소 | 설명 | . | R | X | Tangent(가로) 방향의 법선 벡터 성분 | . | G | Y | Bitangent(세로) 방향의 법선 벡터 성분 | . | B | Z | Surface Normal(법선) 방향의 법선 벡터 성분 | . 4.노멀 맵 데이터 생성 . | 노멀 맵에 “하이 폴리 법선이 로우 폴리 모델의 탄젠트 공간에서 어떻게 변형되어야 하는지”가 데이터로 저장됨. | . 5.노멀 맵의 사용 렌더링 시에는 노멀맵의 값을 다시 TBN 행렬을 통해 월드 공간 법선으로 복원한다. | 노말맵은 법선을 0 ~ 1로 리매핑해 저장된 상태. | 실제로 렌더링에 사용할 때는 다시 -1 ~ 1로 복원 | . // 노멀 맵에서 법선 추출 (0~1 → -1~1) vec3 normal_tangent = texture(normalMap, uv).rgb * 2.0 - 1.0; // 월드 공간 법선으로 변환 vec3 normal_world = normalize(TBN * normal_tangent); // 조명 계산 (예: Lambertian Diffuse) float diffuse = max(0.0, dot(normal_world, lightDir)); . 추가로 알면 좋은 점 . | 노멀맵이 대부분 파란 이유 . | 평평한 표면의 벡터가 (0, 0, 1)이기 때문 | 색 변화가 의미하는 것 = 파랑 외의 색은 법선이 좌우(X), 상하(Y)로 기울어진 정도를 의미 | . | 스무딩 그룹(Smoothing Groups) . | 로우 폴리 모델의 정점 법선을 보간할지 말지 결정 | 보간 O (같은 스무딩 그룹): 정점 사이가 부드럽게 연결 | 보간 X (다른 스무딩 그룹): 정점 사이가 날카롭게 끊어짐 | 로우 폴리의 법선이 스무딩 그룹에 따라 변하면 노멀맵에 저장되는 차이도 달라진다. | . | . 참고하면 좋은 링크 . | Tutorial: How Normal Maps Work &amp; Baking Process | Deconstructing a Normal Map | Normal Mapping | OpenGL Tutorial - Normal Maps | . ",
+    "content": "노멀 맵은 하이 폴리 모델의 법선을 로우 폴리 모델의 탄젠트 공간에 투영하여 저장한다. 1.하이 폴리 모델의 법선 추출 . | 하이 폴리 모델의 각 정점 법선을 계산 | 하이 폴리 모델의 법선은 월드 공간 또는 오브젝트 공간에 있음 | . 2.로우 폴리 모델의 탄젠트 공간 계산 . | 로우 폴리 모델의 각 정점에서 TBN 기저(basis)를 계산 | 로우 폴리 모델의 각 정점은 자신만의 T, B, N 벡터를 가진다. | 노멀 맵을 탄젠트 공간에 저장하기 위한 기준 좌표계를 제공 . | T (Tangent): UV의 U 방향 (텍스처 가로) | B (Bitangent): UV의 V 방향 (텍스처 세로) | N (Normal): 로우 폴리 모델의 표면 법선 | . | . 3.하이 폴리의 법선 → 로우 폴리의 탄젠트 공간으로 변환 . | 하이 폴리 법선을 로우 폴리 모델의 TBN 행렬의 역행렬로 변환한다. | 하이 폴리 법선을 탄젠트 공간으로 변환한 결과 값은 -1 ~ 1 범위를 가짐 | 변환된 법선을 RGB 값 (0 ~ 1)으로 리매핑해 저장 | . // 하이 폴리 법선 (오브젝트 공간) vec3 normal_high = normalize(hitNormal); // 탄젠트 공간으로 변환 (TBN은 로우 폴리의 기저) vec3 normal_tangent = transpose(TBN) * normal_high; // 노멀 맵 저장 (0~1 리매핑) vec3 normalMapValue = normal_tangent * 0.5 + 0.5; . | 채널 | 벡터 구성요소 | 설명 | . | R | X | Tangent(가로) 방향의 법선 벡터 성분 | . | G | Y | Bitangent(세로) 방향의 법선 벡터 성분 | . | B | Z | Surface Normal(법선) 방향의 법선 벡터 성분 | . 4.노멀 맵 데이터 생성 . | 노멀 맵에 “하이 폴리 법선이 로우 폴리 모델의 탄젠트 공간에서 어떻게 변형되어야 하는지”가 데이터로 저장됨. | . 5.노멀 맵의 사용 . 렌더링 시에는 노멀맵의 값을 다시 TBN 행렬을 통해 월드 공간 법선으로 복원한다. | 노말맵은 법선을 0 ~ 1로 리매핑해 저장된 상태. | 실제로 렌더링에 사용할 때는 다시 -1 ~ 1로 복원 | . // 노멀 맵에서 법선 추출 (0~1 → -1~1) vec3 normal_tangent = texture(normalMap, uv).rgb * 2.0 - 1.0; // 월드 공간 법선으로 변환 vec3 normal_world = normalize(TBN * normal_tangent); // 조명 계산 (예: Lambertian Diffuse) float diffuse = max(0.0, dot(normal_world, lightDir)); . 추가로 알면 좋은 점 . | 노멀맵이 대부분 파란 이유 . | 평평한 표면의 벡터가 (0, 0, 1)이기 때문 | 색 변화가 의미하는 것 = 파랑 외의 색은 법선이 좌우(X), 상하(Y)로 기울어진 정도를 의미 | . | 스무딩 그룹(Smoothing Groups) . | 로우 폴리 모델의 정점 법선을 보간할지 말지 결정 | 보간 O (같은 스무딩 그룹): 정점 사이가 부드럽게 연결 | 보간 X (다른 스무딩 그룹): 정점 사이가 날카롭게 끊어짐 | 로우 폴리의 법선이 스무딩 그룹에 따라 변하면 노멀맵에 저장되는 차이도 달라진다. | . | . 참고하면 좋은 링크 . | Tutorial: How Normal Maps Work &amp; Baking Process | Deconstructing a Normal Map | Normal Mapping | OpenGL Tutorial - Normal Maps | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EB%85%B8%EB%A9%80-%EB%A7%B5%EC%9D%98-%EC%83%9D%EC%84%B1-%EA%B3%BC%EC%A0%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#노멀-맵의-생성-과정"
@@ -449,130 +449,186 @@
   },"64": {
     "doc": "2. Master Material",
     "title": "11. Ambient Occlusion",
-    "content": "곱셈 * 스칼라 강도 조절 . ",
+    "content": "광원과 관계없이, 환경 전체에서 모든 방향에서 들어오는 간접광(Ambient Light) 이 차폐되는 정도에 따라 어두움을 표현하는 기법 . | AO는 순수히 기하학적 구조(geometry)에 의해 결정되는 그림자 차폐 효과 | AO는 오직 모델의 형태와 표면 간 거리만으로 차폐 정도를 계산 | 광원이 움직여도 AO 결과는 변하지 않음 (방향성 없음) | 깊이감이나 접촉면 강조를 통해 공간 인지를 높임 | . 그림자와 AO의 차이 . | 항목 | 그림자 (Shadow) | 앰비언트 오클루전 (AO) | . | 광원 의존성 | 광원의 위치와 방향에 따라 달라짐 | 광원과 상관없이 항상 동일함 | . | 생성 원리 | 광원에서 물체까지 직진하는 빛이 막혔을 때 발생 | 공간적 차폐 정도에 따라 빛이 덜 도달하는 효과 | . | 형태 | 명확한 실루엣 형태 | 부드러운 음영 효과 | . | 변화 여부 | 광원이 움직이면 그림자도 변화 | 광원이 움직여도 AO는 고정됨 | . | 렌더링 목적 | 광원 존재감, 선명한 명암 표현 | 깊이감, 접촉 강조, 사실감 부여 | . AO는 오프라인 렌더링과 실시간 렌더링이 있는데 계산 방식이 다르다. 아래는 오프라인 렌더링 AO MAP 생성 과정이다. | 계산 기반 : 표면 점에서 주변 반구(헤미스피어)로 발사된 광선이 차단되는 비율”을 계산 | 실제 빛의 동작을 단순화한 모델이지만, 레이 트레이싱과 유사한 광선 충돌 검사를 사용 | 차폐 정도(Occlusion Factor)는 0.0(완전히 열림)에서 1.0(완전히 차폐됨) 사이의 값으로 표현 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#11-ambient-occlusion",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#11-ambient-occlusion"
   },"65": {
+    "doc": "2. Master Material",
+    "title": "오프라인 AO 맵 생성 과정",
+    "content": "AO 맵은 “표면 점 → 반구형 광선 발사 → 충돌 검사 → 차폐 비율 계산” 과정으로 생성됨 . 1.모델 준비 . 2.표면 점(Surface Point) 선택 . | 모델의 각 버텍스 또는 텍셀에서 AO를 계산 | 예시: 4K 텍스처(4096×4096)라면 1,600만 개 이상의 점을 처리. | . 3.반구형 샘플링(Hemispheric Sampling) . | 표면 법선(Normal) 기반 반구 정의 : 점의 법선 벡터(N)를 기준으로 반구(헤미스피어)를 생성 . | 광선은 이 반구 내에서만 무작위 방향으로 발사됨 | . | 광선 발사(Ray Casting) . | 각 점에서 N개 광선을 무작위 방향(θ, φ)으로 발사 | θ(세타) : 법선 기준 각도 (0°~90°). | φ(피) : 방위각 (0°~360°). | 광선 거리(Ray Distance): 일반적으로 장면 크기의 10~20%로 제한 | . | 광선 충돌 검사: 발사된 광선이 다른 지오메트리와 충돌하는지 확인 . | 충돌 시 : “차폐됨(Occluded)” | 충돌 없음 : “개방됨(Open)” | . | 차폐 비율 계산: AO 값 = (차폐된 광선 수) / (전체 광선 수) . | 예: 100개 광선 중 30개가 차폐됐다면 AO = 0.3 | . | . 4.텍스처 베이킹 . | 계산된 AO 값을 흑백 텍스처로 저장함 | 픽셀 보간: 버텍스 기반 결과를 텍스처 픽셀에 매핑할 때 보간(Interpolation)이 일어남 | . 참고하면 좋은 링크 ambient occlusion in unrealengine5 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EC%98%A4%ED%94%84%EB%9D%BC%EC%9D%B8-ao-%EB%A7%B5-%EC%83%9D%EC%84%B1-%EA%B3%BC%EC%A0%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#오프라인-ao-맵-생성-과정"
+  },"66": {
+    "doc": "2. Master Material",
+    "title": "픽셀 보간(Interpolation)",
+    "content": "텍스처 베이킹에서 “픽셀 보간(Interpolation)”이란? . | 3D 모델의 버텍스(정점)에서 계산된 값을 텍스처의 픽셀에 자연스럽게 채우기 위해 평활화하는 과정 | . ❓왜 보간(Interpolation)이 필요해? . | 버텍스는 한정적이지만, 텍스처는 고해상도라 픽셀 수가 훨씬 많음 | 버텍스 값만으로는 텍스처가 계단 현상(Aliasing)이나 뚝뚝 끊긴 패턴이 생길 수 있음 | . 버텍스(Vertex) vs 텍셀(Texel) . | 버텍스 : 3D 모델의 꼭짓점. AO는 보통 버텍스 단위로 먼저 계산됨 (각 버텍스에서 광선 발사) | 텍셀 : 텍스처의 픽셀. UV 맵으로 매핑될 때 버텍스 사이의 빈 공간을 채워야 함 | . 픽셀 보간 과정 . | 버텍스 AO 값 생성 모델의 각 버텍스에서 AO 계산이 완료되면, 다음과 같은 값이 만들어짐 . | 버텍스 A : AO = 0.2 | 버텍스 B : AO = 0.7 | 버텍스 C : AO = 0.5 | . | UV 공간에서의 보간 . | 삼각형 내부 픽셀 처리 : UV 맵에서 삼각형(Face) 내부의 픽셀은 주변 버텍스의 AO 값의 가중 평균으로 채워짐 | 예시 : 아래 그림에서 P 픽셀의 AO는 A, B, C 버텍스 값의 Barycentric Coordinates(무게중심좌표)로 보간됨 P의 AO = (A의 AO × 가중치₁) + (B의 AO × 가중치₂) + (C의 AO × 가중치₃) . | 결과 : A(0.2), B(0.7), C(0.5) 사이의 픽셀은 0.2~0.7 사이의 부드러운 그레이드로 채워짐 | . | 보간 알고리즘 . | Bilinear Interpolation : 인접한 4개 버텍스 값으로 2D 평면 보간 | Barycentric Interpolation : 삼각형 내부에서 3개 버텍스 기반 보간 (가장 흔함) | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%ED%94%BD%EC%85%80-%EB%B3%B4%EA%B0%84interpolation",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#픽셀-보간interpolation"
+  },"67": {
     "doc": "2. Master Material",
     "title": "12. channel packing",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#12-channel-packing",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#12-channel-packing"
-  },"66": {
+  },"68": {
     "doc": "2. Master Material",
     "title": "RMA MAP / ARM MAP",
     "content": "하나의 RGB 텍스처에 Grayscale 속성 맵 3개를 각각의 채널(R/G/B)에 패킹해서 저장하는 방식이다. 실시간 렌더링에서 텍스처 메모리와 샘플 호출을 절약하는 데 매우 유리하다. ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-map--arm-map",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-map--arm-map"
-  },"67": {
+  },"69": {
     "doc": "2. Master Material",
     "title": "RMA 텍스쳐 구성",
     "content": "| 채널 | 저장 정보 | 설명 | . | R | Roughness | 표면의 거칠기. 0은 매끄러움, 1은 거침 | . | G | Metallic | 재질의 금속성. 0은 비금속, 1은 금속 | . | B | Ambient Occlusion (AO) | 환경광 차폐 정보. 어두운 음영 영역을 강조 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-%ED%85%8D%EC%8A%A4%EC%B3%90-%EA%B5%AC%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-텍스쳐-구성"
-  },"68": {
+  },"70": {
     "doc": "2. Master Material",
     "title": "ARM 텍스쳐 구성",
     "content": "| 채널 | 저장 정보 |   | . | R | Ambient Occlusion (AO) | 환경광 차폐 정보. 어두운 음영 영역을 강조 | . | G | Roughness | 표면의 거칠기. 0은 매끄러움, 1은 거침 | . | B | Metallic | 재질의 금속성. 0은 비금속, 1은 금속 | . | 경우에 따라 Alpha 채널에 다른 정보(예: Height, Opacity)를 저장하기도 한다. | 텍스쳐쳐 패킹 시 원본 맵의 명암비, 선명도가 유지되는지 확인해야 한다. | . | 장점 . | 메모리 절약: 3개의 별도 텍스처 대신 단일 텍스처로 관리 → VRAM 사용량 감소. | 성능 향상: 쉐이더에서 텍스처 샘플링 횟수 줄어듦 → 실시간 렌더링(게임)에 유리. | . | 단점 . | 텍스쳐 압축 알고리즘 특성 상 채널 간 데이터가 서로 영향을 미침 → Metallic(G) 채널의 강한 경계가 Roughness(R) 채널의 값을 흐리게 만들 수 있음 | 8비트 텍스처 (0~255)는 채널당 256단계만 표현 가능하므로 각 채널의 정밀도가 떨어진다. | 예: AO(B) 값의 127과 128 사이의 미세한 차이를 잃을 수 있음 | . | . | . 따라서 고퀄리티 아트워크에서는 RMA 대신 별도 맵 사용을 고려해야 한다. | 모바일 게임: RMA로 메모리 절약. | 시네마틱 렌더링: Roughness, Metallic, AO를 별도로 관리. | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#arm-%ED%85%8D%EC%8A%A4%EC%B3%90-%EA%B5%AC%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#arm-텍스쳐-구성"
-  },"69": {
+  },"71": {
     "doc": "2. Master Material",
     "title": "12. displacement MAP",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#12-displacement-map",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#12-displacement-map"
-  },"70": {
+  },"72": {
     "doc": "2. Master Material",
     "title": "13. project template",
     "content": "마테리얼 우클릭 -&gt; 에셋 액션 -&gt; migrate(마이그레이션) / 노드 그래프만 가져오고 싶으면 베이스 컬러 텍스쳐 -&gt; 디폴트 텍스쳐로 바꿔서 가져오면 됨 . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#13-project-template",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#13-project-template"
-  },"71": {
+  },"73": {
     "doc": "3. Scene create",
     "title": "3. Scene create",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html"
-  },"72": {
+  },"74": {
     "doc": "3. Scene create",
     "title": "1. 씬 계획하기",
     "content": ". | Find Reference Image : 컨셉 이미지 찾아보기 | block out : 대략적인 레이아웃 잡기 | Layering : 디테일 쌓기 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#1-%EC%94%AC-%EA%B3%84%ED%9A%8D%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#1-씬-계획하기"
-  },"73": {
+  },"75": {
+    "doc": "3. Scene create",
+    "title": "fab export",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#fab-export",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#fab-export"
+  },"76": {
+    "doc": "3. Scene create",
+    "title": "2. post process vlome",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#2-post-process-vlome",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#2-post-process-vlome"
+  },"77": {
+    "doc": "3. Scene create",
+    "title": "lumen",
+    "content": "이머시브 마테리얼도 라이트에 영향을 줌 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#lumen",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#lumen"
+  },"78": {
+    "doc": "3. Scene create",
+    "title": "nanite ? what",
+    "content": "이 설정 꺼야 버텍스 페인팅 가능 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#nanite--what",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#nanite--what"
+  },"79": {
+    "doc": "3. Scene create",
+    "title": "3. material blend",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#3-material-blend",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#3-material-blend"
+  },"80": {
+    "doc": "3. Scene create",
+    "title": "vertex painting",
+    "content": "표면의 꼭짓점에 어떠한 것을 칠할 수 있도록 해줌 . | g: 뷰포트 아이콘 끄기 켜기 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#vertex-painting",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#vertex-painting"
+  },"81": {
     "doc": "Computer Graphics",
     "title": "Computer Graphics",
     "content": " ",
     "url": "/docs/Computer%20Graphics/",
     
     "relUrl": "/docs/Computer%20Graphics/"
-  },"74": {
+  },"82": {
     "doc": "Linear Algebra",
     "title": "Linear Algebra",
     "content": " ",
     "url": "/docs/Math/linear%20algebra/",
     
     "relUrl": "/docs/Math/linear%20algebra/"
-  },"75": {
+  },"83": {
     "doc": "Math",
     "title": "Math",
     "content": " ",
     "url": "/docs/Math/",
     
     "relUrl": "/docs/Math/"
-  },"76": {
+  },"84": {
     "doc": "GPU Architecture",
     "title": "GPU Architecture",
     "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
     "url": "/docs/Computer%20architecture/GPU%20Architecture/",
     
     "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
-  },"77": {
+  },"85": {
     "doc": "Graphics rendering pipeline",
     "title": "Graphics rendering pipeline",
     "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
-  },"78": {
+  },"86": {
     "doc": "Computer architecture",
     "title": "Computer architecture",
     "content": " ",
     "url": "/docs/Computer%20architecture/",
     
     "relUrl": "/docs/Computer%20architecture/"
-  },"79": {
+  },"87": {
     "doc": "C++",
     "title": "C++",
     "content": " ",
     "url": "/docs/C++/",
     
     "relUrl": "/docs/C++/"
-  },"80": {
+  },"88": {
     "doc": "Material",
     "title": "Material",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"81": {
+  },"89": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"82": {
+  },"90": {
     "doc": "Home",
     "title": "Home",
     "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ",
