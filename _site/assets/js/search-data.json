@@ -202,433 +202,559 @@
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/1.%20Material%20Basic.html#15-1-x--oneminus"
   },"29": {
+    "doc": "1. Modules",
+    "title": "1. Modules",
+    "content": ". 모듈은 언리얼 엔진의 구성 블록이다. 에디터를 만들려면 자신만의 모듈을 만들어야 한다. ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html"
+  },"30": {
+    "doc": "1. Modules",
+    "title": "모듈에서 알아야 할 세가지 주요 포인트",
+    "content": ". | 모듈은 코드 분리를 강제한다. | 여러 개의 무작위 코드들이 서로 소통해야 할 때 매우 유용하다 | . | 모든 모듈은 Build.cs 파일이 필요하다. | 새 프로젝트 자체도 하나의 모듈이다. | 모듈은 자신의 빌드 파일을 가진다. [ModuleName].Build.cs [ProjectName].Build.cs . | . | 모듈은 Build.cs 파일에 추가하여 포함할 수 있다. | 다른 모듈에 위치한 헤더 파일을 포함해야 할 때 해당 헤더의 모듈 이름을 Build.cs 파일에 추가한다. | 보통 PublicDependencyModuleNames에 모듈 이름을 추가하는 경우가 많다 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#%EB%AA%A8%EB%93%88%EC%97%90%EC%84%9C-%EC%95%8C%EC%95%84%EC%95%BC-%ED%95%A0-%EC%84%B8%EA%B0%80%EC%A7%80-%EC%A3%BC%EC%9A%94-%ED%8F%AC%EC%9D%B8%ED%8A%B8",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#모듈에서-알아야-할-세가지-주요-포인트"
+  },"31": {
+    "doc": "1. Modules",
+    "title": "플러그인 생성하기",
+    "content": ". | 언리얼 상단 메뉴 Edit &gt; Plugins 클릭 | 왼쪽 상단의 +ADD 버튼 클릭 | 여러가지 템플릿 목록에서 선택 (현재는 Blank 선택) . | 플러그인 이름이 곧 모듈 이름이다. | 한번 정하면 변경할 수 없다. | . | Create Plugin 버튼 클릭 | 비주얼 스튜디오로 돌아가 모두 로드 버튼 클릭 . | 프로젝트 소스 폴더 위에 플러그인 폴더 생성된 것 확인 | . | . // .uplugin \"Modules\": [ { \"Name\": \"BackgroundTool\", \"Type\": \"Editor\", // 만들 기능은 에디터 전용이므로 Runtime(게임 동작시 실행되는 타입) -&gt; Editor로 변경 \"LoadingPhase\": \"PreDefault\" // 플러그인이 언제 로드될지 결정함. PreDefault: 게임 모듈보다 먼저 로드됨 } ] . 참고 링크 . | Modules . | different loading phases for modules . | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#플러그인-생성하기"
+  },"32": {
+    "doc": "1. Modules",
+    "title": "액터와 에셋",
+    "content": ". | 에셋 : 콘텐트 브라우저 안에 존재하는 것 (머티리얼, 스태틱 매시 등) . | 에셋은 AssetActionUtility라는 내장 클래스를 사용 | . | 액터 : 레벨(뷰) 안에 존재하며 클릭할 수 있는 것 . | 액터는 ActorActionUtility라는 클래스를 사용 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#%EC%95%A1%ED%84%B0%EC%99%80-%EC%97%90%EC%85%8B",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#액터와-에셋"
+  },"33": {
+    "doc": "1. Modules",
+    "title": "Public/Private",
+    "content": ". | 모듈을 하나 생성할 때 Pubilc, Private 폴더를 나눠서 생성할 수 있음 . | Pubilc : 헤더 | Private : cpp 소스 코드 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#publicprivate",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#publicprivate"
+  },"34": {
+    "doc": "1. Modules",
+    "title": "build.cs",
+    "content": ". | 인클루드 된 헤더에 빨간 밑줄 : 현재 모듈이 이 헤더 파일에 접근할 권한 없음 | . 접근권한 해결하기 . | 솔루션 탐색기에서 해당 헤더 검색 후 헤더가 들어있는 모듈 찾기 | 해당 모듈의 build.cs 소스 코드에 각각 private, pubilc 모듈 경로를 찾을수 있음 | 내가 쓸 build.cs에 private, pubilc에 해당하는 경로 붙여넣기 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#buildcs",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#buildcs"
+  },"35": {
+    "doc": "1. Modules",
+    "title": "테스트용 에셋 함수 구동하기 (5.3 이상)",
+    "content": "함수 준비하기 : 플러그인 콘텐트 . | 플러그인의 콘텐트 폴더로 이동 | 플러그인 콘텐트 브라우저에서 마우스 오른쪽 버튼 클릭 | 에디터 유틸리티 -&gt; 에디터 유틸리티 블루 프린트 -&gt; 에셋 액션 유틸리티 선택하여 생성성 | 더블 클릭하여 해당 에셋을 열고 우측 상단의 파일 클릭 | 부모 블루프린트 -&gt; 내가 만든 c++ 클래스 입력 | 컴파일 및 저장 클릭 | . 함수 사용하기 . | 메인 콘텐트에서 Blueprint 폴더 생성 | Blueprint 클래스 생성 | 해당 클래스 우클릭 -&gt; Scripted Asset Actions | 플러그인 콘텐트에서 추가한 c++ 클래스가 보임 | 클릭하여 동작 확인 가능 | . 단축키 . | Ctrl + B : vs studio 빌드 | Ctrl + F5 : 편집기 (엔진) 실행 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%9A%A9-%EC%97%90%EC%85%8B-%ED%95%A8%EC%88%98-%EA%B5%AC%EB%8F%99%ED%95%98%EA%B8%B0-53-%EC%9D%B4%EC%83%81",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Modules.html#테스트용-에셋-함수-구동하기-53-이상"
+  },"36": {
     "doc": "2. GPU 메모리",
     "title": "2. GPU 메모리",
     "content": ". ",
     "url": "/docs/Computer%20architecture/GPU%20Architecture/2.%20GPU%20%EB%A9%94%EB%AA%A8%EB%A6%AC.html",
     
     "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/2.%20GPU%20%EB%A9%94%EB%AA%A8%EB%A6%AC.html"
-  },"30": {
+  },"37": {
     "doc": "2. GPU 메모리",
     "title": "1. Memory Levels",
     "content": " ",
     "url": "/docs/Computer%20architecture/GPU%20Architecture/2.%20GPU%20%EB%A9%94%EB%AA%A8%EB%A6%AC.html#1-memory-levels",
     
     "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/2.%20GPU%20%EB%A9%94%EB%AA%A8%EB%A6%AC.html#1-memory-levels"
-  },"31": {
+  },"38": {
     "doc": "2. Master Material",
     "title": "2. Master Material",
     "content": ". ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html"
-  },"32": {
+  },"39": {
     "doc": "2. Master Material",
     "title": "1. Master Material",
     "content": "마스터 머티리얼을 만들고 이 마스터 머티리얼의 여러 인스턴스만 사용하는 방법을 통해 공간 절약, 씬의 성능 상향이 가능함. ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#1-master-material",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#1-master-material"
-  },"33": {
+  },"40": {
     "doc": "2. Master Material",
     "title": "2. Albedo vs Diffuse",
     "content": "베이스 컬러에 쓰이는 텍스쳐가 두 가지 용어를 혼합하여 쓰길래 두 키워드의 차이점이 무엇인지 궁금해졌다. ❓베이스 컬러에 들어가는 알베도와 디퓨즈의 차이점이 뭐지? . | Albedo : 물리 기반 렌더링(PBR)에서 도입. 표면이 반사하는 확산 반사 비율 또는 색상을 의미 | Diffuse : 전통적인 3D 그래픽스에서 디퓨즈 맵은 표면의 기본 색상을 정의한다. 빛의 영향을 받아 명암이 생기는 재질 표현에 사용 | . Albedo vs Diffuse 정리 . | 항목 | Albedo | Diffuse | . | 정의 | 순수한 반사율 (빛의 간섭 없음) | 빛의 난반사로 인한 색상 + 명암 | . | 사용 예 | PBR (물리 기반 렌더링) | 전통적 라이팅 모델 (램버트 반사 등) | . | 데이터 | 환경광의 영향이 제거된 순수 색상 | 그림자/광택 일부 포함 가능 | . | 예시 | Unreal, Unity등에서 PBR 재질의 Base Color로 사용 | Photoshop 등에서 조명까지 표현한 diffuse map 제작 가능 | . | Diffuse 텍스처에는 실제 광원이 없어도 명암이 들어감. | 조명 대응 불가 (광원 위치를 바꿔도 그림자는 바뀌지 않음) | . | . | 텍스처에 조명, 그림자, 반사 등을 “베이크”해서 포함시킨 것 = diffuse map | 조명과 독립적인 순수한 색상. 빛은 셰이더에서 계산함 = Albedo | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#2-albedo-vs-diffuse",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#2-albedo-vs-diffuse"
-  },"34": {
+  },"41": {
     "doc": "2. Master Material",
     "title": "3. Texture Coordinate",
     "content": "UV 매핑을 제어하는 노드로 머티리얼이 메시 표면에 어떻게 텍스쳐를 투영할지 결정한다. | 모델의 각 정점(Vertex)에는 UV 좌표(0~1 범위의 2D 좌표)가 할당되어 있으며, 이 노드는 해당 좌표를 조정하거나 변형할 때 사용할 수 있다. | . | 기본 출력: UV 채널의 2D 벡터(X, Y). 각 성분은 일반적으로 0.0 ~ 1.0 범위 . | X(U): 가로 축 좌표 (좌 → 우) | Y(V): 세로 축 좌표 (하 → 상) | . | Coordinate Index: 다중 UV 채널을 선택할 수 있다. | 정적 메시의 Lightmap UV(UV1) 등 추가 좌표 계층을 활용할 때 유용 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#3-texture-coordinate",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#3-texture-coordinate"
-  },"35": {
+  },"42": {
     "doc": "2. Master Material",
     "title": "4. Vector4",
     "content": ". | Vector4 노드의 R,G,B,A에 각각 U tile, V tile, U offset, V offset 이라고 이름을 붙여 텍스쳐 타일링에 사용할 수 있다. | 타일링 *= multiply | 오프셋 += add | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#4-vector4",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#4-vector4"
-  },"36": {
+  },"43": {
     "doc": "2. Master Material",
     "title": "5. static swich parameter",
     "content": "머티리얼 그래프 내에서 분기를 정의하고, 머티리얼 인스턴스 에디터에서 체크박스로 설정 가능하게 해준다. | 정적(static) 이 붙은 이유 : 런타임에 변경되지 않고 머티리얼 컴파일 타임에 결정됨 | 사용되지 않는 쪽의 분기는 완전히 제거되어 실행 시간이 최적화 | . | 입력 A : A 로직 (스위치가 True일 때 적용) | 입력 B : B 로직 (스위치가 False일 때 적용) | 출력 : True는 A, False는 B 출력 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#5-static-swich-parameter",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#5-static-swich-parameter"
-  },"37": {
+  },"44": {
     "doc": "2. Master Material",
     "title": "RGB 표현",
     "content": "❓언리얼 엔진에서는 RGB가 0~255 값이 아니라고? . | 언리얼에서는 RGB 표현을 정규화된 0~1 범위로 사용한다. | 0~255 와 0~1 두 범위 모두 동일한 색상을 나타내지만, 사용하는 컨텍스트와 시스템에 따라 다른 스케일로 표현된다. | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rgb-%ED%91%9C%ED%98%84",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rgb-표현"
-  },"38": {
+  },"45": {
     "doc": "2. Master Material",
     "title": "왜 언리얼 엔진은 0~1 범위를 사용할까?",
     "content": ". | 수학적 일관성 . | 3D 그래픽스에서는 벡터 연산이 빈번하게 일어남 | 0~1 범위는 퍼센트 개념과 연결되며, 모든 계산을 비율 기반으로 통일할 수 있다. | 예: 0.5 = 50% 밝기 -&gt; 0.5 * 2.0 = 1.0 (100%) | . | . | HDR (High Dynamic Range) 지원 . | 0~1 범위를 벗어나는 값 (예: 2.0) 으로 더 밝은 빛을 표현할 수 있다. | . | GPU 친화적 . | 현대 GPU는 부동소수점(float) 계산에 최적화되어 있어 0~1 범위가 셰이더 연산과 호환성이 좋다. | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EC%99%9C-%EC%96%B8%EB%A6%AC%EC%96%BC-%EC%97%94%EC%A7%84%EC%9D%80-01-%EB%B2%94%EC%9C%84%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%A0%EA%B9%8C",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#왜-언리얼-엔진은-01-범위를-사용할까"
-  },"39": {
+  },"46": {
     "doc": "2. Master Material",
     "title": "RGB 정규화 방법",
     "content": ". | 0~255 -&gt; 0~1 (정규화) = 값 / 255 | . RGB(255, 127, 0) -&gt; RGB(1.0, 0.498, 0.0) . | 0~1 -&gt; 0~255 (역정규화) = 값 * 255 (반올림 적용) | . RGB(0.5, 0.75, 1.0) -&gt; RGB(128, 191, 255) . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rgb-%EC%A0%95%EA%B7%9C%ED%99%94-%EB%B0%A9%EB%B2%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rgb-정규화-방법"
-  },"40": {
+  },"47": {
     "doc": "2. Master Material",
     "title": "Color Control",
     "content": ". ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#color-control",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#color-control"
-  },"41": {
+  },"48": {
     "doc": "2. Master Material",
     "title": "1. 밝기: Brightness",
     "content": ". | RGB 값에 1보다 큰 수를 곱하는 것으로 설정 가능. | RGB는 0.0 ~ 1.0 범위로 표현됨 . | 0.0 = 완전한 어둠 (검정) | 1.0 = 최대 밝기 (순수한 색상) | . | R * 2 = R의 밝기 2배 증가 | R * 0.5 = R의 밝기 50% 감소 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#1-%EB%B0%9D%EA%B8%B0-brightness",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#1-밝기-brightness"
-  },"42": {
+  },"49": {
     "doc": "2. Master Material",
     "title": "2. 채도: Satration",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#2-%EC%B1%84%EB%8F%84-satration",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#2-채도-satration"
-  },"43": {
+  },"50": {
     "doc": "2. Master Material",
     "title": "desaturation (탈색)",
     "content": "특정 색상을 흑백(grayscale)에 가깝게 변환하는 데 사용되는 노드. 이 노드를 사용하여 채도를 조절한다. | 입력 input (V3) : 일반적으로 텍스쳐의 RGB가 입력됨 | 입력 Fraction (V1) : 채도를 얼마나 줄일지 결정하는 값. | 0 : 원본 색상 유지 | 1 : 완전히 회색 | . | 출력 (V3) : desaturation 적용 결과 | . 내부 연산 공식 . Gray = R * 0.3 + G * 0.59 + B * 0.11 Output = lerp(Input, Gray, Fraction) . | Gray는 NTSC 표준 기반의 가중 평균. 인간의 눈이 가장 민감한 녹색에 높은 가중치를 둠 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#desaturation-%ED%83%88%EC%83%89",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#desaturation-탈색"
-  },"44": {
+  },"51": {
     "doc": "2. Master Material",
     "title": "3. 대비: Contrast",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#3-%EB%8C%80%EB%B9%84-contrast",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#3-대비-contrast"
-  },"45": {
+  },"52": {
     "doc": "2. Master Material",
     "title": "power",
     "content": "입력 값의 지수 승(power/exponentiation) 을 계산하는 노드 . Output = Base ^ Exponent . | 입력 Base (V,V3) : 일반적으로 RGB 텍스쳐 입력 | 입력 Exponent (V) : 지수 값. | 출력 (V, V3): 계산된 결과 값 (Base의 Exponent 승) | . ❓왜 Contrast 조절에 Power를 쓰는거야? . | power는 단순 곱셈으로는 할 수 없는 비선형적인 변화를 제공하기 때문이다 | . 곱셈 (Multiply) vs 지수승 (Power) . | 특성 | 곱셈 | 지수승 | . | 수학적 표현 | RGB × Scale | RGB ^ Gamma | . | 연산 유형 | 모든 픽셀의 밝기를 균일하게 스케일링 어두운 영역과 밝은 영역이 동일한 비율로 변화 | 비선형변환으로 밝기 분포를 비균형적으로 조정 | . | 밝기 변화 | 모든 픽셀 균일하게 스케일링 | 밝은 픽셀은 더 밝게 어두운 픽셀은 더 어둡게 (분포 왜곡) | . | 대비(Contrast) 영향 | 대비 유지 | 대비 증가 (Gamma &gt; 1) 대비 감소 (Gamma &lt; 1) | . | 시각적 효과 | 전체적으로 밝아지거나 어두워짐 | 어두운 영역과 밝은 영역의 차이 강조 or 완화 | . | 사용 예시 | 밝기 조정, 라이트 강도 증감 | Contrast 조정, 감마 보정 | . RGB (0.2, 0.5, 0.8) Power(2.0) -&gt; RGB(0.04, 0.25, 0.64) // 어두운 부분은 급격히 어두워지고 밝은 픽셀은 상대적으로 덜 영향받음. = 대비 강해짐 . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#power",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#power"
-  },"46": {
+  },"53": {
     "doc": "2. Master Material",
     "title": "4. 색조: Tint",
     "content": "Base color의 RGB에 다른 색상의 RGB를 곱해서 얻을 수 있다. | 채널별 스케일링 . | 곱해지는 색상의 각 채널 값이 원본 색상의 해당 채널을 강화하거나 약화시킴 | 1.0 : 해당 채널 100% 유지 | 0.5 : 해당 채널 50% 감소 | 0.0 : 해당 채널 완전히 제거 | . | . // 원본 색상 RGB(0.8, 0.5, 0.2) // Tint 색상 RGB(1.0, 0.3, 0.3) // 결과 -&gt; R은 유지, G/B는 감소 (0.8*1.0, 0.5*0.3, 0.2*0.3) = (0.8, 0.15, 0.06) . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#4-%EC%83%89%EC%A1%B0-tint",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#4-색조-tint"
-  },"47": {
+  },"54": {
     "doc": "2. Master Material",
     "title": "6. MI Organize Paramaters",
     "content": "파라미터 노드를 그룹화 하여 마테리얼 인스턴스의 파라미터들을 원하는 순서대로 분류할 수 있다. | 파라미터 노드 클릭 | Details 창의 Material Expression 에서 Group 설정 . | 그룹은 0 - Z 알파벳 네임 순서대로 정렬되므로 00 Global Control, 01 Base Color 등으로 순서를 정함. | . | 그룹에 들어가길 원하는 파라미터 노드를 설정한 그룹에 넣어줌 | 그룹 하위 파라미터 노드들은 Sort Priority (정렬 우선순위)의 낮은 수 순서대로 마테리얼 인스턴스 그룹 목록에 정렬됨 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#6-mi-organize-paramaters",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#6-mi-organize-paramaters"
-  },"48": {
+  },"55": {
     "doc": "2. Master Material",
     "title": "7. Metallic",
     "content": "머티리얼 에디터에서 Metallic 소켓은 표면이 금속성인지 여부를 정의하는 입력값이다. 입력 값 범위: 0.0에서 1.0 사이의 스칼라(float) 값. | 0.0: 비금속(non-metal) 재질. (예: 나무, 플라스틱, 돌 등.) | 1.0: 금속(metal) 재질. (예: 철, 금, 알루미늄 등.) | 0.0과 1.0 사이의 값: 녹슨 금속과 같은 재질을 표현할 때 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#7-metallic",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#7-metallic"
-  },"49": {
+  },"56": {
     "doc": "2. Master Material",
     "title": "8. Specular",
     "content": "표면이 반사하는 거울 반사(specular reflection)의 강도를 조절하는 소켓. 디폴트 값은 0.5이다. Specular 값은 비금속 재질의 반사 특성을 조절하며, 금속 재질(Metallic)에는 영향을 주지 않는다. | 0.0: 표면이 전혀 반사하지 않음 (완전한 확산 반사) | 0.5: 표면이 약 4%의 빛을 반사함 (일반적인 비금속 재질의 기본값) | 1.0: 표면이 최대 8%의 빛을 반사함 (매우 반짝이는 비금속 재질) | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#8-specular",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#8-specular"
-  },"50": {
+  },"57": {
     "doc": "2. Master Material",
     "title": "9. Roughness",
     "content": "표면의 거칠기를 정의하는 소켓으로 빛이 표면에 어떻게 반사되는지를 결정한다. 디폴트 값은 0.5이다. | 0.0: 매우 매끄러운 표면. 반사가 거울처럼 선명함 (예: 유리, 금속) | 0.5: 중간 정도 거칠기 반사가 흐릿하고 부드럽게 번짐 | 1.0: 매우 거친 표면. 반사가 거의 없거나 전혀 없음 (예: 콘크리트, 모래) | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#9-roughness",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#9-roughness"
-  },"51": {
+  },"58": {
     "doc": "2. Master Material",
     "title": "Metallic vs Specular Workflow",
     "content": "메탈릭 워크플로우와 스페큘러 워크플로우는 PBR에서 재질을 표현하는 두 가지 다른 방식이며, 계산 공식과 입력값이 근본적으로 다르다. | UE5는 메탈릭/러프니스(Metallic/Roughness) 워크플로우에 최적화되어있다. | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#metallic-vs-specular-workflow",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#metallic-vs-specular-workflow"
-  },"52": {
+  },"59": {
     "doc": "2. Master Material",
     "title": "Metallic/Roughness 주요 맵 설명",
     "content": "| 맵(Map) | 설명 | 형식 | 비고 | . | BaseColor | 비금속: 재질의 기본 색상(Diffuse) 금속: 반사 색상(Fresnel F₀) | RGB | 금속은 diffuse(산란) 사용 X. 반사 색상이 사용됨 | . | Metallic | 재질이 금속인지 여부를 정의. 0: 비금속 1: 금속 | Grayscale | - 흰색: 금속 - 검은색: 비금속 | . | Roughness | 표면의 거칠기를 정의 0: 매끄러움 1: 거칠음 | Grayscale | Glossiness와 반대 | . | 메탈릭은 Metallic 맵으로 금속/비금속을 강제 분리해 물리적 일관성을 확보함 . | Metallic 파라미터 (0,1)로 재질 타입을 이진화 | 금속 (Metallic = 1) . | BaseColor = Fresnel 반사 색상 (F0). | Diffuse 성분 = 0 (물리적으로 정확한 금속 모델). | . | 비금속 (Metallic = 0) . | BaseColor = Diffuse 알베도. | Specular는 고정값 (~0.04) 또는 Specular 입력으로 미세 조정 | . | . | 메모리 효율적 (Specular 맵 불필요), 실시간 렌더링에 최적화. | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#metallicroughness-%EC%A3%BC%EC%9A%94-%EB%A7%B5-%EC%84%A4%EB%AA%85",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#metallicroughness-주요-맵-설명"
-  },"53": {
+  },"60": {
     "doc": "2. Master Material",
     "title": "Specular/Glossiness 주요 맵 설명",
     "content": "| 맵(Map) | 설명 | 형식 | 비고 | . | Diffuse | 비금속 재질의 기본 색상. 금속: 디퓨즈 맵 사용 X | RGB | 메탈릭 워크플로우의 BaseColor와 유사하지만, 금속에서는 무시됨. | . | Specular | 모든 재질의 반사 색상 및 강도 금속: RGB 비금속: Grayscale | RGB / Grayscale | 메탈릭 워크플로우의 Metallic + BaseColor 역할을 동시에 함. | . | Glossiness | 표면 광택도 0: 거칠음 1: 매끄러움 | Grayscale | Roughness와 반대 | . | 스페큘라는 Specular 맵으로 반사 색상과 강도를 직접 제어함 | 반사 색상의 자유도 높음, 오프라인 렌더링(V-Ray)과 호환됨 | . 참고하면 좋은 링크 . | Metalness Maps and Workflow Explained . | PBR: metallic vs specular workflow . | Specular vs Metalness Workflows for PBR Shading in Blender . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#specularglossiness-%EC%A3%BC%EC%9A%94-%EB%A7%B5-%EC%84%A4%EB%AA%85",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#specularglossiness-주요-맵-설명"
-  },"54": {
+  },"61": {
     "doc": "2. Master Material",
     "title": "sRGB (standard Red Green Blue)",
     "content": "sRGB는 모니터, TV 등 대부분의 디스플레이에서 사용하는 표준 색 공간이다. | 사람이 인지하는 색감을 기준으로 설계됨 . | 인간의 눈은 어두운 색상의 변화에 더 민감함 | sRGB는 이를 반영해 암부(어두운 영역)의 색상 정보를 강조하는 비선형 곡선을 사용 | . | 감마 보정이 포함되어 있음 (약 γ = 2.2) . | 즉 색상 데이터가 밝게 저장됨 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#srgb-standard-red-green-blue",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#srgb-standard-red-green-blue"
-  },"55": {
+  },"62": {
     "doc": "2. Master Material",
     "title": "Gamma vs inear Workflow",
     "content": ". | 감마 워크플로우 (Gamma Workflow) . | 전통적인 방식으로, sRGB 공간에서 렌더링을 수행 | 텍스처와 최종 출력이 sRGB로 가정되기 때문에, 라이팅 계산 시 자동으로 리니어로 변환되지 않음 | 실시간 라이팅 계산이 부정함 (예: 어두운 영역에서 색상 밴딩 발생) | PBR(물리 기반 렌더링)과 호환성이 떨어짐 | . | 리니어 워크플로우 (Linear Workflow) . | 리니어 컬러 스페이스에서 렌더링을 수행 | 텍스처는 sRGB에서 로드될 때 자동으로 리니어로 변환되고, 최종 출력 시 다시 sRGB로 감마 보정 | 물리적으로 정확한 라이팅 계산이 가능 | . | . 감마, 리니어 워크플로우 처리과정 . | 감마 워크플로우 . | 텍스처(sRGB) → (감마 보정 해제 없음) → 라이팅 계산 → 출력(sRGB) | . | 리니어 워크플로우 . | 텍스처(sRGB) → 자동 리니어 변환 → 물리적 라이팅 계산 → sRGB로 출력 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#gamma-vs-inear-workflow",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#gamma-vs-inear-workflow"
-  },"56": {
+  },"63": {
     "doc": "2. Master Material",
     "title": "☑️결론",
     "content": "언리얼 엔진 5에서의 동작 . 텍스처 . | sRGB 플래그가 켜진 텍스처 (알베도, 디퓨즈)는 리니어로 변환되어 쉐이더에서 사용 | sRGB 플래그가 꺼진 텍스처 (메탈릭, 러프니스)는 변환 없이 리니어로 읽힘 | . 라이팅 계산 . | 모든 쉐이더 연산은 리니어 공간에서 이루어짐 | 실시간 광원, GI, 반사 등이 물리적으로 정확하게 계산 | . 최종 출력 . | 최종 프레임 버퍼는 모니터 표준(sRGB)에 맞게 자동 감마 보정되어 출력 | . 참고하면 좋은 링크 . | computer color is broken | Gamma Vs. Linear Workflow for KeyShot Users | UNDERSTANDING GAMMA CORRECTION | Gamma Color space와 Linear Color space란? | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EF%B8%8F%EA%B2%B0%EB%A1%A0",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#️결론"
-  },"57": {
+  },"64": {
     "doc": "2. Master Material",
     "title": "Texture Compression Settings (텍스쳐 압축 세팅)",
     "content": "텍스쳐를 더블 클릭하면 열리는 창으로 텍스쳐 압축 세팅 설정 가능. | 알파가 없는 텍스쳐는 알파 없이 압축 체크 (Compress Without Alpha) | sRGB가 아닌 텍스쳐는 sRGB 체크 해제 | Compression Settings 에서 세팅 설정 . | Masks (no sRGB) | . | . 텍스쳐 샘플러 노드의 설정으로 샘플러 타입 설정 가능. | 텍스쳐가 sRGB라면 Sampler Type = color | 텍스쳐가 sRGB가 아니아면 Sampler Type = Linear color . | BlackPlaceholder | . | . 압축 설정과 샘플러 타입 설정이 모두 같게 설정 되어야 한다. (sRGB가 아닌경우 샘플러 Linear) . 참고하면 좋은 링크 . | Texture Compression Settings | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#texture-compression-settings-%ED%85%8D%EC%8A%A4%EC%B3%90-%EC%95%95%EC%B6%95-%EC%84%B8%ED%8C%85",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#texture-compression-settings-텍스쳐-압축-세팅"
-  },"58": {
+  },"65": {
     "doc": "2. Master Material",
     "title": "10. Normal",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#10-normal",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#10-normal"
-  },"59": {
+  },"66": {
     "doc": "2. Master Material",
     "title": "로우 폴리 vs 하이 폴리 모델",
     "content": ". | 로우 폴리 모델은 표면이 평평하고 법선이 단순. | 하이 폴리 모델은 표면이 복잡하고 법선이 다양. | . 노멀 맵은 하이 폴리 모델의 법선 정보를 로우 폴리 모델에 “옮기는” 기술이다. | 로우 폴리 모델의 정점 법선은 평평해 보이지만, 노멀 맵으로 인해 픽셀 단위로 법선이 조정되어 하이 폴리 같은 디테일이 나온다. | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EB%A1%9C%EC%9A%B0-%ED%8F%B4%EB%A6%AC-vs-%ED%95%98%EC%9D%B4-%ED%8F%B4%EB%A6%AC-%EB%AA%A8%EB%8D%B8",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#로우-폴리-vs-하이-폴리-모델"
-  },"60": {
+  },"67": {
     "doc": "2. Master Material",
     "title": "노멀 맵의 좌표계 (탄젠트 공간)",
     "content": "노멀 맵은 탄젠트 공간에 저장된다. | 노멀 맵의 픽셀 값 (R, G, B)은 탄젠트 공간에서의 법선 방향을 나타냄 | Z축은 “표면 바깥쪽”을 가리킨다. (일반적으로 (0,0,1)이 기본 법선) | 탄젠트 공간은 각 정점마다 다르다. | 노멀 맵의 법선 벡터는 각 정점의 탄젠트 공간(= 각 정점의 로컬 좌표계) 기준으로 저장된다. | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EB%85%B8%EB%A9%80-%EB%A7%B5%EC%9D%98-%EC%A2%8C%ED%91%9C%EA%B3%84-%ED%83%84%EC%A0%A0%ED%8A%B8-%EA%B3%B5%EA%B0%84",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#노멀-맵의-좌표계-탄젠트-공간"
-  },"61": {
+  },"68": {
     "doc": "2. Master Material",
     "title": "노멀 맵의 생성 과정",
     "content": "노멀 맵은 하이 폴리 모델의 법선을 로우 폴리 모델의 탄젠트 공간에 투영하여 저장한다. 1.하이 폴리 모델의 법선 추출 . | 하이 폴리 모델의 각 정점 법선을 계산 | 하이 폴리 모델의 법선은 월드 공간 또는 오브젝트 공간에 있음 | . 2.로우 폴리 모델의 탄젠트 공간 계산 . | 로우 폴리 모델의 각 정점에서 TBN 기저(basis)를 계산 | 로우 폴리 모델의 각 정점은 자신만의 T, B, N 벡터를 가진다. | 노멀 맵을 탄젠트 공간에 저장하기 위한 기준 좌표계를 제공 . | T (Tangent): UV의 U 방향 (텍스처 가로) | B (Bitangent): UV의 V 방향 (텍스처 세로) | N (Normal): 로우 폴리 모델의 표면 법선 | . | . 3.하이 폴리의 법선 → 로우 폴리의 탄젠트 공간으로 변환 . | 하이 폴리 법선을 로우 폴리 모델의 TBN 행렬의 역행렬로 변환한다. | 하이 폴리 법선을 탄젠트 공간으로 변환한 결과 값은 -1 ~ 1 범위를 가짐 | 변환된 법선을 RGB 값 (0 ~ 1)으로 리매핑해 저장 | . // 하이 폴리 법선 (오브젝트 공간) vec3 normal_high = normalize(hitNormal); // 탄젠트 공간으로 변환 (TBN은 로우 폴리의 기저) vec3 normal_tangent = transpose(TBN) * normal_high; // 노멀 맵 저장 (0~1 리매핑) vec3 normalMapValue = normal_tangent * 0.5 + 0.5; . | 채널 | 벡터 구성요소 | 설명 | . | R | X | Tangent(가로) 방향의 법선 벡터 성분 | . | G | Y | Bitangent(세로) 방향의 법선 벡터 성분 | . | B | Z | Surface Normal(법선) 방향의 법선 벡터 성분 | . 4.노멀 맵 데이터 생성 . | 노멀 맵에 “하이 폴리 법선이 로우 폴리 모델의 탄젠트 공간에서 어떻게 변형되어야 하는지”가 데이터로 저장됨. | . 5.노멀 맵의 사용 . 렌더링 시에는 노멀맵의 값을 다시 TBN 행렬을 통해 월드 공간 법선으로 복원한다. | 노말맵은 법선을 0 ~ 1로 리매핑해 저장된 상태. | 실제로 렌더링에 사용할 때는 다시 -1 ~ 1로 복원 | . // 노멀 맵에서 법선 추출 (0~1 → -1~1) vec3 normal_tangent = texture(normalMap, uv).rgb * 2.0 - 1.0; // 월드 공간 법선으로 변환 vec3 normal_world = normalize(TBN * normal_tangent); // 조명 계산 (예: Lambertian Diffuse) float diffuse = max(0.0, dot(normal_world, lightDir)); . 추가로 알면 좋은 점 . | 노멀맵이 대부분 파란 이유 . | 평평한 표면의 벡터가 (0, 0, 1)이기 때문 | 색 변화가 의미하는 것 = 파랑 외의 색은 법선이 좌우(X), 상하(Y)로 기울어진 정도를 의미 | . | 스무딩 그룹(Smoothing Groups) . | 로우 폴리 모델의 정점 법선을 보간할지 말지 결정 | 보간 O (같은 스무딩 그룹): 정점 사이가 부드럽게 연결 | 보간 X (다른 스무딩 그룹): 정점 사이가 날카롭게 끊어짐 | 로우 폴리의 법선이 스무딩 그룹에 따라 변하면 노멀맵에 저장되는 차이도 달라진다. | . | . 참고하면 좋은 링크 . | Tutorial: How Normal Maps Work &amp; Baking Process | Deconstructing a Normal Map | Normal Mapping | OpenGL Tutorial - Normal Maps | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EB%85%B8%EB%A9%80-%EB%A7%B5%EC%9D%98-%EC%83%9D%EC%84%B1-%EA%B3%BC%EC%A0%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#노멀-맵의-생성-과정"
-  },"62": {
+  },"69": {
     "doc": "2. Master Material",
     "title": "Flatten Normal",
     "content": "노멀 벡터의 Z(Depth) 성분을 조절해 노멀맵을 평탄화 하는 노드 . | 입력 Normal (V3) (XYZ) : 탄젠트 공간에서의 노멀 벡터. 원본 노말 맵 | 입력 Flatten Strength (Scalr) : Float (0.0 ~ 1.0), 평탄화 강도 (1.0에 가까울수록 Z가 약해짐) | 출력 Result (V3) : 평탄화가 완료된 노멀 벡터터 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#flatten-normal",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#flatten-normal"
-  },"63": {
+  },"70": {
     "doc": "2. Master Material",
     "title": "Flip Green Channel",
     "content": "텍스처의 노멀 맵에서 G(Green) 채널을 반전시키는 옵션 . | 노멀 맵이 OpenGL 방식과 DirectX 방식 중 어떤 포맷으로 저장되었는지에 따라 옵션 사용 유무가 달라진다. | OpenGL과 DirectX는 Y(Green) 좌표계가 반대기 때문 | . 언리얼 엔진은 DirectX 기반이다. | OpenGL 기반 툴 (Blender, Substance Painter 등)에서 내보낸 노멀 맵을 언리얼에서 사용할 때 . | Flip Green Channel ☑️ (체크) | . | DirectX 기반 툴 (3ds Max, Maya 등)에서 내보낸 노멀 맵 . | Flip Green Channel ❌ (체크하지 않음) | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#flip-green-channel",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#flip-green-channel"
-  },"64": {
+  },"71": {
     "doc": "2. Master Material",
     "title": "11. Ambient Occlusion",
     "content": "광원과 관계없이, 환경 전체에서 모든 방향에서 들어오는 간접광(Ambient Light) 이 차폐되는 정도에 따라 어두움을 표현하는 기법 . | AO는 순수히 기하학적 구조(geometry)에 의해 결정되는 그림자 차폐 효과 | AO는 오직 모델의 형태와 표면 간 거리만으로 차폐 정도를 계산 | 광원이 움직여도 AO 결과는 변하지 않음 (방향성 없음) | 깊이감이나 접촉면 강조를 통해 공간 인지를 높임 | . 그림자와 AO의 차이 . | 항목 | 그림자 (Shadow) | 앰비언트 오클루전 (AO) | . | 광원 의존성 | 광원의 위치와 방향에 따라 달라짐 | 광원과 상관없이 항상 동일함 | . | 생성 원리 | 광원에서 물체까지 직진하는 빛이 막혔을 때 발생 | 공간적 차폐 정도에 따라 빛이 덜 도달하는 효과 | . | 형태 | 명확한 실루엣 형태 | 부드러운 음영 효과 | . | 변화 여부 | 광원이 움직이면 그림자도 변화 | 광원이 움직여도 AO는 고정됨 | . | 렌더링 목적 | 광원 존재감, 선명한 명암 표현 | 깊이감, 접촉 강조, 사실감 부여 | . AO는 오프라인 렌더링과 실시간 렌더링이 있는데 계산 방식이 다르다. 아래는 오프라인 렌더링 AO MAP 생성 과정이다. | 계산 기반 : 표면 점에서 주변 반구(헤미스피어)로 발사된 광선이 차단되는 비율”을 계산 | 실제 빛의 동작을 단순화한 모델이지만, 레이 트레이싱과 유사한 광선 충돌 검사를 사용 | 차폐 정도(Occlusion Factor)는 0.0(완전히 열림)에서 1.0(완전히 차폐됨) 사이의 값으로 표현 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#11-ambient-occlusion",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#11-ambient-occlusion"
-  },"65": {
+  },"72": {
     "doc": "2. Master Material",
     "title": "오프라인 AO 맵 생성 과정",
     "content": "AO 맵은 “표면 점 → 반구형 광선 발사 → 충돌 검사 → 차폐 비율 계산” 과정으로 생성됨 . 1.모델 준비 . 2.표면 점(Surface Point) 선택 . | 모델의 각 버텍스 또는 텍셀에서 AO를 계산 | 예시: 4K 텍스처(4096×4096)라면 1,600만 개 이상의 점을 처리. | . 3.반구형 샘플링(Hemispheric Sampling) . | 표면 법선(Normal) 기반 반구 정의 : 점의 법선 벡터(N)를 기준으로 반구(헤미스피어)를 생성 . | 광선은 이 반구 내에서만 무작위 방향으로 발사됨 | . | 광선 발사(Ray Casting) . | 각 점에서 N개 광선을 무작위 방향(θ, φ)으로 발사 | θ(세타) : 법선 기준 각도 (0°~90°). | φ(피) : 방위각 (0°~360°). | 광선 거리(Ray Distance): 일반적으로 장면 크기의 10~20%로 제한 | . | 광선 충돌 검사: 발사된 광선이 다른 지오메트리와 충돌하는지 확인 . | 충돌 시 : “차폐됨(Occluded)” | 충돌 없음 : “개방됨(Open)” | . | 차폐 비율 계산: AO 값 = (차폐된 광선 수) / (전체 광선 수) . | 예: 100개 광선 중 30개가 차폐됐다면 AO = 0.3 | . | . 4.텍스처 베이킹 . | 계산된 AO 값을 흑백 텍스처로 저장함 | 픽셀 보간: 버텍스 기반 결과를 텍스처 픽셀에 매핑할 때 보간(Interpolation)이 일어남 | . 참고하면 좋은 링크 ambient occlusion in unrealengine5 . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%EC%98%A4%ED%94%84%EB%9D%BC%EC%9D%B8-ao-%EB%A7%B5-%EC%83%9D%EC%84%B1-%EA%B3%BC%EC%A0%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#오프라인-ao-맵-생성-과정"
-  },"66": {
+  },"73": {
     "doc": "2. Master Material",
     "title": "픽셀 보간(Interpolation)",
     "content": "텍스처 베이킹에서 “픽셀 보간(Interpolation)”이란? . | 3D 모델의 버텍스(정점)에서 계산된 값을 텍스처의 픽셀에 자연스럽게 채우기 위해 평활화하는 과정 | . ❓왜 보간(Interpolation)이 필요해? . | 버텍스는 한정적이지만, 텍스처는 고해상도라 픽셀 수가 훨씬 많음 | 버텍스 값만으로는 텍스처가 계단 현상(Aliasing)이나 뚝뚝 끊긴 패턴이 생길 수 있음 | . 버텍스(Vertex) vs 텍셀(Texel) . | 버텍스 : 3D 모델의 꼭짓점. AO는 보통 버텍스 단위로 먼저 계산됨 (각 버텍스에서 광선 발사) | 텍셀 : 텍스처의 픽셀. UV 맵으로 매핑될 때 버텍스 사이의 빈 공간을 채워야 함 | . 픽셀 보간 과정 . | 버텍스 AO 값 생성 모델의 각 버텍스에서 AO 계산이 완료되면, 다음과 같은 값이 만들어짐 . | 버텍스 A : AO = 0.2 | 버텍스 B : AO = 0.7 | 버텍스 C : AO = 0.5 | . | UV 공간에서의 보간 . | 삼각형 내부 픽셀 처리 : UV 맵에서 삼각형(Face) 내부의 픽셀은 주변 버텍스의 AO 값의 가중 평균으로 채워짐 | 예시 : 아래 그림에서 P 픽셀의 AO는 A, B, C 버텍스 값의 Barycentric Coordinates(무게중심좌표)로 보간됨 P의 AO = (A의 AO × 가중치₁) + (B의 AO × 가중치₂) + (C의 AO × 가중치₃) . | 결과 : A(0.2), B(0.7), C(0.5) 사이의 픽셀은 0.2~0.7 사이의 부드러운 그레이드로 채워짐 | . | 보간 알고리즘 . | Bilinear Interpolation : 인접한 4개 버텍스 값으로 2D 평면 보간 | Barycentric Interpolation : 삼각형 내부에서 3개 버텍스 기반 보간 (가장 흔함) | . | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#%ED%94%BD%EC%85%80-%EB%B3%B4%EA%B0%84interpolation",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#픽셀-보간interpolation"
-  },"67": {
+  },"74": {
     "doc": "2. Master Material",
     "title": "12. channel packing",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#12-channel-packing",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#12-channel-packing"
-  },"68": {
+  },"75": {
     "doc": "2. Master Material",
     "title": "RMA MAP / ARM MAP",
     "content": "하나의 RGB 텍스처에 Grayscale 속성 맵 3개를 각각의 채널(R/G/B)에 패킹해서 저장하는 방식이다. 실시간 렌더링에서 텍스처 메모리와 샘플 호출을 절약하는 데 매우 유리하다. ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-map--arm-map",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-map--arm-map"
-  },"69": {
+  },"76": {
     "doc": "2. Master Material",
     "title": "RMA 텍스쳐 구성",
     "content": "| 채널 | 저장 정보 | 설명 | . | R | Roughness | 표면의 거칠기. 0은 매끄러움, 1은 거침 | . | G | Metallic | 재질의 금속성. 0은 비금속, 1은 금속 | . | B | Ambient Occlusion (AO) | 환경광 차폐 정보. 어두운 음영 영역을 강조 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-%ED%85%8D%EC%8A%A4%EC%B3%90-%EA%B5%AC%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#rma-텍스쳐-구성"
-  },"70": {
+  },"77": {
     "doc": "2. Master Material",
     "title": "ARM 텍스쳐 구성",
     "content": "| 채널 | 저장 정보 |   | . | R | Ambient Occlusion (AO) | 환경광 차폐 정보. 어두운 음영 영역을 강조 | . | G | Roughness | 표면의 거칠기. 0은 매끄러움, 1은 거침 | . | B | Metallic | 재질의 금속성. 0은 비금속, 1은 금속 | . | 경우에 따라 Alpha 채널에 다른 정보(예: Height, Opacity)를 저장하기도 한다. | 텍스쳐쳐 패킹 시 원본 맵의 명암비, 선명도가 유지되는지 확인해야 한다. | . | 장점 . | 메모리 절약: 3개의 별도 텍스처 대신 단일 텍스처로 관리 → VRAM 사용량 감소. | 성능 향상: 쉐이더에서 텍스처 샘플링 횟수 줄어듦 → 실시간 렌더링(게임)에 유리. | . | 단점 . | 텍스쳐 압축 알고리즘 특성 상 채널 간 데이터가 서로 영향을 미침 → Metallic(G) 채널의 강한 경계가 Roughness(R) 채널의 값을 흐리게 만들 수 있음 | 8비트 텍스처 (0~255)는 채널당 256단계만 표현 가능하므로 각 채널의 정밀도가 떨어진다. | 예: AO(B) 값의 127과 128 사이의 미세한 차이를 잃을 수 있음 | . | . | . 따라서 고퀄리티 아트워크에서는 RMA 대신 별도 맵 사용을 고려해야 한다. | 모바일 게임: RMA로 메모리 절약. | 시네마틱 렌더링: Roughness, Metallic, AO를 별도로 관리. | . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#arm-%ED%85%8D%EC%8A%A4%EC%B3%90-%EA%B5%AC%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#arm-텍스쳐-구성"
-  },"71": {
+  },"78": {
     "doc": "2. Master Material",
     "title": "12. displacement MAP",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#12-displacement-map",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#12-displacement-map"
-  },"72": {
+  },"79": {
     "doc": "2. Master Material",
     "title": "13. project template",
     "content": "마테리얼 우클릭 -&gt; 에셋 액션 -&gt; migrate(마이그레이션) / 노드 그래프만 가져오고 싶으면 베이스 컬러 텍스쳐 -&gt; 디폴트 텍스쳐로 바꿔서 가져오면 됨 . ",
     "url": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#13-project-template",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/2.%20Master%20Material.html#13-project-template"
-  },"73": {
+  },"80": {
     "doc": "3. Scene create",
     "title": "3. Scene create",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html"
-  },"74": {
+  },"81": {
     "doc": "3. Scene create",
     "title": "1. 씬 계획하기",
     "content": ". | Find Reference Image : 컨셉 이미지 찾아보기 | block out : 대략적인 레이아웃 잡기 | Layering : 디테일 쌓기 | . ",
     "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#1-%EC%94%AC-%EA%B3%84%ED%9A%8D%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#1-씬-계획하기"
-  },"75": {
+  },"82": {
     "doc": "3. Scene create",
     "title": "fab export",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#fab-export",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#fab-export"
-  },"76": {
+  },"83": {
     "doc": "3. Scene create",
     "title": "2. post process vlome",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#2-post-process-vlome",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#2-post-process-vlome"
-  },"77": {
+  },"84": {
     "doc": "3. Scene create",
     "title": "lumen",
     "content": "이머시브 마테리얼도 라이트에 영향을 줌 . ",
     "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#lumen",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#lumen"
-  },"78": {
+  },"85": {
     "doc": "3. Scene create",
     "title": "nanite ? what",
     "content": "이 설정 꺼야 버텍스 페인팅 가능 . ",
     "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#nanite--what",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#nanite--what"
-  },"79": {
+  },"86": {
     "doc": "3. Scene create",
     "title": "3. material blend",
-    "content": " ",
+    "content": "베이스, 중간, 탑 . 버텍스 브러쉬 . | 검정 : 칠해짐 | 흰색 : 지워짐 | r : 중간 텍스쳐 | g : 탑 텍스쳐 | b : puddle 레이어 (젖은 웅덩이 생성) | . ",
     "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#3-material-blend",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#3-material-blend"
-  },"80": {
+  },"87": {
     "doc": "3. Scene create",
     "title": "vertex painting",
-    "content": "표면의 꼭짓점에 어떠한 것을 칠할 수 있도록 해줌 . | g: 뷰포트 아이콘 끄기 켜기 | . ",
+    "content": "표면의 꼭짓점에 어떠한 것을 칠할 수 있도록 해줌 . ",
     "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#vertex-painting",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#vertex-painting"
-  },"81": {
-    "doc": "Computer Graphics",
-    "title": "Computer Graphics",
-    "content": " ",
-    "url": "/docs/Computer%20Graphics/",
+  },"88": {
+    "doc": "3. Scene create",
+    "title": "4. decal",
+    "content": ". | 표면에 붙일 수 있는 스티커 | 메시에 투사시킬수 있는 머티리얼 | sort order : 레이어 순서 (데칼이 겹쳤을 때 어느것이 위인지 결정) | wet decal : 데칼이 웅덩이에 영향을 받게 하고싶으면 마스터 머티리얼 복사해서 wet_decal 만든 뒤 러프니스 연결 끊기 | 스태틱 메시가 데칼의 영향을 받지 않게끔 하려면 Advanced의 Receives Decals 옵션 끄기 decal | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#4-decal",
     
-    "relUrl": "/docs/Computer%20Graphics/"
-  },"82": {
-    "doc": "Linear Algebra",
-    "title": "Linear Algebra",
-    "content": " ",
-    "url": "/docs/Math/linear%20algebra/",
+    "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#4-decal"
+  },"89": {
+    "doc": "3. Scene create",
+    "title": "Editor Utility Tool / Editor Scripting",
+    "content": "빠른 작업 효율 향상을 위해 랜덤 배치 툴을 구현해보자 . cpp-quick-start . | g: 뷰포트 아이콘 끄기 켜기 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#editor-utility-tool--editor-scripting",
     
-    "relUrl": "/docs/Math/linear%20algebra/"
-  },"83": {
-    "doc": "Math",
-    "title": "Math",
-    "content": " ",
-    "url": "/docs/Math/",
-    
-    "relUrl": "/docs/Math/"
-  },"84": {
-    "doc": "GPU Architecture",
-    "title": "GPU Architecture",
-    "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
-    "url": "/docs/Computer%20architecture/GPU%20Architecture/",
-    
-    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
-  },"85": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#editor-utility-tool--editor-scripting"
+  },"90": {
     "doc": "Graphics rendering pipeline",
     "title": "Graphics rendering pipeline",
     "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
-  },"86": {
+  },"91": {
+    "doc": "Math",
+    "title": "Math",
+    "content": " ",
+    "url": "/docs/Math/",
+    
+    "relUrl": "/docs/Math/"
+  },"92": {
+    "doc": "Coding Standard",
+    "title": "Coding Standard",
+    "content": ". | Coding Standard | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/"
+  },"93": {
+    "doc": "Coding Standard",
+    "title": "저작권 고지",
+    "content": "배포하는 모든 소스 파일(.h, .cpp, .xaml 등)에는 파일의 첫 줄에 반드시 다음과 같은 저작권 공지가 포함되어야 한다. // Copyright Epic Games, Inc. All Rights Reserved. 해당 줄이 없거나 형식이 다르면 오류 -&gt; 빌드 실패 처리됨 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A0%80%EC%9E%91%EA%B6%8C-%EA%B3%A0%EC%A7%80",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#저작권-고지"
+  },"94": {
+    "doc": "Coding Standard",
+    "title": "클래스 구성",
+    "content": "클래스는 읽는 사람을 우선으로 구성해야 한다. 대부분 클래스를 읽는 사람들은 public 인터페이스를 사용한다. 따라서 클래스는 . | public | protected | private | . 순으로 작성한다. ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EA%B5%AC%EC%84%B1",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-구성"
+  },"95": {
+    "doc": "Coding Standard",
+    "title": "클래스 접두사",
+    "content": "언리얼 엔진의 클래스에는 접두사가 있다. 해당 접두사를 알고있으면 어떤 클래스에서 파생됐는지 알 수 있다. | 접두사 | 클래스 | 예시 | . | A | AActor | AActor, APawn, AGameMode | . | U | UObject | UTexture, UBlueprintFunctionLibrary | . | S | SWidget | SButton, Swidget | . | F | 사용자 구조체 | FVector, FHitResult | . | I | 추상 인터페이스 | IInterface | . | T | 템플릿 클래스 | TArray, TMap&lt; | . | E | Enum 타입 | EGAmeState | . | G | globals 전역변수 | GEngine | . | b | Boolean 변수 | bHasFadedIn, bDied | . 사용예시 . typedef TArray&lt;FMytype&gt; FArrayOfMyTypes; . typedef에는 해당 타입에 적합한 문자가 접두사로 붙어야 한다. 위 예시는 사용자 구조체 타입을 받는 템플릿 클래스다. ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%A0%91%EB%91%90%EC%82%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-접두사"
+  },"96": {
+    "doc": "Coding Standard",
+    "title": "네이밍 규칙",
+    "content": ". | 단어 사이에 언더스코어(_) 를 사용하지 않는다 | 단어의 첫 글자는 대문자로 표기한다 . | 예: MouseCoordinates (o), delta_x (x) | . | 타입명에는 추가로 대문자 접두사를 붙여 변수명과 구분한다 . | 예: FSkin (타입), Skin (FSkin 타입의 인스턴스) | . | 모든 변수는 한줄씩 선언한다 | 반환값이 있는 함수는 이름만으로 반환값을 명확히 한다 . | O: bool IsTeaFresh(FTea Tea) True 의미 명확 | X: bool CheckTea(FTea Tea) 어떤걸 반환할지 의미 불명확 | . | 반환값이 없는 절차 함수는 강한 동사+목적어 형식 . | 메서드의 목적어가 자기 자신이면 (맴버 함수) 생략 가능 | Handle, Process 등 모호한 동사 피하기 | . | bool 반환 함수는 항상 Yes/No 질문 형태를 취한다 . | IsVisible(), ShouldClearBuffer() | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EB%84%A4%EC%9D%B4%EB%B0%8D-%EA%B7%9C%EC%B9%99",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#네이밍-규칙"
+  },"97": {
+    "doc": "Coding Standard",
+    "title": "Const 정확성",
+    "content": ". | 함수 인자가 함수 내에서 변경되지 않는다면, const pointer 또는 const reference로 전달 | 객체를 변경하지 않는 메서드는 const로 명시 | 컨테이너를 수정하지 않는 반복문은 const 반복자 사용 | . 사용예시 . void SomeMutatingOperation(FThing&amp; OutResult, const TArray&lt;Int32&gt;&amp; InArray) { // InArray는 수정되지 않음, OutResult는 아마 수정될것임 } void FThing::SomeNonMutatingOperation() const { // 이 코드는 FThing을 변경하지 않음 } TArray&lt;FString&gt; StringArray; for (const FString&amp; : StringArray) { // 반복문 내부에서 StringArray를 수정하지 않음 } . | 반환 타입에 const 사용 금지 (컴파일 경고 발생) . | 단 const 레퍼런스, 포인터 반환은 허용 | . | . // 좋은 예시 - const 참조 반환 const TArray&lt;FString&gt;&amp; GetSomeArray(); // 좋은 예시 - const 포인터 반환 const TArray&lt;FString&gt;* GetSomeArray(); // 나쁜 예시 - const 배열 반환 const TArray&lt;FString&gt; GetSomeArray(); // 나쁜 예시 - const 포인터를 const로 반환 const TArray&lt;FString&gt;* const GetSomeArray(); . | 포인터 자체를 const로 만들 때는 타입 뒤에 const . | 포인터가 가리키는 값이 아닌, 포인터 자체의 재할당을 막음 | . | . // 포인터는 재할당 불가, T는 변경 가능 T* const Ptr = ...; // 잘못된 사용: 불가(레퍼런스는 재할당 불가 특성상 의미 없음) T&amp; const Ref = ...; . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-%EC%A0%95%ED%99%95%EC%84%B1",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-정확성"
+  },"98": {
+    "doc": "Coding Standard",
+    "title": "주석",
+    "content": ". | 클래스 주석 . | 이 클래스가 해결하는 문제 | 클래스 생성 이유 | . | 함수 (메서드) 주석 . | 함수 목적 기입 | . | 매개변수 주석 @param . | 측정 단위 | 예상 값 범위 | 불가능한 값 | 상태/오류 코드 의미 | . | 반환값 주석 @return . | 예상 반환 값 | . | 추가 정보 . | @warning 경고, @See보기 등을을 선택적으로 사용함 | . | . 사용예시 . /** The interface for drinkable objects. */ class IDrinkable { public: /** * Called when a player drinks this object. * @param OutFocusMultiplier - 반환 시, 마시는 사람의 집중력에 곱할 배수를 담는다. * @param OutThirstQuenchingFraction - 반환 시, 갈증 해소 정도(0~1)를 담는다. * @warning 반드시 음료가 제대로 준비된 후 호출해야 함. */ virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) = 0; }; /** 단일 찻잔 */ class FTea : public IDrinkable { public: /** * 주어진 물의 부피와 온도로 우려냈을 때, 차의 맛 변화량을 계산 * @param VolumeOfWater - 우릴 때 사용된 물의 양(mL) * @param TemperatureOfWater - 물의 온도(Kelvin) * @param OutNewPotency - 우려낸 후 차의 효능(0.97~1.04) * @return 차의 맛 강도 변화량(1분당 TTU) */ float Steep( const float VolumeOfWater, const float TemperatureOfWater, float&amp; OutNewPotency ); /** 설탕 당도 기준으로 감미를 추가 */ void Sweeten(const float EquivalentGramsOfSucrose); /** 일본 내 판매가(엔) */ float GetPrice() const { return Price; } virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) override; private: /** 가격(엔) */ float Price; /** 감미(설탕 환산 그램) */ float Sweetness; }; . ## . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A3%BC%EC%84%9D",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#주석"
+  },"99": {
+    "doc": "Coding Standard",
+    "title": "사용가능한 표준 라이브러리 목록",
+    "content": ". | &lt;atomic&gt; : 신규 코드는 std::atomic 사용. 기존 TAtomic은 부분 구현만 되어 있음. | &lt;type_traits&gt; : 겹치는 부분은 표준 trait 사용. (표준 trait는 value/type 소문자, 기존 UE는 대문자 Value/Type 주의) | &lt;initializer_list&gt; : braced initializer 지원에 필수, 대체재 없음 | &lt;regex&gt; : 직접 사용 가능하나 에디터 전용 코드에 한정. 자체 구현 계획 없음. | &lt;limits&gt; : std::numeric_limits 전부 사용 가능 | &lt;cmath&gt; : 부동소수점 비교 함수만 사용 허용 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%82%AC%EC%9A%A9%EA%B0%80%EB%8A%A5%ED%95%9C-%ED%91%9C%EC%A4%80-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%AA%A9%EB%A1%9D",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#사용가능한-표준-라이브러리-목록"
+  },"100": {
     "doc": "Computer architecture",
     "title": "Computer architecture",
     "content": " ",
     "url": "/docs/Computer%20architecture/",
     
     "relUrl": "/docs/Computer%20architecture/"
-  },"87": {
+  },"101": {
+    "doc": "Create Custom Editor Tools",
+    "title": "Create Custom Editor Tools",
+    "content": "빠른 작업 효율 향상을 위해 랜덤 배치 툴을 구현해보자 . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/"
+  },"102": {
+    "doc": "GPU Architecture",
+    "title": "GPU Architecture",
+    "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
+  },"103": {
+    "doc": "Linear Algebra",
+    "title": "Linear Algebra",
+    "content": " ",
+    "url": "/docs/Math/linear%20algebra/",
+    
+    "relUrl": "/docs/Math/linear%20algebra/"
+  },"104": {
+    "doc": "Computer Graphics",
+    "title": "Computer Graphics",
+    "content": " ",
+    "url": "/docs/Computer%20Graphics/",
+    
+    "relUrl": "/docs/Computer%20Graphics/"
+  },"105": {
     "doc": "C++",
     "title": "C++",
     "content": " ",
     "url": "/docs/C++/",
     
     "relUrl": "/docs/C++/"
-  },"88": {
+  },"106": {
     "doc": "Material",
     "title": "Material",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"89": {
+  },"107": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
-    "content": " ",
+    "content": "참고하면 좋은 링크 . | UnrealEngine c++ Guide | blueprints vs c++ | . ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"90": {
+  },"108": {
     "doc": "Home",
     "title": "Home",
     "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ",
