@@ -629,132 +629,216 @@
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#editor-utility-tool--editor-scripting"
   },"90": {
-    "doc": "Graphics rendering pipeline",
-    "title": "Graphics rendering pipeline",
-    "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
-    "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
-    
-    "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
-  },"91": {
-    "doc": "Math",
-    "title": "Math",
+    "doc": "String",
+    "title": "String",
     "content": " ",
-    "url": "/docs/Math/",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html",
     
-    "relUrl": "/docs/Math/"
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html"
+  },"91": {
+    "doc": "String",
+    "title": "FString",
+    "content": "FString은 일반적인 문자열 데이터로 문자열 검색, 수정, 비교를 할 수 있다. | 데이터 구조 . | 메모리 상에 각 인스턴스마다 고유 문자 배열을 직접 저장 | 내부적으로 TArray&lt;TCHAR&gt; (=동적 배열 기반 유니코드 문자열) | C++의 std::wstring(wide string)과 비슷하지만, 언리얼 엔진 특화 기능(TCHAR, UTF-16, 매크로 등)이 있다 | . | 대표적 사용 예 . | 파일 경로, 로그 메시지 | 유저 입력 (채팅, 이름 등) | 임시 데이터 처리, 문자열 연산 | . | 특징 . | 수정 가능 | 문자열 조작이 자유로움 | 각 인스턴스가 자체 메모리 공간 사용 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fstring",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fstring"
   },"92": {
+    "doc": "String",
+    "title": "FName",
+    "content": "FString과 다르게 문자열 전체 저장 X. 글로벌 네임 테이블에 저장되어 데이터를 경량화 . | 데이터 구조 . | 엔진 시작 시부터 종료까지 고유 문자열을 전역적으로 관리하는 글로벌 네임 테이블 사용 . | 실제 문자열 데이터는 네임 테이블에 한번만 등록됨 | . | 어떤 FName이 새로 생성될 때, 문자열이 이미 테이블에 있으면 기존 인덱스를 사용하고, 없으면 새로 추가함 | . | 문자열의 중복 저장을 막고, 모든 FName이 같은 문자열이면 동일한 인덱스를 공유한다 | . | 대표적인 사용 예 . | 오브젝트 식별에 주로 사용 | 변수명, 파라미터 이름 | 리소스/에셋 이름 | GameplayTags | . | 특징 . | 수정 불가 | 비교 검색이 매우 빠름 . | 문자열끼리 직접 비교하는 대신, 인덱스만 비교하면 되기 때문에 성능이 우수하다 | . | 대소문자 구분이 없다 | 가비지 컬렉션 대상이 아니다 (엔진이 꺼질 때 까지 유지) | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fname",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fname"
+  },"93": {
+    "doc": "String",
+    "title": "FText",
+    "content": "사용자에게 보여지는 텍스트에 주로 사용된다. 다국어 번역이 필요한 경우 사용. FText는 외부 API에서 받은 플레이어 이름 등을 UI에 표시할 때처럼, 현지화 테이블 미등록 텍스트 문자열에도 쓰인다. | 데이터 구조 | . 최상위 . | ITextData(인터페이스)의 TSharedRef 스마트 포인터만을 소유 | 실질적 데이터는 FTextData에 들어있다. class FText { private: TSharedRef&lt;ITextData, ESPMode::ThreadSafe&gt; TextData; ... }; . | . FTextData 구조체 . struct FTextData : ITextData { FString SourceString; // 원본 문자열 FCulturePtr TextCulture; // 해당 텍스트의 문화권(언어) 정보 FTextHistory TextHistory; // 텍스트 생성/변환 이력 (핵심!) ... }; . 현지화 히스토리 . | 다양한 하위 클래스를 통해 데이터 관리 가능 . | FTextHistory_LocalizedString : 현지화 키, 원본 텍스트, 로컬라이제이션 리소스 정보 등 저장 | FTextHistory_FormattedNumber : 숫자 포맷, 소수점, 지역화 등 정보 | FTextHistory_FormatString : 포맷 패턴, 인자 배열 등 | . | . class FTextHistory_LocalizedString : public FTextHistory_Base { FString SourceString; // 원본 텍스트 FString Namespace; // 현지화 네임스페이스 FString Key; // 현지화 키 FString LocalizedString; // 번역된 문자열(캐싱) ... }; . FText 구조 정리 . FText └─ TextData (FTextData) ├─ SourceString (원본) ├─ TextCulture (문화권) └─ TextHistory (생성/포맷/현지화 이력) ├─ 현지화키 ├─ 네임스페이스 ├─ 포맷정보 └─ 캐시된 번역값 등... | 대표적인 사용 예 . | UI 버튼/ 메뉴 텍스트 (시작, Continue 등) | 게임 대사, 퀘스트 설명, 튜토리얼 메시지 | 점수, 날짜, 숫자 등 표시 | 모든 다국어 지원 필요한 표시용 텍스트 | . | 특징 . | 현지화, 포맷, 문화권별 번역 자동 처리 | 직접 수정 불가. 변환 후 새로 만들어야 함 | 직접 비교/조작은 제한됨 . | FText끼리 == 연산은 데이터 주소 또는 히스토리 비교이므로, 실제 표시 문자열이 같아도 false가 나올 수 있음 | . | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#ftext",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#ftext"
+  },"94": {
+    "doc": "String",
+    "title": "정리",
+    "content": "| 클래스 | 사용 목적 | 데이터 구조 | 특징 | . | FString | 임의 문자열, 수정/검색/연결 | TArray(인스턴스별 동적 배열) | 수정 가능, 조작 자유 | . | FText | 현지화/번역 표시 텍스트 | TSharedRef + FTextHistory | 현지화 지원, 수정 어려움, 포맷/언어 처리 | . | FName | 식별자/키/이름/빠른비교 | 글로벌 해시 테이블 인덱스+번호 | 비교 빠름, 대소문자 무시, 수정 불가 | . 참고 링크 . | String Handling | Why you should be using GameplayTags in Unreal Engine | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#%EC%A0%95%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#정리"
+  },"95": {
+    "doc": "Transform",
+    "title": "Transform",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html"
+  },"96": {
+    "doc": "Transform",
+    "title": "FVector",
+    "content": "3차원 공간상의 위치, 방향, 속도, 크기 등 벡터 값을 표현할 때 사용 . | 오브젝트의 위치 (Location) : SetActorLocation(FVector(100.f, 200.f, 300.f)); | 이동 방향 및 속도 (Velocity, Direction) : FVector Direction = Target - Source; | 스케일(Scale) 값 (상대적 크기) | 힘(Force), 가속도(Acceleration) 등 물리 연산 | 충돌 처리에서 법선 벡터(Normal) 표현 | . | 데이터 구조 struct FVector { float X; float Y; float Z; }; . | 오른손 법칙 좌표계 : Z-위, X-앞, Y-오른쪽 | . | 특징 . | 기본적인 연산자 오버로딩 지원 (+, -, *, /, dot, cross 등) | 크기, 정규화, 내적(dot), 외적(cross) 등 벡터 연산 지원 | 단순 위치/방향뿐 아니라, 각종 수학적, 물리적 벡터 표현에 모두 사용 | 방향성과 크기를 함께 가짐 (예: 방향 벡터는 크기=1로 정규화) | . | 주요 메서드 | . | 메서드 | 매개변수 | 반환값 | 설명 | . | Size() | 없음 | float | 벡터의 크기를 반환합니다. | . | Normalize() | 없음 | 없음 | 벡터를 정규화합니다. | . | Dot() | const FVector&amp; Other | float | 두 벡터의 내적 | . | Cross() | const FVector&amp; Other | FVector | 두 벡터의 외적 | . | Rotation() | 없음 | FRotator | 벡터의 방향을 회전 값으로 반환 | . | Lerp() | const FVector&amp; A const FVector&amp; B float Alpha | FVector | 두 벡터 간의 선형 보간 | . | Size() / SizeSquared() |   | 벡터의 크기 또는 크기의 제곱을 반환 |   | . 배경 수학 . 벡터 연산(덧셈, 뺄셈, 스칼라 곱/나눗셈, 내적/외적 등)은 선형대수의 기본 연산. 내적(Dot Product): 두 벡터의 방향성이 얼마나 일치하는지 계산 → 코사인 법칙과 연관되어 각도 구하기, 투영, 정규화, 평면 법선 등 계산에 사용 . A·B = Ax * Bx + Ay * By + Az * Bz . 외적(Cross Product): 두 벡터에 수직인 벡터 산출 → 평면의 법선, 회전축 등 계산 . A×B = (Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx) . 정규화(Normalization) → 크기를 1로 맞춤 . V.Normalize() → V / |V| . 거리/길이 . V.Size() = sqrt(X^2 + Y^2 + Z^2) . 선형보간(LERP) . Lerp(A, B, Alpha) = (1-Alpha)*A + Alpha*B . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fvector",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fvector"
+  },"97": {
+    "doc": "Transform",
+    "title": "FRotator",
+    "content": "오일러 각(Euler Angle)(Pitch, Yaw, Roll)로 3D 회전을 표현할 때 사용 . | 오브젝트 회전 : SetActorRotation(FRotator(0.f, 90.f, 0.f)); | 캐릭터, 카메라의 방향(회전) | Actor/Component의 회전값 저장 : GetActorRotation() | 블루프린트, 에디터의 회전값 입력 등 | . | 데이터 구조 struct FRotator { float Pitch; // X축 회전 (상하) float Yaw; // Z축 회전 (좌우) float Roll; // Y축 회전 (틸트) }; . | 세 개의 float값(Pitch, Yaw, Roll)로 오일러 각 표현 | . | 특징 . | 오일러 각 특성상 Gimbal Lock(짐벌락) 문제 발생 가능 | 사람에게 직관적으로 이해하기 쉬움 (디자이너, 에디터에서 많이 사용) | 내부적으로는 보통 Degree(각도) 단위 사용 (Radian 변환 필요시 지원) | FRotator는 내부적으로 회전 행렬 혹은 쿼터니언으로 변환 가능 | . | 주요 메서드 | . | 메서드 | 매개변수 | 반환값 | 설명 | . | Quaternion() | 없음 | FQuat | 오일러 각을 쿼터니언으로 변환 | . | RotateVector() | const FVector&amp; V | FVector | 벡터를 회전 | . | UnrotateVector() | const FVector&amp; V | FVector | 회전된 벡터를 원래 방향으로 되돌림 | . | GetNormalized() | 없음 | FVector | 회전된 벡터를 원래 방향으로 되돌림 | . | Clamp() | 없음 | FRotator | 회전 값을 제한 | . 배경 수학 . | 오일러 각(Euler Angle) : 세 축(X, Y, Z)에 대한 회전 각도(θx, θy, θz)로 회전을 표현. | 언리얼 엔진은 Z(Yaw) → Y(Pitch) → X(Roll) 순서로 회전 (즉, “Yaw → Pitch → Roll” 오더) | . 행렬 변환: 오일러 각은 각각의 축 회전을 행렬로 변환 후 곱셈해서 최종 회전값을 만듦 . R = Rz(Yaw) * Ry(Pitch) * Rx(Roll) . Gimbal Lock: 두 축이 일치하여 3차원 회전 자유도가 2차원으로 줄어드는 현상 . | 예: Pitch가 ±90°에 가까워지면, Roll과 Yaw가 같은 평면이 됨 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#frotator",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#frotator"
+  },"98": {
+    "doc": "Transform",
+    "title": "FQuat",
+    "content": "3D 공간에서 회전을 쿼터니언(Quaternion)으로 표현하여, 회전 연산의 정확성 및 안정성 확보 . | 모션 블렌딩, 본(스켈레톤) 등 애니메이션의 회전 보간 | 부드러운 연속 회전 (SLERP) | Gimbal Lock 방지가 중요한 복잡한 회전 연산 | . | 데이터 구조 struct FQuat { float X; // 허수 (벡터) float Y; // 허수 (벡터) float Z; // 허수 (벡터) float W; // 실수 (스칼라) 부분 }; . | 4개의 float형 멤버(X, Y, Z, W)로 구성 | 단위 쿼터니언(norm = 1) 으로 회전 표현 | . | 특징 . | 4차원 복소수로 회전 표현 | Gimbal Lock 문제 없음 | 회전 합성/보간에 최적화 (SLERP, NLERP 등 지원) | FRotator, FMatrix 등과 상호 변환 함수 제공 | 보통은 FRotator(에디터/코드) ↔ FQuat(엔진 내부)로 변환하며 사용 | . | 주요 메서드 | . | 메서드 | 매개변수 | 반환값 | 설명 | . | RotateVector() | const FVector&amp; V | FVector | 벡터를 회전 | . | Inverse() | 없음 | FQuat | 쿼터니언의 역을 반환 | . | Slerp() | const FQuat&amp; A const FQuat&amp; B float Alpha | FQuat | 두 쿼터니언 간의 구면 선형 보간을 수행 | . | ToAxisAndAngle() | FVector&amp; Axis float&amp; Angle | 없음 (출력 매개변수 사용) | 회전 축과 각도로 변환 | . | MakeFromEuler() | const FVector&amp; Euler | FQuat | 오일러 각도로부터 쿼터니언을 생성 | . 배경 수학 . | 쿼터니언(Quaternion): 실수부(w)와 허수부(x, y, z)로 구성된 4차원 수학 구조 Q = w + xi + yj + zk (i, j, k는 허수 단위벡터) . | 회전 표현: 3D 공간에서 임의의 축(axis)과 각도(θ)에 대한 회전 Q = [cos(θ/2), (axis * sin(θ/2))] . | 복합 회전: 쿼터니언 곱셈으로 연속 회전 표현 Q' = Q2 * Q1 (Q1 후 Q2 수행) . | 회전 적용: 점 P를 Q로 회전시키려면 P' = Q * P * Q⁻¹ (여기서 P는 벡터를 허수부로 취급한 쿼터니언) . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fquat",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fquat"
+  },"99": {
+    "doc": "Transform",
+    "title": "FTransform",
+    "content": "위치, 회전, 스케일을 함께 관리하여 오브젝트의 변환을 효율적으로 처리 . | 오브젝트의 전체 변환 설정: SetActorTransform(FTransform(Rotation, Translation, Scale)); | . | 데이터 구조 struct FTransform { FQuat Rotation; FVector Translation; FVector Scale3D; }; . | 특징 . | 위치, 회전, 스케일을 하나의 구조체로 관리 | 계층적 트랜스폼 계산에 유용 | 블루프린트에서 쉽게 사용할 수 있도록 지원 | . | 주요 메서드 | . 많아서 나중에 정리할랭 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#ftransform",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#ftransform"
+  },"100": {
+    "doc": "Transform",
+    "title": "정리",
+    "content": "| 타입 | 목적/용도 | 데이터 구조 | 특징 요약 | . | FVector | 3D 위치, 방향, 벡터 | X, Y, Z (float) | 모든 위치/방향/벡터 연산에 사용 | . | FRotator | 오일러 각 기반 3D 회전 | Pitch, Yaw, Roll (float) | 직관적, Gimbal Lock 위험 | . | FQuat | 쿼터니언 기반 3D 회전 | X, Y, Z, W (float) | Gimbal Lock 없음, 고급 회전 | . | FTransform | 위치, 회전, 스케일 통합 변환 | 위치, 회전, 스케일 구조체 | Actor 변환, 부모-자식 변환 관리 | . 참고 링크 . | UE4 Transform Calculus | Vectors | Roll, Pitch, Yaw | Quaternion | Gimbal lock | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#%EC%A0%95%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#정리"
+  },"101": {
     "doc": "Coding Standard",
     "title": "Coding Standard",
     "content": ". | Coding Standard | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/"
-  },"93": {
+  },"102": {
     "doc": "Coding Standard",
     "title": "저작권 고지",
     "content": "배포하는 모든 소스 파일(.h, .cpp, .xaml 등)에는 파일의 첫 줄에 반드시 다음과 같은 저작권 공지가 포함되어야 한다. // Copyright Epic Games, Inc. All Rights Reserved. 해당 줄이 없거나 형식이 다르면 오류 -&gt; 빌드 실패 처리됨 . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A0%80%EC%9E%91%EA%B6%8C-%EA%B3%A0%EC%A7%80",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#저작권-고지"
-  },"94": {
+  },"103": {
     "doc": "Coding Standard",
     "title": "클래스 구성",
     "content": "클래스는 읽는 사람을 우선으로 구성해야 한다. 대부분 클래스를 읽는 사람들은 public 인터페이스를 사용한다. 따라서 클래스는 . | public | protected | private | . 순으로 작성한다. ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EA%B5%AC%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-구성"
-  },"95": {
+  },"104": {
     "doc": "Coding Standard",
     "title": "클래스 접두사",
-    "content": "언리얼 엔진의 클래스에는 접두사가 있다. 해당 접두사를 알고있으면 어떤 클래스에서 파생됐는지 알 수 있다. | 접두사 | 클래스 | 예시 | . | A | AActor | AActor, APawn, AGameMode | . | U | UObject | UTexture, UBlueprintFunctionLibrary | . | S | SWidget | SButton, Swidget | . | F | 사용자 구조체 | FVector, FHitResult | . | I | 추상 인터페이스 | IInterface | . | T | 템플릿 클래스 | TArray, TMap&lt; | . | E | Enum 타입 | EGAmeState | . | G | globals 전역변수 | GEngine | . | b | Boolean 변수 | bHasFadedIn, bDied | . 사용예시 . typedef TArray&lt;FMytype&gt; FArrayOfMyTypes; . typedef에는 해당 타입에 적합한 문자가 접두사로 붙어야 한다. 위 예시는 사용자 구조체 타입을 받는 템플릿 클래스다. ",
+    "content": "언리얼 엔진의 클래스에는 접두사가 있다. 해당 접두사를 알고있으면 어떤 클래스에서 파생됐는지 알 수 있다. | 접두사 | 클래스 | 예시 | . | A | AActor | AActor, APawn, AGameMode | . | U | UObject | UTexture, UBlueprintFunctionLibrary | . | S | SWidget | SButton, Swidget | . | F | 사용자 구조체 | FVector, FHitResult | . | I | 추상 인터페이스 | IInterface | . | T | 템플릿 클래스 | TArray&lt;T&gt;, TMap&lt;&lt;T&gt; | . | E | Enum 타입 | EGAmeState | . | G | globals 전역변수 | GEngine | . | b | Boolean 변수 | bHasFadedIn, bDied | . 사용예시 . typedef TArray&lt;FMytype&gt; FArrayOfMyTypes; . typedef에는 해당 타입에 적합한 문자가 접두사로 붙어야 한다. 위 예시는 사용자 구조체 타입을 받는 템플릿 클래스다. ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%A0%91%EB%91%90%EC%82%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-접두사"
-  },"96": {
+  },"105": {
     "doc": "Coding Standard",
     "title": "네이밍 규칙",
     "content": ". | 단어 사이에 언더스코어(_) 를 사용하지 않는다 | 단어의 첫 글자는 대문자로 표기한다 . | 예: MouseCoordinates (o), delta_x (x) | . | 타입명에는 추가로 대문자 접두사를 붙여 변수명과 구분한다 . | 예: FSkin (타입), Skin (FSkin 타입의 인스턴스) | . | 모든 변수는 한줄씩 선언한다 | 반환값이 있는 함수는 이름만으로 반환값을 명확히 한다 . | O: bool IsTeaFresh(FTea Tea) True 의미 명확 | X: bool CheckTea(FTea Tea) 어떤걸 반환할지 의미 불명확 | . | 반환값이 없는 절차 함수는 강한 동사+목적어 형식 . | 메서드의 목적어가 자기 자신이면 (맴버 함수) 생략 가능 | Handle, Process 등 모호한 동사 피하기 | . | bool 반환 함수는 항상 Yes/No 질문 형태를 취한다 . | IsVisible(), ShouldClearBuffer() | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EB%84%A4%EC%9D%B4%EB%B0%8D-%EA%B7%9C%EC%B9%99",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#네이밍-규칙"
-  },"97": {
+  },"106": {
     "doc": "Coding Standard",
     "title": "Const 정확성",
     "content": ". | 함수 인자가 함수 내에서 변경되지 않는다면, const pointer 또는 const reference로 전달 | 객체를 변경하지 않는 메서드는 const로 명시 | 컨테이너를 수정하지 않는 반복문은 const 반복자 사용 | . 사용예시 . void SomeMutatingOperation(FThing&amp; OutResult, const TArray&lt;Int32&gt;&amp; InArray) { // InArray는 수정되지 않음, OutResult는 아마 수정될것임 } void FThing::SomeNonMutatingOperation() const { // 이 코드는 FThing을 변경하지 않음 } TArray&lt;FString&gt; StringArray; for (const FString&amp; : StringArray) { // 반복문 내부에서 StringArray를 수정하지 않음 } . | 반환 타입에 const 사용 금지 (컴파일 경고 발생) . | 단 const 레퍼런스, 포인터 반환은 허용 | . | . // 좋은 예시 - const 참조 반환 const TArray&lt;FString&gt;&amp; GetSomeArray(); // 좋은 예시 - const 포인터 반환 const TArray&lt;FString&gt;* GetSomeArray(); // 나쁜 예시 - const 배열 반환 const TArray&lt;FString&gt; GetSomeArray(); // 나쁜 예시 - const 포인터를 const로 반환 const TArray&lt;FString&gt;* const GetSomeArray(); . | 포인터 자체를 const로 만들 때는 타입 뒤에 const . | 포인터가 가리키는 값이 아닌, 포인터 자체의 재할당을 막음 | . | . // 포인터는 재할당 불가, T는 변경 가능 T* const Ptr = ...; // 잘못된 사용: 불가(레퍼런스는 재할당 불가 특성상 의미 없음) T&amp; const Ref = ...; . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-%EC%A0%95%ED%99%95%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-정확성"
-  },"98": {
+  },"107": {
     "doc": "Coding Standard",
     "title": "주석",
-    "content": ". | 클래스 주석 . | 이 클래스가 해결하는 문제 | 클래스 생성 이유 | . | 함수 (메서드) 주석 . | 함수 목적 기입 | . | 매개변수 주석 @param . | 측정 단위 | 예상 값 범위 | 불가능한 값 | 상태/오류 코드 의미 | . | 반환값 주석 @return . | 예상 반환 값 | . | 추가 정보 . | @warning 경고, @See보기 등을을 선택적으로 사용함 | . | . 사용예시 . /** The interface for drinkable objects. */ class IDrinkable { public: /** * Called when a player drinks this object. * @param OutFocusMultiplier - 반환 시, 마시는 사람의 집중력에 곱할 배수를 담는다. * @param OutThirstQuenchingFraction - 반환 시, 갈증 해소 정도(0~1)를 담는다. * @warning 반드시 음료가 제대로 준비된 후 호출해야 함. */ virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) = 0; }; /** 단일 찻잔 */ class FTea : public IDrinkable { public: /** * 주어진 물의 부피와 온도로 우려냈을 때, 차의 맛 변화량을 계산 * @param VolumeOfWater - 우릴 때 사용된 물의 양(mL) * @param TemperatureOfWater - 물의 온도(Kelvin) * @param OutNewPotency - 우려낸 후 차의 효능(0.97~1.04) * @return 차의 맛 강도 변화량(1분당 TTU) */ float Steep( const float VolumeOfWater, const float TemperatureOfWater, float&amp; OutNewPotency ); /** 설탕 당도 기준으로 감미를 추가 */ void Sweeten(const float EquivalentGramsOfSucrose); /** 일본 내 판매가(엔) */ float GetPrice() const { return Price; } virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) override; private: /** 가격(엔) */ float Price; /** 감미(설탕 환산 그램) */ float Sweetness; }; . ## . ",
+    "content": ". | 클래스 주석 . | 이 클래스가 해결하는 문제 | 클래스 생성 이유 | . | 함수 (메서드) 주석 . | 함수 목적 기입 | . | 매개변수 주석 @param . | 측정 단위 | 예상 값 범위 | 불가능한 값 | 상태/오류 코드 의미 | . | 반환값 주석 @return . | 예상 반환 값 | . | 추가 정보 . | @warning 경고, @See보기 등을을 선택적으로 사용함 | . | . 사용예시 . /** The interface for drinkable objects. */ class IDrinkable { public: /** * Called when a player drinks this object. * @param OutFocusMultiplier - 반환 시, 마시는 사람의 집중력에 곱할 배수를 담는다. * @param OutThirstQuenchingFraction - 반환 시, 갈증 해소 정도(0~1)를 담는다. * @warning 반드시 음료가 제대로 준비된 후 호출해야 함. */ virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) = 0; }; /** 단일 찻잔 */ class FTea : public IDrinkable { public: /** * 주어진 물의 부피와 온도로 우려냈을 때, 차의 맛 변화량을 계산 * @param VolumeOfWater - 우릴 때 사용된 물의 양(mL) * @param TemperatureOfWater - 물의 온도(Kelvin) * @param OutNewPotency - 우려낸 후 차의 효능(0.97~1.04) * @return 차의 맛 강도 변화량(1분당 TTU) */ float Steep( const float VolumeOfWater, const float TemperatureOfWater, float&amp; OutNewPotency ); /** 설탕 당도 기준으로 감미를 추가 */ void Sweeten(const float EquivalentGramsOfSucrose); /** 일본 내 판매가(엔) */ float GetPrice() const { return Price; } virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) override; private: /** 가격(엔) */ float Price; /** 감미(설탕 환산 그램) */ float Sweetness; }; . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A3%BC%EC%84%9D",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#주석"
-  },"99": {
+  },"108": {
+    "doc": "Coding Standard",
+    "title": "차후 더 추가 예정",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%B0%A8%ED%9B%84-%EB%8D%94-%EC%B6%94%EA%B0%80-%EC%98%88%EC%A0%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#차후-더-추가-예정"
+  },"109": {
     "doc": "Coding Standard",
     "title": "사용가능한 표준 라이브러리 목록",
     "content": ". | &lt;atomic&gt; : 신규 코드는 std::atomic 사용. 기존 TAtomic은 부분 구현만 되어 있음. | &lt;type_traits&gt; : 겹치는 부분은 표준 trait 사용. (표준 trait는 value/type 소문자, 기존 UE는 대문자 Value/Type 주의) | &lt;initializer_list&gt; : braced initializer 지원에 필수, 대체재 없음 | &lt;regex&gt; : 직접 사용 가능하나 에디터 전용 코드에 한정. 자체 구현 계획 없음. | &lt;limits&gt; : std::numeric_limits 전부 사용 가능 | &lt;cmath&gt; : 부동소수점 비교 함수만 사용 허용 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%82%AC%EC%9A%A9%EA%B0%80%EB%8A%A5%ED%95%9C-%ED%91%9C%EC%A4%80-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%AA%A9%EB%A1%9D",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#사용가능한-표준-라이브러리-목록"
-  },"100": {
-    "doc": "Computer architecture",
-    "title": "Computer architecture",
-    "content": " ",
-    "url": "/docs/Computer%20architecture/",
-    
-    "relUrl": "/docs/Computer%20architecture/"
-  },"101": {
-    "doc": "Create Custom Editor Tools",
-    "title": "Create Custom Editor Tools",
-    "content": "빠른 작업 효율 향상을 위해 랜덤 배치 툴을 구현해보자 . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/"
-  },"102": {
-    "doc": "GPU Architecture",
-    "title": "GPU Architecture",
-    "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
-    "url": "/docs/Computer%20architecture/GPU%20Architecture/",
-    
-    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
-  },"103": {
-    "doc": "Linear Algebra",
-    "title": "Linear Algebra",
-    "content": " ",
-    "url": "/docs/Math/linear%20algebra/",
-    
-    "relUrl": "/docs/Math/linear%20algebra/"
-  },"104": {
-    "doc": "Computer Graphics",
-    "title": "Computer Graphics",
-    "content": " ",
-    "url": "/docs/Computer%20Graphics/",
-    
-    "relUrl": "/docs/Computer%20Graphics/"
-  },"105": {
+  },"110": {
     "doc": "C++",
     "title": "C++",
     "content": " ",
     "url": "/docs/C++/",
     
     "relUrl": "/docs/C++/"
-  },"106": {
+  },"111": {
+    "doc": "Computer Graphics",
+    "title": "Computer Graphics",
+    "content": " ",
+    "url": "/docs/Computer%20Graphics/",
+    
+    "relUrl": "/docs/Computer%20Graphics/"
+  },"112": {
+    "doc": "Linear Algebra",
+    "title": "Linear Algebra",
+    "content": " ",
+    "url": "/docs/Math/linear%20algebra/",
+    
+    "relUrl": "/docs/Math/linear%20algebra/"
+  },"113": {
+    "doc": "Graphics rendering pipeline",
+    "title": "Graphics rendering pipeline",
+    "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
+    "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
+    
+    "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
+  },"114": {
+    "doc": "Create Custom Editor Tools",
+    "title": "Create Custom Editor Tools",
+    "content": "빠른 작업 효율 향상을 위해 랜덤 배치 툴을 구현해보자 . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/"
+  },"115": {
+    "doc": "Computer architecture",
+    "title": "Computer architecture",
+    "content": " ",
+    "url": "/docs/Computer%20architecture/",
+    
+    "relUrl": "/docs/Computer%20architecture/"
+  },"116": {
+    "doc": "GPU Architecture",
+    "title": "GPU Architecture",
+    "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
+  },"117": {
+    "doc": "Math",
+    "title": "Math",
+    "content": " ",
+    "url": "/docs/Math/",
+    
+    "relUrl": "/docs/Math/"
+  },"118": {
     "doc": "Material",
     "title": "Material",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"107": {
+  },"119": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
     "content": "참고하면 좋은 링크 . | UnrealEngine c++ Guide | blueprints vs c++ | . ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"108": {
+  },"120": {
     "doc": "Home",
     "title": "Home",
     "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ",

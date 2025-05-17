@@ -37,7 +37,7 @@ U|UObject|UTexture, UBlueprintFunctionLibrary|
 S|SWidget|SButton, Swidget|
 F|사용자 구조체|FVector, FHitResult|
 I|추상 인터페이스|IInterface|
-T|템플릿 클래스|TArray<T>, TMap<<T>|
+T|템플릿 클래스|`TArray<T>`, `TMap<<T>`|
 E|Enum 타입|EGAmeState|
 G|globals 전역변수|GEngine|
 b|Boolean 변수|bHasFadedIn, bDied|
@@ -189,7 +189,7 @@ private:
 
 ```
 
-## 
+## 차후 더 추가 예정
 
 
 ## 사용가능한 표준 라이브러리 목록
