@@ -5,7 +5,7 @@ parent: "UObject"
 nav_order: 3
 ---
 
-## UObject 사용 결과
+## UObject 특징
 ## 1. 리플렉션(Reflection)
 **런타임에 객체의 타입, 필드, 메서드 정보를 조회하고 동적으로 접근/수정할 수 있는 기능**
 
@@ -26,7 +26,6 @@ nav_order: 3
 ### 내부 매커니즘
 - 각 UObject 인스턴스는 UClass 타입 메타데이터(속성, 함수, 부모 정보 등)를 보유.
 - 런타임에 GetClass(), FindField, GetDefaultObject, ProcessEvent 등의 API로 동적 접근.
-
 
 ## 2. 가비지 컬렉션(Garbage Collection)
 더 이상 필요하지 않은 **객체(메모리)를 자동으로 탐지하여 해제하는 메커니즘**
