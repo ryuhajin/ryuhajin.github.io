@@ -629,216 +629,538 @@
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/3.%20Scene%20create.html#editor-utility-tool--editor-scripting"
   },"90": {
+    "doc": "Container",
+    "title": "Container",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html"
+  },"91": {
+    "doc": "Container",
+    "title": "TArray",
+    "content": "동일한 타입의 데이터를 순차적으로 저장, 관리, 반복, 조작하기 위한 동적 배열 컨테이너 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#tarray",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#tarray"
+  },"92": {
+    "doc": "Container",
+    "title": "특징",
+    "content": ". | 하나의 TArray에는 반드시 동일 타입만 저장 가능 | 동적 크기 조절: 요소 추가/삭제에 따라 자동으로 메모리 할당/해제 및 재조정 | 슬랙(slack) 최적화: 추가/삭제에 따른 빈번한 할당/해제를 방지하기 위해 여유 메모리 유지 . | 실제 할당된 메모리는 Num(요소 개수) 이상일 수 있음(성능 최적화 목적) | . | 깊은 복사(Deep copy): 배열 자체의 복사는 내부 요소 모두 복사 | 메모리 및 성능 측면에서 튜닝 가능(Allocator, Reserve/Empty/Reset 등) | 블루프린트에서도 지원 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#%ED%8A%B9%EC%A7%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#특징"
+  },"93": {
+    "doc": "Container",
+    "title": "생성자 속성",
+    "content": "TArray를 생성할 때 element Type, Allocator 두 가지 속성을 사용할 수 있다. TArray&lt;int32&gt; IntArray; // 요소 타입 지정 TArray&lt;int32, TInlineAllocator&lt;4&gt;&gt; IntArray; // 요소, 할당자 속성 지정, 할당자는 선택 옵션 . 요소 타입 (Element Type) . TArray는 동일한 타입의 요소들을 저장하는 동질적(homogeneous) 컨테이너 . | 즉, 배열에 저장되는 모든 요소는 동일한 타입이어야 한다 | 이는 TArray, TArray, TArray&lt;UMyObject*&gt; 등으로 선언 | . 요소 타입은 다음과 같은 조건을 만족해야 함 . | 복사 가능(Copyable): 요소는 복사 생성자를 통해 복사될 수 있어야 함 | 소멸 가능(Destructible): 요소는 소멸자를 통해 적절히 정리될 수 있어야 함 | . 할당자 (Allocator) . TArray는 메모리 할당 방식을 결정하는 할당자(Allocator)를 선택적으로 지정할 수 있음 . | 할당자 | 설명 | . | FDefaultAllocator | 기본 힙 기반 할당자 | . | TInlineAllocator&lt;N&gt; | 처음 N개의 요소는 스택에 할당하고, 그 이후는 힙에 할당. 작은 배열에 유리하며, 스택 할당으로 인해 성능이 향상될 수 있음 | . | TFixedAllocator&lt;N&gt; | 고정 크기의 할당자로, 최대 N개의 요소만 저장할 수 있다. 초과할 경우 런타임 에러가 발생 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#%EC%83%9D%EC%84%B1%EC%9E%90-%EC%86%8D%EC%84%B1",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#생성자-속성"
+  },"94": {
+    "doc": "Container",
+    "title": "ADD vs Emplace",
+    "content": "ADD . 함수에 넘긴 인자를 임시 객체(temporary)로 만든 후, 그 임시 객체를 배열 끝에 복사하거나 이동해서 저장함 . TArray&lt;FString&gt; Arr; Arr.Add(TEXT(\"Hello\")); . | TEXT(\"Hello\")는 우선 임시로 FString이 만들어지고, 그 임시 객체가 TArray 내부에 복사/이동됨 | . Emplace . 배열 내부에 직접 인자를 전달해 객체를 생성함 . TArray&lt;FString&gt; Arr; Arr.Emplace(TEXT(\"Hello\")); . | TEXT(\"Hello\")를 인자로 받아서, 배열 메모리 공간에 바로 FString 생성자 호출 | . 결론 . | Add: 임시 객체 → TArray 내부 복사(힙) (임시 객체는 함수 끝나면 사라짐) . | 이미 만들어진 객체를 추가할 때 사용 | “이 객체를 배열에 더한다”는 의도가 명확함 | . | Emplace: 임시 객체 없이, 바로 TArray 내부(힙)에 생성 . | 임시 객체 생성/복사를 피함 → 성능 최적화 | 복잡한 객체 (복사/이동 비용이 큰 구조체 등)에서 효율적 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#add-vs-emplace",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#add-vs-emplace"
+  },"95": {
+    "doc": "Container",
+    "title": "TMap",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#tmap",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#tmap"
+  },"96": {
+    "doc": "Container",
+    "title": "TSet",
+    "content": "참고 링크 . | TArray | TMap | TSet | TArray vs std::vector | Optimizing TArray Usage for Performance | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#tset",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Container.html#tset"
+  },"97": {
+    "doc": "Function",
+    "title": "UObject 사용 결과",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#uobject-%EC%82%AC%EC%9A%A9-%EA%B2%B0%EA%B3%BC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#uobject-사용-결과"
+  },"98": {
+    "doc": "Function",
+    "title": "1. 리플렉션(Reflection)",
+    "content": "런타임에 객체의 타입, 필드, 메서드 정보를 조회하고 동적으로 접근/수정할 수 있는 기능 . | 리플렉션 데이터는 컴파일 시점에 UHT(Unreal Header Tool)이 자동 생성 . | GENERATED_BODY() 매크로가 이를 활성화 | . | 런타임 타입 정보(RTTI): UCLASS, UPROPERTY, UFUNCTION 등 매크로를 통해 리플렉션 데이터 생성 | 동적 캐스팅: Cast&lt;UMyClass&gt;(SomeObject) 형태로 안전한 타입 변환 가능 | 프로퍼티 검사: 런타임에 객체의 프로퍼티를 검사하고 수정할 수 있음 . | C++ 표준에는 런타임 리플렉션 기능이 없음 . | 예를 들어, 클래스에 어떤 필드가 있는지, 메서드가 무엇인지 런타임에 알 수 없음 | RTTI로 typeid, dynamic_cast 정도만 제공 | . | 언리얼의 리플렉션 . | 자체적인 리플렉션 시스템을 만들어 UObject 계열 클래스에 한해 런타임 타입 정보, 속성, 함수 목록 등을 관리 | C++ 매크로(UCLASS, UPROPERTY, UFUNCTION)와 Unreal Header Tool(UHT)이 자동으로 메타데이터를 생성해 코드에 삽입 | . | . 내부 매커니즘 . | 각 UObject 인스턴스는 UClass 타입 메타데이터(속성, 함수, 부모 정보 등)를 보유. | 런타임에 GetClass(), FindField, GetDefaultObject, ProcessEvent 등의 API로 동적 접근. | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#1-%EB%A6%AC%ED%94%8C%EB%A0%89%EC%85%98reflection",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#1-리플렉션reflection"
+  },"99": {
+    "doc": "Function",
+    "title": "2. 가비지 컬렉션(Garbage Collection)",
+    "content": "더 이상 필요하지 않은 객체(메모리)를 자동으로 탐지하여 해제하는 메커니즘 . | 자동 메모리 관리: UObject는 UE의 가비지 컬렉션 시스템과 통합되어 있어 참조가 없어지면 자동으로 제거 | UPROPERTY() 매크로로 표시된 멤버 변수는 가비지 컬렉터가 추적 . | C++은 명시적 메모리 관리(new/delete, 스마트 포인터)를 요구 . | 실수로 delete를 빼먹거나, 중복해서 delete하면 메모리 누수/오류가 발생할 수 있음. | . | 언리얼의 가비지 컬렉션 . | UObject 파생 객체만 엔진의 GC 대상이 됨 (일반 C++ 객체는 해당 없음) | 엔진은 참조 그래프(Reference Graph)를 따라 “루트 오브젝트에서부터 도달할 수 없는 UObject”를 자동 삭제 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#2-%EA%B0%80%EB%B9%84%EC%A7%80-%EC%BB%AC%EB%A0%89%EC%85%98garbage-collection",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#2-가비지-컬렉션garbage-collection"
+  },"100": {
+    "doc": "Function",
+    "title": "레퍼런스 그래프(Reference Graph)",
+    "content": "GC가 객체 간 참조 관계를 추적하는 핵심 메커니즘 . | 주기적으로 또는 명시적으로(엔진 Tick, 레벨 변경 등) GC가 수행됨 | UObject만 추적. 일반 C++ 객체/스마트 포인터는 GC 영향 없음 | 순환 참조 문제 자동 해결 | . // A가 B를 참조, B가 A를 참조해도 루트 연결이 없으면 모두 삭제됨 class A { UPROPERTY() B* RefB; }; class B { UPROPERTY() A* RefA; }; . 1. 루트 객체(Root Objects) 식별 . | 가비지 컬렉션의 시작점으로 절대 삭제되지 않는 객체들 | . - 월드에 배치된 `AActor` - `AddToRoot()`로 등록된 객체 - 게임 인스턴스(`UGameInstance`) - 에디터에서 열린 에셋 (`UPackage`) . 2. 그래프 탐색 (Mark 단계) . | 루트 객체부터 UPROPERTY() 참조를 재귀적으로 따라가며 도달 가능한 객체 마킹 | . Mark 단계 순서 . | GC Root(예: 월드, 게임 인스턴스, 에디터 오브젝트 등)에서 탐색 시작 | RootObjectA를 방문(Mark) | RootObjectA의 UPROPERTY 필드 참조를 따라 ObjB, ObjC를 방문(Mark) | ObjB의 UPROPERTY 필드 참조를 따라 ObjD, ObjE 방문(Mark) | … 이하 반복 | 모든 방문이 끝나면, Mark되지 않은 나머지 객체들은 GC 대상으로 간주 | . 3. 미사용 객체 삭제 (Sweep 단계) . | 마킹되지 않은 객체를 안전하게 제거 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#%EB%A0%88%ED%8D%BC%EB%9F%B0%EC%8A%A4-%EA%B7%B8%EB%9E%98%ED%94%84reference-graph",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#레퍼런스-그래프reference-graph"
+  },"101": {
+    "doc": "Function",
+    "title": "3. 직렬화(Serialization)",
+    "content": "UObject 기반 클래스 객체는 파일이나 네트워크로 저장/불러오거나 복제할 수 있음. | 맵, 에셋, 게임 세이브 파일, 블루프린트 인스턴스 등은 모두 UObject 파생 클래스의 직렬화에 기반해 저장/복원 | FArchive 기반의 엔진 직렬화 시스템이 모든 UPROPERTY 데이터를 자동으로 기록 및 재구성 . | UPROPERTY()로 선언된 변수는 별도의 코드 없이도 자동 직렬화 대상 | 예: SaveGame, 네트워크 동기화, 복제 등 | . | Serialize(FArchive&amp; Ar) 메서드를 오버라이드하면, 특정 데이터를 커스텀하게 저장/복원할 수 있음 | . 자동 직렬화 예시 . UCLASS() class UMySaveGame : public USaveGame { GENERATED_BODY() public: UPROPERTY() int32 PlayerLevel; UPROPERTY() FString PlayerName; }; // 이렇게 선언된 변수는 SaveGame 파일에 자동 저장/복원 . 커스텀 직렬화 시 버전 호환성을 위한 패턴 . void Serialize(FArchive&amp; Ar) { Super::Serialize(Ar); int32 Version = 0; Ar &lt;&lt; Version; // 버전 기록 if (Version &gt;= 1) { Ar &lt;&lt; MyNewVariable; } } . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#3-%EC%A7%81%EB%A0%AC%ED%99%94serialization",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#3-직렬화serialization"
+  },"102": {
+    "doc": "Function",
+    "title": "데이터 저장 흐름",
+    "content": ". | UObject 계열 클래스는 저장 대상이 되면 . | 엔진 내부의 FArchive 객체(파일/메모리/네트워크 스트림)를 통함 | 각 UPROPERTY 값을 자동으로 기록(Serialize)한다 | . | 불러오기(로드) 시 저장된 바이너리 데이터가 FArchive로 읽혀짐 . | UPROPERTY 정보를 기반으로 객체(=UObject)의 멤버 변수로 복원(Deserialize) | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%80%EC%9E%A5-%ED%9D%90%EB%A6%84",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#데이터-저장-흐름"
+  },"103": {
+    "doc": "Function",
+    "title": "SaveGame 동작 예시",
+    "content": "// SaveGame 객체 선언 UMySaveGame* SaveGameObj = NewObject&lt;UMySaveGame&gt;(); SaveGameObj-&gt;PlayerLevel = 25; SaveGameObj-&gt;PlayerName = TEXT(\"홍길동\"); // 저장 UGameplayStatics::SaveGameToSlot(SaveGameObj, TEXT(\"MySlot\"), 0); // 불러오기 UMySaveGame* LoadedGame = Cast&lt;UMySaveGame&gt;( UGameplayStatics::LoadGameFromSlot(TEXT(\"MySlot\"), 0) ); int32 LoadedLevel = LoadedGame-&gt;PlayerLevel; // 직렬화된 값이 자동 복원 . | 저장(Serialize) 과정 . | SaveGame 클래스 객체를 생성 | UGameplayStatics::SaveGameToSlot() 같은 API 호출 | 내부적으로 SaveGame 객체 → FArchive → UPROPERTY 자동 순회 및 값 기록 결과적으로 바이너리 파일(.sav 등)로 저장 | . | 불러오기(Deserialize) 과정 . | UGameplayStatics::LoadGameFromSlot() 같은 API 호출 | FArchive가 파일을 읽고, SaveGame 객체를 새로 만듦 | FArchive 데이터 → UPROPERTY 기반으로 멤버 변수 값이 자동 복원 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#savegame-%EB%8F%99%EC%9E%91-%EC%98%88%EC%8B%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#savegame-동작-예시"
+  },"104": {
+    "doc": "Function",
+    "title": "네트워크 동기화 (Replicate) 동작 예시",
+    "content": "나중에 멀티 플레이 공부할 때 채워넣겠음 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EB%8F%99%EA%B8%B0%ED%99%94-replicate-%EB%8F%99%EC%9E%91-%EC%98%88%EC%8B%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#네트워크-동기화-replicate-동작-예시"
+  },"105": {
+    "doc": "Function",
+    "title": "4. 에디터 통합",
+    "content": "메타데이터로 자동으로 디테일 패널 생성. | 디테일 패널 표시: UPROPERTY 지정자를 통해 에디터에서 편집 가능 | 블루프린트 노출: UFUNCTION에 BlueprintCallable 등의 지정자 추가로 블루프린트에서 사용 가능 | . 커스텀 프로퍼티 에디터 예시 . FPropertyEditorModule&amp; PropModule = FModuleManager::LoadModuleChecked&lt;FPropertyEditorModule&gt;(\"PropertyEditor\"); . 정리 . // 1. 객체 생성 + 메타데이터 UCLASS(BlueprintType, meta=(DisplayName=\"My Cool Object\")) class UMyObject : public UObject { GENERATED_BODY() public: // 2. 라이프사이클 관리 virtual void BeginDestroy() override { CleanupResources(); Super::BeginDestroy(); } // 3. 메타데이터 활용 UPROPERTY(EditAnywhere, meta=(ClampMin=0)) int32 Value; }; // 결과: // - 블루프린트에서 \"My Cool Object\"로 노출 (리플렉션) // - Value는 에디터에서 0 이상 값만 입력 가능 (에디터 통합) // - 객체 파괴 시 CleanupResources() 자동 호출 (GC 연동) . 참고 링크 . | Memory Management &amp; Garbage Collection in Unreal Engine 5 | 04. Reflection and Garbage Collection | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#4-%EC%97%90%EB%94%94%ED%84%B0-%ED%86%B5%ED%95%A9",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html#4-에디터-통합"
+  },"106": {
+    "doc": "Function",
+    "title": "Function",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Function.html"
+  },"107": {
     "doc": "String",
     "title": "String",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html"
-  },"91": {
+  },"108": {
     "doc": "String",
     "title": "FString",
     "content": "FString은 일반적인 문자열 데이터로 문자열 검색, 수정, 비교를 할 수 있다. | 데이터 구조 . | 메모리 상에 각 인스턴스마다 고유 문자 배열을 직접 저장 | 내부적으로 TArray&lt;TCHAR&gt; (=동적 배열 기반 유니코드 문자열) | C++의 std::wstring(wide string)과 비슷하지만, 언리얼 엔진 특화 기능(TCHAR, UTF-16, 매크로 등)이 있다 | . | 대표적 사용 예 . | 파일 경로, 로그 메시지 | 유저 입력 (채팅, 이름 등) | 임시 데이터 처리, 문자열 연산 | . | 특징 . | 수정 가능 | 문자열 조작이 자유로움 | 각 인스턴스가 자체 메모리 공간 사용 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fstring",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fstring"
-  },"92": {
+  },"109": {
     "doc": "String",
     "title": "FName",
     "content": "FString과 다르게 문자열 전체 저장 X. 글로벌 네임 테이블에 저장되어 데이터를 경량화 . | 데이터 구조 . | 엔진 시작 시부터 종료까지 고유 문자열을 전역적으로 관리하는 글로벌 네임 테이블 사용 . | 실제 문자열 데이터는 네임 테이블에 한번만 등록됨 | . | 어떤 FName이 새로 생성될 때, 문자열이 이미 테이블에 있으면 기존 인덱스를 사용하고, 없으면 새로 추가함 | . | 문자열의 중복 저장을 막고, 모든 FName이 같은 문자열이면 동일한 인덱스를 공유한다 | . | 대표적인 사용 예 . | 오브젝트 식별에 주로 사용 | 변수명, 파라미터 이름 | 리소스/에셋 이름 | GameplayTags | . | 특징 . | 수정 불가 | 비교 검색이 매우 빠름 . | 문자열끼리 직접 비교하는 대신, 인덱스만 비교하면 되기 때문에 성능이 우수하다 | . | 대소문자 구분이 없다 | 가비지 컬렉션 대상이 아니다 (엔진이 꺼질 때 까지 유지) | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fname",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fname"
-  },"93": {
+  },"110": {
     "doc": "String",
     "title": "FText",
     "content": "사용자에게 보여지는 텍스트에 주로 사용된다. 다국어 번역이 필요한 경우 사용. FText는 외부 API에서 받은 플레이어 이름 등을 UI에 표시할 때처럼, 현지화 테이블 미등록 텍스트 문자열에도 쓰인다. | 데이터 구조 | . 최상위 . | ITextData(인터페이스)의 TSharedRef 스마트 포인터만을 소유 | 실질적 데이터는 FTextData에 들어있다. class FText { private: TSharedRef&lt;ITextData, ESPMode::ThreadSafe&gt; TextData; ... }; . | . FTextData 구조체 . struct FTextData : ITextData { FString SourceString; // 원본 문자열 FCulturePtr TextCulture; // 해당 텍스트의 문화권(언어) 정보 FTextHistory TextHistory; // 텍스트 생성/변환 이력 (핵심!) ... }; . 현지화 히스토리 . | 다양한 하위 클래스를 통해 데이터 관리 가능 . | FTextHistory_LocalizedString : 현지화 키, 원본 텍스트, 로컬라이제이션 리소스 정보 등 저장 | FTextHistory_FormattedNumber : 숫자 포맷, 소수점, 지역화 등 정보 | FTextHistory_FormatString : 포맷 패턴, 인자 배열 등 | . | . class FTextHistory_LocalizedString : public FTextHistory_Base { FString SourceString; // 원본 텍스트 FString Namespace; // 현지화 네임스페이스 FString Key; // 현지화 키 FString LocalizedString; // 번역된 문자열(캐싱) ... }; . FText 구조 정리 . FText └─ TextData (FTextData) ├─ SourceString (원본) ├─ TextCulture (문화권) └─ TextHistory (생성/포맷/현지화 이력) ├─ 현지화키 ├─ 네임스페이스 ├─ 포맷정보 └─ 캐시된 번역값 등... | 대표적인 사용 예 . | UI 버튼/ 메뉴 텍스트 (시작, Continue 등) | 게임 대사, 퀘스트 설명, 튜토리얼 메시지 | 점수, 날짜, 숫자 등 표시 | 모든 다국어 지원 필요한 표시용 텍스트 | . | 특징 . | 현지화, 포맷, 문화권별 번역 자동 처리 | 직접 수정 불가. 변환 후 새로 만들어야 함 | 직접 비교/조작은 제한됨 . | FText끼리 == 연산은 데이터 주소 또는 히스토리 비교이므로, 실제 표시 문자열이 같아도 false가 나올 수 있음 | . | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#ftext",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#ftext"
-  },"94": {
+  },"111": {
     "doc": "String",
     "title": "정리",
     "content": "| 클래스 | 사용 목적 | 데이터 구조 | 특징 | . | FString | 임의 문자열, 수정/검색/연결 | TArray(인스턴스별 동적 배열) | 수정 가능, 조작 자유 | . | FText | 현지화/번역 표시 텍스트 | TSharedRef + FTextHistory | 현지화 지원, 수정 어려움, 포맷/언어 처리 | . | FName | 식별자/키/이름/빠른비교 | 글로벌 해시 테이블 인덱스+번호 | 비교 빠름, 대소문자 무시, 수정 불가 | . 참고 링크 . | String Handling | Why you should be using GameplayTags in Unreal Engine | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#%EC%A0%95%EB%A6%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#정리"
-  },"95": {
+  },"112": {
+    "doc": "Tools",
+    "title": "UObject 사용 기능",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html#uobject-%EC%82%AC%EC%9A%A9-%EA%B8%B0%EB%8A%A5",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html#uobject-사용-기능"
+  },"113": {
+    "doc": "Tools",
+    "title": "1. 객체 생성 및 관리",
+    "content": ". | UObject의 인스턴스화(Instantiation)와 기본 설정을 담당하는 단계 | “어떻게 객체가 만들어지고, 참조되고, 접근되는가?” | . (1) 객체 생성 . | Outer와 Package: 객체의 계층 구조와 저장 위치 결정 // Outer: 객체의 소유자 (일반적으로 현재 객체를 생성하는 객체) // Package: 에셋으로 저장될 경우 대상 패키지 (예: /Game/MyAsset) UMyObject* Obj = NewObject&lt;UMyObject&gt;(Outer, Package, NAME_None, RF_Transactional); . | RF_Transactional: 에디터 실행 취소(Undo) 시스템에 등록할 때 사용하는 플래그 | RF_Standalone: 패키지와 무관한 독립적 존재 (에셋이 아닌경우) | RF_Transient : 임시 객체 (저장되지 않음) | RF_Public :에셋으로 저장 시 공개적으로 표시 | . // 1. 일반적인 생성 (Outer와 Name 지정 가능) UMyObject* Obj = NewObject&lt;UMyObject&gt;(GetTransientPackage(), TEXT(\"MyObj\")); // 2. 서브오브젝트 생성 (주로 Actor/Component에서 사용) UMyComponent* Comp = CreateDefaultSubobject&lt;UMyComponent&gt;(TEXT(\"Comp\")); . | NewObject&lt;T&gt;(): 새로운 UObject 인스턴스 생성 | CreateDefaultSubobject(): 생성자에서 서브오브젝트 생성 시 사용 | TWeakObjectPtr&lt;T&gt;: GC 영향을 받지 않는 참조 생성 | . (2) 객체 접근 및 유효성 검사 . // 유효성 체크 (GC에 의해 파괴되지 않았는지 확인) if (IsValid(Obj)) { Obj-&gt;DoSomething(); } // 약한 참조 (WeakPtr)로 GC 방지 TWeakObjectPtr&lt;UMyObject&gt; WeakObj = Obj; . (3) 객체 등록 관리 . // 객체를 특정 패키지에 등록 Obj-&gt;Rename(nullptr, MyPackage); // 에셋으로 저장 가능하게 함 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html#1-%EA%B0%9D%EC%B2%B4-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EA%B4%80%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html#1-객체-생성-및-관리"
+  },"114": {
+    "doc": "Tools",
+    "title": "2. 라이프 사이클 관리",
+    "content": ". | UObject가 생성부터 파괴까지 거치는 전체 과정을 관리 | “객체가 어떤 단계를 거쳐 존재하고 소멸하는가?”를 정의 | 가비지 컬렉션과 연동 가능 | . (1) 생성 . | 생성자 → PostInitProperties() → Initialize() (필요 시) → PostLoad() (에셋 로드 완료 시) | . | 함수 | 호출 시점 | 용도 | . | 생성자 | NewObject() 시 | 메모리 할당 + 기본 설정 | . | PostInitProperties() | 생성자 직후 | 프로퍼티 초기화 완료 시점 | . | Initialize() | (선택적) | 런타임에 추가 초기화 필요 시 공식 라이프 사이클 아님 | . | PostLoad() | 에셋 로드 완료 시 | 디스크에서 로드한 데이터 처리 | . // 예시: 초기화 흐름 UCLASS() class UMyAsset : public UObject { GENERATED_BODY() public: UMyAsset() { /* 생성자 */ } // 프로퍼티 초기화 후 호출 virtual void PostInitProperties() override { Super::PostInitProperties(); InitDefaultValues(); // 기본값 설정 } // 명시적 초기화 (필요한 경우) void Initialize() { LoadExternalData(); } // 에셋 로드 완료 시 호출 virtual void PostLoad() override { Super::PostLoad(); ApplyLoadedData(); // 로드된 데이터 적용 } }; . (2) 사용 . // 활성화/비활성화 제어 (AActor 파생클래스 예시) virtual void BeginPlay() override; // 게임 시작 시 호출 virtual void EndPlay() override; // 게임 종료 또는 제거 시 호출 . (3) 파괴 . virtual void BeginDestroy() override { // 리소스 해제 로직 Super::BeginDestroy(); } virtual void FinishDestroy() override { // 최종 정리 작업 Super::FinishDestroy(); } . UObject 라이프 사이클 3단계 요약 . | 단계 | 주요 함수/이벤트 | 호출 시기 | 용도 | 주의사항 |   | . | 생성 | 생성자 | NewObject() 호출 시 | 메모리 할당 + 기본값 설정 | UPROPERTY는 아직 초기화되지 않음 |   | . |   | PostInitProperties() | 생성자 직후 | 프로퍼티 초기화 완료 시점 | 에디터에서 설정한 기본값 적용됨 |   | . |   | PostLoad() | 에셋 로드 완료 시 | 디스크 데이터 처리 | 에셋 전용 (동적 생성 객체는 호출 X) |   | . | 사용 | AddToRoot() | 수동 호출 시 | GC 대상에서 제외 | 남용 시 메모리 누수 가능성 |   | . |   | BeginPlay() | 게임 시작 시 | (AActor 한정) | 게임플레이 로직 초기화 | UObject 직접 사용 불가 (Actor/Component 필요) | . |   | Tick() | 매 프레임 (AActor 한정) | 지속적인 업데이트 | 성성능 저하 가능성 → 꼭 필요할 때만 사용 |   | . | 파괴 | ConditionalBeginDestroy() 수동 호출 또는 GC 시작 시 파괴 시작 신호 객체는 즉시 삭제되지 않음 |   |   |   |   | . |   | BeginDestroy() | GC 마킹 후 | 리소스 해제 (텍스처, 메모리 등) | 가상 함수 오버라이드 필수 |   | . |   | FinishDestroy() | 메모리 해제 직전 | 최종 정리 | 이후 모든 접근 불가능 |   | . (4) 가비지 컬렉션 연동 . // GC 대상에서 제외 (특수한 경우만 사용) Obj-&gt;AddToRoot(); // GC 대상으로 복귀 Obj-&gt;RemoveFromRoot(); . | BeginDestroy(): 객체가 파괴되기 전에 호출 | IsValidLowLevel(): 객체가 유효한지 확인 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html#2-%EB%9D%BC%EC%9D%B4%ED%94%84-%EC%82%AC%EC%9D%B4%ED%81%B4-%EA%B4%80%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html#2-라이프-사이클-관리"
+  },"115": {
+    "doc": "Tools",
+    "title": "3. 메타 데이터 시스템",
+    "content": ". | UObject의 데이터(프로퍼티, 함수, 클래스 등)에 대해 추가 정보를 부여하는 키-값 쌍의 데이터 | “이 객체를 어떻게 표시하고, 직렬화하고, 에디터에서 다룰 것인가?”를 제어 . | “어떻게 에디터에서 표시할지”, “어떤 제약 조건을 둘지”, “블루프린트에 노출 여부” 등 | . | UCLASS, UPROPERTY 등에 메타데이터 추가 가능 | . UPROPERTY(EditAnywhere, meta=(DisplayName=\"My Custom Name\")) FString CustomizedName; . (1) 에디터 연동 및 UI 제어 . UPROPERTY(EditAnywhere, meta=(DisplayName=\"플레이어 이름\", Tooltip=\"캐릭터의 이름입니다.\")) FString CharacterName; . (2) 직렬화 동작 설정 . UPROPERTY(SaveGame, meta=(NoAutoLoad=true)) FString SaveSlotName; // 세이브 파일에 저장되지만 자동 로드 안 함 . (3) 리플렉션 시스템 연동 . UFUNCTION(meta=(WorldContext=\"WorldContextObject\")) static void MyFunction(UObject* WorldContextObject); //블루프린트에서 자동으로 World Context 연결 . (4) 제약 및 제어 커스텀 . UPROPERTY(meta=(ClampMin=0, ClampMax=100)) int32 Health; // 에디터에서 0~100 사이값만 입력 가능 . 메타데이터 시스템에서 자주 쓰는 키 목록 . | 메타 키 | 용도 | 예시 | . | BlueprintType | 블루프린트 변수로 사용 허용 | UCLASS(BlueprintType) | . | Category | 디테일 패널에서 그룹으로 묶임 | UPROPERTY(Category=\"Gameplay\") | . | AdvancedDisplay | 디테일 패널에서 접기 | meta=(AdvancedDisplay=true) | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html#3-%EB%A9%94%ED%83%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EC%8A%A4%ED%85%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html#3-메타-데이터-시스템"
+  },"116": {
+    "doc": "Tools",
+    "title": "세 시스템 차이점 요약",
+    "content": "| 시스템 | 핵심 질문 | 주요 도구 | 사용 예시 | . | 객체 생성 및 관리 | “객체를 어떻게 만들고 참조할까?” | NewObject CreateDefaultSubobject IsValid | 동적 객체 생성서브오브젝트 관리 | . | 라이프사이클 관리 | “객체가 생애주기 동안 무엇을 하는가?” | PostInitPropertiesBeginDestroyFinishDestroy | 리소스 할당/해제게임 로직 초기화 | . | 메타데이터 시스템 | “이 객체를 어떻게 표시/조작할까?” | meta=(…),UPROPERTY()/UFUNCTION() | 에디터 UI 커스터마이징직렬화 제어 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html#%EC%84%B8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%B0%A8%EC%9D%B4%EC%A0%90-%EC%9A%94%EC%95%BD",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html#세-시스템-차이점-요약"
+  },"117": {
+    "doc": "Tools",
+    "title": "Tools",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/Tools.html"
+  },"118": {
     "doc": "Transform",
     "title": "Transform",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html"
-  },"96": {
+  },"119": {
     "doc": "Transform",
     "title": "FVector",
     "content": "3차원 공간상의 위치, 방향, 속도, 크기 등 벡터 값을 표현할 때 사용 . | 오브젝트의 위치 (Location) : SetActorLocation(FVector(100.f, 200.f, 300.f)); | 이동 방향 및 속도 (Velocity, Direction) : FVector Direction = Target - Source; | 스케일(Scale) 값 (상대적 크기) | 힘(Force), 가속도(Acceleration) 등 물리 연산 | 충돌 처리에서 법선 벡터(Normal) 표현 | . | 데이터 구조 struct FVector { float X; float Y; float Z; }; . | 오른손 법칙 좌표계 : Z-위, X-앞, Y-오른쪽 | . | 특징 . | 기본적인 연산자 오버로딩 지원 (+, -, *, /, dot, cross 등) | 크기, 정규화, 내적(dot), 외적(cross) 등 벡터 연산 지원 | 단순 위치/방향뿐 아니라, 각종 수학적, 물리적 벡터 표현에 모두 사용 | 방향성과 크기를 함께 가짐 (예: 방향 벡터는 크기=1로 정규화) | . | 주요 메서드 | . | 메서드 | 매개변수 | 반환값 | 설명 | . | Size() | 없음 | float | 벡터의 크기를 반환합니다. | . | Normalize() | 없음 | 없음 | 벡터를 정규화합니다. | . | Dot() | const FVector&amp; Other | float | 두 벡터의 내적 | . | Cross() | const FVector&amp; Other | FVector | 두 벡터의 외적 | . | Rotation() | 없음 | FRotator | 벡터의 방향을 회전 값으로 반환 | . | Lerp() | const FVector&amp; A const FVector&amp; B float Alpha | FVector | 두 벡터 간의 선형 보간 | . | Size() / SizeSquared() |   | 벡터의 크기 또는 크기의 제곱을 반환 |   | . 배경 수학 . 벡터 연산(덧셈, 뺄셈, 스칼라 곱/나눗셈, 내적/외적 등)은 선형대수의 기본 연산. 내적(Dot Product): 두 벡터의 방향성이 얼마나 일치하는지 계산 → 코사인 법칙과 연관되어 각도 구하기, 투영, 정규화, 평면 법선 등 계산에 사용 . A·B = Ax * Bx + Ay * By + Az * Bz . 외적(Cross Product): 두 벡터에 수직인 벡터 산출 → 평면의 법선, 회전축 등 계산 . A×B = (Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx) . 정규화(Normalization) → 크기를 1로 맞춤 . V.Normalize() → V / |V| . 거리/길이 . V.Size() = sqrt(X^2 + Y^2 + Z^2) . 선형보간(LERP) . Lerp(A, B, Alpha) = (1-Alpha)*A + Alpha*B . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fvector",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fvector"
-  },"97": {
+  },"120": {
     "doc": "Transform",
     "title": "FRotator",
     "content": "오일러 각(Euler Angle)(Pitch, Yaw, Roll)로 3D 회전을 표현할 때 사용 . | 오브젝트 회전 : SetActorRotation(FRotator(0.f, 90.f, 0.f)); | 캐릭터, 카메라의 방향(회전) | Actor/Component의 회전값 저장 : GetActorRotation() | 블루프린트, 에디터의 회전값 입력 등 | . | 데이터 구조 struct FRotator { float Pitch; // X축 회전 (상하) float Yaw; // Z축 회전 (좌우) float Roll; // Y축 회전 (틸트) }; . | 세 개의 float값(Pitch, Yaw, Roll)로 오일러 각 표현 | . | 특징 . | 오일러 각 특성상 Gimbal Lock(짐벌락) 문제 발생 가능 | 사람에게 직관적으로 이해하기 쉬움 (디자이너, 에디터에서 많이 사용) | 내부적으로는 보통 Degree(각도) 단위 사용 (Radian 변환 필요시 지원) | FRotator는 내부적으로 회전 행렬 혹은 쿼터니언으로 변환 가능 | . | 주요 메서드 | . | 메서드 | 매개변수 | 반환값 | 설명 | . | Quaternion() | 없음 | FQuat | 오일러 각을 쿼터니언으로 변환 | . | RotateVector() | const FVector&amp; V | FVector | 벡터를 회전 | . | UnrotateVector() | const FVector&amp; V | FVector | 회전된 벡터를 원래 방향으로 되돌림 | . | GetNormalized() | 없음 | FVector | 회전된 벡터를 원래 방향으로 되돌림 | . | Clamp() | 없음 | FRotator | 회전 값을 제한 | . 배경 수학 . | 오일러 각(Euler Angle) : 세 축(X, Y, Z)에 대한 회전 각도(θx, θy, θz)로 회전을 표현. | 언리얼 엔진은 Z(Yaw) → Y(Pitch) → X(Roll) 순서로 회전 (즉, “Yaw → Pitch → Roll” 오더) | . 행렬 변환: 오일러 각은 각각의 축 회전을 행렬로 변환 후 곱셈해서 최종 회전값을 만듦 . R = Rz(Yaw) * Ry(Pitch) * Rx(Roll) . Gimbal Lock: 두 축이 일치하여 3차원 회전 자유도가 2차원으로 줄어드는 현상 . | 예: Pitch가 ±90°에 가까워지면, Roll과 Yaw가 같은 평면이 됨 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#frotator",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#frotator"
-  },"98": {
+  },"121": {
     "doc": "Transform",
     "title": "FQuat",
     "content": "3D 공간에서 회전을 쿼터니언(Quaternion)으로 표현하여, 회전 연산의 정확성 및 안정성 확보 . | 모션 블렌딩, 본(스켈레톤) 등 애니메이션의 회전 보간 | 부드러운 연속 회전 (SLERP) | Gimbal Lock 방지가 중요한 복잡한 회전 연산 | . | 데이터 구조 struct FQuat { float X; // 허수 (벡터) float Y; // 허수 (벡터) float Z; // 허수 (벡터) float W; // 실수 (스칼라) 부분 }; . | 4개의 float형 멤버(X, Y, Z, W)로 구성 | 단위 쿼터니언(norm = 1) 으로 회전 표현 | . | 특징 . | 4차원 복소수로 회전 표현 | Gimbal Lock 문제 없음 | 회전 합성/보간에 최적화 (SLERP, NLERP 등 지원) | FRotator, FMatrix 등과 상호 변환 함수 제공 | 보통은 FRotator(에디터/코드) ↔ FQuat(엔진 내부)로 변환하며 사용 | . | 주요 메서드 | . | 메서드 | 매개변수 | 반환값 | 설명 | . | RotateVector() | const FVector&amp; V | FVector | 벡터를 회전 | . | Inverse() | 없음 | FQuat | 쿼터니언의 역을 반환 | . | Slerp() | const FQuat&amp; A const FQuat&amp; B float Alpha | FQuat | 두 쿼터니언 간의 구면 선형 보간을 수행 | . | ToAxisAndAngle() | FVector&amp; Axis float&amp; Angle | 없음 (출력 매개변수 사용) | 회전 축과 각도로 변환 | . | MakeFromEuler() | const FVector&amp; Euler | FQuat | 오일러 각도로부터 쿼터니언을 생성 | . 배경 수학 . | 쿼터니언(Quaternion): 실수부(w)와 허수부(x, y, z)로 구성된 4차원 수학 구조 Q = w + xi + yj + zk (i, j, k는 허수 단위벡터) . | 회전 표현: 3D 공간에서 임의의 축(axis)과 각도(θ)에 대한 회전 Q = [cos(θ/2), (axis * sin(θ/2))] . | 복합 회전: 쿼터니언 곱셈으로 연속 회전 표현 Q' = Q2 * Q1 (Q1 후 Q2 수행) . | 회전 적용: 점 P를 Q로 회전시키려면 P' = Q * P * Q⁻¹ (여기서 P는 벡터를 허수부로 취급한 쿼터니언) . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fquat",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fquat"
-  },"99": {
+  },"122": {
     "doc": "Transform",
     "title": "FTransform",
     "content": "위치, 회전, 스케일을 함께 관리하여 오브젝트의 변환을 효율적으로 처리 . | 오브젝트의 전체 변환 설정: SetActorTransform(FTransform(Rotation, Translation, Scale)); | . | 데이터 구조 struct FTransform { FQuat Rotation; FVector Translation; FVector Scale3D; }; . | 특징 . | 위치, 회전, 스케일을 하나의 구조체로 관리 | 계층적 트랜스폼 계산에 유용 | 블루프린트에서 쉽게 사용할 수 있도록 지원 | . | 주요 메서드 | . 많아서 나중에 정리할랭 . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#ftransform",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#ftransform"
-  },"100": {
+  },"123": {
     "doc": "Transform",
     "title": "정리",
     "content": "| 타입 | 목적/용도 | 데이터 구조 | 특징 요약 | . | FVector | 3D 위치, 방향, 벡터 | X, Y, Z (float) | 모든 위치/방향/벡터 연산에 사용 | . | FRotator | 오일러 각 기반 3D 회전 | Pitch, Yaw, Roll (float) | 직관적, Gimbal Lock 위험 | . | FQuat | 쿼터니언 기반 3D 회전 | X, Y, Z, W (float) | Gimbal Lock 없음, 고급 회전 | . | FTransform | 위치, 회전, 스케일 통합 변환 | 위치, 회전, 스케일 구조체 | Actor 변환, 부모-자식 변환 관리 | . 참고 링크 . | UE4 Transform Calculus | Vectors | Roll, Pitch, Yaw | Quaternion | Gimbal lock | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#%EC%A0%95%EB%A6%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#정리"
-  },"101": {
+  },"124": {
+    "doc": "UObject",
+    "title": "UObject",
+    "content": "언리얼 엔진의 모든 객체 지향 시스템의 기반이 되는 핵심 클래스. | 게임플레이 요소, 컴포넌트, 에셋 등 거의 모든 UE5 객체가 UObject에서 파생됨 | UObject 객체를 생성함으로써 리플렉션, 가비지 컬렉션(GC), 직렬화 등의 기능을 사용할 수 있다 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html"
+  },"125": {
+    "doc": "UObject",
+    "title": "개발자가 직접 사용하는 도구 (원인)",
+    "content": ". | 객체 생성 및 관리 . | NewObject(), IsValid(), ConditionalBeginDestroy() | . | 라이프사이클 관리 . | PostInitProperties(), BeginDestroy(), AddToRoot() | . | 메타데이터 시스템 . | UPROPERTY(meta=(...)), UFUNCTION() 지정자 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80-%EC%A7%81%EC%A0%91-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%8F%84%EA%B5%AC-%EC%9B%90%EC%9D%B8",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#개발자가-직접-사용하는-도구-원인"
+  },"126": {
+    "doc": "UObject",
+    "title": "UObject를 사용함으로써 자동으로 얻는 기능 (결과)",
+    "content": ". | 리플렉션 . | UCLASS()로 등록한 클래스가 블루프린트/파이썬에서 자동 인식 | . | 가비지 컬렉션 . | UPROPERTY() 참조가 없어지면 GC가 자동으로 객체 제거 | . | 직렬화 . | SaveGame 지정 시 별도 코드 없이도 디스크에 저장 가능 | . | 에디터 통합 . | EditAnywhere 메타데이터로 자동으로 디테일 패널 생성 | . | . UObject 상속 계층 구조 . UObject (최상위 베이스 클래스) ├─ UActorComponent (액터 컴포넌트 베이스) │ ├─ USceneComponent (변환 기능 포함) │ │ ├─ UPrimitiveComponent (렌더링 가능) │ │ │ ├─ UMeshComponent (메시 기반) │ │ │ │ ├─ USkeletalMeshComponent (스켈레탈 메시) │ │ │ │ └─ UStaticMeshComponent (스태틱 메시) │ │ │ └─ ULightComponent (라이트 소스) │ │ └─ UCameraComponent (카메라) │ └─ UAudioComponent (사운드) ├─ AActor (월드 배치 객체) │ ├─ APawn (플레이어/AI 제어 가능) │ │ ├─ ACharacter (캐릭터 메시/이동 포함) │ │ └─ ADefaultPawn (기본 이동 기능) │ └─ AStaticMeshActor (스태틱 메시 배치) ├─ UDataAsset (데이터 전용 에셋) │ ├─ UPrimaryDataAsset (프라이머리 에셋 시스템) │ └─ UAnimSequence (애니메이션 데이터) ├─ UBlueprintFunctionLibrary (블루프린트 함수) │ ├─ UKismetSystemLibrary (시스템 유틸리티) │ └─ UKismetMathLibrary (수학 함수) └─ 기타 주요 클래스 ├─ UGameInstance (게임 인스턴스) ├─ UWorld (월드 컨텍스트) ├─ UUserWidget (UMG 위젯) └─ UMaterial (머티리얼) . 주의사항 . | 스택 할당 금지: 반드시 힙에 생성 (GC 관리 대상이어야 함) | 다중 상속 제한: UObject를 다중 상속할 때는 주의가 필요 (일반적으로 UInterface 사용) | 표준 C++ 타입과의 호환성: std::vector 등은 UPROPERTY()로 표시할 수 없으며, TArray를 사용함 | 아주 가벼운 데이터만 다룰 경우 USTRUCT를 권장 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#uobject%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%A8%EC%9C%BC%EB%A1%9C%EC%8D%A8-%EC%9E%90%EB%8F%99%EC%9C%BC%EB%A1%9C-%EC%96%BB%EB%8A%94-%EA%B8%B0%EB%8A%A5-%EA%B2%B0%EA%B3%BC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#uobject를-사용함으로써-자동으로-얻는-기능-결과"
+  },"127": {
+    "doc": "UObject",
+    "title": "UObject 사용 기능",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#uobject-%EC%82%AC%EC%9A%A9-%EA%B8%B0%EB%8A%A5",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#uobject-사용-기능"
+  },"128": {
+    "doc": "UObject",
+    "title": "1. 객체 생성 및 관리",
+    "content": ". | UObject의 인스턴스화(Instantiation)와 기본 설정을 담당하는 단계 | “어떻게 객체가 만들어지고, 참조되고, 접근되는가?” | . (1) 객체 생성 . | Outer와 Package: 객체의 계층 구조와 저장 위치 결정 // Outer: 객체의 소유자 (일반적으로 현재 객체를 생성하는 객체) // Package: 에셋으로 저장될 경우 대상 패키지 (예: /Game/MyAsset) UMyObject* Obj = NewObject&lt;UMyObject&gt;(Outer, Package, NAME_None, RF_Transactional); . | RF_Transactional: 에디터 실행 취소(Undo) 시스템에 등록할 때 사용하는 플래그 | RF_Standalone: 패키지와 무관한 독립적 존재 (에셋이 아닌경우) | RF_Transient : 임시 객체 (저장되지 않음) | RF_Public :에셋으로 저장 시 공개적으로 표시 | . // 1. 일반적인 생성 (Outer와 Name 지정 가능) UMyObject* Obj = NewObject&lt;UMyObject&gt;(GetTransientPackage(), TEXT(\"MyObj\")); // 2. 서브오브젝트 생성 (주로 Actor/Component에서 사용) UMyComponent* Comp = CreateDefaultSubobject&lt;UMyComponent&gt;(TEXT(\"Comp\")); . | NewObject&lt;T&gt;(): 새로운 UObject 인스턴스 생성 | CreateDefaultSubobject(): 생성자에서 서브오브젝트 생성 시 사용 | TWeakObjectPtr&lt;T&gt;: GC 영향을 받지 않는 참조 생성 | . (2) 객체 접근 및 유효성 검사 . // 유효성 체크 (GC에 의해 파괴되지 않았는지 확인) if (IsValid(Obj)) { Obj-&gt;DoSomething(); } // 약한 참조 (WeakPtr)로 GC 방지 TWeakObjectPtr&lt;UMyObject&gt; WeakObj = Obj; . (3) 객체 등록 관리 . // 객체를 특정 패키지에 등록 Obj-&gt;Rename(nullptr, MyPackage); // 에셋으로 저장 가능하게 함 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#1-%EA%B0%9D%EC%B2%B4-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EA%B4%80%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#1-객체-생성-및-관리"
+  },"129": {
+    "doc": "UObject",
+    "title": "2. 라이프 사이클 관리",
+    "content": ". | UObject가 생성부터 파괴까지 거치는 전체 과정을 관리 | “객체가 어떤 단계를 거쳐 존재하고 소멸하는가?”를 정의 | 가비지 컬렉션과 연동 가능 | . (1) 생성 . | 생성자 → PostInitProperties() → Initialize() (필요 시) → PostLoad() (에셋 로드 완료 시) | . | 함수 | 호출 시점 | 용도 | . | 생성자 | NewObject() 시 | 메모리 할당 + 기본 설정 | . | PostInitProperties() | 생성자 직후 | 프로퍼티 초기화 완료 시점 | . | Initialize() | (선택적) | 런타임에 추가 초기화 필요 시 공식 라이프 사이클 아님 | . | PostLoad() | 에셋 로드 완료 시 | 디스크에서 로드한 데이터 처리 | . // 예시: 초기화 흐름 UCLASS() class UMyAsset : public UObject { GENERATED_BODY() public: UMyAsset() { /* 생성자 */ } // 프로퍼티 초기화 후 호출 virtual void PostInitProperties() override { Super::PostInitProperties(); InitDefaultValues(); // 기본값 설정 } // 명시적 초기화 (필요한 경우) void Initialize() { LoadExternalData(); } // 에셋 로드 완료 시 호출 virtual void PostLoad() override { Super::PostLoad(); ApplyLoadedData(); // 로드된 데이터 적용 } }; . (2) 사용 . // 활성화/비활성화 제어 (AActor 파생클래스 예시) virtual void BeginPlay() override; // 게임 시작 시 호출 virtual void EndPlay() override; // 게임 종료 또는 제거 시 호출 . (3) 파괴 . virtual void BeginDestroy() override { // 리소스 해제 로직 Super::BeginDestroy(); } virtual void FinishDestroy() override { // 최종 정리 작업 Super::FinishDestroy(); } . UObject 라이프 사이클 3단계 요약 . | 단계 | 주요 함수/이벤트 | 호출 시기 | 용도 | 주의사항 |   | . | 생성 | 생성자 | NewObject() 호출 시 | 메모리 할당 + 기본값 설정 | UPROPERTY는 아직 초기화되지 않음 |   | . |   | PostInitProperties() | 생성자 직후 | 프로퍼티 초기화 완료 시점 | 에디터에서 설정한 기본값 적용됨 |   | . |   | PostLoad() | 에셋 로드 완료 시 | 디스크 데이터 처리 | 에셋 전용 (동적 생성 객체는 호출 X) |   | . | 사용 | AddToRoot() | 수동 호출 시 | GC 대상에서 제외 | 남용 시 메모리 누수 가능성 |   | . |   | BeginPlay() | 게임 시작 시 | (AActor 한정) | 게임플레이 로직 초기화 | UObject 직접 사용 불가 (Actor/Component 필요) | . |   | Tick() | 매 프레임 (AActor 한정) | 지속적인 업데이트 | 성성능 저하 가능성 → 꼭 필요할 때만 사용 |   | . | 파괴 | ConditionalBeginDestroy() 수동 호출 또는 GC 시작 시 파괴 시작 신호 객체는 즉시 삭제되지 않음 |   |   |   |   | . |   | BeginDestroy() | GC 마킹 후 | 리소스 해제 (텍스처, 메모리 등) | 가상 함수 오버라이드 필수 |   | . |   | FinishDestroy() | 메모리 해제 직전 | 최종 정리 | 이후 모든 접근 불가능 |   | . (4) 가비지 컬렉션 연동 . // GC 대상에서 제외 (특수한 경우만 사용) Obj-&gt;AddToRoot(); // GC 대상으로 복귀 Obj-&gt;RemoveFromRoot(); . | BeginDestroy(): 객체가 파괴되기 전에 호출 | IsValidLowLevel(): 객체가 유효한지 확인 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#2-%EB%9D%BC%EC%9D%B4%ED%94%84-%EC%82%AC%EC%9D%B4%ED%81%B4-%EA%B4%80%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#2-라이프-사이클-관리"
+  },"130": {
+    "doc": "UObject",
+    "title": "3. 메타 데이터 시스템",
+    "content": ". | UObject의 데이터(프로퍼티, 함수, 클래스 등)에 대해 추가 정보를 부여하는 키-값 쌍의 데이터 | “이 객체를 어떻게 표시하고, 직렬화하고, 에디터에서 다룰 것인가?”를 제어 . | “어떻게 에디터에서 표시할지”, “어떤 제약 조건을 둘지”, “블루프린트에 노출 여부” 등 | . | UCLASS, UPROPERTY 등에 메타데이터 추가 가능 | . UPROPERTY(EditAnywhere, meta=(DisplayName=\"My Custom Name\")) FString CustomizedName; . (1) 에디터 연동 및 UI 제어 . UPROPERTY(EditAnywhere, meta=(DisplayName=\"플레이어 이름\", Tooltip=\"캐릭터의 이름입니다.\")) FString CharacterName; . (2) 직렬화 동작 설정 . UPROPERTY(SaveGame, meta=(NoAutoLoad=true)) FString SaveSlotName; // 세이브 파일에 저장되지만 자동 로드 안 함 . (3) 리플렉션 시스템 연동 . UFUNCTION(meta=(WorldContext=\"WorldContextObject\")) static void MyFunction(UObject* WorldContextObject); //블루프린트에서 자동으로 World Context 연결 . (4) 제약 및 제어 커스텀 . UPROPERTY(meta=(ClampMin=0, ClampMax=100)) int32 Health; // 에디터에서 0~100 사이값만 입력 가능 . 메타데이터 시스템에서 자주 쓰는 키 목록 . | 메타 키 | 용도 | 예시 | . | BlueprintType | 블루프린트 변수로 사용 허용 | UCLASS(BlueprintType) | . | Category | 디테일 패널에서 그룹으로 묶임 | UPROPERTY(Category=\"Gameplay\") | . | AdvancedDisplay | 디테일 패널에서 접기 | meta=(AdvancedDisplay=true) | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#3-%EB%A9%94%ED%83%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EC%8A%A4%ED%85%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#3-메타-데이터-시스템"
+  },"131": {
+    "doc": "UObject",
+    "title": "세 시스템 차이점 요약",
+    "content": "| 시스템 | 핵심 질문 | 주요 도구 | 사용 예시 | . | 객체 생성 및 관리 | “객체를 어떻게 만들고 참조할까?” | NewObject CreateDefaultSubobject IsValid | 동적 객체 생성서브오브젝트 관리 | . | 라이프사이클 관리 | “객체가 생애주기 동안 무엇을 하는가?” | PostInitPropertiesBeginDestroyFinishDestroy | 리소스 할당/해제게임 로직 초기화 | . | 메타데이터 시스템 | “이 객체를 어떻게 표시/조작할까?” | meta=(…),UPROPERTY()/UFUNCTION() | 에디터 UI 커스터마이징직렬화 제어 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#%EC%84%B8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%B0%A8%EC%9D%B4%EC%A0%90-%EC%9A%94%EC%95%BD",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#세-시스템-차이점-요약"
+  },"132": {
+    "doc": "UObject",
+    "title": "UObject 사용 결과",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#uobject-%EC%82%AC%EC%9A%A9-%EA%B2%B0%EA%B3%BC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#uobject-사용-결과"
+  },"133": {
+    "doc": "UObject",
+    "title": "1. 리플렉션(Reflection)",
+    "content": "런타임에 객체의 타입, 필드, 메서드 정보를 조회하고 동적으로 접근/수정할 수 있는 기능 . | 리플렉션 데이터는 컴파일 시점에 UHT(Unreal Header Tool)이 자동 생성 . | GENERATED_BODY() 매크로가 이를 활성화 | . | 런타임 타입 정보(RTTI): UCLASS, UPROPERTY, UFUNCTION 등 매크로를 통해 리플렉션 데이터 생성 | 동적 캐스팅: Cast&lt;UMyClass&gt;(SomeObject) 형태로 안전한 타입 변환 가능 | 프로퍼티 검사: 런타임에 객체의 프로퍼티를 검사하고 수정할 수 있음 . | C++ 표준에는 런타임 리플렉션 기능이 없음 . | 예를 들어, 클래스에 어떤 필드가 있는지, 메서드가 무엇인지 런타임에 알 수 없음 | RTTI로 typeid, dynamic_cast 정도만 제공 | . | 언리얼의 리플렉션 . | 자체적인 리플렉션 시스템을 만들어 UObject 계열 클래스에 한해 런타임 타입 정보, 속성, 함수 목록 등을 관리 | C++ 매크로(UCLASS, UPROPERTY, UFUNCTION)와 Unreal Header Tool(UHT)이 자동으로 메타데이터를 생성해 코드에 삽입 | . | . 내부 매커니즘 . | 각 UObject 인스턴스는 UClass 타입 메타데이터(속성, 함수, 부모 정보 등)를 보유. | 런타임에 GetClass(), FindField, GetDefaultObject, ProcessEvent 등의 API로 동적 접근. | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#1-%EB%A6%AC%ED%94%8C%EB%A0%89%EC%85%98reflection",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#1-리플렉션reflection"
+  },"134": {
+    "doc": "UObject",
+    "title": "2. 가비지 컬렉션(Garbage Collection)",
+    "content": "더 이상 필요하지 않은 객체(메모리)를 자동으로 탐지하여 해제하는 메커니즘 . | 자동 메모리 관리: UObject는 UE의 가비지 컬렉션 시스템과 통합되어 있어 참조가 없어지면 자동으로 제거 | UPROPERTY() 매크로로 표시된 멤버 변수는 가비지 컬렉터가 추적 . | C++은 명시적 메모리 관리(new/delete, 스마트 포인터)를 요구 . | 실수로 delete를 빼먹거나, 중복해서 delete하면 메모리 누수/오류가 발생할 수 있음. | . | 언리얼의 가비지 컬렉션 . | UObject 파생 객체만 엔진의 GC 대상이 됨 (일반 C++ 객체는 해당 없음) | 엔진은 참조 그래프(Reference Graph)를 따라 “루트 오브젝트에서부터 도달할 수 없는 UObject”를 자동 삭제 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#2-%EA%B0%80%EB%B9%84%EC%A7%80-%EC%BB%AC%EB%A0%89%EC%85%98garbage-collection",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#2-가비지-컬렉션garbage-collection"
+  },"135": {
+    "doc": "UObject",
+    "title": "레퍼런스 그래프(Reference Graph)",
+    "content": "GC가 객체 간 참조 관계를 추적하는 핵심 메커니즘 . | 주기적으로 또는 명시적으로(엔진 Tick, 레벨 변경 등) GC가 수행됨 | UObject만 추적. 일반 C++ 객체/스마트 포인터는 GC 영향 없음 | 순환 참조 문제 자동 해결 | . // A가 B를 참조, B가 A를 참조해도 루트 연결이 없으면 모두 삭제됨 class A { UPROPERTY() B* RefB; }; class B { UPROPERTY() A* RefA; }; . 1. 루트 객체(Root Objects) 식별 . | 가비지 컬렉션의 시작점으로 절대 삭제되지 않는 객체들 | . - 월드에 배치된 `AActor` - `AddToRoot()`로 등록된 객체 - 게임 인스턴스(`UGameInstance`) - 에디터에서 열린 에셋 (`UPackage`) . 2. 그래프 탐색 (Mark 단계) . | 루트 객체부터 UPROPERTY() 참조를 재귀적으로 따라가며 도달 가능한 객체 마킹 | . Mark 단계 순서 . | GC Root(예: 월드, 게임 인스턴스, 에디터 오브젝트 등)에서 탐색 시작 | RootObjectA를 방문(Mark) | RootObjectA의 UPROPERTY 필드 참조를 따라 ObjB, ObjC를 방문(Mark) | ObjB의 UPROPERTY 필드 참조를 따라 ObjD, ObjE 방문(Mark) | … 이하 반복 | 모든 방문이 끝나면, Mark되지 않은 나머지 객체들은 GC 대상으로 간주 | . 3. 미사용 객체 삭제 (Sweep 단계) . | 마킹되지 않은 객체를 안전하게 제거 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#%EB%A0%88%ED%8D%BC%EB%9F%B0%EC%8A%A4-%EA%B7%B8%EB%9E%98%ED%94%84reference-graph",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#레퍼런스-그래프reference-graph"
+  },"136": {
+    "doc": "UObject",
+    "title": "3. 직렬화(Serialization)",
+    "content": "UObject 기반 클래스 객체는 파일이나 네트워크로 저장/불러오거나 복제할 수 있음. | 맵, 에셋, 게임 세이브 파일, 블루프린트 인스턴스 등은 모두 UObject 파생 클래스의 직렬화에 기반해 저장/복원 | FArchive 기반의 엔진 직렬화 시스템이 모든 UPROPERTY 데이터를 자동으로 기록 및 재구성 . | UPROPERTY()로 선언된 변수는 별도의 코드 없이도 자동 직렬화 대상 | 예: SaveGame, 네트워크 동기화, 복제 등 | . | Serialize(FArchive&amp; Ar) 메서드를 오버라이드하면, 특정 데이터를 커스텀하게 저장/복원할 수 있음 | . 자동 직렬화 예시 . UCLASS() class UMySaveGame : public USaveGame { GENERATED_BODY() public: UPROPERTY() int32 PlayerLevel; UPROPERTY() FString PlayerName; }; // 이렇게 선언된 변수는 SaveGame 파일에 자동 저장/복원 . 커스텀 직렬화 시 버전 호환성을 위한 패턴 . void Serialize(FArchive&amp; Ar) { Super::Serialize(Ar); int32 Version = 0; Ar &lt;&lt; Version; // 버전 기록 if (Version &gt;= 1) { Ar &lt;&lt; MyNewVariable; } } . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#3-%EC%A7%81%EB%A0%AC%ED%99%94serialization",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#3-직렬화serialization"
+  },"137": {
+    "doc": "UObject",
+    "title": "데이터 저장 흐름",
+    "content": ". | UObject 계열 클래스는 저장 대상이 되면 . | 엔진 내부의 FArchive 객체(파일/메모리/네트워크 스트림)를 통함 | 각 UPROPERTY 값을 자동으로 기록(Serialize)한다 | . | 불러오기(로드) 시 저장된 바이너리 데이터가 FArchive로 읽혀짐 . | UPROPERTY 정보를 기반으로 객체(=UObject)의 멤버 변수로 복원(Deserialize) | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%80%EC%9E%A5-%ED%9D%90%EB%A6%84",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#데이터-저장-흐름"
+  },"138": {
+    "doc": "UObject",
+    "title": "SaveGame 동작 예시",
+    "content": "// SaveGame 객체 선언 UMySaveGame* SaveGameObj = NewObject&lt;UMySaveGame&gt;(); SaveGameObj-&gt;PlayerLevel = 25; SaveGameObj-&gt;PlayerName = TEXT(\"홍길동\"); // 저장 UGameplayStatics::SaveGameToSlot(SaveGameObj, TEXT(\"MySlot\"), 0); // 불러오기 UMySaveGame* LoadedGame = Cast&lt;UMySaveGame&gt;( UGameplayStatics::LoadGameFromSlot(TEXT(\"MySlot\"), 0) ); int32 LoadedLevel = LoadedGame-&gt;PlayerLevel; // 직렬화된 값이 자동 복원 . | 저장(Serialize) 과정 . | SaveGame 클래스 객체를 생성 | UGameplayStatics::SaveGameToSlot() 같은 API 호출 | 내부적으로 SaveGame 객체 → FArchive → UPROPERTY 자동 순회 및 값 기록 결과적으로 바이너리 파일(.sav 등)로 저장 | . | 불러오기(Deserialize) 과정 . | UGameplayStatics::LoadGameFromSlot() 같은 API 호출 | FArchive가 파일을 읽고, SaveGame 객체를 새로 만듦 | FArchive 데이터 → UPROPERTY 기반으로 멤버 변수 값이 자동 복원 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#savegame-%EB%8F%99%EC%9E%91-%EC%98%88%EC%8B%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#savegame-동작-예시"
+  },"139": {
+    "doc": "UObject",
+    "title": "네트워크 동기화 (Replicate) 동작 예시",
+    "content": "나중에 멀티 플레이 공부할 때 채워넣겠음 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EB%8F%99%EA%B8%B0%ED%99%94-replicate-%EB%8F%99%EC%9E%91-%EC%98%88%EC%8B%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#네트워크-동기화-replicate-동작-예시"
+  },"140": {
+    "doc": "UObject",
+    "title": "4. 에디터 통합",
+    "content": "메타데이터로 자동으로 디테일 패널 생성. | 디테일 패널 표시: UPROPERTY 지정자를 통해 에디터에서 편집 가능 | 블루프린트 노출: UFUNCTION에 BlueprintCallable 등의 지정자 추가로 블루프린트에서 사용 가능 | . 커스텀 프로퍼티 에디터 예시 . FPropertyEditorModule&amp; PropModule = FModuleManager::LoadModuleChecked&lt;FPropertyEditorModule&gt;(\"PropertyEditor\"); . 정리 . // 1. 객체 생성 + 메타데이터 UCLASS(BlueprintType, meta=(DisplayName=\"My Cool Object\")) class UMyObject : public UObject { GENERATED_BODY() public: // 2. 라이프사이클 관리 virtual void BeginDestroy() override { CleanupResources(); Super::BeginDestroy(); } // 3. 메타데이터 활용 UPROPERTY(EditAnywhere, meta=(ClampMin=0)) int32 Value; }; // 결과: // - 블루프린트에서 \"My Cool Object\"로 노출 (리플렉션) // - Value는 에디터에서 0 이상 값만 입력 가능 (에디터 통합) // - 객체 파괴 시 CleanupResources() 자동 호출 (GC 연동) . 참고 링크 . | Memory Management &amp; Garbage Collection in Unreal Engine 5 | 04. Reflection and Garbage Collection | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#4-%EC%97%90%EB%94%94%ED%84%B0-%ED%86%B5%ED%95%A9",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject.html#4-에디터-통합"
+  },"141": {
     "doc": "Coding Standard",
     "title": "Coding Standard",
     "content": ". | Coding Standard | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/"
-  },"102": {
+  },"142": {
     "doc": "Coding Standard",
     "title": "저작권 고지",
     "content": "배포하는 모든 소스 파일(.h, .cpp, .xaml 등)에는 파일의 첫 줄에 반드시 다음과 같은 저작권 공지가 포함되어야 한다. // Copyright Epic Games, Inc. All Rights Reserved. 해당 줄이 없거나 형식이 다르면 오류 -&gt; 빌드 실패 처리됨 . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A0%80%EC%9E%91%EA%B6%8C-%EA%B3%A0%EC%A7%80",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#저작권-고지"
-  },"103": {
+  },"143": {
     "doc": "Coding Standard",
     "title": "클래스 구성",
     "content": "클래스는 읽는 사람을 우선으로 구성해야 한다. 대부분 클래스를 읽는 사람들은 public 인터페이스를 사용한다. 따라서 클래스는 . | public | protected | private | . 순으로 작성한다. ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EA%B5%AC%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-구성"
-  },"104": {
+  },"144": {
     "doc": "Coding Standard",
     "title": "클래스 접두사",
     "content": "언리얼 엔진의 클래스에는 접두사가 있다. 해당 접두사를 알고있으면 어떤 클래스에서 파생됐는지 알 수 있다. | 접두사 | 클래스 | 예시 | . | A | AActor | AActor, APawn, AGameMode | . | U | UObject | UTexture, UBlueprintFunctionLibrary | . | S | SWidget | SButton, Swidget | . | F | 사용자 구조체 | FVector, FHitResult | . | I | 추상 인터페이스 | IInterface | . | T | 템플릿 클래스 | TArray&lt;T&gt;, TMap&lt;&lt;T&gt; | . | E | Enum 타입 | EGAmeState | . | G | globals 전역변수 | GEngine | . | b | Boolean 변수 | bHasFadedIn, bDied | . 사용예시 . typedef TArray&lt;FMytype&gt; FArrayOfMyTypes; . typedef에는 해당 타입에 적합한 문자가 접두사로 붙어야 한다. 위 예시는 사용자 구조체 타입을 받는 템플릿 클래스다. ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%A0%91%EB%91%90%EC%82%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-접두사"
-  },"105": {
+  },"145": {
     "doc": "Coding Standard",
     "title": "네이밍 규칙",
     "content": ". | 단어 사이에 언더스코어(_) 를 사용하지 않는다 | 단어의 첫 글자는 대문자로 표기한다 . | 예: MouseCoordinates (o), delta_x (x) | . | 타입명에는 추가로 대문자 접두사를 붙여 변수명과 구분한다 . | 예: FSkin (타입), Skin (FSkin 타입의 인스턴스) | . | 모든 변수는 한줄씩 선언한다 | 반환값이 있는 함수는 이름만으로 반환값을 명확히 한다 . | O: bool IsTeaFresh(FTea Tea) True 의미 명확 | X: bool CheckTea(FTea Tea) 어떤걸 반환할지 의미 불명확 | . | 반환값이 없는 절차 함수는 강한 동사+목적어 형식 . | 메서드의 목적어가 자기 자신이면 (맴버 함수) 생략 가능 | Handle, Process 등 모호한 동사 피하기 | . | bool 반환 함수는 항상 Yes/No 질문 형태를 취한다 . | IsVisible(), ShouldClearBuffer() | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EB%84%A4%EC%9D%B4%EB%B0%8D-%EA%B7%9C%EC%B9%99",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#네이밍-규칙"
-  },"106": {
+  },"146": {
     "doc": "Coding Standard",
     "title": "Const 정확성",
     "content": ". | 함수 인자가 함수 내에서 변경되지 않는다면, const pointer 또는 const reference로 전달 | 객체를 변경하지 않는 메서드는 const로 명시 | 컨테이너를 수정하지 않는 반복문은 const 반복자 사용 | . 사용예시 . void SomeMutatingOperation(FThing&amp; OutResult, const TArray&lt;Int32&gt;&amp; InArray) { // InArray는 수정되지 않음, OutResult는 아마 수정될것임 } void FThing::SomeNonMutatingOperation() const { // 이 코드는 FThing을 변경하지 않음 } TArray&lt;FString&gt; StringArray; for (const FString&amp; : StringArray) { // 반복문 내부에서 StringArray를 수정하지 않음 } . | 반환 타입에 const 사용 금지 (컴파일 경고 발생) . | 단 const 레퍼런스, 포인터 반환은 허용 | . | . // 좋은 예시 - const 참조 반환 const TArray&lt;FString&gt;&amp; GetSomeArray(); // 좋은 예시 - const 포인터 반환 const TArray&lt;FString&gt;* GetSomeArray(); // 나쁜 예시 - const 배열 반환 const TArray&lt;FString&gt; GetSomeArray(); // 나쁜 예시 - const 포인터를 const로 반환 const TArray&lt;FString&gt;* const GetSomeArray(); . | 포인터 자체를 const로 만들 때는 타입 뒤에 const . | 포인터가 가리키는 값이 아닌, 포인터 자체의 재할당을 막음 | . | . // 포인터는 재할당 불가, T는 변경 가능 T* const Ptr = ...; // 잘못된 사용: 불가(레퍼런스는 재할당 불가 특성상 의미 없음) T&amp; const Ref = ...; . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-%EC%A0%95%ED%99%95%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-정확성"
-  },"107": {
+  },"147": {
     "doc": "Coding Standard",
     "title": "주석",
     "content": ". | 클래스 주석 . | 이 클래스가 해결하는 문제 | 클래스 생성 이유 | . | 함수 (메서드) 주석 . | 함수 목적 기입 | . | 매개변수 주석 @param . | 측정 단위 | 예상 값 범위 | 불가능한 값 | 상태/오류 코드 의미 | . | 반환값 주석 @return . | 예상 반환 값 | . | 추가 정보 . | @warning 경고, @See보기 등을을 선택적으로 사용함 | . | . 사용예시 . /** The interface for drinkable objects. */ class IDrinkable { public: /** * Called when a player drinks this object. * @param OutFocusMultiplier - 반환 시, 마시는 사람의 집중력에 곱할 배수를 담는다. * @param OutThirstQuenchingFraction - 반환 시, 갈증 해소 정도(0~1)를 담는다. * @warning 반드시 음료가 제대로 준비된 후 호출해야 함. */ virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) = 0; }; /** 단일 찻잔 */ class FTea : public IDrinkable { public: /** * 주어진 물의 부피와 온도로 우려냈을 때, 차의 맛 변화량을 계산 * @param VolumeOfWater - 우릴 때 사용된 물의 양(mL) * @param TemperatureOfWater - 물의 온도(Kelvin) * @param OutNewPotency - 우려낸 후 차의 효능(0.97~1.04) * @return 차의 맛 강도 변화량(1분당 TTU) */ float Steep( const float VolumeOfWater, const float TemperatureOfWater, float&amp; OutNewPotency ); /** 설탕 당도 기준으로 감미를 추가 */ void Sweeten(const float EquivalentGramsOfSucrose); /** 일본 내 판매가(엔) */ float GetPrice() const { return Price; } virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) override; private: /** 가격(엔) */ float Price; /** 감미(설탕 환산 그램) */ float Sweetness; }; . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A3%BC%EC%84%9D",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#주석"
-  },"108": {
+  },"148": {
     "doc": "Coding Standard",
     "title": "차후 더 추가 예정",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%B0%A8%ED%9B%84-%EB%8D%94-%EC%B6%94%EA%B0%80-%EC%98%88%EC%A0%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#차후-더-추가-예정"
-  },"109": {
+  },"149": {
     "doc": "Coding Standard",
     "title": "사용가능한 표준 라이브러리 목록",
     "content": ". | &lt;atomic&gt; : 신규 코드는 std::atomic 사용. 기존 TAtomic은 부분 구현만 되어 있음. | &lt;type_traits&gt; : 겹치는 부분은 표준 trait 사용. (표준 trait는 value/type 소문자, 기존 UE는 대문자 Value/Type 주의) | &lt;initializer_list&gt; : braced initializer 지원에 필수, 대체재 없음 | &lt;regex&gt; : 직접 사용 가능하나 에디터 전용 코드에 한정. 자체 구현 계획 없음. | &lt;limits&gt; : std::numeric_limits 전부 사용 가능 | &lt;cmath&gt; : 부동소수점 비교 함수만 사용 허용 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%82%AC%EC%9A%A9%EA%B0%80%EB%8A%A5%ED%95%9C-%ED%91%9C%EC%A4%80-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%AA%A9%EB%A1%9D",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#사용가능한-표준-라이브러리-목록"
-  },"110": {
-    "doc": "C++",
-    "title": "C++",
-    "content": " ",
-    "url": "/docs/C++/",
-    
-    "relUrl": "/docs/C++/"
-  },"111": {
-    "doc": "Computer Graphics",
-    "title": "Computer Graphics",
-    "content": " ",
-    "url": "/docs/Computer%20Graphics/",
-    
-    "relUrl": "/docs/Computer%20Graphics/"
-  },"112": {
-    "doc": "Linear Algebra",
-    "title": "Linear Algebra",
-    "content": " ",
-    "url": "/docs/Math/linear%20algebra/",
-    
-    "relUrl": "/docs/Math/linear%20algebra/"
-  },"113": {
-    "doc": "Graphics rendering pipeline",
-    "title": "Graphics rendering pipeline",
-    "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
-    "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
-    
-    "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
-  },"114": {
-    "doc": "Create Custom Editor Tools",
-    "title": "Create Custom Editor Tools",
-    "content": "빠른 작업 효율 향상을 위해 랜덤 배치 툴을 구현해보자 . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/"
-  },"115": {
-    "doc": "Computer architecture",
-    "title": "Computer architecture",
-    "content": " ",
-    "url": "/docs/Computer%20architecture/",
-    
-    "relUrl": "/docs/Computer%20architecture/"
-  },"116": {
-    "doc": "GPU Architecture",
-    "title": "GPU Architecture",
-    "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
-    "url": "/docs/Computer%20architecture/GPU%20Architecture/",
-    
-    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
-  },"117": {
+  },"150": {
     "doc": "Math",
     "title": "Math",
     "content": " ",
     "url": "/docs/Math/",
     
     "relUrl": "/docs/Math/"
-  },"118": {
+  },"151": {
+    "doc": "C++",
+    "title": "C++",
+    "content": " ",
+    "url": "/docs/C++/",
+    
+    "relUrl": "/docs/C++/"
+  },"152": {
+    "doc": "Computer Graphics",
+    "title": "Computer Graphics",
+    "content": " ",
+    "url": "/docs/Computer%20Graphics/",
+    
+    "relUrl": "/docs/Computer%20Graphics/"
+  },"153": {
+    "doc": "UObject",
+    "title": "UObject",
+    "content": "언리얼 엔진의 모든 객체 지향 시스템의 기반이 되는 핵심 클래스. | 게임플레이 요소, 컴포넌트, 에셋 등 거의 모든 UE5 객체가 UObject에서 파생됨 | UObject 객체를 생성함으로써 리플렉션, 가비지 컬렉션(GC), 직렬화 등의 기능을 사용할 수 있다 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/"
+  },"154": {
+    "doc": "UObject",
+    "title": "개발자가 직접 사용하는 도구 (원인)",
+    "content": ". | 객체 생성 및 관리 . | NewObject(), IsValid(), ConditionalBeginDestroy() | . | 라이프사이클 관리 . | PostInitProperties(), BeginDestroy(), AddToRoot() | . | 메타데이터 시스템 . | UPROPERTY(meta=(...)), UFUNCTION() 지정자 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80-%EC%A7%81%EC%A0%91-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%8F%84%EA%B5%AC-%EC%9B%90%EC%9D%B8",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#개발자가-직접-사용하는-도구-원인"
+  },"155": {
+    "doc": "UObject",
+    "title": "UObject를 사용함으로써 자동으로 얻는 기능 (결과)",
+    "content": ". | 리플렉션 . | UCLASS()로 등록한 클래스가 블루프린트/파이썬에서 자동 인식 | . | 가비지 컬렉션 . | UPROPERTY() 참조가 없어지면 GC가 자동으로 객체 제거 | . | 직렬화 . | SaveGame 지정 시 별도 코드 없이도 디스크에 저장 가능 | . | 에디터 통합 . | EditAnywhere 메타데이터로 자동으로 디테일 패널 생성 | . | . UObject 상속 계층 구조 . UObject (최상위 베이스 클래스) ├─ UActorComponent (액터 컴포넌트 베이스) │ ├─ USceneComponent (변환 기능 포함) │ │ ├─ UPrimitiveComponent (렌더링 가능) │ │ │ ├─ UMeshComponent (메시 기반) │ │ │ │ ├─ USkeletalMeshComponent (스켈레탈 메시) │ │ │ │ └─ UStaticMeshComponent (스태틱 메시) │ │ │ └─ ULightComponent (라이트 소스) │ │ └─ UCameraComponent (카메라) │ └─ UAudioComponent (사운드) ├─ AActor (월드 배치 객체) │ ├─ APawn (플레이어/AI 제어 가능) │ │ ├─ ACharacter (캐릭터 메시/이동 포함) │ │ └─ ADefaultPawn (기본 이동 기능) │ └─ AStaticMeshActor (스태틱 메시 배치) ├─ UDataAsset (데이터 전용 에셋) │ ├─ UPrimaryDataAsset (프라이머리 에셋 시스템) │ └─ UAnimSequence (애니메이션 데이터) ├─ UBlueprintFunctionLibrary (블루프린트 함수) │ ├─ UKismetSystemLibrary (시스템 유틸리티) │ └─ UKismetMathLibrary (수학 함수) └─ 기타 주요 클래스 ├─ UGameInstance (게임 인스턴스) ├─ UWorld (월드 컨텍스트) ├─ UUserWidget (UMG 위젯) └─ UMaterial (머티리얼) . 주의사항 . | 스택 할당 금지: 반드시 힙에 생성 (GC 관리 대상이어야 함) | 다중 상속 제한: UObject를 다중 상속할 때는 주의가 필요 (일반적으로 UInterface 사용) | 표준 C++ 타입과의 호환성: std::vector 등은 UPROPERTY()로 표시할 수 없으며, TArray를 사용함 | 아주 가벼운 데이터만 다룰 경우 USTRUCT를 권장 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%A8%EC%9C%BC%EB%A1%9C%EC%8D%A8-%EC%9E%90%EB%8F%99%EC%9C%BC%EB%A1%9C-%EC%96%BB%EB%8A%94-%EA%B8%B0%EB%8A%A5-%EA%B2%B0%EA%B3%BC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject를-사용함으로써-자동으로-얻는-기능-결과"
+  },"156": {
+    "doc": "UObject",
+    "title": "UObject의 내부 구조",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject%EC%9D%98-%EB%82%B4%EB%B6%80-%EA%B5%AC%EC%A1%B0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject의-내부-구조"
+  },"157": {
+    "doc": "UObject",
+    "title": "UClass",
+    "content": "모든 UObject는 자신의 클래스 정보 (UClass)를 가리키는 ClassPrivate 포인터를 갖는다 . class UClass : public UObject { TArray&lt;UProperty*&gt; Properties; // 프로퍼티 목록 (예: 체력, 공격력) TArray&lt;UFunction*&gt; Functions; // 함수 목록 (예: 점프(), 공격()) UClass* SuperClass; // 부모 클래스 (상속 관계) // ... 기타 메타데이터 }; . 동작 예시 . UMyObject* Obj = NewObject&lt;UMyObject&gt;(); UClass* ObjClass = Obj-&gt;GetClass(); // 데이터 추출 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uclass",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uclass"
+  },"158": {
+    "doc": "UObject",
+    "title": "ObjectFlags",
+    "content": "객체의 상태를 나타내는 비트 플래그 . enum EObjectFlags { RF_Public = 0x00000001, // 에디터에 노출 여부 RF_Transactional= 0x00002000, // Undo/Redo 지원 RF_Transient = 0x00004000, // 임시 객체 (저장 안 됨) // ... 30여 가지 플래그 }; . 내부 구조 다이어그램 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#objectflags",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#objectflags"
+  },"159": {
+    "doc": "Graphics rendering pipeline",
+    "title": "Graphics rendering pipeline",
+    "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
+    "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
+    
+    "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
+  },"160": {
+    "doc": "Create Custom Editor Tools",
+    "title": "Create Custom Editor Tools",
+    "content": "빠른 작업 효율 향상을 위해 랜덤 배치 툴을 구현해보자 . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/"
+  },"161": {
+    "doc": "Computer architecture",
+    "title": "Computer architecture",
+    "content": " ",
+    "url": "/docs/Computer%20architecture/",
+    
+    "relUrl": "/docs/Computer%20architecture/"
+  },"162": {
+    "doc": "GPU Architecture",
+    "title": "GPU Architecture",
+    "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
+  },"163": {
+    "doc": "Linear Algebra",
+    "title": "Linear Algebra",
+    "content": " ",
+    "url": "/docs/Math/linear%20algebra/",
+    
+    "relUrl": "/docs/Math/linear%20algebra/"
+  },"164": {
     "doc": "Material",
     "title": "Material",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"119": {
+  },"165": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
-    "content": "참고하면 좋은 링크 . | UnrealEngine c++ Guide | blueprints vs c++ | . ",
+    "content": "참고하면 좋은 링크 . | UnrealEngine c++ Guide | blueprints vs c++ | Exploring Unreal’s physics framework | Unreal Engine UI Tutorials | . ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"120": {
+  },"166": {
     "doc": "Home",
     "title": "Home",
     "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ",
