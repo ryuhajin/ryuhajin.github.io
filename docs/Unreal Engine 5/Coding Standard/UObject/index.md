@@ -71,8 +71,8 @@ UObject (최상위 베이스 클래스)
 
 # UObject의 내부 구조
 ## UClass
-- **UClass는 UObject 객체의 청사진**
-- 프로퍼티의 이름/타입/위치(오프셋). 실제 힙에 할당 X
+- **UClass는 UObject 객체의 청사진** (UObject 타입에 대한 메타데이터와 구조 정보)
+- 프로퍼티의 이름/타입/위치(오프셋)
   - (예: "고양이" 종류의 객체는 "고양이 클래스" DNA를 가짐)
 - 모든 UObject는 자신의 클래스 정보 `(UClass)`를 가리키는 ClassPrivate 포인터를 갖는다
 
