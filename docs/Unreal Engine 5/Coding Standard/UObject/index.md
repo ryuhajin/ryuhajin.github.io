@@ -2,7 +2,7 @@
 layout: default
 title: "UObject"
 parent: "Coding Standard"
-nav_order: 1
+nav_order: 4
 has_children: true
 ---
 
@@ -284,3 +284,4 @@ public:
 ![](/images/UObjectSub.png)
 - 실선: 명시적 참조 (AActor의 Components 배열)
 - 점선: 암시적 참조 (Outer 포인터)
+

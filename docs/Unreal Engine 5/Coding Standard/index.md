@@ -8,8 +8,6 @@ has_children: true
 
 # Coding Standard
 
-- [Coding Standard](https://dev.epicgames.com/documentation/en-us/unreal-engine/coding-standard?application_version=4.27#portablec++code)
-
 ## 저작권 고지
 배포하는 모든 소스 파일(.h, .cpp, .xaml 등)에는 파일의 첫 줄에 반드시 다음과 같은 저작권 공지가 포함되어야 한다.
 
@@ -200,3 +198,5 @@ private:
 - `<limits>` : std::numeric_limits 전부 사용 가능
 - `<cmath>` : 부동소수점 비교 함수만 사용 허용
 
+**참고 링크**
+- [Coding Standard](https://dev.epicgames.com/documentation/en-us/unreal-engine/coding-standard?application_version=4.27#portablec++code)
