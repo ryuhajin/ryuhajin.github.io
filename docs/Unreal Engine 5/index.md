@@ -11,3 +11,5 @@ has_children: true
 - [blueprints vs c++](https://awforsythe.com/unreal/blueprints_vs_cpp/)
 - [Exploring Unreal's physics framework](https://itscai.us/blog/post/ue-physics-framework/)
 - [Unreal Engine UI Tutorials](https://unreal-garden.com/)
+- [Unreal Engine C++ API Reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/API)
+- [UE Classes API](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Classes)

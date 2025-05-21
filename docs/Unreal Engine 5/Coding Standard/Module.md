@@ -24,7 +24,7 @@ nav_order: 6
 ```bash
 YourProject/
 ├── Source/ # 모든 모듈은 반드시 프로젝트 또는 플러그인의 Source 디렉토리 하위에 위치
-│   ├── YourModule/       # 모듈 루트 폴더명은 모듈명과 동일해야 함함
+│   ├── YourModule/       # 모듈 루트 폴더명은 모듈명과 동일해야 함
 │   │   ├── Public/       # 외부에 노출할 헤더 파일
 │   │   ├── Private/      # 내부 구현 파일 (.cpp 및 내부 헤더)
 │   │   └── YourModule.Build.cs
@@ -99,10 +99,12 @@ public class ModuleTest : ModuleRules
 ## 주요 의존성 설정
 **1. PublicDependencyModuleNames**
 ```c++
+// 사용할 모듈(폴더) 이름 적기
 PublicDependencyModuleNames.AddRange(new string[] { "Core", "Engine" });
 ```
 
 - 해당 리스트에 들어간 모듈은 **내 모듈의 Public 코드(즉, Public 헤더 파일)와 Private 코드에서 모두 사용 가능**
+  - 예:  #include "A/Public/A.h"
 - 해당 모듈에 의존하는 **다른 모듈의 Public 코드에서도 이 의존성 모듈의 Public 헤더를 사용**
 
 
