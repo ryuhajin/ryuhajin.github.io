@@ -200,3 +200,4 @@ private:
 
 **참고 링크**
 - [Coding Standard](https://dev.epicgames.com/documentation/en-us/unreal-engine/coding-standard?application_version=4.27#portablec++code)
+- [Recommended Asset Naming Conventions](https://dev.epicgames.com/documentation/en-us/unreal-engine/recommended-asset-naming-conventions-in-unreal-engine-projects?application_version=4.27)
