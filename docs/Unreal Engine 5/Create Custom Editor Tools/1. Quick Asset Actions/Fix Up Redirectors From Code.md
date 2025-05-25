@@ -81,7 +81,7 @@ FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).G
 | GetModule<T>()       | 이미 로드된 모듈만 반환, 없으면 nullptr         | 안전         |
 
 
-### 2. FModuleManager::LoadModuleChecked<T>
+### 2. `FModuleManager::LoadModuleChecked<T>`
 엔진/에디터 모듈을 런타임에 안전하게 로드
 
 - FModuleManager::
@@ -89,6 +89,11 @@ FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).G
 - LoadModuleChecked<T>()
   - 템플릿 함수로, 지정된 모듈 타입(T)을 강제로 로드하고 검증 후 반환
   - 모듈이 존재하지 않으면 크래시
+
+```c++
+template<class T>
+static T& LoadModuleChecked(FName ModuleName);
+```
 
 ### 동작
 1. ModuleName에 해당하는 모듈이 이미 로드되어 있으면
@@ -99,11 +104,11 @@ FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).G
   - 실패시 크래시
 3. 반환 타입은 T& (예: FAssetRegistryModule&)
 
-### 3. CastChecked<T>()
+### 3. `CastChecked<T>()`
 주어진 포인터가 실제 런타임에 T 타입(혹은 그 하위 타입)인지 체크한 뒤, 맞으면 T로 변환해서 반환
 - 틀리면 **에디터 빌드(Development/Debug)**에서는 **강제로 크래시(Assertion 실패)**를 일으킴
 
-### CastChecked<T>와 Cast<T>의 차이
+### `CastChecked<T>와 Cast<T>의 차이`
 
 | 함수| 타입 체크 실패 시 동작 | 주로 사용하는 상황 |
 |---|---|---|
