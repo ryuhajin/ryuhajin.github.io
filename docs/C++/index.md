@@ -83,13 +83,17 @@ void func() {
 ```c++
 // [캡처](매개변수) -> 반환타입 { 함수본문 }
 [capture](parameters) -> return_type {
-    // 함수 본문
+    // 함수 본문 
+    ...
 }
+
+// 예시 
+[my_mod](int v_) -> int { return v_ % my_mod; }
 ```
 
 - `[capture]` : 외부 변수(스코프 밖의 변수)를 람다 내부에서 사용할 때 어떻게 사용할지 지정
 - `(parameters)` : 함수의 매개변수 목록
-    - `-> return_type` : 반환 타입 명시 (생략 가능 / 컴파일러가 추론)
+- `-> return_type` : 반환 타입 (`void` 는 `->` 생략 가능 / 컴파일러가 추론)
 
 ## c++98 함수 객체 vs C++11 람다
 
@@ -203,6 +207,9 @@ int main() {
     std::cout << y; // 출력: 30 (원본 y 변경됨)
 }
 ```
+
+**참고 링크**
+- [람다(lambda) 함수](https://modoocode.com/196)
 
 # 아래부터 나중에 추가 정리해야 할 것
 ---
