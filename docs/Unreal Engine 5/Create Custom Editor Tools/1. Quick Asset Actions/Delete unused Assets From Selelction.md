@@ -20,17 +20,23 @@ nav_order: 4
 - 런타임/에디터 지원: 런타임 자동화, 에디터 UI, 플러그인 등에서 활용
 
 ## FAssetData
-에셋에 대한 "경량 메타데이터"를 저장하기 위해 설계된 구조체
+에셋 레지스트리에서 찾은 에셋에 대한 중요한 정보를 저장하는 구조체
 
 - Asset Registry는 FAssetData의 집합
-- 실제 에셋의 전체 데이터나 객체는 아님
+- 실제 에셋의 전체 데이터나 객체는 아님 (일시적)
 - `AssetRegistry`를 통해 조회 시 `TArray<FAssetData>`로 반환됨
+
+### AssetRegistry 다이어그램
+![](../../../../images/AssetRegistry.png){: width="80%" height="80%"}
+
+- FARFilter : AssetRegistry 에서 검색에 사용되는 필터
+- FAssetData → UObject:  필요에 따라 일시적으로 참조(사용)한다 (예: GetAsset() 호출)
 
 ## Remove Unused Assets 함수 구현에 사용한 메서드
 ### 1. UEditorAssetLibrary::FindPackageReferencersForAsset
 - 특정 에셋(Asset)을 참조하는 모든 패키지(Package)의 목록을 찾아 반환
 - 에셋 의존성 분석에 사용. 특히 **에셋을 삭제하거나 수정할 때 어떤 다른 에셋들이 영향을 받을지 확인**
-- 에이터 전용 기능
+- 에디터 전용 기능
 
 ```c++
 static TArray<FString> UEditorAssetLibrary::FindPackageReferencersForAsset(
