@@ -37,19 +37,24 @@ has_children: true
 - 다이나믹 델리게이트: 블루프린트와 연동 가능
 
 ## 델리게이트 사용하기
-- Delegate 타입 선언 : 매크로 사용
+### Delegate 타입 선언 : 매크로 사용
 
 ```c++
 DECLARE_DELEGATE(FMyDelegate);
+DECLARE_DELEGATE_RetVal_OneParam(ReturnType, DelegateName, ParamType);
 ```
+- ReturnType: 반환 타입 (예: int32)
+- DelegateName: 델리게이트 타입 이름 (예: FMyDelegateWithReturn)
+- ParamType: 함수에 전달될 파라미터의 타입 (예: FString)
 
-- 바인딩 : 위에 선언한 델리게이트 타입 객체에 함수 연결
-- Bind~(), Add~(), Execute(), Broadcast() 등의 멤버 함수를 사용해 연결/호출
+### 바인딩 : 위에 선언한 델리게이트 타입 객체에 함수 연결
 
 ```c++
 FMyDelegate MyDelegate;  // 선언(위 매크로로 정의된 타입)
 MyDelegate.BindRaw(this, &FMyClass::Handler);
 ```
+
+- Bind~(), Add~(), Execute(), Broadcast() 등의 멤버 함수를 사용해 연결/호출
 
 ## 델리게이트 종류
 ### 1. 단일 캐스트 델리게이트  (Single-cast Delegates)
