@@ -5,7 +5,7 @@ parent: "2. Extend Content Browser Menu"
 nav_order: 3
 ---
 
-## 목표 : 액션 함수 동작 구현하기
+## 목표 : 바인딩 된 함수 동작 구현하기
 
 # 글로벌 함수의 링크 에러 및 static/네임스페이스 처리
 G 접두사가 붙은 변수나 함수에 `static`을 추가하기

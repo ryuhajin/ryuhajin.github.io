@@ -205,7 +205,7 @@ virtual bool GetAssets(
 | bFollowRedirectors | 에셋 경로가 리다이렉터인 경우, **자동으로 실제 에셋을 따라갈지** 여부<br> - true면 리다이렉터를 따라가 실제 에셋을 로딩<br> - false면 리다이렉터 그 자체만 로드 |
 | bAllowCancel      | 로딩 도중 **사용자가 취소(Interrupt/Cancel)할 수 있는 UI**가 노출될지 여부<br> - 에디터에서 대량 에셋 로딩시 “취소” 가능 |
 
-### 6. AssetViewUtils::FLoadAssetsSettings
+### 6. AssetViewUtils::LoadAssetsIfNeeded
 에셋의 오브젝트 경로(ObjectPath) 리스트를 받아, 실제로 필요한 에셋만 메모리로 로드하는 에디터 유틸리티 함수
 - 이미 메모리에 로드된 에셋은 재로드하지 않음
 - 콘텐츠 브라우저 및 에디터 툴에서 대량 에셋 로딩에 특화
