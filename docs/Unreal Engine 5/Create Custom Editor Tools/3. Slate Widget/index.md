@@ -86,3 +86,78 @@ TSharedPtr<FMyType> Ptr = MakeShared<FMyType>(...);
 ```
 
 슬레이트 위젯을 만들 때 자주 사용됨
+
+# 커스텀 Slate 레이아웃 구현 과정
+## 1. Slate 위젯 클래스 정의
+- 대부분의 커스텀 슬레이트 위젯은 SCompoundWidget을 상속
+
+```c++
+#pragma once
+
+#include "Widgets/SCompoundWidget.h"
+
+class SMyCustomLayout : public SCompoundWidget
+{};
+```
+## 2. Slate 속성 매크로(Arguments) 활용
+- SLATE_ARGUMENT: 생성 시 값 1회 전달, 복사.
+- SLATE_ATTRIBUTE: 바인딩, 값이 동적으로 변할 수 있음.
+- SLATE_EVENT: 델리게이트/함수 포인터 등 이벤트 전달.
+
+```c++
+// CustomButtonPanel.h
+class SCustomButtonPanel : public SCompoundWidget
+{
+public:
+    SLATE_BEGIN_ARGS(SCustomButtonPanel) {}
+      // 슬레이트 속성 정의
+        SLATE_ARGUMENT(FText, Title)
+        SLATE_ARGUMENT(TArray<FText>, ButtonLabels)
+        SLATE_EVENT(FOnInt32Selected, OnButtonSelected)
+    SLATE_END_ARGS()
+
+    void Construct(const FArguments& InArgs);
+    
+private:
+    // 위젯 상태 변수
+    TArray<FText> ButtonLabels;
+    FOnInt32Selected OnButtonSelected;
+};
+```
+
+## 3. Construct 함수 구현
+- ChildSlot을 이용해 Slate 레이아웃 선언
+- ChildSlot(컨테이너의 루트)에 원하는 레이아웃 위젯(예: SVerticalBox, SHorizontalBox 등)으로 하위 위젯을 배치
+
+```c++
+void SMyCustomLayout::Construct(const FArguments& InArgs)
+{
+    Title = InArgs._Title;
+
+    ChildSlot
+    [
+        SNew(SVerticalBox)
+        + SVerticalBox::Slot()
+        .AutoHeight()
+        [
+            SNew(STextBlock).Text(FText::FromString(Title))
+        ]
+        + SVerticalBox::Slot()
+        .FillHeight(1.0f)
+        [
+            SNew(SButton)
+            .Text(NSLOCTEXT("MyCustomLayout", "Button", "Click Me"))
+            // .OnClicked(....)
+        ]
+    ];
+}
+```
+
+## 4. Slate 스타일 및 Theme 적용
+- FSlateStyleSet을 사용해 스타일 정의
+- FSlateBrush로 브러시 설정
+- FSlateFontInfo로 폰트 설정
+
+## 5. 이벤트 처리
+- 마우스/키보드 이벤트 바인딩
+- 델리게이트를 사용한 커스텀 이벤트

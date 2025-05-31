@@ -1294,643 +1294,825 @@
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/Search%20And%20Delete%20Unused%20Assets.html"
   },"185": {
+    "doc": "Set Up A Class For Slate Widget",
+    "title": "목표: SCompoundWidget 상속받아 커스텀 위젯 클래스 만든 후 바인딩하기",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html#%EB%AA%A9%ED%91%9C-scompoundwidget-%EC%83%81%EC%86%8D%EB%B0%9B%EC%95%84-%EC%BB%A4%EC%8A%A4%ED%85%80-%EC%9C%84%EC%A0%AF-%ED%81%B4%EB%9E%98%EC%8A%A4-%EB%A7%8C%EB%93%A0-%ED%9B%84-%EB%B0%94%EC%9D%B8%EB%94%A9%ED%95%98%EA%B8%B0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html#목표-scompoundwidget-상속받아-커스텀-위젯-클래스-만든-후-바인딩하기"
+  },"186": {
+    "doc": "Set Up A Class For Slate Widget",
+    "title": "커스텀 위젯 등록과 바인딩",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html#%EC%BB%A4%EC%8A%A4%ED%85%80-%EC%9C%84%EC%A0%AF-%EB%93%B1%EB%A1%9D%EA%B3%BC-%EB%B0%94%EC%9D%B8%EB%94%A9",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html#커스텀-위젯-등록과-바인딩"
+  },"187": {
+    "doc": "Set Up A Class For Slate Widget",
+    "title": "StartupModule에서 이벤트 등록",
+    "content": "void FBacgroundToolsModule::StartupModule() { InitCBMenuExtention(); RegisterAdvanceDeletionTab(); } . | StartupModule의 역할 . | 언리얼의 모든 Editor Module, Plugin Module은 StartupModule()에서 자신만의 초기화(예: 명령 등록, 탭 등록 등)를 처리 | . | StartupModule()에서 RegisterAdvanceDeletionTab()을 호출 . | 탭(Advanced Deletion 패널)을 에디터에 “등록”하는 과정이 실행 | . | . void FBacgroundToolsModule::RegisterAdvanceDeletionTab() { FGlobalTabmanager::Get()-&gt;RegisterNomadTabSpawner(FName(\"AdvanceDeletion\"), FOnSpawnTab::CreateRaw(this, &amp;FBacgroundToolsModule::OnSpawnAdvanceDeletionTab)) .SetDisplayName(FText::FromString(TEXT(\"Advance Deletion\"))); } . FGlobalTabmanager::Get()-&gt;RegisterNomadTabSpawner . | FGlobalTabmanager(언리얼 에디터의 전역 탭 관리자)에 “AdvanceDeletion” 이라는 ID로 탭 생성자를 등록 실제로 이 탭을 띄우기 전까지는 “정의만 되어있는 상태”이다 . 즉, “Advanced Deletion”이라는 이름의 탭을 만들 준비만 마친 것 . | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html#startupmodule%EC%97%90%EC%84%9C-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%93%B1%EB%A1%9D",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html#startupmodule에서-이벤트-등록"
+  },"188": {
+    "doc": "Set Up A Class For Slate Widget",
+    "title": "탭을 실제로 여는 시점 (이벤트 발생)",
+    "content": ". | OnAdvancedDeletionButtonClicked 함수 . | TryInvokeTab(\"AdvanceDeletion\")을 통해 등록된 스포너(생성 콜백)를 호출 | . | OnSpawnAdvanceDeletionTab() 함수를 통해 실제 인스턴스 생성 . | 이 순간부터 Advance Deletion 탭이 실제로 화면에 나타남 TSharedRef&lt;SDockTab&gt; FBacgroundToolsModule::OnSpawnAdvanceDeletionTab(const FSpawnTabArgs&amp; SpawnTabArgs) { return SNew(SDockTab).TabRole(ETabRole::NomadTab) [ SNew(SAdvanceDeletionTab) .TestString(TEXT(\"I am passing data\")) ]; } . | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html#%ED%83%AD%EC%9D%84-%EC%8B%A4%EC%A0%9C%EB%A1%9C-%EC%97%AC%EB%8A%94-%EC%8B%9C%EC%A0%90-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%B0%9C%EC%83%9D",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html#탭을-실제로-여는-시점-이벤트-발생"
+  },"189": {
+    "doc": "Set Up A Class For Slate Widget",
+    "title": "정리",
+    "content": ". | StartupModule()의 RegisterAdvanceDeletionTab()는 해당 이벤트 발생 전 준비만 바인딩 . | 이름만 등록, 실제 위젯 인스턴스 없음 | . | OnAdvancedDeletionButtonClicked()는 실제 사용자가 해당 이벤트를 발생시켰을 때 동작 바인딩 . | 실제 인스턴스 생성, SDockTab의 ChildSlot에 내가 생성한 위젯이 들어감 | . | . StartupModule() (에디터/플러그인 모듈 초기화) └→ RegisterAdvanceDeletionTab() └→ FGlobalTabmanager::RegisterNomadTabSpawner(\"AdvanceDeletion\", OnSpawnTab...) └→ \"AdvanceDeletion\" 탭 생성 콜백(준비만 해둠) └→ (사용자 요청이 있을 때까지 기다림) (사용자: 우클릭→Advanced deletion 메뉴 클릭) └→ OnAdvancedDeletionButtonClicked() → TryInvokeTab(\"AdvanceDeletion\") └→ FGlobalTabmanager에서 해당 탭 콜백 호출 └→ OnSpawnAdvanceDeletionTab() 실행 └→ SDockTab 생성, ChildSlot에 SAdvanceDeletionTab(Slate 위젯) 추가 └→ 트리 구조로 에디터 Slate 트리에 편입, 렌더링 시작 . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html#%EC%A0%95%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html#정리"
+  },"190": {
+    "doc": "Set Up A Class For Slate Widget",
+    "title": "Set Up A Class For Slate Widget",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20A%20Class%20For%20Slate%20Widget.html"
+  },"191": {
+    "doc": "Set Up Basic Layout",
+    "title": "목표: 슬레이트 탭 레이아웃 작성",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20Basic%20Layout.html#%EB%AA%A9%ED%91%9C-%EC%8A%AC%EB%A0%88%EC%9D%B4%ED%8A%B8-%ED%83%AD-%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83-%EC%9E%91%EC%84%B1",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20Basic%20Layout.html#목표-슬레이트-탭-레이아웃-작성"
+  },"192": {
+    "doc": "Set Up Basic Layout",
+    "title": "레이아웃 샘플 예시 보기",
+    "content": ". | 에디터 플러그인 폴더 -&gt; 모듈 콘텐츠 폴더로 이동 | 우클릭 -&gt; 에디터 유틸리티 -&gt; 에디터 유틸리티 위젯 클릭 | 생성된 에디터 유틸리티 위젯 더블클릭 | 검색을 통해 슬롯에 추가 등 샘플 미리 볼 수 있음 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20Basic%20Layout.html#%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83-%EC%83%98%ED%94%8C-%EC%98%88%EC%8B%9C-%EB%B3%B4%EA%B8%B0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20Basic%20Layout.html#레이아웃-샘플-예시-보기"
+  },"193": {
+    "doc": "Set Up Basic Layout",
+    "title": "Set Up Basic Layout",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20Basic%20Layout.html",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Set%20Up%20Basic%20Layout.html"
+  },"194": {
     "doc": "Slate",
     "title": "Slate",
     "content": "언리얼 엔진의 로우레벨 UI 프레임워크 . | SlateCore: UI 위젯, 레이아웃, 입력 처리 등 Slate의 핵심 로직을 담당 | Slate: 렌더링, 스타일링, 고수준 위젯 구현, Windows/OSX/Linux와의 통합 등 확장 기능 담당 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Slate.html",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Slate.html"
-  },"186": {
+  },"195": {
     "doc": "Slate",
     "title": "슬레이트 구조 특징",
     "content": ". | Slate의 UI는 SWidget이라는 추상 클래스를 루트로 하는 트리 구조 | 각 위젯(버튼, 텍스트, 리스트 등)은 SWidget을 상속한 C++ 클래스 . | 예: SButton, STextBlock, SListView 등 | . | 모든 위젯은 부모-자식 관계로 연결되어 트리 형태 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Slate.html#%EC%8A%AC%EB%A0%88%EC%9D%B4%ED%8A%B8-%EA%B5%AC%EC%A1%B0-%ED%8A%B9%EC%A7%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Slate.html#슬레이트-구조-특징"
-  },"187": {
+  },"196": {
     "doc": "Slate",
     "title": "슬레이트 동작 과정",
     "content": ". | Slate Application 구동 . | 엔진 초기화 시 FSlateApplication 싱글턴이 생성 | 이 객체가 Slate의 메인 루프, 입력 이벤트 분배, 렌더링 등을 총괄 | . | 위젯 트리 구성 . | 프로그래머가 C++로 SWidget 트리를 생성 (ex. SNew(SVerticalBox) + SNew(STextBlock) 형태) | 이 트리를 SlateApplication이 루트부터 관리 | . | 입력 이벤트 처리 . | OS 레벨의 입력(마우스, 키보드 등)이 SlateApplication에 전달됨 | Slate는 이를 루트 SWidget부터 트리 순회하며 적절한 위젯에 분배 | 각 위젯은 OnMouseDown, OnKeyDown 등 가상 메서드에서 처리 | . | Tick &amp; 업데이트 . | Slate 트리는 매 프레임마다 Tick(갱신)됨 | 애니메이션, 상태 변화, Focus 변경 등 UI 갱신이 여기서 처리 | . | 레이아웃 &amp; 측정 . | 각 SWidget은 ComputeDesiredSize, ArrangeChildren 등 메서드로 자기 크기와 자식 위치를 계산 | 위젯 트리를 재귀적으로 순회하며 레이아웃 패스를 수행 | . | 렌더링 . | 각 위젯의 OnPaint가 호출되어 FSlateDrawElement 명령을 발행 | Slate 렌더러가 DrawElement를 실제 GPU로 렌더링 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Slate.html#%EC%8A%AC%EB%A0%88%EC%9D%B4%ED%8A%B8-%EB%8F%99%EC%9E%91-%EA%B3%BC%EC%A0%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Slate.html#슬레이트-동작-과정"
-  },"188": {
+  },"197": {
     "doc": "Slate",
     "title": "슬레이트 다이어그램",
     "content": ". 클래스 관계 . | FSlateApplication → SWindow: 여러 윈도우(에디터 창 등)를 관리 | SWindow → SWidget: 각 윈도우는 하나의 루트 위젯 트리를 가짐 | SWidget → SPanel/SCompoundWidget: 각 위젯의 파생 구조를 통해 복잡한 UI 트리를 형성 | FSlateWindowElementList → FSlateDrawElement: 각 윈도우에서 발생하는 모든 드로우 명령을 버퍼링 | FSlateDrawElement ↔ FWidgetStyle: 드로우 요소마다 스타일 정보를 가짐 | FSlateApplication → FSlateRenderer: 실제 GPU 렌더링을 위해 렌더러로 명령을 위임 | . FSlateApplication . | Slate 전체의 엔트리 포인트이자 메인 루프 | 입력 이벤트(마우스, 키보드 등) 처리, UI 업데이트(Tick), 드로우 메시지 생성, 윈도우 관리, 렌더링 요청까지 Slate 관련 모든 핵심 흐름을 담당 | Tick, ProcessInput, GeneratePaintMessages, DrawWindows 등 메서드를 통해 매 프레임 UI 시스템의 상태를 갱신하고, 렌더링 파이프라인을 실행 | 여러 개의 SWindow 인스턴스를 직접적으로 관리 | . SWindow . | OS 창(Window)의 추상화 | 에디터 창, 툴팁, 팝업 등 각종 윈도우를 의미 | 각 SWindow는 자신의 루트 위젯(RootWidget, SWidget)을 하나 포함 . | 즉, 한 SWindow의 모든 Slate UI 요소는 하나의 SWidget 트리로 구성됨 | . | 창의 콘텐츠 설정, 네이티브 창 객체 반환, 뷰포트(창 영역) 크기 정보 제공 등의 역할을 담당 | . SWidget . | 모든 Slate 위젯(버튼, 텍스트, 패널 등)의 최상위 추상 베이스 클래스 | 모든 시각적 UI 요소는 SWidget을 상속하여 구현 | 주요 메서드: . | ComputeDesiredSize: 위젯이 필요로 하는 최소/최적 크기 계산 | ArrangeChildren: 자식 위젯 배치 | OnPaint: 실제로 드로우 요소를 생성(FSlateDrawElement)하는 렌더링 엔트리 포인트 | OnMouseButtonDown: 입력 이벤트 핸들링 | Tick: 프레임마다 상태 갱신 등 | . | . SWidget 컨테이너 상속 구조 (SCompoundWidget, SPanel) . | SCompoundWidget . | SWidget에서 파생되며, 단일 자식(Slot)만을 가질 수 있는 컨테이너 | 복잡한 단일 구조 위젯에 적합 | . | SPanel . | SWidget에서 파생되며, 여러 자식(Slot/배열)을 가질 수 있는 컨테이너 | 리스트, 박스, 그리드 등 여러 자식 위젯을 배치하는 레이아웃 위젯에서 사용 | . | . FSlateWindowElementList . | 실제 드로잉 명령(FSlateDrawElement)의 집합/버퍼 역할 | 각 SWindow의 OnPaint 과정에서 위젯 트리를 순회하며, SWidget들이 페인트 시 호출되는 OnPaint에서 DrawElement를 이 리스트에 기록 | Draw Call 최적화와 레이어 관리의 핵심 중간 계층 | . FSlateDrawElement . | 실제 GPU로 전달되는 드로우 명령을 표현하는 구조체 | 박스, 텍스트, 선, 이미지 등 다양한 유형의 그리기 명령을 포함 | SWidget이 OnPaint에서 시각적 요소를 그리고자 할 때, FSlateDrawElement를 만들어 FSlateWindowElementList에 추가함 | . FWidgetStyle . | 위젯의 시각적 스타일(컬러, 불투명도, 폰트 등)을 정의 | FSlateDrawElement와 연계되어, 각 드로우 요소에 스타일 속성을 부여 | 상위에서 하위로 스타일이 전파되어, 일관성 있는 UI 테마 구현이 가능 | . FSlateRenderer . | 실제 하드웨어(DirectX/OpenGL/Vulkan 등) 렌더러와의 인터페이스 | FSlateApplication이 그리기 명령을 넘기면, FSlateRenderer가 이를 플랫폼별로 변환/렌더링 | Slate의 플랫폼 독립성과 실제 렌더링 동작을 분리하는 핵심 계층 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Slate.html#%EC%8A%AC%EB%A0%88%EC%9D%B4%ED%8A%B8-%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Slate.html#슬레이트-다이어그램"
-  },"189": {
+  },"198": {
     "doc": "Slate",
     "title": "정리",
     "content": ". | FSlateApplication → SWindow → SWidget 트리 (OnPaint) → FSlateWindowElementList → FSlateDrawElement → FSlateRenderer (플랫폼별) | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Slate.html#%EC%A0%95%EB%A6%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Slate.html#정리"
-  },"190": {
+  },"199": {
     "doc": "Spawn A Coustom Editor Tab",
-    "title": "목표 : 커스텀 에디터 탭 등록과 바인딩하기",
+    "title": "목표 : 커스텀 에디터 탭 등록",
     "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#%EB%AA%A9%ED%91%9C--%EC%BB%A4%EC%8A%A4%ED%85%80-%EC%97%90%EB%94%94%ED%84%B0-%ED%83%AD-%EB%93%B1%EB%A1%9D%EA%B3%BC-%EB%B0%94%EC%9D%B8%EB%94%A9%ED%95%98%EA%B8%B0",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#%EB%AA%A9%ED%91%9C--%EC%BB%A4%EC%8A%A4%ED%85%80-%EC%97%90%EB%94%94%ED%84%B0-%ED%83%AD-%EB%93%B1%EB%A1%9D",
     
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#목표--커스텀-에디터-탭-등록과-바인딩하기"
-  },"191": {
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#목표--커스텀-에디터-탭-등록"
+  },"200": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "SlateWidget 매크로",
+    "content": ". | SLATE_BEGIN_ARGS , SLATE_END_ARGS 매크로는 필수적으로 클래스 안에 들어가야 함 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slatewidget-%EB%A7%A4%ED%81%AC%EB%A1%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slatewidget-매크로"
+  },"201": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "SLATE_BEGIN_ARGS / SLATE_END_ARGS",
+    "content": "위젯의 생성자 인자 구조체인 FArguments를 정의 . | SLATE_BEGIN_ARGS는 구조체의 시작 | SLATE_END_ARGS는 구조체의 끝 | 시작과 끝 매크로 안에서 위젯의 속성, 이벤트 등을 선언 | . SLATE_BEGIN_ARGS(SMyWidget) // 시작 선언 : _Title(FText::FromString(\"Default Title\")) // 기본값 설정 {} SLATE_ARGUMENT(FText, Title) SLATE_ATTRIBUTE(int32, Count) SLATE_EVENT(FOnClicked, OnButtonClicked) SLATE_END_ARGS() // 끝 선언 . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slate_begin_args--slate_end_args",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slate_begin_args--slate_end_args"
+  },"202": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "SLATE_ARGUMENT(Type, Name)",
+    "content": "생성자 인자로 전달되는 불변 값을 선언 . | SLATE_ARGUMENT(FText, Title)은 FText 타입의 Title이라는 인자를 선언 | FArguments 구조체 내에서 _Title로 접근 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slate_argumenttype-name",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slate_argumenttype-name"
+  },"203": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "SLATE_ATTRIBUTE(Type, Name)",
+    "content": "동적으로 변경 가능한 속성을 선언 . 외부 데이터와 바인딩하여 UI 요소가 실시간으로 업데이트되도록 할 수 있다 . | SLATE_ATTRIBUTE(int32, Count)은 Count라는 이름의 속성을 선언 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slate_attributetype-name",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slate_attributetype-name"
+  },"204": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "SLATE_EVENT(DelegateType, Name)",
+    "content": "위젯에서 발생하는 이벤트를 처리할 델리게이트를 선언 . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slate_eventdelegatetype-name",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slate_eventdelegatetype-name"
+  },"205": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "SLATE_NAMED_SLOT(OwnerArgsType, SlotType, SlotName)",
+    "content": "사용자 정의 슬롯을 선언할 때 사용. 슬롯은 위젯의 특정 위치에 다른 위젯을 삽입할 수 있는 영역을 의미 . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slate_named_slotownerargstype-slottype-slotname",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slate_named_slotownerargstype-slottype-slotname"
+  },"206": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "매크로 정리",
+    "content": "| 매크로 | 용도 | 사용 예시 | 설명 | . | SLATE_BEGIN_ARGS | 위젯 생성 인자 정의 시작 | SLATE_BEGIN_ARGS(SMyWidget) | 클래스의 생성 인자 정의 블록을 시작 | . | SLATE_END_ARGS | 위젯 생성 인자 정의 종료 | SLATE_END_ARGS() | 생성 인자 정의 블록을 종료 | . | SLATE_ARGUMENT | 단일 값 인자 정의 | SLATE_ARGUMENT(FText, InitialText) | 위젯 생성 시 전달되는 단일 값 인자 | . | SLATE_ATTRIBUTE | 바인딩 가능한 속성 정의 | SLATE_ATTRIBUTE(FText, DisplayText) | 동적으로 변경 가능한 속성(TAttribute로 래핑됨) | . | SLATE_EVENT | 이벤트 핸들러 정의 | SLATE_EVENT(FOnClicked, OnButtonClicked) | 위젯에서 발생하는 이벤트 핸들러 | . | SLATE_STYLE_ARGUMENT | 스타일 인자 정의 | SLATE_STYLE_ARGUMENT(FName, StyleName) | 스타일 세트에서 스타일을 지정하는 인자 | . | SLATE_DEFAULT_SLOT | 기본 슬롯 속성 정의 | SLATE_DEFAULT_SLOT(FArguments, Content) | 위젯의 기본 콘텐츠 슬롯을 정의 | . | SLATE_NAMED_SLOT | 명명된 슬롯 정의 | SLATE_NAMED_SLOT(FArguments, Header) | 특정 이름을 가진 슬롯을 정의 | . | SLATE_SUPPORTS_SLOT | 슬롯 타입 지원 선언 | SLATE_SUPPORTS_SLOT(SVerticalBox::FSlot) | 위젯이 지원하는 슬롯 타입 선언 | . | SLATE_USER_ARGS | 사용자 정의 인자 구조체 | SLATE_USER_ARGS() | 사용자 정의 인자 구조체 정의 시 사용 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#%EB%A7%A4%ED%81%AC%EB%A1%9C-%EC%A0%95%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#매크로-정리"
+  },"207": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "SlateWidget 초기화 설정하기",
+    "content": "Slate 위젯은 생성자(constructor) 대신 Construct() 함수를 통해 실질적인 초기화를 수행한다 . | 엔진에서 위젯 인스턴스를 만든 뒤 곧바로 Construct를 호출하여 속성(Arguments)과 함께 위젯의 동작을 설정함 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slatewidget-%EC%B4%88%EA%B8%B0%ED%99%94-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#slatewidget-초기화-설정하기"
+  },"208": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "코드 예시",
+    "content": "void SYourWidget::Construct(const FArguments&amp; InArgs) { // 1. 포커스 관련 설정 bCanSupportFocus = true; // 또는 false (위젯 용도에 따라) // 2. 마우스 이벤트 처리 설정 SetCanTick(true); // 틱 활성화 (애니메이션 등 필요시) bAcceptsInput = true; // 마우스/터치 입력 허용 // 3. 시각적 상태 설정 SetVisibility(EVisibility::Visible); // 기본 가시성 설정 // 4. 콘텐츠 구성 (가장 중요한 부분) ChildSlot [ // 위젯 계층 구조 정의 SNew(SBorder) .Padding(FMargin(5)) [ SNew(STextBlock) .Text(LOCTEXT(\"DefaultText\", \"Hello Slate!\")) ] ]; // 5. 인자에서 전달받은 값 적용 if (InArgs._SomeArgument.IsSet()) { // 인자 처리 로직 } } . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#%EC%BD%94%EB%93%9C-%EC%98%88%EC%8B%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#코드-예시"
+  },"209": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "초기화 설정 정리",
+    "content": "| 설정 | 설명 | 기본값 | 사용 예시 | . | bCanSupportFocus | 위젯이 키보드 포커스를 받을 수 있는지 설정 | false | bCanSupportFocus = true; | . | bAcceptsInput | 마우스/터치 입력 허용 여부 | false | bAcceptsInput = true; | . | SetVisibility() | 위젯의 가시성 설정 (Visible, Collapsed, Hidden, HitTestInvisible, SelfHitTestInvisible) | EVisibility::Visible | SetVisibility(EVisibility::Visible); | . | SetCanTick() | 위젯이 Tick 이벤트를 받을지 설정 (애니메이션, 실시간 업데이트 시 필요) | false | SetCanTick(true); | . | SetClipping() | 콘텐츠 클리핑 방식 (OnDemand, ClipToBounds, ClipToBoundsWithoutIntersecting, ClipToBoundsAlways) | EWidgetClipping::Inherit | SetClipping(EWidgetClipping::ClipToBounds); | . | SetCursor() | 마우스 오버 시 커서 모양 (Default, Hand, TextEdit, Crosshairs 등) | EMouseCursor::Default | SetCursor(EMouseCursor::Hand); | . | SetEnabled() | 위젯의 활성화/비활성화 상태 | true | SetEnabled(TAttribute(this, &amp;SMyWidget::IsEnabled)); | . | SetToolTipText() | 툴팁 텍스트 설정 | FText::GetEmpty() | SetToolTipText(LOCTEXT(“Tooltip”, “Click me!”)); | . | SetHAlign() / SetVAlign() | 수평/수직 정렬 (HAlign_Fill, VAlign_Center 등) | HAlign_Fill, VAlign_Fill | SetHAlign(HAlign_Center); | . | SetPadding() | 안쪽 여백 설정 | FMargin(0) | SetPadding(FMargin(5.0f)); | . | SetRenderTransform() | 변환 행렬 적용 (위치, 회전, 스케일) | FSlateRenderTransform() | SetRenderTransform(FSlateRenderTransform(FVector2D(10, 10))); | . | SetRenderOpacity() | 투명도 설정 (0.0 ~ 1.0) | 1.0f | SetRenderOpacity(0.5f); | . | SetForegroundColor() | 전경색 (텍스트, 아이콘 등) | FSlateColor::UseForeground() | SetForegroundColor(FLinearColor::White); | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#%EC%B4%88%EA%B8%B0%ED%99%94-%EC%84%A4%EC%A0%95-%EC%A0%95%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#초기화-설정-정리"
+  },"210": {
+    "doc": "Spawn A Coustom Editor Tab",
+    "title": "커스텀 위젯 플로우 요약",
+    "content": ". | 사용자 정의 Slate 위젯 클래스 구현 | 에디터 확장 코드에서 커스텀 Slate 위젯 인스턴스 생성 . | (예: 커스텀 패널, 탭, 도킹 윈도우 등에서 SNew(SMyWidget) 사용) | . | Slate 위젯 트리(Widget Tree)에 삽입 . | 에디터 패널/탭/도킹 윈도우 등의 컨테이너가 커스텀 Slate 위젯의 부모가 됨 | . | Slate Application이 매 프레임마다 Tick &amp; Render 호출 . | Slate 렌더링 파이프라인에 따라 모든 위젯을 탐색하며 그리기 | DirectX/OpenGL/Vulkan 등 RHI 기반 드로우콜로 변환 | . | 사용자 입력/이벤트 처리 및 갱신 . | Slate Application이 마우스/키보드/포커스 등 이벤트 분배 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#%EC%BB%A4%EC%8A%A4%ED%85%80-%EC%9C%84%EC%A0%AF-%ED%94%8C%EB%A1%9C%EC%9A%B0-%EC%9A%94%EC%95%BD",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html#커스텀-위젯-플로우-요약"
+  },"211": {
     "doc": "Spawn A Coustom Editor Tab",
     "title": "Spawn A Coustom Editor Tab",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/Spawn%20A%20Coustom%20Editor%20Tab.html"
-  },"192": {
+  },"212": {
     "doc": "String",
     "title": "String",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html"
-  },"193": {
+  },"213": {
     "doc": "String",
     "title": "FString",
     "content": "FString은 일반적인 문자열 데이터로 문자열 검색, 수정, 비교를 할 수 있다. | 데이터 구조 . | 메모리 상에 각 인스턴스마다 고유 문자 배열을 직접 저장 | 내부적으로 TArray&lt;TCHAR&gt; (=동적 배열 기반 유니코드 문자열) | C++의 std::wstring(wide string)과 비슷하지만, 언리얼 엔진 특화 기능(TCHAR, UTF-16, 매크로 등)이 있다 | . | 대표적 사용 예 . | 파일 경로, 로그 메시지 | 유저 입력 (채팅, 이름 등) | 임시 데이터 처리, 문자열 연산 | . | 특징 . | 수정 가능 | 문자열 조작이 자유로움 | 각 인스턴스가 자체 메모리 공간 사용 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fstring",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fstring"
-  },"194": {
+  },"214": {
     "doc": "String",
     "title": "FName",
     "content": "FString과 다르게 문자열 전체 저장 X. 글로벌 네임 테이블에 저장되어 데이터를 경량화 . | 데이터 구조 . | 엔진 시작 시부터 종료까지 고유 문자열을 전역적으로 관리하는 글로벌 네임 테이블 사용 . | 실제 문자열 데이터는 네임 테이블에 한번만 등록됨 | . | 어떤 FName이 새로 생성될 때, 문자열이 이미 테이블에 있으면 기존 인덱스를 사용하고, 없으면 새로 추가함 | . | 문자열의 중복 저장을 막고, 모든 FName이 같은 문자열이면 동일한 인덱스를 공유한다 | . | 대표적인 사용 예 . | 오브젝트 식별에 주로 사용 | 변수명, 파라미터 이름 | 리소스/에셋 이름 | GameplayTags | . | 특징 . | 수정 불가 | 비교 검색이 매우 빠름 . | 문자열끼리 직접 비교하는 대신, 인덱스만 비교하면 되기 때문에 성능이 우수하다 | . | 대소문자 구분이 없다 | 가비지 컬렉션 대상이 아니다 (엔진이 꺼질 때 까지 유지) | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fname",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#fname"
-  },"195": {
+  },"215": {
     "doc": "String",
     "title": "FText",
     "content": "사용자에게 보여지는 텍스트에 주로 사용된다. 다국어 번역이 필요한 경우 사용. FText는 외부 API에서 받은 플레이어 이름 등을 UI에 표시할 때처럼, 현지화 테이블 미등록 텍스트 문자열에도 쓰인다. | 데이터 구조 | . 최상위 . | ITextData(인터페이스)의 TSharedRef 스마트 포인터만을 소유 | 실질적 데이터는 FTextData에 들어있다. class FText { private: TSharedRef&lt;ITextData, ESPMode::ThreadSafe&gt; TextData; ... }; . | . FTextData 구조체 . struct FTextData : ITextData { FString SourceString; // 원본 문자열 FCulturePtr TextCulture; // 해당 텍스트의 문화권(언어) 정보 FTextHistory TextHistory; // 텍스트 생성/변환 이력 (핵심!) ... }; . 현지화 히스토리 . | 다양한 하위 클래스를 통해 데이터 관리 가능 . | FTextHistory_LocalizedString : 현지화 키, 원본 텍스트, 로컬라이제이션 리소스 정보 등 저장 | FTextHistory_FormattedNumber : 숫자 포맷, 소수점, 지역화 등 정보 | FTextHistory_FormatString : 포맷 패턴, 인자 배열 등 | . | . class FTextHistory_LocalizedString : public FTextHistory_Base { FString SourceString; // 원본 텍스트 FString Namespace; // 현지화 네임스페이스 FString Key; // 현지화 키 FString LocalizedString; // 번역된 문자열(캐싱) ... }; . FText 구조 정리 . FText └─ TextData (FTextData) ├─ SourceString (원본) ├─ TextCulture (문화권) └─ TextHistory (생성/포맷/현지화 이력) ├─ 현지화키 ├─ 네임스페이스 ├─ 포맷정보 └─ 캐시된 번역값 등... | 대표적인 사용 예 . | UI 버튼/ 메뉴 텍스트 (시작, Continue 등) | 게임 대사, 퀘스트 설명, 튜토리얼 메시지 | 점수, 날짜, 숫자 등 표시 | 모든 다국어 지원 필요한 표시용 텍스트 | . | 특징 . | 현지화, 포맷, 문화권별 번역 자동 처리 | 직접 수정 불가. 변환 후 새로 만들어야 함 | 직접 비교/조작은 제한됨 . | FText끼리 == 연산은 데이터 주소 또는 히스토리 비교이므로, 실제 표시 문자열이 같아도 false가 나올 수 있음 | . | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#ftext",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#ftext"
-  },"196": {
+  },"216": {
     "doc": "String",
     "title": "정리",
     "content": "| 클래스 | 사용 목적 | 데이터 구조 | 특징 | . | FString | 임의 문자열, 수정/검색/연결 | TArray(인스턴스별 동적 배열) | 수정 가능, 조작 자유 | . | FText | 현지화/번역 표시 텍스트 | TSharedRef + FTextHistory | 현지화 지원, 수정 어려움, 포맷/언어 처리 | . | FName | 식별자/키/이름/빠른비교 | 글로벌 해시 테이블 인덱스+번호 | 비교 빠름, 대소문자 무시, 수정 불가 | . 참고 링크 . | String Handling | Why you should be using GameplayTags in Unreal Engine | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#%EC%A0%95%EB%A6%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/String.html#정리"
-  },"197": {
+  },"217": {
     "doc": "Transform",
     "title": "Transform",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html"
-  },"198": {
+  },"218": {
     "doc": "Transform",
     "title": "FVector",
     "content": "3차원 공간상의 위치, 방향, 속도, 크기 등 벡터 값을 표현할 때 사용 . | 오브젝트의 위치 (Location) : SetActorLocation(FVector(100.f, 200.f, 300.f)); | 이동 방향 및 속도 (Velocity, Direction) : FVector Direction = Target - Source; | 스케일(Scale) 값 (상대적 크기) | 힘(Force), 가속도(Acceleration) 등 물리 연산 | 충돌 처리에서 법선 벡터(Normal) 표현 | . | 데이터 구조 struct FVector { float X; float Y; float Z; }; . | 오른손 법칙 좌표계 : Z-위, X-앞, Y-오른쪽 | . | 특징 . | 기본적인 연산자 오버로딩 지원 (+, -, *, /, dot, cross 등) | 크기, 정규화, 내적(dot), 외적(cross) 등 벡터 연산 지원 | 단순 위치/방향뿐 아니라, 각종 수학적, 물리적 벡터 표현에 모두 사용 | 방향성과 크기를 함께 가짐 (예: 방향 벡터는 크기=1로 정규화) | . | 주요 메서드 | . | 메서드 | 매개변수 | 반환값 | 설명 | . | Size() | 없음 | float | 벡터의 크기를 반환합니다. | . | Normalize() | 없음 | 없음 | 벡터를 정규화합니다. | . | Dot() | const FVector&amp; Other | float | 두 벡터의 내적 | . | Cross() | const FVector&amp; Other | FVector | 두 벡터의 외적 | . | Rotation() | 없음 | FRotator | 벡터의 방향을 회전 값으로 반환 | . | Lerp() | const FVector&amp; A const FVector&amp; B float Alpha | FVector | 두 벡터 간의 선형 보간 | . | Size() / SizeSquared() |   | 벡터의 크기 또는 크기의 제곱을 반환 |   | . 배경 수학 . 벡터 연산(덧셈, 뺄셈, 스칼라 곱/나눗셈, 내적/외적 등)은 선형대수의 기본 연산. 내적(Dot Product): 두 벡터의 방향성이 얼마나 일치하는지 계산 → 코사인 법칙과 연관되어 각도 구하기, 투영, 정규화, 평면 법선 등 계산에 사용 . A·B = Ax * Bx + Ay * By + Az * Bz . 외적(Cross Product): 두 벡터에 수직인 벡터 산출 → 평면의 법선, 회전축 등 계산 . A×B = (Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx) . 정규화(Normalization) → 크기를 1로 맞춤 . V.Normalize() → V / |V| . 거리/길이 . V.Size() = sqrt(X^2 + Y^2 + Z^2) . 선형보간(LERP) . Lerp(A, B, Alpha) = (1-Alpha)*A + Alpha*B . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fvector",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fvector"
-  },"199": {
+  },"219": {
     "doc": "Transform",
     "title": "FRotator",
     "content": "오일러 각(Euler Angle)(Pitch, Yaw, Roll)로 3D 회전을 표현할 때 사용 . | 오브젝트 회전 : SetActorRotation(FRotator(0.f, 90.f, 0.f)); | 캐릭터, 카메라의 방향(회전) | Actor/Component의 회전값 저장 : GetActorRotation() | 블루프린트, 에디터의 회전값 입력 등 | . | 데이터 구조 struct FRotator { float Pitch; // X축 회전 (상하) float Yaw; // Z축 회전 (좌우) float Roll; // Y축 회전 (틸트) }; . | 세 개의 float값(Pitch, Yaw, Roll)로 오일러 각 표현 | . | 특징 . | 오일러 각 특성상 Gimbal Lock(짐벌락) 문제 발생 가능 | 사람에게 직관적으로 이해하기 쉬움 (디자이너, 에디터에서 많이 사용) | 내부적으로는 보통 Degree(각도) 단위 사용 (Radian 변환 필요시 지원) | FRotator는 내부적으로 회전 행렬 혹은 쿼터니언으로 변환 가능 | . | 주요 메서드 | . | 메서드 | 매개변수 | 반환값 | 설명 | . | Quaternion() | 없음 | FQuat | 오일러 각을 쿼터니언으로 변환 | . | RotateVector() | const FVector&amp; V | FVector | 벡터를 회전 | . | UnrotateVector() | const FVector&amp; V | FVector | 회전된 벡터를 원래 방향으로 되돌림 | . | GetNormalized() | 없음 | FVector | 회전된 벡터를 원래 방향으로 되돌림 | . | Clamp() | 없음 | FRotator | 회전 값을 제한 | . 배경 수학 . | 오일러 각(Euler Angle) : 세 축(X, Y, Z)에 대한 회전 각도(θx, θy, θz)로 회전을 표현. | 언리얼 엔진은 Z(Yaw) → Y(Pitch) → X(Roll) 순서로 회전 (즉, “Yaw → Pitch → Roll” 오더) | . 행렬 변환: 오일러 각은 각각의 축 회전을 행렬로 변환 후 곱셈해서 최종 회전값을 만듦 . R = Rz(Yaw) * Ry(Pitch) * Rx(Roll) . Gimbal Lock: 두 축이 일치하여 3차원 회전 자유도가 2차원으로 줄어드는 현상 . | 예: Pitch가 ±90°에 가까워지면, Roll과 Yaw가 같은 평면이 됨 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#frotator",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#frotator"
-  },"200": {
+  },"220": {
     "doc": "Transform",
     "title": "FQuat",
     "content": "3D 공간에서 회전을 쿼터니언(Quaternion)으로 표현하여, 회전 연산의 정확성 및 안정성 확보 . | 모션 블렌딩, 본(스켈레톤) 등 애니메이션의 회전 보간 | 부드러운 연속 회전 (SLERP) | Gimbal Lock 방지가 중요한 복잡한 회전 연산 | . | 데이터 구조 struct FQuat { float X; // 허수 (벡터) float Y; // 허수 (벡터) float Z; // 허수 (벡터) float W; // 실수 (스칼라) 부분 }; . | 4개의 float형 멤버(X, Y, Z, W)로 구성 | 단위 쿼터니언(norm = 1) 으로 회전 표현 | . | 특징 . | 4차원 복소수로 회전 표현 | Gimbal Lock 문제 없음 | 회전 합성/보간에 최적화 (SLERP, NLERP 등 지원) | FRotator, FMatrix 등과 상호 변환 함수 제공 | 보통은 FRotator(에디터/코드) ↔ FQuat(엔진 내부)로 변환하며 사용 | . | 주요 메서드 | . | 메서드 | 매개변수 | 반환값 | 설명 | . | RotateVector() | const FVector&amp; V | FVector | 벡터를 회전 | . | Inverse() | 없음 | FQuat | 쿼터니언의 역을 반환 | . | Slerp() | const FQuat&amp; A const FQuat&amp; B float Alpha | FQuat | 두 쿼터니언 간의 구면 선형 보간을 수행 | . | ToAxisAndAngle() | FVector&amp; Axis float&amp; Angle | 없음 (출력 매개변수 사용) | 회전 축과 각도로 변환 | . | MakeFromEuler() | const FVector&amp; Euler | FQuat | 오일러 각도로부터 쿼터니언을 생성 | . 배경 수학 . | 쿼터니언(Quaternion): 실수부(w)와 허수부(x, y, z)로 구성된 4차원 수학 구조 Q = w + xi + yj + zk (i, j, k는 허수 단위벡터) . | 회전 표현: 3D 공간에서 임의의 축(axis)과 각도(θ)에 대한 회전 Q = [cos(θ/2), (axis * sin(θ/2))] . | 복합 회전: 쿼터니언 곱셈으로 연속 회전 표현 Q' = Q2 * Q1 (Q1 후 Q2 수행) . | 회전 적용: 점 P를 Q로 회전시키려면 P' = Q * P * Q⁻¹ (여기서 P는 벡터를 허수부로 취급한 쿼터니언) . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fquat",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#fquat"
-  },"201": {
+  },"221": {
     "doc": "Transform",
     "title": "FTransform",
     "content": "위치, 회전, 스케일을 함께 관리하여 오브젝트의 변환을 효율적으로 처리 . | 오브젝트의 전체 변환 설정: SetActorTransform(FTransform(Rotation, Translation, Scale)); | . | 데이터 구조 struct FTransform { FQuat Rotation; FVector Translation; FVector Scale3D; }; . | 특징 . | 위치, 회전, 스케일을 하나의 구조체로 관리 | 계층적 트랜스폼 계산에 유용 | 블루프린트에서 쉽게 사용할 수 있도록 지원 | . | 주요 메서드 | . 많아서 나중에 정리할랭 . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#ftransform",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#ftransform"
-  },"202": {
+  },"222": {
     "doc": "Transform",
     "title": "정리",
     "content": "| 타입 | 목적/용도 | 데이터 구조 | 특징 요약 | . | FVector | 3D 위치, 방향, 벡터 | X, Y, Z (float) | 모든 위치/방향/벡터 연산에 사용 | . | FRotator | 오일러 각 기반 3D 회전 | Pitch, Yaw, Roll (float) | 직관적, Gimbal Lock 위험 | . | FQuat | 쿼터니언 기반 3D 회전 | X, Y, Z, W (float) | Gimbal Lock 없음, 고급 회전 | . | FTransform | 위치, 회전, 스케일 통합 변환 | 위치, 회전, 스케일 구조체 | Actor 변환, 부모-자식 변환 관리 | . 참고 링크 . | UE4 Transform Calculus | Vectors | Roll, Pitch, Yaw | Quaternion | Gimbal lock | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#%EC%A0%95%EB%A6%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Transform.html#정리"
-  },"203": {
-    "doc": "Coding Standard",
-    "title": "Coding Standard",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/"
-  },"204": {
-    "doc": "Coding Standard",
-    "title": "저작권 고지",
-    "content": "배포하는 모든 소스 파일(.h, .cpp, .xaml 등)에는 파일의 첫 줄에 반드시 다음과 같은 저작권 공지가 포함되어야 한다. // Copyright Epic Games, Inc. All Rights Reserved. 해당 줄이 없거나 형식이 다르면 오류 -&gt; 빌드 실패 처리됨 . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A0%80%EC%9E%91%EA%B6%8C-%EA%B3%A0%EC%A7%80",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#저작권-고지"
-  },"205": {
-    "doc": "Coding Standard",
-    "title": "클래스 구성",
-    "content": "클래스는 읽는 사람을 우선으로 구성해야 한다. 대부분 클래스를 읽는 사람들은 public 인터페이스를 사용한다. 따라서 클래스는 . | public | protected | private | . 순으로 작성한다. ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EA%B5%AC%EC%84%B1",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-구성"
-  },"206": {
-    "doc": "Coding Standard",
-    "title": "클래스 접두사",
-    "content": "언리얼 엔진의 클래스에는 접두사가 있다. 해당 접두사를 알고있으면 어떤 클래스에서 파생됐는지 알 수 있다. | 접두사 | 클래스 | 예시 | . | A | AActor | AActor, APawn, AGameMode | . | U | UObject | UTexture, UBlueprintFunctionLibrary | . | S | SWidget | SButton, Swidget | . | F | 사용자 구조체 | FVector, FHitResult | . | I | 추상 인터페이스 | IInterface | . | T | 템플릿 클래스 | TArray&lt;T&gt;, TMap&lt;&lt;T&gt; | . | E | Enum 타입 | EGAmeState | . | G | globals 전역변수 | GEngine | . | b | Boolean 변수 | bHasFadedIn, bDied | . 사용예시 . typedef TArray&lt;FMytype&gt; FArrayOfMyTypes; . typedef에는 해당 타입에 적합한 문자가 접두사로 붙어야 한다. 위 예시는 사용자 구조체 타입을 받는 템플릿 클래스다. ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%A0%91%EB%91%90%EC%82%AC",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-접두사"
-  },"207": {
-    "doc": "Coding Standard",
-    "title": "네이밍 규칙",
-    "content": ". | 단어 사이에 언더스코어(_) 를 사용하지 않는다 | 단어의 첫 글자는 대문자로 표기한다 . | 예: MouseCoordinates (o), delta_x (x) | . | 타입명에는 추가로 대문자 접두사를 붙여 변수명과 구분한다 . | 예: FSkin (타입), Skin (FSkin 타입의 인스턴스) | . | 모든 변수는 한줄씩 선언한다 | 반환값이 있는 함수는 이름만으로 반환값을 명확히 한다 . | O: bool IsTeaFresh(FTea Tea) True 의미 명확 | X: bool CheckTea(FTea Tea) 어떤걸 반환할지 의미 불명확 | . | 반환값이 없는 절차 함수는 강한 동사+목적어 형식 . | 메서드의 목적어가 자기 자신이면 (맴버 함수) 생략 가능 | Handle, Process 등 모호한 동사 피하기 | . | bool 반환 함수는 항상 Yes/No 질문 형태를 취한다 . | IsVisible(), ShouldClearBuffer() | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EB%84%A4%EC%9D%B4%EB%B0%8D-%EA%B7%9C%EC%B9%99",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#네이밍-규칙"
-  },"208": {
-    "doc": "Coding Standard",
-    "title": "Const 정확성",
-    "content": ". | 함수 인자가 함수 내에서 변경되지 않는다면, const pointer 또는 const reference로 전달 | 객체를 변경하지 않는 메서드는 const로 명시 | 컨테이너를 수정하지 않는 반복문은 const 반복자 사용 | . 사용예시 . void SomeMutatingOperation(FThing&amp; OutResult, const TArray&lt;Int32&gt;&amp; InArray) { // InArray는 수정되지 않음, OutResult는 아마 수정될것임 } void FThing::SomeNonMutatingOperation() const { // 이 코드는 FThing을 변경하지 않음 } TArray&lt;FString&gt; StringArray; for (const FString&amp; : StringArray) { // 반복문 내부에서 StringArray를 수정하지 않음 } . | 반환 타입에 const 사용 금지 (컴파일 경고 발생) . | 단 const 레퍼런스, 포인터 반환은 허용 | . | . // 좋은 예시 - const 참조 반환 const TArray&lt;FString&gt;&amp; GetSomeArray(); // 좋은 예시 - const 포인터 반환 const TArray&lt;FString&gt;* GetSomeArray(); // 나쁜 예시 - const 배열 반환 const TArray&lt;FString&gt; GetSomeArray(); // 나쁜 예시 - const 포인터를 const로 반환 const TArray&lt;FString&gt;* const GetSomeArray(); . | 포인터 자체를 const로 만들 때는 타입 뒤에 const . | 포인터가 가리키는 값이 아닌, 포인터 자체의 재할당을 막음 | . | . // 포인터는 재할당 불가, T는 변경 가능 T* const Ptr = ...; // 잘못된 사용: 불가(레퍼런스는 재할당 불가 특성상 의미 없음) T&amp; const Ref = ...; . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-%EC%A0%95%ED%99%95%EC%84%B1",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-정확성"
-  },"209": {
-    "doc": "Coding Standard",
-    "title": "주석",
-    "content": ". | 클래스 주석 . | 이 클래스가 해결하는 문제 | 클래스 생성 이유 | . | 함수 (메서드) 주석 . | 함수 목적 기입 | . | 매개변수 주석 @param . | 측정 단위 | 예상 값 범위 | 불가능한 값 | 상태/오류 코드 의미 | . | 반환값 주석 @return . | 예상 반환 값 | . | 추가 정보 . | @warning 경고, @See보기 등을을 선택적으로 사용함 | . | . 사용예시 . /** The interface for drinkable objects. */ class IDrinkable { public: /** * Called when a player drinks this object. * @param OutFocusMultiplier - 반환 시, 마시는 사람의 집중력에 곱할 배수를 담는다. * @param OutThirstQuenchingFraction - 반환 시, 갈증 해소 정도(0~1)를 담는다. * @warning 반드시 음료가 제대로 준비된 후 호출해야 함. */ virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) = 0; }; /** 단일 찻잔 */ class FTea : public IDrinkable { public: /** * 주어진 물의 부피와 온도로 우려냈을 때, 차의 맛 변화량을 계산 * @param VolumeOfWater - 우릴 때 사용된 물의 양(mL) * @param TemperatureOfWater - 물의 온도(Kelvin) * @param OutNewPotency - 우려낸 후 차의 효능(0.97~1.04) * @return 차의 맛 강도 변화량(1분당 TTU) */ float Steep( const float VolumeOfWater, const float TemperatureOfWater, float&amp; OutNewPotency ); /** 설탕 당도 기준으로 감미를 추가 */ void Sweeten(const float EquivalentGramsOfSucrose); /** 일본 내 판매가(엔) */ float GetPrice() const { return Price; } virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) override; private: /** 가격(엔) */ float Price; /** 감미(설탕 환산 그램) */ float Sweetness; }; . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A3%BC%EC%84%9D",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#주석"
-  },"210": {
-    "doc": "Coding Standard",
-    "title": "차후 더 추가 예정",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%B0%A8%ED%9B%84-%EB%8D%94-%EC%B6%94%EA%B0%80-%EC%98%88%EC%A0%95",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#차후-더-추가-예정"
-  },"211": {
-    "doc": "Coding Standard",
-    "title": "사용가능한 표준 라이브러리 목록",
-    "content": ". | &lt;atomic&gt; : 신규 코드는 std::atomic 사용. 기존 TAtomic은 부분 구현만 되어 있음. | &lt;type_traits&gt; : 겹치는 부분은 표준 trait 사용. (표준 trait는 value/type 소문자, 기존 UE는 대문자 Value/Type 주의) | &lt;initializer_list&gt; : braced initializer 지원에 필수, 대체재 없음 | &lt;regex&gt; : 직접 사용 가능하나 에디터 전용 코드에 한정. 자체 구현 계획 없음. | &lt;limits&gt; : std::numeric_limits 전부 사용 가능 | &lt;cmath&gt; : 부동소수점 비교 함수만 사용 허용 | . 참고 링크 . | Coding Standard | Recommended Asset Naming Conventions | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%82%AC%EC%9A%A9%EA%B0%80%EB%8A%A5%ED%95%9C-%ED%91%9C%EC%A4%80-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%AA%A9%EB%A1%9D",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#사용가능한-표준-라이브러리-목록"
-  },"212": {
-    "doc": "UObject",
-    "title": "UObject",
-    "content": "언리얼 엔진의 모든 객체 지향 시스템의 기반이 되는 핵심 클래스. | 게임플레이 요소, 컴포넌트, 에셋 등 거의 모든 UE5 객체가 UObject에서 파생됨 | UObject 객체를 생성함으로써 리플렉션, 가비지 컬렉션(GC), 직렬화 등의 기능을 사용할 수 있다 | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/"
-  },"213": {
-    "doc": "UObject",
-    "title": "개발자가 직접 사용하는 도구 (원인)",
-    "content": ". | 객체 생성 및 관리 . | NewObject(), IsValid(), ConditionalBeginDestroy() | . | 라이프사이클 관리 . | PostInitProperties(), BeginDestroy(), AddToRoot() | . | 메타데이터 시스템 . | UPROPERTY(meta=(...)), UFUNCTION() 지정자 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80-%EC%A7%81%EC%A0%91-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%8F%84%EA%B5%AC-%EC%9B%90%EC%9D%B8",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#개발자가-직접-사용하는-도구-원인"
-  },"214": {
-    "doc": "UObject",
-    "title": "UObject를 사용함으로써 자동으로 얻는 기능 (결과)",
-    "content": ". | 리플렉션 . | UCLASS()로 등록한 클래스가 블루프린트/파이썬에서 자동 인식 | . | 가비지 컬렉션 . | UPROPERTY() 참조가 없어지면 GC가 자동으로 객체 제거 | . | 직렬화 . | SaveGame 지정 시 별도 코드 없이도 디스크에 저장 가능 | . | 에디터 통합 . | EditAnywhere 메타데이터로 자동으로 디테일 패널 생성 | . | . UObject 상속 계층 구조 . UObject (최상위 베이스 클래스) ├─ UActorComponent (액터 컴포넌트 베이스) │ ├─ USceneComponent (변환 기능 포함) │ │ ├─ UPrimitiveComponent (렌더링 가능) │ │ │ ├─ UMeshComponent (메시 기반) │ │ │ │ ├─ USkeletalMeshComponent (스켈레탈 메시) │ │ │ │ └─ UStaticMeshComponent (스태틱 메시) │ │ │ └─ ULightComponent (라이트 소스) │ │ └─ UCameraComponent (카메라) │ └─ UAudioComponent (사운드) ├─ AActor (월드 배치 객체) │ ├─ APawn (플레이어/AI 제어 가능) │ │ ├─ ACharacter (캐릭터 메시/이동 포함) │ │ └─ ADefaultPawn (기본 이동 기능) │ └─ AStaticMeshActor (스태틱 메시 배치) ├─ UDataAsset (데이터 전용 에셋) │ ├─ UPrimaryDataAsset (프라이머리 에셋 시스템) │ └─ UAnimSequence (애니메이션 데이터) ├─ UBlueprintFunctionLibrary (블루프린트 함수) │ ├─ UKismetSystemLibrary (시스템 유틸리티) │ └─ UKismetMathLibrary (수학 함수) └─ 기타 주요 클래스 ├─ UGameInstance (게임 인스턴스) ├─ UWorld (월드 컨텍스트) ├─ UUserWidget (UMG 위젯) └─ UMaterial (머티리얼) . 주의사항 . | 스택 할당 금지: 반드시 힙에 생성 (GC 관리 대상이어야 함) | 다중 상속 제한: UObject를 다중 상속할 때는 주의가 필요 (일반적으로 UInterface 사용) | 표준 C++ 타입과의 호환성: std::vector 등은 UPROPERTY()로 표시할 수 없으며, TArray를 사용함 | 아주 가벼운 데이터만 다룰 경우 USTRUCT를 권장 | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%A8%EC%9C%BC%EB%A1%9C%EC%8D%A8-%EC%9E%90%EB%8F%99%EC%9C%BC%EB%A1%9C-%EC%96%BB%EB%8A%94-%EA%B8%B0%EB%8A%A5-%EA%B2%B0%EA%B3%BC",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject를-사용함으로써-자동으로-얻는-기능-결과"
-  },"215": {
-    "doc": "UObject",
-    "title": "UObject의 내부 구조",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject%EC%9D%98-%EB%82%B4%EB%B6%80-%EA%B5%AC%EC%A1%B0",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject의-내부-구조"
-  },"216": {
-    "doc": "UObject",
-    "title": "UClass",
-    "content": ". | UClass는 UObject 객체의 청사진 (UObject 타입에 대한 메타데이터와 구조 정보) | 프로퍼티의 이름/타입/위치(오프셋) . | (예: “고양이” 종류의 객체는 “고양이 클래스” DNA를 가짐) | . | 모든 UObject는 자신의 클래스 정보 (UClass)를 가리키는 ClassPrivate 포인터를 갖는다 | . class UClass : public UObject { TArray&lt;UProperty*&gt; Properties; // 프로퍼티 목록 (예: 체력, 공격력) TArray&lt;UFunction*&gt; Functions; // 함수 목록 (예: 점프(), 공격()) UClass* SuperClass; // 부모 클래스 (상속 관계) UObject* ClassDefaultObject; // CDO 포인터 // ... 기타 메타데이터 }; . 동작 예시 . UMyObject* Obj = NewObject&lt;UMyObject&gt;(); UClass* ObjClass = Obj-&gt;GetClass(); // 데이터 추출 . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uclass",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uclass"
-  },"217": {
-    "doc": "UObject",
-    "title": "CDO (Class Default Object)",
-    "content": ". | UClass가 관리하는 특별한 UObject 인스턴스 | 모든 UObject 인스턴스의 초기값을 제공하는 원본 . | (예: “고양이 클래스”의 기본 색상=검정, 기본 체력=100) | . | . | 클래스가 언리얼 모듈에 로드될 때 한 번만 생성됨 | . 내부 구조와 CDO의 관계 다이어그램 . | UClass : 모든 인스턴스가 공유하는 “청사진” | CDO : 인스턴스들이 참조하는 변하지 않는 원본 | UObject 인스턴스 : CDO의 기본값을 복사받아 생성된 개별 객체 | . CDO 접근 방법 . // CDO 얻기 UMyObject* Defaults = GetDefault&lt;UMyObject&gt;(); // 기본값 사용 예시 float DefaultHealth = Defaults-&gt;Health; // 에디터에서 설정한 Health 값 . CDO 실제 활용 . | 에디터 연동 (인스턴스 초기값 세팅) UPROPERTY(EditDefaultsOnly, Category=\"Settings\") float Health; // CDO에서만 편집 가능 . | 런타임 검사 if (MyObj-&gt;Health == GetDefault&lt;UMyObject&gt;()-&gt;Health) { UE_LOG(LogTemp, Warning, TEXT(\"체력이 기본값입니다!\")); } . | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#cdo-class-default-object",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#cdo-class-default-object"
-  },"218": {
-    "doc": "UObject",
-    "title": "UObject 객체 생성 과정",
-    "content": ". | UClass 로드 : 엔진 시작 시 UMyObject::StaticClass() 호출 → UClass 생성 | CDO 생성 : UClass 초기화 과정에서 GetDefaultObject()가 CDO 생성 | UObject 인스턴스 생성 : NewObject() 시 CDO의 프로퍼티 값을 복사 | . CDO vs 인스턴스 . | 비교 항목 | CDO | 일반 인스턴스 | . | 생성 시점 | 모듈 로드 시 1회 | NewObject() 호출 시 | . | 수정 가능성 | 에디터에서만 (런타임 X) | 런타임 자유롭게 변경 가능 | . | 메모리 위치 | 영구적 (게임 종료 시까지) | GC에 의해 삭제 가능 | . | 용도 | 기본값 템플릿 | 실제 게임 내 객체 | . | 에디터에서 Health=200 변경 → 모든 새 인스턴스는 Health=200으로 생성됨 | 기존 인스턴스는 영향 없음 (이미 생성된 객체는 독립적) | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject-%EA%B0%9D%EC%B2%B4-%EC%83%9D%EC%84%B1-%EA%B3%BC%EC%A0%95",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject-객체-생성-과정"
-  },"219": {
-    "doc": "UObject",
-    "title": "ObjectFlags",
-    "content": "객체의 상태를 나타내는 비트 플래그 . enum EObjectFlags { RF_Public = 0x00000001, // 에디터에 노출 여부 RF_Transactional= 0x00002000, // Undo/Redo 지원 RF_Transient = 0x00004000, // 임시 객체 (저장 안 됨) // ... 30여 가지 플래그 }; . | UObject 인스턴스는 자신만의 ObjectFlags를 보유 | UClass는 UObject의 파생 클래스이므로, UClass도 자신만의 ObjectFlags를 가짐 | . ObjectFlags 내부 구조 다이어그램 . | UObject 인스턴스의 ObjectFlags: 개별 인스턴스의 런타임 상태 제어 . | 이 객체만의 상태 플래그 | . | UClass의 ObjectFlags: 클래스 전체의 정적 특성 정의, 추상 클래스 여부, 블루프린트 노출 . | 클래스 전체에 적용되는 플래그 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#objectflags",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#objectflags"
-  },"220": {
-    "doc": "UObject",
-    "title": "서브오브젝트 시스템 (Subobject System)",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%8B%9C%EC%8A%A4%ED%85%9C-subobject-system",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-시스템-subobject-system"
-  },"221": {
-    "doc": "UObject",
-    "title": "서브오브젝트 (컴포넌트)",
-    "content": "다른 UObject (주로 AActor나 UActorComponent)에 종속된 자식 객체 . | “서브오브젝트”란 별도 클래스가 아니라, Outer 체계를 활용한 소유 관계/구조 . | ACharacter 내부의 USkeletalMeshComponent (캐릭터 메시) | UCameraComponent (플레이어 카메라) | 커스텀 로직을 가진 UMyCustomComponent | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-컴포넌트"
-  },"222": {
-    "doc": "UObject",
-    "title": "서브오브젝트의 특징",
-    "content": "| 특징 | 설명 | . | 생명주기 | 부모 종속 부모 객체가 파괴되면 함께 파괴됨 (GC 대상) | . | 생성 시점 제한 | 반드시 부모의 생성자에서 CreateDefaultSubobject()로 생성해야 함 | . | 자동 직렬화 | 부모와 함께 저장/로드됨 (에디터에서 편집 가능) | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8%EC%9D%98-%ED%8A%B9%EC%A7%95",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트의-특징"
   },"223": {
-    "doc": "UObject",
-    "title": "서브오브젝트 vs UObject",
-    "content": "| 비교 항목 | 서브오브젝트 | 일반 UObject | . | 생성 방법 | CreateDefaultSubobject() | NewObject() | . | 생명주기 | 부모 종속 | 독립적 | . | 에디터 노출 | 부모의 디테일 패널에 자동 표시 | 별도 관리 필요 | . | 사용 사례 | 컴포넌트, 내부 부품 | 독립적인 데이터 에셋 | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-vs-uobject",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-vs-uobject"
-  },"224": {
-    "doc": "UObject",
-    "title": "서브오브젝트 구조",
-    "content": "class UObject { protected: UObject* Outer; // 상위 객체 (서브오브젝트인 경우 소유자) FName Name; // 고유 이름 (Outer + Name으로 식별) UClass* Class; // 타입 정보 // 기타... }; . | Outer : 서브 오브젝트의 소유자 (예: USceneComponent의 Outer는 일반적으로 소유자 AActor) | Name : 같은 소유자를 가진 그룹에서 고유하게 가져야함 (중복 시 경고 발생) | 블루프린트: 에디터에서 Add Component 버튼으로 추가 가능 | AActor: Actor의 경우 추가로 Components 배열 사용 | . UClass와의 관계 . | UClass는 서브오브젝트 목록을 직접 관리하지 않음 | UPROPERTY 메타데이터를 통해 리플렉션 및 자동 탐색이 이루어짐 | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EA%B5%AC%EC%A1%B0",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-구조"
-  },"225": {
-    "doc": "UObject",
-    "title": "서브오브젝트 탐색 방식",
-    "content": "1. 리플렉션 기반 탐색 (UPROPERTY) . | UPROPERTY()로 표시된 멤버만 탐색 가능 UCLASS() class AMyActor : public AActor { GENERATED_BODY() public: UPROPERTY(VisibleAnywhere) UMyComponent* Comp; // 서브오브젝트는 UPROPERTY로 노출됨 }; . | . 2. Outer 체인 탐색 . | AActor가 아닌 일반 UObject 서브오브젝트를 찾을 때 사용 | . // 모든 서브오브젝트 순회 (예시 코드) TArray&lt;UObject*&gt; Subobjects; GetObjectsWithOuter(MyActor, Subobjects); // MyActor를 Outer로 가진 객체 찾기 // 결과 출력 for (UObject* Obj : Subobjects) { UE_LOG(LogTemp, Warning, TEXT(\"Subobject: %s\"), *Obj-&gt;GetName()); } . 3. AActor 특수 처리 . | AActor만 Components 배열을 명시적으로 별도 관리 | . class AActor : public UObject { TArray&lt;UActorComponent*&gt; Components; // 서브오브젝트 명시적 관리 }; // FindComponentByClass 활용 (최적화된 탐색) UMyComponent* MyComp = FindComponentByClass&lt;UMyComponent&gt;(); . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%ED%83%90%EC%83%89-%EB%B0%A9%EC%8B%9D",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-탐색-방식"
-  },"226": {
-    "doc": "UObject",
-    "title": "서브오브젝트 생성 및 과정",
-    "content": "// MyActor.h UCLASS() class AMyActor : public AActor { GENERATED_BODY() public: UPROPERTY(VisibleAnywhere) UMyComponent* MyComp; // 서브오브젝트 포인터 AMyActor() { // 생성자에서 서브오브젝트 생성 MyComp = CreateDefaultSubobject&lt;UMyComponent&gt;(TEXT(\"MyComp\")); } }; . | 생성자 호출 . | 반드시 부모 객체의 생성자 내에서 호출 . | 예외: UActorComponent는 InitializeComponent()에서 추가 초기화 | . | . | 메모리 할당 . | 엔진은 UMyComponent 인스턴스를 생성하고, Outer를 AMyActor로 설정 | . | 이름 등록 . | TEXT(“MyComp”)를 이름으로 지정, 중복 검사 수행 | . | 리플렉션 연동 . | UPROPERTY가 없어도 서브오브젝트 생성 (에디터에서 수정 불가. 블루 프린트 노출 X) | UPROPERTY가 있으면 디테일 패널에 노출 | . | Actor에 등록 . | AActor 전용으로 Actor와 연관된 오브젝트가 아닐 경우 패스됨 | AActor의 경우 Components 배열에 자동 추가 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EA%B3%BC%EC%A0%95",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-생성-및-과정"
-  },"227": {
-    "doc": "UObject",
-    "title": "서브오브젝트 다이어그램",
-    "content": ". | 실선: 명시적 참조 (AActor의 Components 배열) | 점선: 암시적 참조 (Outer 포인터) | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-다이어그램"
-  },"228": {
     "doc": "1. Quick Asset Actions",
     "title": "1. Quick Asset Actions",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/"
-  },"229": {
+  },"224": {
     "doc": "1. Quick Asset Actions",
     "title": "에셋 액션",
     "content": "언리얼 에디터에서 에셋(Asset)에 대해 사용자가 직접 수행할 수 있는 특정 동작/명령 . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#%EC%97%90%EC%85%8B-%EC%95%A1%EC%85%98",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#에셋-액션"
-  },"230": {
+  },"225": {
     "doc": "1. Quick Asset Actions",
     "title": "동작 방식 (5.3 이상)",
     "content": ". | C++에서 UAssetActionUtility 기반 커스텀 클래스 생성 . | UAssetActionUtility는 언리얼이 제공하는 에디터 확장용 베이스 클래스 | 이 클래스를 상속받아 C++ 또는 블루프린트에서 커스텀 명령(함수)을 구현 | . | 함수에 UFUNCTION(CallInEditor) 매크로 등록 . | 에디터에서 호출 가능한 함수로 등록 | 함수명은 명확하게 작성 | . | 에디터 유틸리티 블루프린트(Asset Action Utility BP) 생성 . | 플러그인 또는 프로젝트의 콘텐츠 브라우저에서 생성 | 부모 클래스로 1번에서 만든 커스텀 C++ 클래스를 선택 | (에디터가 이 BP 인스턴스를 통해 실제 액션을 인식) | . | 동작 실행 . | 에디터에서 에셋을 우클릭 → “스크립팅된 에셋 액션”에서 등록된 함수가 메뉴에 나타남 | 클릭 시 실제 동작 수행 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#%EB%8F%99%EC%9E%91-%EB%B0%A9%EC%8B%9D-53-%EC%9D%B4%EC%83%81",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#동작-방식-53-이상"
-  },"231": {
+  },"226": {
     "doc": "1. Quick Asset Actions",
     "title": "모듈",
     "content": "모듈은 언리얼 엔진의 구성 블록이다. 에디터를 만들려면 자신만의 모듈을 만들어야 한다. ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#%EB%AA%A8%EB%93%88",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#모듈"
-  },"232": {
+  },"227": {
     "doc": "1. Quick Asset Actions",
     "title": "모듈에서 알아야 할 세가지 주요 포인트",
     "content": ". | 모듈은 코드 분리를 강제한다. | 여러 개의 무작위 코드들이 서로 소통해야 할 때 매우 유용하다 | . | 모든 모듈은 Build.cs 파일이 필요하다. | 새 프로젝트 자체도 하나의 모듈이다. | 모듈은 자신의 빌드 파일을 가진다. [ModuleName].Build.cs [ProjectName].Build.cs . | . | 모듈은 Build.cs 파일에 추가하여 포함할 수 있다. | 다른 모듈에 위치한 헤더 파일을 포함해야 할 때 해당 헤더의 모듈 이름을 Build.cs 파일에 추가한다. | 보통 PublicDependencyModuleNames에 모듈 이름을 추가하는 경우가 많다 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#%EB%AA%A8%EB%93%88%EC%97%90%EC%84%9C-%EC%95%8C%EC%95%84%EC%95%BC-%ED%95%A0-%EC%84%B8%EA%B0%80%EC%A7%80-%EC%A3%BC%EC%9A%94-%ED%8F%AC%EC%9D%B8%ED%8A%B8",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#모듈에서-알아야-할-세가지-주요-포인트"
-  },"233": {
+  },"228": {
     "doc": "1. Quick Asset Actions",
     "title": "플러그인 생성하기",
     "content": ". | 언리얼 상단 메뉴 Edit &gt; Plugins 클릭 | 왼쪽 상단의 +ADD 버튼 클릭 | 여러가지 템플릿 목록에서 선택 (현재는 Blank 선택) . | 플러그인 이름이 곧 모듈 이름이다. | 한번 정하면 변경할 수 없다. | . | Create Plugin 버튼 클릭 | 비주얼 스튜디오로 돌아가 모두 로드 버튼 클릭 . | 프로젝트 소스 폴더 위에 플러그인 폴더 생성된 것 확인 | . | . // .uplugin \"Modules\": [ { \"Name\": \"BackgroundTool\", \"Type\": \"Editor\", // 만들 기능은 에디터 전용이므로 Runtime(게임 동작시 실행되는 타입) -&gt; Editor로 변경 \"LoadingPhase\": \"PreDefault\" // 플러그인이 언제 로드될지 결정함. PreDefault: 게임 모듈보다 먼저 로드됨 } ] . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#플러그인-생성하기"
-  },"234": {
+  },"229": {
     "doc": "1. Quick Asset Actions",
     "title": "액터와 에셋",
     "content": ". | 에셋 : 콘텐트 브라우저 안에 존재하는 것 (머티리얼, 스태틱 매시 등) . | 에셋은 AssetActionUtility라는 내장 클래스를 사용 | . | 액터 : 레벨(뷰) 안에 존재하며 클릭할 수 있는 것 . | 액터는 ActorActionUtility라는 클래스를 사용 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#%EC%95%A1%ED%84%B0%EC%99%80-%EC%97%90%EC%85%8B",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#액터와-에셋"
-  },"235": {
+  },"230": {
     "doc": "1. Quick Asset Actions",
     "title": "Public/Private",
     "content": ". | 모듈을 하나 생성할 때 Pubilc, Private 폴더를 나눠서 생성할 수 있음 . | Pubilc : 헤더 | Private : cpp 소스 코드 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#publicprivate",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#publicprivate"
-  },"236": {
+  },"231": {
     "doc": "1. Quick Asset Actions",
     "title": "build.cs",
     "content": ". | 인클루드 된 헤더에 빨간 밑줄 : 현재 모듈이 이 헤더 파일에 접근할 권한 없음 | . 접근권한 해결하기 . | 솔루션 탐색기에서 해당 헤더 검색 후 헤더가 들어있는 모듈 찾기 | 해당 모듈의 build.cs 소스 코드에 각각 private, pubilc 모듈 경로를 찾을수 있음 | 내가 쓸 build.cs에 private, pubilc에 해당하는 경로 붙여넣기 | . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#buildcs",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#buildcs"
-  },"237": {
+  },"232": {
     "doc": "1. Quick Asset Actions",
     "title": "테스트용 에셋 함수 구동하기 (5.3 이상)",
     "content": "함수 준비하기 : 플러그인 콘텐트 . | 플러그인의 콘텐트 폴더로 이동 | 플러그인 콘텐트 브라우저에서 마우스 오른쪽 버튼 클릭 | 에디터 유틸리티 -&gt; 에디터 유틸리티 블루 프린트 -&gt; 에셋 액션 유틸리티 선택하여 생성 | 더블 클릭하여 해당 에셋을 열고 우측 상단의 파일 클릭 | 부모 블루프린트 -&gt; 내가 만든 c++ 클래스 입력 | 컴파일 및 저장 클릭 | . 이 과정이 없으면 에디터는 사용자가 만든 에셋 액션을 전혀 인식하지 못함 . | C++ 클래스 = 설계도 | 에셋 액션 유틸리티 BP 에셋 = 실제 완성품 (에디터가 사용할 수 있는 인스턴스) | . 함수 사용하기 . | 메인 콘텐트에서 Blueprint 폴더 생성 | Blueprint 클래스 생성 | 해당 클래스 우클릭 -&gt; Scripted Asset Actions | 플러그인 콘텐트에서 추가한 c++ 클래스가 보임 | 클릭하여 동작 확인 가능 | . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%9A%A9-%EC%97%90%EC%85%8B-%ED%95%A8%EC%88%98-%EA%B5%AC%EB%8F%99%ED%95%98%EA%B8%B0-53-%EC%9D%B4%EC%83%81",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#테스트용-에셋-함수-구동하기-53-이상"
-  },"238": {
+  },"233": {
     "doc": "1. Quick Asset Actions",
     "title": "디버그 헤더 만들기",
     "content": ". | 플러그인 안의 폴더를 오른쪽 버튼으로 클릭 | 새 항목 추가 선택 | 추가 창이 뜨면 위치를 플러그인 -&gt; 모듈 -&gt; public 폴더로 선택 | 만들 유형 헤더로 선택하고 Debug.h 이름 지정 | Debug.h의 함수를 사용할 cpp 파일에 #include “Debug.h” 추가 | . void PrintMessage(const FString&amp; Message, const FColor&amp; Color) { if (GEngine) { GEngine-&gt;AddOnScreenDebugMessage(-1, 8.f, Color, Message); // 화면 좌상단에 출력 } } void PrintLog(const FString&amp; Message) { UE_LOG(LogTemp, Warning, TEXT(\"%s\"), *Message); // 콘솔 로그창에 출력 } . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#%EB%94%94%EB%B2%84%EA%B7%B8-%ED%97%A4%EB%8D%94-%EB%A7%8C%EB%93%A4%EA%B8%B0",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#디버그-헤더-만들기"
-  },"239": {
+  },"234": {
     "doc": "1. Quick Asset Actions",
     "title": "단축키",
     "content": ". | UE 상단에서 툴 -&gt; visual studio 새로고침 선택 | Ctrl + B : vs studio 빌드 | Ctrl + F5 : 편집기 (엔진) 실행 | Ctrl + Alt + F11 : 라이브 코딩 실행 | Alt + F12(피킹 정의) : Quick Info 주석 보기 | Ctrl + ` : 터미널 | . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#%EB%8B%A8%EC%B6%95%ED%82%A4",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#단축키"
-  },"240": {
-    "doc": "Macro",
-    "title": "Macro",
-    "content": ". | 언리얼 전용 메타데이터 매크로는 코드 재사용성과 생산성을 높이기 위한 강력한 기능을 제공한다 | 함수나 변수마다 위에 매크로를 붙이지 않으면 언리얼 엔진의 리플렉션 시스템에 등록되지 않는다 | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/"
-  },"241": {
-    "doc": "Macro",
-    "title": "매크로의 주요 기능",
-    "content": ". | 리플렉션 시스템 통합 : 런타임에 클래스 정보 조회 가능 | 블루프린트 연동 : C++과 블루프린트 간의 상호 운용성 제공 | 직렬화 지원 : 객체 상태 저장 및 로드 가능 | 네트워크 복제 : 멀티플레이어 게임에서 변수 및 함수 복제 | 가비지 컬렉션 : UObject 파생 클래스의 자동 메모리 관리 | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#%EB%A7%A4%ED%81%AC%EB%A1%9C%EC%9D%98-%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#매크로의-주요-기능"
-  },"242": {
-    "doc": "Macro",
-    "title": "빌드 시스템과 매크로 연동",
-    "content": "1. 빌드 시스템 기본 구조 . | UBT(Unreal Build Tool) . | 모든 빌드 명령을 관리/자동화. | 각종 .Build.cs, .Target.cs 파일을 해석하여 모듈, 의존성, 플랫폼, 설정에 따라 빌드를 분기 | . | UnrealHeaderTool(UHT) . | 언리얼 리플렉션을 위해 추가적으로 동작하는 툴 | 리플렉션 매크로(UCLASS, UPROPERTY, 등)가 붙은 소스코드를 파싱 | 메타데이터와 Glue 코드(C++에선 자동 생성된 코드)를 생성 | . | . 2. 매크로와 빌드 파이프라인 . | UCLASS 등을 통해 매크로를 사용한 코드 작성 | UBT : 빌드 시작 | UHT : 헤더 파싱 &amp; Glue 코드(메타데이터) 생성 . | *.generated.h 를 반드시 #include로 포함해야 함 | 이 파일이 누락될 경우 컴파일 에러 발생 | . | C++ 컴파일러가 코드 + 자동코드 컴파일 | 런타임: 리플렉션 시스템 작동 | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#%EB%B9%8C%EB%93%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C%EA%B3%BC-%EB%A7%A4%ED%81%AC%EB%A1%9C-%EC%97%B0%EB%8F%99",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#빌드-시스템과-매크로-연동"
-  },"243": {
-    "doc": "Macro",
-    "title": "UHT (UnrealHeaderTool) 의 작동 과정",
-    "content": ". | 소스 코드 스캐닝 . | UHT는 .h 헤더 파일을 파싱하여 UCLASS, USTRUCT, UFUNCTION, UPROPERTY 등의 매크로가 포함된 특수 주석을 검색 | 일반 C++ 파서와 달리, 언리얼 특수 매크로를 이해하는 커스텀 파서를 사용 | . | 메타데이터 추출 . | 매크로에 지정된 속성들(예: BlueprintCallable, EditAnywhere 등)을 분석 | 클래스 계층 구조, 프로퍼티 타입, 함수 시그니처 등의 정보를 추출 | . | 리플렉션 코드 생성 . | GENERATED_BODY() 매크로 위치에 대체될 실제 코드를 생성 | 생성되는 파일들은 주로 Intermediate/Build 폴더에 저장 | 주요 생성 파일: . | [ModuleName].generated.h | [ClassName].generated.cpp | . | . | 직렬화/리플렉션 시스템 통합 . | UObject 시스템이 런타임에 클래스 정보를 조회할 수 있도록 함 | 블루프린트와의 상호 운용을 위한 바인딩 코드를 생성 | . | . 생성되는 코드 예시 . | 원본 UCLASS(Blueprintable) class AMyActor : public AActor { GENERATED_BODY() UPROPERTY(EditAnywhere) float Health; }; . | UHT가 생성하는 코드 (간소화 된 예) | . // AMyActor.generated.h #define AMyActor_Extra_Code \\ public: \\ static UClass* StaticClass(); \\ virtual UClass* GetClass() const override; \\ static void __StaticDependenciesAssets(TArray&lt;FAssetData&gt;&amp; OutAssets); \\ private: \\ static UClass* PrivateStaticClass; \\ public: \\ DECLARE_CLASS(AMyActor, AActor, COMPILED_IN_FLAGS(0), CASTCLASS_None, TEXT(\"/Script/MyGame\"), NO_API) \\ DECLARE_REPLICATION_FRAGMENT(AMyActor) \\ enum {IsIntrinsic=COMPILED_IN_INTRINSIC}; // 리플렉션 데이터 구조체 static const FClassFunctionLinkInfo Z_Construct_UClass_AMyActor_Functions[]; static const FPropertyParamsBase* const Z_Construct_UClass_AMyActor_Properties[]; . UHT가 생성하는 정보 . | 클래스 등록용 StaticRegisterNatives | UPROPERTY 메타정보 배열 | 블루프린트용 함수 등록 | C++에서 런타임에 사용할 수 있는 메타데이터 구조체 | 에디터/런타임용 데이터 구조 | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#uht-unrealheadertool-%EC%9D%98-%EC%9E%91%EB%8F%99-%EA%B3%BC%EC%A0%95",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#uht-unrealheadertool-의-작동-과정"
-  },"244": {
-    "doc": "Macro",
-    "title": "UHT 처리의 특징",
-    "content": ". | 템플릿 기반 코드 생성 . | 단순 복사-붙여넣기가 아닌, 템플릿을 기반으로 상황에 맞는 최적화된 코드 생성 | . | 의존성 분석 . | 클래스 간의 관계를 분석하여 올바른 초기화 순서 보장 | . | 크로스-레퍼런스 해결 . | 모듈 간 상호 참조 문제를 해결하기 위한 전방 선언(forward declaration) 생성 | . | 빌드 시스템 통합 . | 생성된 코드가 실제 컴파일 과정에 올바르게 포함되도록 Makefile/UBT 스크립트 조정 | . | 에러 체크 . | 잘못된 매크로 사용이나 충돌하는 설정을 빌드 전에 검출 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#uht-%EC%B2%98%EB%A6%AC%EC%9D%98-%ED%8A%B9%EC%A7%95",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#uht-처리의-특징"
-  },"245": {
-    "doc": "Macro",
-    "title": "매크로 카테고리",
-    "content": "| 카테고리 | 주요 매크로 | 용도 | . | 코어 리플렉션 | UCLASS, USTRUCT, UENUM, UPROPERTY, UFUNCTION, GENERATED_BODY | 언리얼 리플렉션 시스템 등록 | . | 네트워크 복제 | Replicated, ReplicatedUsing, DOREPLIFETIME, RPC 관련 매크로 | 멀티플레이어 게임에서 변수/함수 동기화 | . | 메모리 관리 | UPROPERTY(), UObject 관련 매크로 | 가비지 컬렉션 및 메모리 안전성 보장 | . | 에디터 연동 | EditAnywhere, VisibleDefaultsOnly, BlueprintReadOnly, Category | 에디터 노출 및 편집 제어 | . | 플랫폼 특화 | PLATFORM_WINDOWS, PLATFORM_ANDROID, WITH_EDITOR, WITH_SERVER_CODE | 플랫폼/빌드 설정별 코드 분기 | . | 디버깅/로깅 | UE_LOG, UE_CHECK, UE_ASSERT, ensure(), check() | 런타임 검증 및 로깅 | . | 성능 최적화 | UE_INLINE, UE_NOINLINE, FORCEINLINE, CORE_API | 인라인 제어 및 DLL 인터페이스 정의 | . | 메타데이터 | UMETA, DisplayName, ClampMin, ToolTip | 추가 속성 지정 | . | 모듈/플러그인 | IMPLEMENT_MODULE, IMPLEMENT_GAME_MODULE, PLUGIN_API | 모듈 초기화 및 플러그인 시스템 통합 | . | 최신 기능 | UE_DEPRECATED, UE_NODISCARD, TOptional, TSoftObjectPtr 관련 매크로 | 현대적 C++ 기능 지원 | . 참고 링크 . | 빌드 파이프라인 | . ",
-    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#%EB%A7%A4%ED%81%AC%EB%A1%9C-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#매크로-카테고리"
-  },"246": {
-    "doc": "Math",
-    "title": "Math",
-    "content": " ",
-    "url": "/docs/Math/",
-    
-    "relUrl": "/docs/Math/"
-  },"247": {
-    "doc": "2. Extend Content Browser Menu",
-    "title": "1. Extend Content Browser Menu",
-    "content": "에디터 내 Content Browser의 폴더/에셋을 우클릭할 때, “나만의 기능” 메뉴를 추가하기 . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#1-extend-content-browser-menu",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#1-extend-content-browser-menu"
-  },"248": {
-    "doc": "2. Extend Content Browser Menu",
-    "title": "에디터 메뉴 시스템 확장 과정",
-    "content": ". | 모듈 생성 및 초기화 . | Editor 타입의 모듈 생성 (uplugin의 “Type”: “Editor”) | . | 명령(Command) 정의 . | 메뉴에 바인딩될 명령(이름, 단축키, 아이콘, 툴팁 등)을 TCommands를 상속받아 정의 | . | 실제 동작 (Action) 바인딩 . | 실제 실행할 동작을 정의 (함수 구현) 한 후 델리게이트로 바인딩 | 보통 플러그인이나 에디터 모듈의 StartupModule()에서 이루어짐 | . | 메뉴 확장(Menu Extension) 적용 . | FExtender/FMenuExtensionDelegate 를 통해 기존 메뉴 섹션에 새로운 엔트리(항목)를 추가 | 원하는 위치 (섹션명)은 엔진 문서 참고 | . | UI 적용 및 정리 . | 에디터가 종료될 때 ShutdownModule()를 통해 리소스 및 이벤트 정리 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EC%97%90%EB%94%94%ED%84%B0-%EB%A9%94%EB%89%B4-%EC%8B%9C%EC%8A%A4%ED%85%9C-%ED%99%95%EC%9E%A5-%EA%B3%BC%EC%A0%95",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#에디터-메뉴-시스템-확장-과정"
-  },"249": {
-    "doc": "2. Extend Content Browser Menu",
-    "title": "Delegate",
-    "content": "이벤트 기반 프로그래밍을 구현하기 위한 강력한 시스템으로, C++의 함수 포인터나 콜백 시스템을 더 안전하고 유연하게 확장한 개념 . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#delegate",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#delegate"
-  },"250": {
-    "doc": "2. Extend Content Browser Menu",
-    "title": "델리게이트 특징",
-    "content": ". | 타입 안전성: 컴파일 시점에 타입 검사를 수행 | 멤버 함수 바인딩: 객체 인스턴스와 함께 멤버 함수를 바인딩 가능 | 멀티캐스트 지원: 하나의 이벤트에 여러 함수를 등록 가능 | 다이나믹 델리게이트: 블루프린트와 연동 가능 | . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%ED%8A%B9%EC%A7%95",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-특징"
-  },"251": {
-    "doc": "2. Extend Content Browser Menu",
-    "title": "델리게이트 사용하기",
-    "content": "Delegate 타입 선언 : 매크로 사용 . DECLARE_DELEGATE(FMyDelegate); DECLARE_DELEGATE_RetVal_OneParam(ReturnType, DelegateName, ParamType); . | ReturnType: 반환 타입 (예: int32) | DelegateName: 델리게이트 타입 이름 (예: FMyDelegateWithReturn) | ParamType: 함수에 전달될 파라미터의 타입 (예: FString) | . 바인딩 : 위에 선언한 델리게이트 타입 객체에 함수 연결 . FMyDelegate MyDelegate; // 선언(위 매크로로 정의된 타입) MyDelegate.BindRaw(this, &amp;FMyClass::Handler); . | Bind~(), Add~(), Execute(), Broadcast() 등의 멤버 함수를 사용해 연결/호출 | . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-사용하기"
-  },"252": {
-    "doc": "2. Extend Content Browser Menu",
-    "title": "델리게이트 종류",
-    "content": "1. 단일 캐스트 델리게이트 (Single-cast Delegates) . | 하나의 함수만 바인딩 가능 | DECLARE_DELEGATE 매크로로 선언 | 반환 값이 있을 경우 DECLARE_DELEGATE_RetVal 사용 | . DECLARE_DELEGATE(FMyDelegate); // 기본 형태 DECLARE_DELEGATE_OneParam(FMyDelegateWithParam, FString); // 매개변수 하나 DECLARE_DELEGATE_RetVal_OneParam(int32, FMyDelegateWithReturn, FString); // 반환 값과 매개변수 // 사용 예 FMyDelegate MyDelegate; MyDelegate.BindUObject(this, &amp;AMyClass::MyFunction); MyDelegate.Execute(); . 2. 멀티캐스트 델리게이트 (Multi-cast Delegates) . | 여러 함수를 동시에 바인딩 가능 | DECLARE_MULTICAST_DELEGATE 매크로로 선언 | 반환 값 지원 안함 | . DECLARE_MULTICAST_DELEGATE(FMyMulticastDelegate); // 사용 예 FMyMulticastDelegate MyMulticastDelegate; MyMulticastDelegate.AddUObject(this, &amp;AMyClass::Function1); MyMulticastDelegate.AddUObject(OtherObject, &amp;AOtherClass::Function2); MyMulticastDelegate.Broadcast(); . 3. 다이나믹 델리게이트 (Dynamic Delegates) . | 블루프린트와 연동 가능 | 시리얼라이즈(직렬화) 지원 | 이름 기반 바인딩으로 런타임에 바인딩 가능 | DECLARE_DYNAMIC_DELEGATE로 선언 | . DECLARE_DYNAMIC_DELEGATE(FMyDynamicDelegate); // 사용 예 FMyDynamicDelegate MyDynamicDelegate; MyDynamicDelegate.BindDynamic(this, &amp;AMyClass::MyFunction); . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%EC%A2%85%EB%A5%98",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-종류"
-  },"253": {
-    "doc": "2. Extend Content Browser Menu",
-    "title": "델리게이트 바인딩 메서드",
-    "content": "| 메서드 | 대상 유형 | 지원 Delegate 타입 | 자동 해제 | 용도/특징 | 주의점 | . | BindRaw | 일반 C++ 객체 | Single | X | 일반 포인터 대상, Raw C++ 객체 | 수명 관리 직접 필요 | . | AddRaw | 일반 C++ 객체 | Multi | X | 멀티캐스트 Delegate에 Raw 객체 바인딩 | 수명 관리 직접 필요 | . | BindUObject | UObject 파생 객체 | Single | O | Unreal UObject에 안전하게 바인딩 | GC 연동, 자동 해제 지원 | . | AddUObject | UObject 파생 객체 | Multi | O | 멀티캐스트 Delegate에 UObject 바인딩 | GC 연동, 자동 해제 지원 | . | BindSP | TSharedPtr 객체 | Single | O | TSharedPtr 기반 객체에 안전하게 바인딩 | WeakPtr로 자동 해제 | . | AddSP | TSharedPtr 객체 | Multi | O | 멀티캐스트 Delegate에 TSharedPtr 바인딩 | WeakPtr로 자동 해제 | . | BindLambda | 람다(익명함수) | Single | X | 임시 람다식 함수 직접 바인딩 | 캡처 객체 수명 주의 | . | AddLambda | 람다(익명함수) | Multi | X | 멀티캐스트 Delegate에 람다 함수 추가 | 캡처 객체 수명 주의 | . // Raw MyDelegate.BindRaw(this, &amp;FMyClass::Func); // this는 일반 C++ 객체 // UObject MyDelegate.BindUObject(this, &amp;UMyObject::Func); // this는 UObject 파생 클래스 // SharedPtr MyDelegate.BindSP(MySharedPtr, &amp;FMySharedClass::Func); // Lambda MyDelegate.BindLambda([](){ /* ... */ }); . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%EB%B0%94%EC%9D%B8%EB%94%A9-%EB%A9%94%EC%84%9C%EB%93%9C",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-바인딩-메서드"
-  },"254": {
-    "doc": "2. Extend Content Browser Menu",
-    "title": "2. Extend Content Browser Menu",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/"
-  },"255": {
-    "doc": "Linear Algebra",
-    "title": "Linear Algebra",
-    "content": " ",
-    "url": "/docs/Math/linear%20algebra/",
-    
-    "relUrl": "/docs/Math/linear%20algebra/"
-  },"256": {
-    "doc": "Computer Graphics",
-    "title": "Computer Graphics",
-    "content": " ",
-    "url": "/docs/Computer%20Graphics/",
-    
-    "relUrl": "/docs/Computer%20Graphics/"
-  },"257": {
-    "doc": "3. Slate Widget",
-    "title": "목표 : 에디터 확장을 더 깊게 다루기 위해 슬레이트(Slate) 코드를 직접 작성해보자",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#%EB%AA%A9%ED%91%9C--%EC%97%90%EB%94%94%ED%84%B0-%ED%99%95%EC%9E%A5%EC%9D%84-%EB%8D%94-%EA%B9%8A%EA%B2%8C-%EB%8B%A4%EB%A3%A8%EA%B8%B0-%EC%9C%84%ED%95%B4-%EC%8A%AC%EB%A0%88%EC%9D%B4%ED%8A%B8slate-%EC%BD%94%EB%93%9C%EB%A5%BC-%EC%A7%81%EC%A0%91-%EC%9E%91%EC%84%B1%ED%95%B4%EB%B3%B4%EC%9E%90",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#목표--에디터-확장을-더-깊게-다루기-위해-슬레이트slate-코드를-직접-작성해보자"
-  },"258": {
-    "doc": "3. Slate Widget",
-    "title": "슬레이트가 어렵게 느껴지는 이유",
-    "content": ". | 슬레이트 코드는 고유의 문법을 가지고 있다 . | 일반적인 C++ 코드와 매우 다르다 | . | 시각화가 어렵다 . | 위젯 레이아웃을 전부 코드로만 해야 한다는 것이 문제 | 변경한 내용을 바로바로 미리보기로 확인할 수 없다 | . | 다른 모듈과의 연동 . | 다른 모듈과 데이터를 주고받고 상호작용하는 것이 바로 연동(communication)이다 | 이 부분이 슬레이트 위젯을 구현할 때 가장 어렵고 중요하다 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#%EC%8A%AC%EB%A0%88%EC%9D%B4%ED%8A%B8%EA%B0%80-%EC%96%B4%EB%A0%B5%EA%B2%8C-%EB%8A%90%EA%BB%B4%EC%A7%80%EB%8A%94-%EC%9D%B4%EC%9C%A0",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#슬레이트가-어렵게-느껴지는-이유"
-  },"259": {
-    "doc": "3. Slate Widget",
-    "title": "스마트 포인터",
-    "content": "모듈 간의 데이터 전달 문제(communication issue)를 해결하기 위해서는 반드시 이해해야 할 중요한 개념 . 언리얼 엔진에서는 new 키워드를 직접 써서 객체를 만들도록 허용하지 않는다 . | new 키워드로 메모리를 할당할 일이 있다면, 반드시 스마트 포인터와 함께 쓴다 | . UE에서 지원하는 스마트 포인터 . | Shared Pointer (TSharedPtr) | Shared Reference (TSharedRef) | Weak Pointer (TWeakPtr) | Unique Pointer (TUniquePtr) | . TSharedPtr (Shared Pointer, 공유 포인터) . | 소유권(Owning) 보유: Shared Pointer는 해당 객체의 소유권을 갖는다 이 포인터가 존재하는 한 객체는 삭제되지 않음 . | 참조 카운팅(reference counting) 방식: 이 객체를 참조하는 Shared Pointer/Reference가 모두 사라지면 자동으로 삭제 . | null 할당 가능: 아직 가리키는 대상이 없어도 선언만 할 수 있다 . | . TSharedRef (Shared Reference, 공유 참조) . Shared Pointer와 거의 동일하지만 항상 유효한 객체만 가리킬 수 있다다 . | null 할당 불가능: 항상 유효한 인스턴스가 존재해야 하므로, 슬레이트 함수 반환값 등에서 주로 사용 . | 따라서 Shared Reference는 언제나 Shared Pointer로 변환할 수 있다 . | 유효한 Shared Pointer는 언제나 Shared Reference로 변환이 가능하다 . | . TWeakPtr (Weak Pointer, 약한 참조) . | 소유권을 갖지 않음: Weak Pointer는 객체의 소유권이 없음 객체가 삭제되는 것을 막지 않는다 . | “참조 순환(Reference Cycle)” 문제를 해결할 때 매우 유용하다 즉, 객체가 살아있을 때만 약하게 참조하고, 객체가 삭제되면 자동으로 무효(null)가 된다 . | 사용할 때마다 “이 객체가 아직 살아 있나요?”라고 먼저 체크해야 하며, 살아있으면 사용할 수 있다 . | . ❓게임 개발에서는 잘 안 보이는 이유? . | 스마트 포인터들은 UObject 기반 오브젝트에서는 쓸 수 없다 | UObject 시스템 자체가 고유한 메모리 관리(가비지 컬렉션)를 사용하기 때문 | Object 포인터를 직접 스마트 포인터로 관리하면 엔진의 GC 시스템과 충돌이 생김 | . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#%EC%8A%A4%EB%A7%88%ED%8A%B8-%ED%8F%AC%EC%9D%B8%ED%84%B0",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#스마트-포인터"
-  },"260": {
-    "doc": "3. Slate Widget",
-    "title": "스마트 포인터 생성 문법",
-    "content": "TSharedRef&lt;FMyType&gt; MyObject = MakeShareable(new FMyType(...)); . | MakeShareable . | public 생성자가 필요하지만 훨씬 효율적 | . | MakeShared . | 제한이 덜하지만, 약간 비효율적 | . | . 위 함수들은 객체 인스턴스를 생성과 동시에 만든다 . TSharedPtr&lt;FMyType&gt; Ptr = MakeShared&lt;FMyType&gt;(...); . 슬레이트 위젯을 만들 때 자주 사용됨 . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#%EC%8A%A4%EB%A7%88%ED%8A%B8-%ED%8F%AC%EC%9D%B8%ED%84%B0-%EC%83%9D%EC%84%B1-%EB%AC%B8%EB%B2%95",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#스마트-포인터-생성-문법"
-  },"261": {
-    "doc": "3. Slate Widget",
-    "title": "3. Slate Widget",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/"
-  },"262": {
+  },"235": {
     "doc": "Graphics rendering pipeline",
     "title": "Graphics rendering pipeline",
     "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
-  },"263": {
-    "doc": "Create Custom Editor Tools",
-    "title": "Create Custom Editor Tools",
-    "content": "빠른 작업 효율 향상을 위해 랜덤 배치 툴을 구현해보자 . 참고 링크 . | AssetRegistry | EditorUtilityLibrary | FMessageDialog | SNotificationList | FSlateNotificationManager | ContentBrowser | . ",
-    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/"
-  },"264": {
-    "doc": "Computer architecture",
-    "title": "Computer architecture",
-    "content": " ",
-    "url": "/docs/Computer%20architecture/",
-    
-    "relUrl": "/docs/Computer%20architecture/"
-  },"265": {
-    "doc": "GPU Architecture",
-    "title": "GPU Architecture",
-    "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
-    "url": "/docs/Computer%20architecture/GPU%20Architecture/",
-    
-    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
-  },"266": {
+  },"236": {
     "doc": "C++",
     "title": "C++",
     "content": " ",
     "url": "/docs/C++/",
     
     "relUrl": "/docs/C++/"
-  },"267": {
+  },"237": {
     "doc": "C++",
     "title": "스마트 포인터",
     "content": ". | C++11부터 표준 라이브러리에 포함됨 | raw pointer보다 스마트 포인터 사용이 권장됨 | 상황에 맞는 스마트 포인터를 선택하고, 반드시 소유권 규칙을 명확히 해야 함 | . ",
     "url": "/docs/C++/#%EC%8A%A4%EB%A7%88%ED%8A%B8-%ED%8F%AC%EC%9D%B8%ED%84%B0",
     
     "relUrl": "/docs/C++/#스마트-포인터"
-  },"268": {
+  },"238": {
     "doc": "C++",
     "title": "스마트 포인터 종류",
     "content": "1. std::unique_ptr . | 단일 소유권(Exclusive ownership): 오직 하나의 포인터만 객체를 소유 | 소유자가 사라질 때(포인터 scope 종료, 소멸자 호출 등) 자동으로 자원 해제 | 복사가 금지되어 있고, 소유권 이동은 move(이동)만 허용 | 용도: 소유권 이전(transfer)이 명확하고, 참조 카운팅이 필요 없는 객체 | . #include &lt;memory&gt; void func() { std::unique_ptr&lt;int&gt; ptr1 = std::make_unique&lt;int&gt;(42); // std::unique_ptr&lt;int&gt; ptr2 = ptr1; // 컴파일 에러! 복사 불가 std::unique_ptr&lt;int&gt; ptr2 = std::move(ptr1); // 소유권 이동 } . 2. std::shared_ptr . | 공유 소유권(Shared ownership): 여러 개의 포인터가 동일한 객체를 소유 | 내부적으로 참조 카운트(reference count) 관리 . | (카운트가 0이 되면 자원 해제) | . | 용도: 여러 곳에서 동시에 객체를 소유/관리해야 할 때 | . #include &lt;memory&gt; void func() { std::shared_ptr&lt;int&gt; ptr1 = std::make_shared&lt;int&gt;(42); std::shared_ptr&lt;int&gt; ptr2 = ptr1; // 복사 가능, 참조 카운트 증가 // ptr1과 ptr2가 모두 소멸되면 메모리 해제 } . 3. std::weak_ptr . | 비소유 참조(Non-owning reference): shared_ptr로 관리되는 객체를 참조하지만, 참조 카운트에는 관여하지 않음 | 주로 순환 참조(circular reference) 방지 목적 | 용도: shared_ptr들 사이에서 서로 참조(특히 그래프, 트리 등)할 때 메모리 누수 방지 | . #include &lt;memory&gt; void func() { std::shared_ptr&lt;int&gt; shared = std::make_shared&lt;int&gt;(42); std::weak_ptr&lt;int&gt; weak = shared; // 소유권 없음, 참조 카운트 변하지 않음 if (auto locked = weak.lock()) { // shared_ptr로 잠금 가능 // 객체가 아직 살아있을 때만 접근 가능 int value = *locked; } } . 스마트 포인터의 장점 . | 자동 메모리 관리: RAII(Resource Acquisition Is Initialization) 패턴 적용 | 예외 안전성: 예외 발생 시에도 자원 누수 없음 | 명확한 소유권 모델: 객체의 라이프사이클이 코드상에서 드러남 | . 스마트 포인터의 단점 . | 순환 참조 문제: shared_ptr만 사용하면 서로를 참조하는 객체들에서 해제가 안 될 수 있음(→ weak_ptr로 해결) | 성능 오버헤드: 특히 shared_ptr의 참조 카운트 갱신 비용 | 사용법 혼동 주의: 소유권 이전/공유 규칙이 코딩 컨벤션으로 정립되어야 함 | . ",
     "url": "/docs/C++/#%EC%8A%A4%EB%A7%88%ED%8A%B8-%ED%8F%AC%EC%9D%B8%ED%84%B0-%EC%A2%85%EB%A5%98",
     
     "relUrl": "/docs/C++/#스마트-포인터-종류"
-  },"269": {
+  },"239": {
     "doc": "C++",
     "title": "람다",
     "content": ". | C++11에서 도입된 기능으로, 이름 없는 함수(익명 함수)를 만들 수 있게 해줌 | 간단한 함수 객체(functor)나 콜백(callback) 등을 즉석에서 정의 | . ",
     "url": "/docs/C++/#%EB%9E%8C%EB%8B%A4",
     
     "relUrl": "/docs/C++/#람다"
-  },"270": {
+  },"240": {
     "doc": "C++",
     "title": "기본 문법과 구조",
     "content": "람다 함수의 기본 형태 . // [캡처](매개변수) -&gt; 반환타입 { 함수본문 } [capture](parameters) -&gt; return_type { // 함수 본문 ... } // 예시 [my_mod](int v_) -&gt; int { return v_ % my_mod; } . | [capture] : 외부 변수(스코프 밖의 변수)를 람다 내부에서 사용할 때 어떻게 사용할지 지정 | (parameters) : 함수의 매개변수 목록 | -&gt; return_type : 반환 타입 (void 는 -&gt; 생략 가능 / 컴파일러가 추론) | . ",
     "url": "/docs/C++/#%EA%B8%B0%EB%B3%B8-%EB%AC%B8%EB%B2%95%EA%B3%BC-%EA%B5%AC%EC%A1%B0",
     
     "relUrl": "/docs/C++/#기본-문법과-구조"
-  },"271": {
+  },"241": {
     "doc": "C++",
     "title": "c++98 함수 객체 vs C++11 람다",
     "content": "c++98 . struct Compare { bool operator()(int a, int b) { return a &lt; b; } }; std::vector&lt;int&gt; v; std::sort(v.begin(), v.end(), Compare()); // 함수 객체 전달 . c++11 . std::vector&lt;int&gt; v; std::sort(v.begin(), v.end(), [](int a, int b) { return a &lt; b; // 람다로 간결하게 표현 }); . ",
     "url": "/docs/C++/#c98-%ED%95%A8%EC%88%98-%EA%B0%9D%EC%B2%B4-vs-c11-%EB%9E%8C%EB%8B%A4",
     
     "relUrl": "/docs/C++/#c98-함수-객체-vs-c11-람다"
-  },"272": {
+  },"242": {
     "doc": "C++",
     "title": "람다 핵심 개념 : 캡처 리스트",
     "content": "외부 변수를 람다에서 어떻게 참조할지 결정 . | 캡처 형태 | 의미 | 예시 | . | [] | 아무것도 캡처하지 않음 | []() { /* ... */ } | . | [=] | 모든 외부 변수를 값으로 복사 | [=]() { cout &lt;&lt; x; } | . | [&amp;] | 모든 외부 변수를 참조로 사용 | [&amp;]() { x = 42; } | . | [x, &amp;y] | 특정 변수 선택적 캡처 | [x, &amp;y]() { y += x; } | . [] . #include &lt;iostream&gt; int main() { int x = 10, y = 20; // 외부 변수 캡처 없음 → 오직 매개변수만 사용 가능 auto lambda = [](int a, int b) { return a + b; }; std::cout &lt;&lt; lambda(3, 5); // 출력: 8 // std::cout &lt;&lt; lambda(x, y); // ⚠️ x, y는 매개변수로 전달해야 함 } . [=] . | 원본 보존 필요시 사용 | . #include &lt;iostream&gt; int main() { int x = 10, y = 20; // 모든 외부 변수를 값으로 복사 (x, y의 복사본 사용) auto lambda = [=]() { std::cout &lt;&lt; x + y; // 출력: 30 (원본 x, y는 변경되지 않음) }; lambda(); x = 100; // 원본 수정 lambda(); // 출력: 30 (복사본은 영향 없음) } . | 람다가 생성될 때 [=]는 현재 스코프의 모든 변수 (x 등)를 값으로 복사해 저장 . | 람다 객체 내부에 int x_copy = x; 같은 복사본이 생김 | . | 람다는 항상 자신이 가진 복사본(x_copy)을 참조하므로, 원본이 변경되어도 복사본은 변하지 않음 | . [&amp;] . | 원본 제어 필요시 사용 | . #include &lt;iostream&gt; int main() { int x = 10, y = 20; // 모든 외부 변수를 참조로 캡처 (원본 직접 접근) auto lambda = [&amp;]() { x = 30; // 원본 수정 std::cout &lt;&lt; y; // 출력: 20 }; lambda(); std::cout &lt;&lt; x; // 출력: 30 (람다에서 수정된 값) } . [x, &amp;y] . | 특정 변수만 선택적으로 캡처할 때 사용 | . #include &lt;iostream&gt; int main() { int x = 10, y = 20; // x는 값으로, y는 참조로 캡처 auto lambda = [x, &amp;y]() { y += x; // y는 원본 참조 (y = 20 + 10) // x = 5; // x는 복사본이므로 수정 불가 (mutable 키워드 필요) }; lambda(); std::cout &lt;&lt; y; // 출력: 30 (원본 y 변경됨) } . 참고 링크 . | 람다(lambda) 함수 | . ",
     "url": "/docs/C++/#%EB%9E%8C%EB%8B%A4-%ED%95%B5%EC%8B%AC-%EA%B0%9C%EB%85%90--%EC%BA%A1%EC%B2%98-%EB%A6%AC%EC%8A%A4%ED%8A%B8",
     
     "relUrl": "/docs/C++/#람다-핵심-개념--캡처-리스트"
-  },"273": {
+  },"243": {
     "doc": "C++",
     "title": "아래부터 나중에 추가 정리해야 할 것",
     "content": ". 언리얼 엔진5의 스마트 포인터 UE5는 C++ 표준 라이브러리와의 호환성 문제(예: 모듈 경계, 플랫폼별 동작 차이)로 자체 스마트 포인터를 제공합니다. (1) TSharedPtr&lt;&gt; C++의 std::shared_ptr&lt;&gt;과 유사하지만 UE5 전용 최적화가 적용됨. 관리 대상: UObject를 상속받지 않은 일반 C++ 클래스. 특징: . 참조 카운팅 + 스레드 안전성 지원. TWeakPtr&lt;&gt;으로 약한 참조 가능. MakeShared&lt;&gt;()로 생성 최적화. (2) TUniquePtr&lt;&gt; C++의 std::unique_ptr&lt;&gt;과 거의 동일하지만 UE5 메모리 할당자와 통합됨. 관리 대상: UObject가 아닌 객체. 특징: . 복사 불가능, 이동만 가능. MakeUnique&lt;&gt;()로 생성. (3) FObjectPtr (UE5+) UObject 전용으로 설계된 경량 포인터. C++ 표준과 무관하며, UE5의 가비지 컬렉션 시스템과 연동됩니다. 특징: . UObject의 안전한 참조를 위해 사용 (예: 크로스-스레드 접근 방지). TSharedPtr&lt;&gt;과 달리 참조 카운팅 없이 엔진 내부에서 관리. | C++ vs UE5 스마트 포인터 비교 기능 C++ (std) UE5 차이점 공유 소유권 std::shared_ptr&lt;&gt; TSharedPtr&lt;&gt; UE5는 스레드 안전성 강화. 독점 소유권 std::unique_ptr&lt;&gt; TUniquePtr&lt;&gt; UE5는 할당자 통합. 약한 참조 std::weak_ptr&lt;&gt; TWeakPtr&lt;&gt; 동일한 개념. 가비지 컬렉션 없음 FObjectPtr UObject 전용. 생성 방법 std::make_shared&lt;&gt; MakeShared&lt;&gt; UE5는 커스텀 메모리 풀 사용 가능. | . ",
     "url": "/docs/C++/#%EC%95%84%EB%9E%98%EB%B6%80%ED%84%B0-%EB%82%98%EC%A4%91%EC%97%90-%EC%B6%94%EA%B0%80-%EC%A0%95%EB%A6%AC%ED%95%B4%EC%95%BC-%ED%95%A0-%EA%B2%83",
     
     "relUrl": "/docs/C++/#아래부터-나중에-추가-정리해야-할-것"
+  },"244": {
+    "doc": "2. Extend Content Browser Menu",
+    "title": "1. Extend Content Browser Menu",
+    "content": "에디터 내 Content Browser의 폴더/에셋을 우클릭할 때, “나만의 기능” 메뉴를 추가하기 . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#1-extend-content-browser-menu",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#1-extend-content-browser-menu"
+  },"245": {
+    "doc": "2. Extend Content Browser Menu",
+    "title": "에디터 메뉴 시스템 확장 과정",
+    "content": ". | 모듈 생성 및 초기화 . | Editor 타입의 모듈 생성 (uplugin의 “Type”: “Editor”) | . | 명령(Command) 정의 . | 메뉴에 바인딩될 명령(이름, 단축키, 아이콘, 툴팁 등)을 TCommands를 상속받아 정의 | . | 실제 동작 (Action) 바인딩 . | 실제 실행할 동작을 정의 (함수 구현) 한 후 델리게이트로 바인딩 | 보통 플러그인이나 에디터 모듈의 StartupModule()에서 이루어짐 | . | 메뉴 확장(Menu Extension) 적용 . | FExtender/FMenuExtensionDelegate 를 통해 기존 메뉴 섹션에 새로운 엔트리(항목)를 추가 | 원하는 위치 (섹션명)은 엔진 문서 참고 | . | UI 적용 및 정리 . | 에디터가 종료될 때 ShutdownModule()를 통해 리소스 및 이벤트 정리 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EC%97%90%EB%94%94%ED%84%B0-%EB%A9%94%EB%89%B4-%EC%8B%9C%EC%8A%A4%ED%85%9C-%ED%99%95%EC%9E%A5-%EA%B3%BC%EC%A0%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#에디터-메뉴-시스템-확장-과정"
+  },"246": {
+    "doc": "2. Extend Content Browser Menu",
+    "title": "Delegate",
+    "content": "이벤트 기반 프로그래밍을 구현하기 위한 강력한 시스템으로, C++의 함수 포인터나 콜백 시스템을 더 안전하고 유연하게 확장한 개념 . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#delegate",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#delegate"
+  },"247": {
+    "doc": "2. Extend Content Browser Menu",
+    "title": "델리게이트 특징",
+    "content": ". | 타입 안전성: 컴파일 시점에 타입 검사를 수행 | 멤버 함수 바인딩: 객체 인스턴스와 함께 멤버 함수를 바인딩 가능 | 멀티캐스트 지원: 하나의 이벤트에 여러 함수를 등록 가능 | 다이나믹 델리게이트: 블루프린트와 연동 가능 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%ED%8A%B9%EC%A7%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-특징"
+  },"248": {
+    "doc": "2. Extend Content Browser Menu",
+    "title": "델리게이트 사용하기",
+    "content": "Delegate 타입 선언 : 매크로 사용 . DECLARE_DELEGATE(FMyDelegate); DECLARE_DELEGATE_RetVal_OneParam(ReturnType, DelegateName, ParamType); . | ReturnType: 반환 타입 (예: int32) | DelegateName: 델리게이트 타입 이름 (예: FMyDelegateWithReturn) | ParamType: 함수에 전달될 파라미터의 타입 (예: FString) | . 바인딩 : 위에 선언한 델리게이트 타입 객체에 함수 연결 . FMyDelegate MyDelegate; // 선언(위 매크로로 정의된 타입) MyDelegate.BindRaw(this, &amp;FMyClass::Handler); . | Bind~(), Add~(), Execute(), Broadcast() 등의 멤버 함수를 사용해 연결/호출 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-사용하기"
+  },"249": {
+    "doc": "2. Extend Content Browser Menu",
+    "title": "델리게이트 종류",
+    "content": "1. 단일 캐스트 델리게이트 (Single-cast Delegates) . | 하나의 함수만 바인딩 가능 | DECLARE_DELEGATE 매크로로 선언 | 반환 값이 있을 경우 DECLARE_DELEGATE_RetVal 사용 | . DECLARE_DELEGATE(FMyDelegate); // 기본 형태 DECLARE_DELEGATE_OneParam(FMyDelegateWithParam, FString); // 매개변수 하나 DECLARE_DELEGATE_RetVal_OneParam(int32, FMyDelegateWithReturn, FString); // 반환 값과 매개변수 // 사용 예 FMyDelegate MyDelegate; MyDelegate.BindUObject(this, &amp;AMyClass::MyFunction); MyDelegate.Execute(); . 2. 멀티캐스트 델리게이트 (Multi-cast Delegates) . | 여러 함수를 동시에 바인딩 가능 | DECLARE_MULTICAST_DELEGATE 매크로로 선언 | 반환 값 지원 안함 | . DECLARE_MULTICAST_DELEGATE(FMyMulticastDelegate); // 사용 예 FMyMulticastDelegate MyMulticastDelegate; MyMulticastDelegate.AddUObject(this, &amp;AMyClass::Function1); MyMulticastDelegate.AddUObject(OtherObject, &amp;AOtherClass::Function2); MyMulticastDelegate.Broadcast(); . 3. 다이나믹 델리게이트 (Dynamic Delegates) . | 블루프린트와 연동 가능 | 시리얼라이즈(직렬화) 지원 | 이름 기반 바인딩으로 런타임에 바인딩 가능 | DECLARE_DYNAMIC_DELEGATE로 선언 | . DECLARE_DYNAMIC_DELEGATE(FMyDynamicDelegate); // 사용 예 FMyDynamicDelegate MyDynamicDelegate; MyDynamicDelegate.BindDynamic(this, &amp;AMyClass::MyFunction); . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%EC%A2%85%EB%A5%98",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-종류"
+  },"250": {
+    "doc": "2. Extend Content Browser Menu",
+    "title": "델리게이트 바인딩 메서드",
+    "content": "| 메서드 | 대상 유형 | 지원 Delegate 타입 | 자동 해제 | 용도/특징 | 주의점 | . | BindRaw | 일반 C++ 객체 | Single | X | 일반 포인터 대상, Raw C++ 객체 | 수명 관리 직접 필요 | . | AddRaw | 일반 C++ 객체 | Multi | X | 멀티캐스트 Delegate에 Raw 객체 바인딩 | 수명 관리 직접 필요 | . | BindUObject | UObject 파생 객체 | Single | O | Unreal UObject에 안전하게 바인딩 | GC 연동, 자동 해제 지원 | . | AddUObject | UObject 파생 객체 | Multi | O | 멀티캐스트 Delegate에 UObject 바인딩 | GC 연동, 자동 해제 지원 | . | BindSP | TSharedPtr 객체 | Single | O | TSharedPtr 기반 객체에 안전하게 바인딩 | WeakPtr로 자동 해제 | . | AddSP | TSharedPtr 객체 | Multi | O | 멀티캐스트 Delegate에 TSharedPtr 바인딩 | WeakPtr로 자동 해제 | . | BindLambda | 람다(익명함수) | Single | X | 임시 람다식 함수 직접 바인딩 | 캡처 객체 수명 주의 | . | AddLambda | 람다(익명함수) | Multi | X | 멀티캐스트 Delegate에 람다 함수 추가 | 캡처 객체 수명 주의 | . // Raw MyDelegate.BindRaw(this, &amp;FMyClass::Func); // this는 일반 C++ 객체 // UObject MyDelegate.BindUObject(this, &amp;UMyObject::Func); // this는 UObject 파생 클래스 // SharedPtr MyDelegate.BindSP(MySharedPtr, &amp;FMySharedClass::Func); // Lambda MyDelegate.BindLambda([](){ /* ... */ }); . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%EB%B0%94%EC%9D%B8%EB%94%A9-%EB%A9%94%EC%84%9C%EB%93%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-바인딩-메서드"
+  },"251": {
+    "doc": "2. Extend Content Browser Menu",
+    "title": "2. Extend Content Browser Menu",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/"
+  },"252": {
+    "doc": "Computer Graphics",
+    "title": "Computer Graphics",
+    "content": " ",
+    "url": "/docs/Computer%20Graphics/",
+    
+    "relUrl": "/docs/Computer%20Graphics/"
+  },"253": {
+    "doc": "Coding Standard",
+    "title": "Coding Standard",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/"
+  },"254": {
+    "doc": "Coding Standard",
+    "title": "저작권 고지",
+    "content": "배포하는 모든 소스 파일(.h, .cpp, .xaml 등)에는 파일의 첫 줄에 반드시 다음과 같은 저작권 공지가 포함되어야 한다. // Copyright Epic Games, Inc. All Rights Reserved. 해당 줄이 없거나 형식이 다르면 오류 -&gt; 빌드 실패 처리됨 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A0%80%EC%9E%91%EA%B6%8C-%EA%B3%A0%EC%A7%80",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#저작권-고지"
+  },"255": {
+    "doc": "Coding Standard",
+    "title": "클래스 구성",
+    "content": "클래스는 읽는 사람을 우선으로 구성해야 한다. 대부분 클래스를 읽는 사람들은 public 인터페이스를 사용한다. 따라서 클래스는 . | public | protected | private | . 순으로 작성한다. ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EA%B5%AC%EC%84%B1",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-구성"
+  },"256": {
+    "doc": "Coding Standard",
+    "title": "클래스 접두사",
+    "content": "언리얼 엔진의 클래스에는 접두사가 있다. 해당 접두사를 알고있으면 어떤 클래스에서 파생됐는지 알 수 있다. | 접두사 | 클래스 | 예시 | . | A | AActor | AActor, APawn, AGameMode | . | U | UObject | UTexture, UBlueprintFunctionLibrary | . | S | SWidget | SButton, Swidget | . | F | 사용자 구조체 | FVector, FHitResult | . | I | 추상 인터페이스 | IInterface | . | T | 템플릿 클래스 | TArray&lt;T&gt;, TMap&lt;&lt;T&gt; | . | E | Enum 타입 | EGAmeState | . | G | globals 전역변수 | GEngine | . | b | Boolean 변수 | bHasFadedIn, bDied | . 사용예시 . typedef TArray&lt;FMytype&gt; FArrayOfMyTypes; . typedef에는 해당 타입에 적합한 문자가 접두사로 붙어야 한다. 위 예시는 사용자 구조체 타입을 받는 템플릿 클래스다. ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%A0%91%EB%91%90%EC%82%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-접두사"
+  },"257": {
+    "doc": "Coding Standard",
+    "title": "네이밍 규칙",
+    "content": ". | 단어 사이에 언더스코어(_) 를 사용하지 않는다 | 단어의 첫 글자는 대문자로 표기한다 . | 예: MouseCoordinates (o), delta_x (x) | . | 타입명에는 추가로 대문자 접두사를 붙여 변수명과 구분한다 . | 예: FSkin (타입), Skin (FSkin 타입의 인스턴스) | . | 모든 변수는 한줄씩 선언한다 | 반환값이 있는 함수는 이름만으로 반환값을 명확히 한다 . | O: bool IsTeaFresh(FTea Tea) True 의미 명확 | X: bool CheckTea(FTea Tea) 어떤걸 반환할지 의미 불명확 | . | 반환값이 없는 절차 함수는 강한 동사+목적어 형식 . | 메서드의 목적어가 자기 자신이면 (맴버 함수) 생략 가능 | Handle, Process 등 모호한 동사 피하기 | . | bool 반환 함수는 항상 Yes/No 질문 형태를 취한다 . | IsVisible(), ShouldClearBuffer() | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EB%84%A4%EC%9D%B4%EB%B0%8D-%EA%B7%9C%EC%B9%99",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#네이밍-규칙"
+  },"258": {
+    "doc": "Coding Standard",
+    "title": "Const 정확성",
+    "content": ". | 함수 인자가 함수 내에서 변경되지 않는다면, const pointer 또는 const reference로 전달 | 객체를 변경하지 않는 메서드는 const로 명시 | 컨테이너를 수정하지 않는 반복문은 const 반복자 사용 | . 사용예시 . void SomeMutatingOperation(FThing&amp; OutResult, const TArray&lt;Int32&gt;&amp; InArray) { // InArray는 수정되지 않음, OutResult는 아마 수정될것임 } void FThing::SomeNonMutatingOperation() const { // 이 코드는 FThing을 변경하지 않음 } TArray&lt;FString&gt; StringArray; for (const FString&amp; : StringArray) { // 반복문 내부에서 StringArray를 수정하지 않음 } . | 반환 타입에 const 사용 금지 (컴파일 경고 발생) . | 단 const 레퍼런스, 포인터 반환은 허용 | . | . // 좋은 예시 - const 참조 반환 const TArray&lt;FString&gt;&amp; GetSomeArray(); // 좋은 예시 - const 포인터 반환 const TArray&lt;FString&gt;* GetSomeArray(); // 나쁜 예시 - const 배열 반환 const TArray&lt;FString&gt; GetSomeArray(); // 나쁜 예시 - const 포인터를 const로 반환 const TArray&lt;FString&gt;* const GetSomeArray(); . | 포인터 자체를 const로 만들 때는 타입 뒤에 const . | 포인터가 가리키는 값이 아닌, 포인터 자체의 재할당을 막음 | . | . // 포인터는 재할당 불가, T는 변경 가능 T* const Ptr = ...; // 잘못된 사용: 불가(레퍼런스는 재할당 불가 특성상 의미 없음) T&amp; const Ref = ...; . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-%EC%A0%95%ED%99%95%EC%84%B1",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-정확성"
+  },"259": {
+    "doc": "Coding Standard",
+    "title": "주석",
+    "content": ". | 클래스 주석 . | 이 클래스가 해결하는 문제 | 클래스 생성 이유 | . | 함수 (메서드) 주석 . | 함수 목적 기입 | . | 매개변수 주석 @param . | 측정 단위 | 예상 값 범위 | 불가능한 값 | 상태/오류 코드 의미 | . | 반환값 주석 @return . | 예상 반환 값 | . | 추가 정보 . | @warning 경고, @See보기 등을을 선택적으로 사용함 | . | . 사용예시 . /** The interface for drinkable objects. */ class IDrinkable { public: /** * Called when a player drinks this object. * @param OutFocusMultiplier - 반환 시, 마시는 사람의 집중력에 곱할 배수를 담는다. * @param OutThirstQuenchingFraction - 반환 시, 갈증 해소 정도(0~1)를 담는다. * @warning 반드시 음료가 제대로 준비된 후 호출해야 함. */ virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) = 0; }; /** 단일 찻잔 */ class FTea : public IDrinkable { public: /** * 주어진 물의 부피와 온도로 우려냈을 때, 차의 맛 변화량을 계산 * @param VolumeOfWater - 우릴 때 사용된 물의 양(mL) * @param TemperatureOfWater - 물의 온도(Kelvin) * @param OutNewPotency - 우려낸 후 차의 효능(0.97~1.04) * @return 차의 맛 강도 변화량(1분당 TTU) */ float Steep( const float VolumeOfWater, const float TemperatureOfWater, float&amp; OutNewPotency ); /** 설탕 당도 기준으로 감미를 추가 */ void Sweeten(const float EquivalentGramsOfSucrose); /** 일본 내 판매가(엔) */ float GetPrice() const { return Price; } virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) override; private: /** 가격(엔) */ float Price; /** 감미(설탕 환산 그램) */ float Sweetness; }; . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A3%BC%EC%84%9D",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#주석"
+  },"260": {
+    "doc": "Coding Standard",
+    "title": "차후 더 추가 예정",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%B0%A8%ED%9B%84-%EB%8D%94-%EC%B6%94%EA%B0%80-%EC%98%88%EC%A0%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#차후-더-추가-예정"
+  },"261": {
+    "doc": "Coding Standard",
+    "title": "사용가능한 표준 라이브러리 목록",
+    "content": ". | &lt;atomic&gt; : 신규 코드는 std::atomic 사용. 기존 TAtomic은 부분 구현만 되어 있음. | &lt;type_traits&gt; : 겹치는 부분은 표준 trait 사용. (표준 trait는 value/type 소문자, 기존 UE는 대문자 Value/Type 주의) | &lt;initializer_list&gt; : braced initializer 지원에 필수, 대체재 없음 | &lt;regex&gt; : 직접 사용 가능하나 에디터 전용 코드에 한정. 자체 구현 계획 없음. | &lt;limits&gt; : std::numeric_limits 전부 사용 가능 | &lt;cmath&gt; : 부동소수점 비교 함수만 사용 허용 | . 참고 링크 . | Coding Standard | Recommended Asset Naming Conventions | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%82%AC%EC%9A%A9%EA%B0%80%EB%8A%A5%ED%95%9C-%ED%91%9C%EC%A4%80-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%AA%A9%EB%A1%9D",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#사용가능한-표준-라이브러리-목록"
+  },"262": {
+    "doc": "3. Slate Widget",
+    "title": "목표 : 에디터 확장을 더 깊게 다루기 위해 슬레이트(Slate) 코드를 직접 작성해보자",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#%EB%AA%A9%ED%91%9C--%EC%97%90%EB%94%94%ED%84%B0-%ED%99%95%EC%9E%A5%EC%9D%84-%EB%8D%94-%EA%B9%8A%EA%B2%8C-%EB%8B%A4%EB%A3%A8%EA%B8%B0-%EC%9C%84%ED%95%B4-%EC%8A%AC%EB%A0%88%EC%9D%B4%ED%8A%B8slate-%EC%BD%94%EB%93%9C%EB%A5%BC-%EC%A7%81%EC%A0%91-%EC%9E%91%EC%84%B1%ED%95%B4%EB%B3%B4%EC%9E%90",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#목표--에디터-확장을-더-깊게-다루기-위해-슬레이트slate-코드를-직접-작성해보자"
+  },"263": {
+    "doc": "3. Slate Widget",
+    "title": "슬레이트가 어렵게 느껴지는 이유",
+    "content": ". | 슬레이트 코드는 고유의 문법을 가지고 있다 . | 일반적인 C++ 코드와 매우 다르다 | . | 시각화가 어렵다 . | 위젯 레이아웃을 전부 코드로만 해야 한다는 것이 문제 | 변경한 내용을 바로바로 미리보기로 확인할 수 없다 | . | 다른 모듈과의 연동 . | 다른 모듈과 데이터를 주고받고 상호작용하는 것이 바로 연동(communication)이다 | 이 부분이 슬레이트 위젯을 구현할 때 가장 어렵고 중요하다 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#%EC%8A%AC%EB%A0%88%EC%9D%B4%ED%8A%B8%EA%B0%80-%EC%96%B4%EB%A0%B5%EA%B2%8C-%EB%8A%90%EA%BB%B4%EC%A7%80%EB%8A%94-%EC%9D%B4%EC%9C%A0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#슬레이트가-어렵게-느껴지는-이유"
+  },"264": {
+    "doc": "3. Slate Widget",
+    "title": "스마트 포인터",
+    "content": "모듈 간의 데이터 전달 문제(communication issue)를 해결하기 위해서는 반드시 이해해야 할 중요한 개념 . 언리얼 엔진에서는 new 키워드를 직접 써서 객체를 만들도록 허용하지 않는다 . | new 키워드로 메모리를 할당할 일이 있다면, 반드시 스마트 포인터와 함께 쓴다 | . UE에서 지원하는 스마트 포인터 . | Shared Pointer (TSharedPtr) | Shared Reference (TSharedRef) | Weak Pointer (TWeakPtr) | Unique Pointer (TUniquePtr) | . TSharedPtr (Shared Pointer, 공유 포인터) . | 소유권(Owning) 보유: Shared Pointer는 해당 객체의 소유권을 갖는다 이 포인터가 존재하는 한 객체는 삭제되지 않음 . | 참조 카운팅(reference counting) 방식: 이 객체를 참조하는 Shared Pointer/Reference가 모두 사라지면 자동으로 삭제 . | null 할당 가능: 아직 가리키는 대상이 없어도 선언만 할 수 있다 . | . TSharedRef (Shared Reference, 공유 참조) . Shared Pointer와 거의 동일하지만 항상 유효한 객체만 가리킬 수 있다다 . | null 할당 불가능: 항상 유효한 인스턴스가 존재해야 하므로, 슬레이트 함수 반환값 등에서 주로 사용 . | 따라서 Shared Reference는 언제나 Shared Pointer로 변환할 수 있다 . | 유효한 Shared Pointer는 언제나 Shared Reference로 변환이 가능하다 . | . TWeakPtr (Weak Pointer, 약한 참조) . | 소유권을 갖지 않음: Weak Pointer는 객체의 소유권이 없음 객체가 삭제되는 것을 막지 않는다 . | “참조 순환(Reference Cycle)” 문제를 해결할 때 매우 유용하다 즉, 객체가 살아있을 때만 약하게 참조하고, 객체가 삭제되면 자동으로 무효(null)가 된다 . | 사용할 때마다 “이 객체가 아직 살아 있나요?”라고 먼저 체크해야 하며, 살아있으면 사용할 수 있다 . | . ❓게임 개발에서는 잘 안 보이는 이유? . | 스마트 포인터들은 UObject 기반 오브젝트에서는 쓸 수 없다 | UObject 시스템 자체가 고유한 메모리 관리(가비지 컬렉션)를 사용하기 때문 | Object 포인터를 직접 스마트 포인터로 관리하면 엔진의 GC 시스템과 충돌이 생김 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#%EC%8A%A4%EB%A7%88%ED%8A%B8-%ED%8F%AC%EC%9D%B8%ED%84%B0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#스마트-포인터"
+  },"265": {
+    "doc": "3. Slate Widget",
+    "title": "스마트 포인터 생성 문법",
+    "content": "TSharedRef&lt;FMyType&gt; MyObject = MakeShareable(new FMyType(...)); . | MakeShareable . | public 생성자가 필요하지만 훨씬 효율적 | . | MakeShared . | 제한이 덜하지만, 약간 비효율적 | . | . 위 함수들은 객체 인스턴스를 생성과 동시에 만든다 . TSharedPtr&lt;FMyType&gt; Ptr = MakeShared&lt;FMyType&gt;(...); . 슬레이트 위젯을 만들 때 자주 사용됨 . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#%EC%8A%A4%EB%A7%88%ED%8A%B8-%ED%8F%AC%EC%9D%B8%ED%84%B0-%EC%83%9D%EC%84%B1-%EB%AC%B8%EB%B2%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#스마트-포인터-생성-문법"
+  },"266": {
+    "doc": "3. Slate Widget",
+    "title": "커스텀 Slate 레이아웃 구현 과정",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#%EC%BB%A4%EC%8A%A4%ED%85%80-slate-%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83-%EA%B5%AC%ED%98%84-%EA%B3%BC%EC%A0%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#커스텀-slate-레이아웃-구현-과정"
+  },"267": {
+    "doc": "3. Slate Widget",
+    "title": "1. Slate 위젯 클래스 정의",
+    "content": ". | 대부분의 커스텀 슬레이트 위젯은 SCompoundWidget을 상속 | . #pragma once #include \"Widgets/SCompoundWidget.h\" class SMyCustomLayout : public SCompoundWidget {}; . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#1-slate-%EC%9C%84%EC%A0%AF-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%A0%95%EC%9D%98",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#1-slate-위젯-클래스-정의"
+  },"268": {
+    "doc": "3. Slate Widget",
+    "title": "2. Slate 속성 매크로(Arguments) 활용",
+    "content": ". | SLATE_ARGUMENT: 생성 시 값 1회 전달, 복사. | SLATE_ATTRIBUTE: 바인딩, 값이 동적으로 변할 수 있음. | SLATE_EVENT: 델리게이트/함수 포인터 등 이벤트 전달. | . // CustomButtonPanel.h class SCustomButtonPanel : public SCompoundWidget { public: SLATE_BEGIN_ARGS(SCustomButtonPanel) {} // 슬레이트 속성 정의 SLATE_ARGUMENT(FText, Title) SLATE_ARGUMENT(TArray&lt;FText&gt;, ButtonLabels) SLATE_EVENT(FOnInt32Selected, OnButtonSelected) SLATE_END_ARGS() void Construct(const FArguments&amp; InArgs); private: // 위젯 상태 변수 TArray&lt;FText&gt; ButtonLabels; FOnInt32Selected OnButtonSelected; }; . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#2-slate-%EC%86%8D%EC%84%B1-%EB%A7%A4%ED%81%AC%EB%A1%9Carguments-%ED%99%9C%EC%9A%A9",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#2-slate-속성-매크로arguments-활용"
+  },"269": {
+    "doc": "3. Slate Widget",
+    "title": "3. Construct 함수 구현",
+    "content": ". | ChildSlot을 이용해 Slate 레이아웃 선언 | ChildSlot(컨테이너의 루트)에 원하는 레이아웃 위젯(예: SVerticalBox, SHorizontalBox 등)으로 하위 위젯을 배치 | . void SMyCustomLayout::Construct(const FArguments&amp; InArgs) { Title = InArgs._Title; ChildSlot [ SNew(SVerticalBox) + SVerticalBox::Slot() .AutoHeight() [ SNew(STextBlock).Text(FText::FromString(Title)) ] + SVerticalBox::Slot() .FillHeight(1.0f) [ SNew(SButton) .Text(NSLOCTEXT(\"MyCustomLayout\", \"Button\", \"Click Me\")) // .OnClicked(....) ] ]; } . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#3-construct-%ED%95%A8%EC%88%98-%EA%B5%AC%ED%98%84",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#3-construct-함수-구현"
+  },"270": {
+    "doc": "3. Slate Widget",
+    "title": "4. Slate 스타일 및 Theme 적용",
+    "content": ". | FSlateStyleSet을 사용해 스타일 정의 | FSlateBrush로 브러시 설정 | FSlateFontInfo로 폰트 설정 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#4-slate-%EC%8A%A4%ED%83%80%EC%9D%BC-%EB%B0%8F-theme-%EC%A0%81%EC%9A%A9",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#4-slate-스타일-및-theme-적용"
+  },"271": {
+    "doc": "3. Slate Widget",
+    "title": "5. 이벤트 처리",
+    "content": ". | 마우스/키보드 이벤트 바인딩 | 델리게이트를 사용한 커스텀 이벤트 | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#5-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EC%B2%98%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/#5-이벤트-처리"
+  },"272": {
+    "doc": "3. Slate Widget",
+    "title": "3. Slate Widget",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/3.%20Slate%20Widget/"
+  },"273": {
+    "doc": "UObject",
+    "title": "UObject",
+    "content": "언리얼 엔진의 모든 객체 지향 시스템의 기반이 되는 핵심 클래스. | 게임플레이 요소, 컴포넌트, 에셋 등 거의 모든 UE5 객체가 UObject에서 파생됨 | UObject 객체를 생성함으로써 리플렉션, 가비지 컬렉션(GC), 직렬화 등의 기능을 사용할 수 있다 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/"
   },"274": {
+    "doc": "UObject",
+    "title": "개발자가 직접 사용하는 도구 (원인)",
+    "content": ". | 객체 생성 및 관리 . | NewObject(), IsValid(), ConditionalBeginDestroy() | . | 라이프사이클 관리 . | PostInitProperties(), BeginDestroy(), AddToRoot() | . | 메타데이터 시스템 . | UPROPERTY(meta=(...)), UFUNCTION() 지정자 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80-%EC%A7%81%EC%A0%91-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%8F%84%EA%B5%AC-%EC%9B%90%EC%9D%B8",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#개발자가-직접-사용하는-도구-원인"
+  },"275": {
+    "doc": "UObject",
+    "title": "UObject를 사용함으로써 자동으로 얻는 기능 (결과)",
+    "content": ". | 리플렉션 . | UCLASS()로 등록한 클래스가 블루프린트/파이썬에서 자동 인식 | . | 가비지 컬렉션 . | UPROPERTY() 참조가 없어지면 GC가 자동으로 객체 제거 | . | 직렬화 . | SaveGame 지정 시 별도 코드 없이도 디스크에 저장 가능 | . | 에디터 통합 . | EditAnywhere 메타데이터로 자동으로 디테일 패널 생성 | . | . UObject 상속 계층 구조 . UObject (최상위 베이스 클래스) ├─ UActorComponent (액터 컴포넌트 베이스) │ ├─ USceneComponent (변환 기능 포함) │ │ ├─ UPrimitiveComponent (렌더링 가능) │ │ │ ├─ UMeshComponent (메시 기반) │ │ │ │ ├─ USkeletalMeshComponent (스켈레탈 메시) │ │ │ │ └─ UStaticMeshComponent (스태틱 메시) │ │ │ └─ ULightComponent (라이트 소스) │ │ └─ UCameraComponent (카메라) │ └─ UAudioComponent (사운드) ├─ AActor (월드 배치 객체) │ ├─ APawn (플레이어/AI 제어 가능) │ │ ├─ ACharacter (캐릭터 메시/이동 포함) │ │ └─ ADefaultPawn (기본 이동 기능) │ └─ AStaticMeshActor (스태틱 메시 배치) ├─ UDataAsset (데이터 전용 에셋) │ ├─ UPrimaryDataAsset (프라이머리 에셋 시스템) │ └─ UAnimSequence (애니메이션 데이터) ├─ UBlueprintFunctionLibrary (블루프린트 함수) │ ├─ UKismetSystemLibrary (시스템 유틸리티) │ └─ UKismetMathLibrary (수학 함수) └─ 기타 주요 클래스 ├─ UGameInstance (게임 인스턴스) ├─ UWorld (월드 컨텍스트) ├─ UUserWidget (UMG 위젯) └─ UMaterial (머티리얼) . 주의사항 . | 스택 할당 금지: 반드시 힙에 생성 (GC 관리 대상이어야 함) | 다중 상속 제한: UObject를 다중 상속할 때는 주의가 필요 (일반적으로 UInterface 사용) | 표준 C++ 타입과의 호환성: std::vector 등은 UPROPERTY()로 표시할 수 없으며, TArray를 사용함 | 아주 가벼운 데이터만 다룰 경우 USTRUCT를 권장 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%A8%EC%9C%BC%EB%A1%9C%EC%8D%A8-%EC%9E%90%EB%8F%99%EC%9C%BC%EB%A1%9C-%EC%96%BB%EB%8A%94-%EA%B8%B0%EB%8A%A5-%EA%B2%B0%EA%B3%BC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject를-사용함으로써-자동으로-얻는-기능-결과"
+  },"276": {
+    "doc": "UObject",
+    "title": "UObject의 내부 구조",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject%EC%9D%98-%EB%82%B4%EB%B6%80-%EA%B5%AC%EC%A1%B0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject의-내부-구조"
+  },"277": {
+    "doc": "UObject",
+    "title": "UClass",
+    "content": ". | UClass는 UObject 객체의 청사진 (UObject 타입에 대한 메타데이터와 구조 정보) | 프로퍼티의 이름/타입/위치(오프셋) . | (예: “고양이” 종류의 객체는 “고양이 클래스” DNA를 가짐) | . | 모든 UObject는 자신의 클래스 정보 (UClass)를 가리키는 ClassPrivate 포인터를 갖는다 | . class UClass : public UObject { TArray&lt;UProperty*&gt; Properties; // 프로퍼티 목록 (예: 체력, 공격력) TArray&lt;UFunction*&gt; Functions; // 함수 목록 (예: 점프(), 공격()) UClass* SuperClass; // 부모 클래스 (상속 관계) UObject* ClassDefaultObject; // CDO 포인터 // ... 기타 메타데이터 }; . 동작 예시 . UMyObject* Obj = NewObject&lt;UMyObject&gt;(); UClass* ObjClass = Obj-&gt;GetClass(); // 데이터 추출 . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uclass",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uclass"
+  },"278": {
+    "doc": "UObject",
+    "title": "CDO (Class Default Object)",
+    "content": ". | UClass가 관리하는 특별한 UObject 인스턴스 | 모든 UObject 인스턴스의 초기값을 제공하는 원본 . | (예: “고양이 클래스”의 기본 색상=검정, 기본 체력=100) | . | . | 클래스가 언리얼 모듈에 로드될 때 한 번만 생성됨 | . 내부 구조와 CDO의 관계 다이어그램 . | UClass : 모든 인스턴스가 공유하는 “청사진” | CDO : 인스턴스들이 참조하는 변하지 않는 원본 | UObject 인스턴스 : CDO의 기본값을 복사받아 생성된 개별 객체 | . CDO 접근 방법 . // CDO 얻기 UMyObject* Defaults = GetDefault&lt;UMyObject&gt;(); // 기본값 사용 예시 float DefaultHealth = Defaults-&gt;Health; // 에디터에서 설정한 Health 값 . CDO 실제 활용 . | 에디터 연동 (인스턴스 초기값 세팅) UPROPERTY(EditDefaultsOnly, Category=\"Settings\") float Health; // CDO에서만 편집 가능 . | 런타임 검사 if (MyObj-&gt;Health == GetDefault&lt;UMyObject&gt;()-&gt;Health) { UE_LOG(LogTemp, Warning, TEXT(\"체력이 기본값입니다!\")); } . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#cdo-class-default-object",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#cdo-class-default-object"
+  },"279": {
+    "doc": "UObject",
+    "title": "UObject 객체 생성 과정",
+    "content": ". | UClass 로드 : 엔진 시작 시 UMyObject::StaticClass() 호출 → UClass 생성 | CDO 생성 : UClass 초기화 과정에서 GetDefaultObject()가 CDO 생성 | UObject 인스턴스 생성 : NewObject() 시 CDO의 프로퍼티 값을 복사 | . CDO vs 인스턴스 . | 비교 항목 | CDO | 일반 인스턴스 | . | 생성 시점 | 모듈 로드 시 1회 | NewObject() 호출 시 | . | 수정 가능성 | 에디터에서만 (런타임 X) | 런타임 자유롭게 변경 가능 | . | 메모리 위치 | 영구적 (게임 종료 시까지) | GC에 의해 삭제 가능 | . | 용도 | 기본값 템플릿 | 실제 게임 내 객체 | . | 에디터에서 Health=200 변경 → 모든 새 인스턴스는 Health=200으로 생성됨 | 기존 인스턴스는 영향 없음 (이미 생성된 객체는 독립적) | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject-%EA%B0%9D%EC%B2%B4-%EC%83%9D%EC%84%B1-%EA%B3%BC%EC%A0%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject-객체-생성-과정"
+  },"280": {
+    "doc": "UObject",
+    "title": "ObjectFlags",
+    "content": "객체의 상태를 나타내는 비트 플래그 . enum EObjectFlags { RF_Public = 0x00000001, // 에디터에 노출 여부 RF_Transactional= 0x00002000, // Undo/Redo 지원 RF_Transient = 0x00004000, // 임시 객체 (저장 안 됨) // ... 30여 가지 플래그 }; . | UObject 인스턴스는 자신만의 ObjectFlags를 보유 | UClass는 UObject의 파생 클래스이므로, UClass도 자신만의 ObjectFlags를 가짐 | . ObjectFlags 내부 구조 다이어그램 . | UObject 인스턴스의 ObjectFlags: 개별 인스턴스의 런타임 상태 제어 . | 이 객체만의 상태 플래그 | . | UClass의 ObjectFlags: 클래스 전체의 정적 특성 정의, 추상 클래스 여부, 블루프린트 노출 . | 클래스 전체에 적용되는 플래그 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#objectflags",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#objectflags"
+  },"281": {
+    "doc": "UObject",
+    "title": "서브오브젝트 시스템 (Subobject System)",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%8B%9C%EC%8A%A4%ED%85%9C-subobject-system",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-시스템-subobject-system"
+  },"282": {
+    "doc": "UObject",
+    "title": "서브오브젝트 (컴포넌트)",
+    "content": "다른 UObject (주로 AActor나 UActorComponent)에 종속된 자식 객체 . | “서브오브젝트”란 별도 클래스가 아니라, Outer 체계를 활용한 소유 관계/구조 . | ACharacter 내부의 USkeletalMeshComponent (캐릭터 메시) | UCameraComponent (플레이어 카메라) | 커스텀 로직을 가진 UMyCustomComponent | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-컴포넌트"
+  },"283": {
+    "doc": "UObject",
+    "title": "서브오브젝트의 특징",
+    "content": "| 특징 | 설명 | . | 생명주기 | 부모 종속 부모 객체가 파괴되면 함께 파괴됨 (GC 대상) | . | 생성 시점 제한 | 반드시 부모의 생성자에서 CreateDefaultSubobject()로 생성해야 함 | . | 자동 직렬화 | 부모와 함께 저장/로드됨 (에디터에서 편집 가능) | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8%EC%9D%98-%ED%8A%B9%EC%A7%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트의-특징"
+  },"284": {
+    "doc": "UObject",
+    "title": "서브오브젝트 vs UObject",
+    "content": "| 비교 항목 | 서브오브젝트 | 일반 UObject | . | 생성 방법 | CreateDefaultSubobject() | NewObject() | . | 생명주기 | 부모 종속 | 독립적 | . | 에디터 노출 | 부모의 디테일 패널에 자동 표시 | 별도 관리 필요 | . | 사용 사례 | 컴포넌트, 내부 부품 | 독립적인 데이터 에셋 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-vs-uobject",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-vs-uobject"
+  },"285": {
+    "doc": "UObject",
+    "title": "서브오브젝트 구조",
+    "content": "class UObject { protected: UObject* Outer; // 상위 객체 (서브오브젝트인 경우 소유자) FName Name; // 고유 이름 (Outer + Name으로 식별) UClass* Class; // 타입 정보 // 기타... }; . | Outer : 서브 오브젝트의 소유자 (예: USceneComponent의 Outer는 일반적으로 소유자 AActor) | Name : 같은 소유자를 가진 그룹에서 고유하게 가져야함 (중복 시 경고 발생) | 블루프린트: 에디터에서 Add Component 버튼으로 추가 가능 | AActor: Actor의 경우 추가로 Components 배열 사용 | . UClass와의 관계 . | UClass는 서브오브젝트 목록을 직접 관리하지 않음 | UPROPERTY 메타데이터를 통해 리플렉션 및 자동 탐색이 이루어짐 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EA%B5%AC%EC%A1%B0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-구조"
+  },"286": {
+    "doc": "UObject",
+    "title": "서브오브젝트 탐색 방식",
+    "content": "1. 리플렉션 기반 탐색 (UPROPERTY) . | UPROPERTY()로 표시된 멤버만 탐색 가능 UCLASS() class AMyActor : public AActor { GENERATED_BODY() public: UPROPERTY(VisibleAnywhere) UMyComponent* Comp; // 서브오브젝트는 UPROPERTY로 노출됨 }; . | . 2. Outer 체인 탐색 . | AActor가 아닌 일반 UObject 서브오브젝트를 찾을 때 사용 | . // 모든 서브오브젝트 순회 (예시 코드) TArray&lt;UObject*&gt; Subobjects; GetObjectsWithOuter(MyActor, Subobjects); // MyActor를 Outer로 가진 객체 찾기 // 결과 출력 for (UObject* Obj : Subobjects) { UE_LOG(LogTemp, Warning, TEXT(\"Subobject: %s\"), *Obj-&gt;GetName()); } . 3. AActor 특수 처리 . | AActor만 Components 배열을 명시적으로 별도 관리 | . class AActor : public UObject { TArray&lt;UActorComponent*&gt; Components; // 서브오브젝트 명시적 관리 }; // FindComponentByClass 활용 (최적화된 탐색) UMyComponent* MyComp = FindComponentByClass&lt;UMyComponent&gt;(); . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%ED%83%90%EC%83%89-%EB%B0%A9%EC%8B%9D",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-탐색-방식"
+  },"287": {
+    "doc": "UObject",
+    "title": "서브오브젝트 생성 및 과정",
+    "content": "// MyActor.h UCLASS() class AMyActor : public AActor { GENERATED_BODY() public: UPROPERTY(VisibleAnywhere) UMyComponent* MyComp; // 서브오브젝트 포인터 AMyActor() { // 생성자에서 서브오브젝트 생성 MyComp = CreateDefaultSubobject&lt;UMyComponent&gt;(TEXT(\"MyComp\")); } }; . | 생성자 호출 . | 반드시 부모 객체의 생성자 내에서 호출 . | 예외: UActorComponent는 InitializeComponent()에서 추가 초기화 | . | . | 메모리 할당 . | 엔진은 UMyComponent 인스턴스를 생성하고, Outer를 AMyActor로 설정 | . | 이름 등록 . | TEXT(“MyComp”)를 이름으로 지정, 중복 검사 수행 | . | 리플렉션 연동 . | UPROPERTY가 없어도 서브오브젝트 생성 (에디터에서 수정 불가. 블루 프린트 노출 X) | UPROPERTY가 있으면 디테일 패널에 노출 | . | Actor에 등록 . | AActor 전용으로 Actor와 연관된 오브젝트가 아닐 경우 패스됨 | AActor의 경우 Components 배열에 자동 추가 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EA%B3%BC%EC%A0%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-생성-및-과정"
+  },"288": {
+    "doc": "UObject",
+    "title": "서브오브젝트 다이어그램",
+    "content": ". | 실선: 명시적 참조 (AActor의 Components 배열) | 점선: 암시적 참조 (Outer 포인터) | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-다이어그램"
+  },"289": {
+    "doc": "Macro",
+    "title": "Macro",
+    "content": ". | 언리얼 전용 메타데이터 매크로는 코드 재사용성과 생산성을 높이기 위한 강력한 기능을 제공한다 | 함수나 변수마다 위에 매크로를 붙이지 않으면 언리얼 엔진의 리플렉션 시스템에 등록되지 않는다 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/"
+  },"290": {
+    "doc": "Macro",
+    "title": "매크로의 주요 기능",
+    "content": ". | 리플렉션 시스템 통합 : 런타임에 클래스 정보 조회 가능 | 블루프린트 연동 : C++과 블루프린트 간의 상호 운용성 제공 | 직렬화 지원 : 객체 상태 저장 및 로드 가능 | 네트워크 복제 : 멀티플레이어 게임에서 변수 및 함수 복제 | 가비지 컬렉션 : UObject 파생 클래스의 자동 메모리 관리 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#%EB%A7%A4%ED%81%AC%EB%A1%9C%EC%9D%98-%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#매크로의-주요-기능"
+  },"291": {
+    "doc": "Macro",
+    "title": "빌드 시스템과 매크로 연동",
+    "content": "1. 빌드 시스템 기본 구조 . | UBT(Unreal Build Tool) . | 모든 빌드 명령을 관리/자동화. | 각종 .Build.cs, .Target.cs 파일을 해석하여 모듈, 의존성, 플랫폼, 설정에 따라 빌드를 분기 | . | UnrealHeaderTool(UHT) . | 언리얼 리플렉션을 위해 추가적으로 동작하는 툴 | 리플렉션 매크로(UCLASS, UPROPERTY, 등)가 붙은 소스코드를 파싱 | 메타데이터와 Glue 코드(C++에선 자동 생성된 코드)를 생성 | . | . 2. 매크로와 빌드 파이프라인 . | UCLASS 등을 통해 매크로를 사용한 코드 작성 | UBT : 빌드 시작 | UHT : 헤더 파싱 &amp; Glue 코드(메타데이터) 생성 . | *.generated.h 를 반드시 #include로 포함해야 함 | 이 파일이 누락될 경우 컴파일 에러 발생 | . | C++ 컴파일러가 코드 + 자동코드 컴파일 | 런타임: 리플렉션 시스템 작동 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#%EB%B9%8C%EB%93%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C%EA%B3%BC-%EB%A7%A4%ED%81%AC%EB%A1%9C-%EC%97%B0%EB%8F%99",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#빌드-시스템과-매크로-연동"
+  },"292": {
+    "doc": "Macro",
+    "title": "UHT (UnrealHeaderTool) 의 작동 과정",
+    "content": ". | 소스 코드 스캐닝 . | UHT는 .h 헤더 파일을 파싱하여 UCLASS, USTRUCT, UFUNCTION, UPROPERTY 등의 매크로가 포함된 특수 주석을 검색 | 일반 C++ 파서와 달리, 언리얼 특수 매크로를 이해하는 커스텀 파서를 사용 | . | 메타데이터 추출 . | 매크로에 지정된 속성들(예: BlueprintCallable, EditAnywhere 등)을 분석 | 클래스 계층 구조, 프로퍼티 타입, 함수 시그니처 등의 정보를 추출 | . | 리플렉션 코드 생성 . | GENERATED_BODY() 매크로 위치에 대체될 실제 코드를 생성 | 생성되는 파일들은 주로 Intermediate/Build 폴더에 저장 | 주요 생성 파일: . | [ModuleName].generated.h | [ClassName].generated.cpp | . | . | 직렬화/리플렉션 시스템 통합 . | UObject 시스템이 런타임에 클래스 정보를 조회할 수 있도록 함 | 블루프린트와의 상호 운용을 위한 바인딩 코드를 생성 | . | . 생성되는 코드 예시 . | 원본 UCLASS(Blueprintable) class AMyActor : public AActor { GENERATED_BODY() UPROPERTY(EditAnywhere) float Health; }; . | UHT가 생성하는 코드 (간소화 된 예) | . // AMyActor.generated.h #define AMyActor_Extra_Code \\ public: \\ static UClass* StaticClass(); \\ virtual UClass* GetClass() const override; \\ static void __StaticDependenciesAssets(TArray&lt;FAssetData&gt;&amp; OutAssets); \\ private: \\ static UClass* PrivateStaticClass; \\ public: \\ DECLARE_CLASS(AMyActor, AActor, COMPILED_IN_FLAGS(0), CASTCLASS_None, TEXT(\"/Script/MyGame\"), NO_API) \\ DECLARE_REPLICATION_FRAGMENT(AMyActor) \\ enum {IsIntrinsic=COMPILED_IN_INTRINSIC}; // 리플렉션 데이터 구조체 static const FClassFunctionLinkInfo Z_Construct_UClass_AMyActor_Functions[]; static const FPropertyParamsBase* const Z_Construct_UClass_AMyActor_Properties[]; . UHT가 생성하는 정보 . | 클래스 등록용 StaticRegisterNatives | UPROPERTY 메타정보 배열 | 블루프린트용 함수 등록 | C++에서 런타임에 사용할 수 있는 메타데이터 구조체 | 에디터/런타임용 데이터 구조 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#uht-unrealheadertool-%EC%9D%98-%EC%9E%91%EB%8F%99-%EA%B3%BC%EC%A0%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#uht-unrealheadertool-의-작동-과정"
+  },"293": {
+    "doc": "Macro",
+    "title": "UHT 처리의 특징",
+    "content": ". | 템플릿 기반 코드 생성 . | 단순 복사-붙여넣기가 아닌, 템플릿을 기반으로 상황에 맞는 최적화된 코드 생성 | . | 의존성 분석 . | 클래스 간의 관계를 분석하여 올바른 초기화 순서 보장 | . | 크로스-레퍼런스 해결 . | 모듈 간 상호 참조 문제를 해결하기 위한 전방 선언(forward declaration) 생성 | . | 빌드 시스템 통합 . | 생성된 코드가 실제 컴파일 과정에 올바르게 포함되도록 Makefile/UBT 스크립트 조정 | . | 에러 체크 . | 잘못된 매크로 사용이나 충돌하는 설정을 빌드 전에 검출 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#uht-%EC%B2%98%EB%A6%AC%EC%9D%98-%ED%8A%B9%EC%A7%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#uht-처리의-특징"
+  },"294": {
+    "doc": "Macro",
+    "title": "매크로 카테고리",
+    "content": "| 카테고리 | 주요 매크로 | 용도 | . | 코어 리플렉션 | UCLASS, USTRUCT, UENUM, UPROPERTY, UFUNCTION, GENERATED_BODY | 언리얼 리플렉션 시스템 등록 | . | 네트워크 복제 | Replicated, ReplicatedUsing, DOREPLIFETIME, RPC 관련 매크로 | 멀티플레이어 게임에서 변수/함수 동기화 | . | 메모리 관리 | UPROPERTY(), UObject 관련 매크로 | 가비지 컬렉션 및 메모리 안전성 보장 | . | 에디터 연동 | EditAnywhere, VisibleDefaultsOnly, BlueprintReadOnly, Category | 에디터 노출 및 편집 제어 | . | 플랫폼 특화 | PLATFORM_WINDOWS, PLATFORM_ANDROID, WITH_EDITOR, WITH_SERVER_CODE | 플랫폼/빌드 설정별 코드 분기 | . | 디버깅/로깅 | UE_LOG, UE_CHECK, UE_ASSERT, ensure(), check() | 런타임 검증 및 로깅 | . | 성능 최적화 | UE_INLINE, UE_NOINLINE, FORCEINLINE, CORE_API | 인라인 제어 및 DLL 인터페이스 정의 | . | 메타데이터 | UMETA, DisplayName, ClampMin, ToolTip | 추가 속성 지정 | . | 모듈/플러그인 | IMPLEMENT_MODULE, IMPLEMENT_GAME_MODULE, PLUGIN_API | 모듈 초기화 및 플러그인 시스템 통합 | . | 최신 기능 | UE_DEPRECATED, UE_NODISCARD, TOptional, TSoftObjectPtr 관련 매크로 | 현대적 C++ 기능 지원 | . 참고 링크 . | 빌드 파이프라인 | . ",
+    "url": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#%EB%A7%A4%ED%81%AC%EB%A1%9C-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/Macro/#매크로-카테고리"
+  },"295": {
+    "doc": "Math",
+    "title": "Math",
+    "content": " ",
+    "url": "/docs/Math/",
+    
+    "relUrl": "/docs/Math/"
+  },"296": {
+    "doc": "Create Custom Editor Tools",
+    "title": "Create Custom Editor Tools",
+    "content": "빠른 작업 효율 향상을 위해 랜덤 배치 툴을 구현해보자 . 참고 링크 . | AssetRegistry | EditorUtilityLibrary | FMessageDialog | SNotificationList | FSlateNotificationManager | ContentBrowser | . ",
+    "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/"
+  },"297": {
+    "doc": "Computer architecture",
+    "title": "Computer architecture",
+    "content": " ",
+    "url": "/docs/Computer%20architecture/",
+    
+    "relUrl": "/docs/Computer%20architecture/"
+  },"298": {
+    "doc": "GPU Architecture",
+    "title": "GPU Architecture",
+    "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
+    "url": "/docs/Computer%20architecture/GPU%20Architecture/",
+    
+    "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
+  },"299": {
+    "doc": "Linear Algebra",
+    "title": "Linear Algebra",
+    "content": " ",
+    "url": "/docs/Math/linear%20algebra/",
+    
+    "relUrl": "/docs/Math/linear%20algebra/"
+  },"300": {
     "doc": "Material",
     "title": "Material",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"275": {
+  },"301": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
     "content": "참고하면 좋은 링크 . | UnrealEngine c++ Guide | blueprints vs c++ | Exploring Unreal’s physics framework | Unreal Engine UI Tutorials | Unreal Engine C++ API Reference | UE Classes API | . ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"276": {
+  },"302": {
     "doc": "Home",
     "title": "Home",
     "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ",
