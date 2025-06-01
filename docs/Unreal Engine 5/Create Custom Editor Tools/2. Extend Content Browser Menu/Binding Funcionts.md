@@ -177,6 +177,7 @@ AddWidget(
 
 ## 총 세번의 바인딩
 - 메뉴 엔트리 생성 위치(1차 바인딩)
+
 ```c++
 InitCBMenuExtention() {
     ContentBroswerModuleMenuExtenders.Add(FContentBrowserMenuExtender_SelectedPaths::
@@ -202,6 +203,7 @@ TSharedRef<FExtender> FBacgroundToolsModule::CustomCBMenuExtender(const TArray<F
 ```
 
 - 메뉴 항목의 모양 및 동작(2차 바인딩)
+
 ```c++
 // FMenuExtensionDelegate::CreateRaw(this, &FBacgroundToolsModule::AddCBMenuEntry));
 
@@ -218,6 +220,7 @@ void FBacgroundToolsModule::AddCBMenuEntry(FMenuBuilder& MenuBuilder)
 ```
 
 - 실제 실행할 함수(3차 바인딩)
+
 ```c++
 // FExecuteAction::CreateRaw(this, &FBacgroundToolsModule::OnDeleteUnsuedAssetButtonClicked)
 
