@@ -100,9 +100,17 @@ class SMyCustomLayout : public SCompoundWidget
 {};
 ```
 ## 2. Slate 속성 매크로(Arguments) 활용
-- SLATE_ARGUMENT: 생성 시 값 1회 전달, 복사.
-- SLATE_ATTRIBUTE: 바인딩, 값이 동적으로 변할 수 있음.
-- SLATE_EVENT: 델리게이트/함수 포인터 등 이벤트 전달.
+
+| 매크로| 역할 | 예시  |
+|---|---|---|
+| SLATE\_ARGUMENT  | “불변 값” 1회성 복사(생성자 인자)  | SLATE\_ARGUMENT(FText, Title) |
+| SLATE\_ATTRIBUTE | “동적 값”(TAttribute 바인딩) | SLATE\_ATTRIBUTE(int32, Count)  |
+| SLATE\_EVENT     | “이벤트/Delegate” (콜백 함수) | SLATE\_EVENT(FOnClicked, OnButtonClicked)|
+
+- SLATE_ARGUMENT: 위젯의 생성자(Construct)에 전달될 “불변 값” 인자
+- SLATE_ATTRIBUTE: 바인딩 가능한 동적 값(속성)
+    - TAttribute로 선언되어 외부의 값을 실시간으로 바꿀 수 있음
+- SLATE_EVENT: Slate Delegate/이벤트(함수, 람다 등 콜백)
 
 ```c++
 // CustomButtonPanel.h
@@ -161,3 +169,30 @@ void SMyCustomLayout::Construct(const FArguments& InArgs)
 ## 5. 이벤트 처리
 - 마우스/키보드 이벤트 바인딩
 - 델리게이트를 사용한 커스텀 이벤트
+
+# 언리얼 에디터 슬레이트 계층 구조
+![](../../../../images/UEEditorUILayer.png)
+
+1. 루트 레벨 (FSlateApplication)
+- 모든 슬레이트 위젯의 최상위 관리자
+  - 입력 이벤트, 렌더링 순서, 포커스 관리
+  - SMainFrame과 독립적인 팝업 창(SWindow_Standalone)을 자식으로 가짐
+
+1. 메인 프레임 (SMainFrame)
+- 에디터 메인 창 (가장 바깥 윈도우)
+  - 상속 구조: SWindow → SMainFrame
+
+1. 도킹 시스템 (SDockingArea)
+- 탭/분할 레이아웃을 관리하는 컨테이너
+- 여러 SDockTabStack(탭 묶음)을 포함하는 도킹 가능 영역
+  - SSplitter : 수직/수평 영역 분할
+  - SDockTabStack : 탭 그룹 (ex. 왼쪽/가운데/오른쪽 스택)
+  - SDockTab : 사용되는 실제 개별 패널 (ex. 콘텐츠 브라우저, 디테일 패널)
+
+1. 탭 컨텐츠 (SDockTab → SCompoundWidget)
+- 각 탭의 실제 UI 구현체
+  - 커스텀 위젯은 반드시 SCompoundWidget을 상속받아 구현
+
+1. 기본 위젯 (Leaf Nodes)
+- 최하위에 위치하는 실제 UI 요소
+  - SextBlock, SButton, SImage 등
