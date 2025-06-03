@@ -68,9 +68,10 @@ Expose(ExposedSlot&)|슬롯을 외부에서 접근할 수 있도록 노출	|모�
 - AutoHeight/AutoWidth: 해당 자식 위젯의 DesiredSize에 맞춰 영역을 할
 - FillHeight/FillWidth: 남은 공간을 지정된 가중치대로 자식들에게 분배
   - 예: FillHeight(1.0f), FillHeight(2.0f)로 지정하면 1:2 비율로 높이를 나눔
-- HAlign/VAlign: 박스 안에서 자식 위젯의 정렬을 결정
+- HAlign/VAlign : 현재 위젯/슬롯의 자식에 대한 정렬 제어
+  - 부모 레이아웃(SVerticalBox, SScrollBox 등)의 슬롯에서 설정 → 자식 위젯의 공간 배분을 결정
+  - 자식 위젯(예: STextBlock)에서 직접 설정 → 자신의 할당된 공간 내 정렬을 결정
 - Padding: 각 자식 위젯의 Slot에 여백 부여
-
 
 # FSlateFontInfo
 Slate 위젯에 텍스트 스타일 지정에 사용되는 구조체. 폰트 스타일, 크기 정보
