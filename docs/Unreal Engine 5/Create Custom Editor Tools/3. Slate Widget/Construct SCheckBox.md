@@ -69,7 +69,6 @@ SNew(SCheckBox)
 | `ToggleButton` | - 스위치 UI처럼 On/Off 시각적 효과<br>- 단일 토글용 (스마트폰의 토글 스위치와 유사)|
 
 
-
 ## .IsChecked
 체크박스의 현재 체크 상태를 반환하는 델리게이트 지정
 - Slate Tick 주기마다 IsChecked에 지정된 함수를 호출하여 UI에 표시할 상태를 동적으로 갱신
