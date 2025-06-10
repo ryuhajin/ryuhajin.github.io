@@ -133,3 +133,112 @@ TSharedRef<ITableRow> ReuseRow(TSharedPtr<ItemType> NewItem)
 1. 스크롤에 따라 Row 객체 관리
 - 화면 밖으로 나간 행은 메모리에서 삭제되지 않고 풀에 보관
 
+# SListView 에서 자주 쓰이는 메서드
+## 리스트 갱신
+## RequestListRefresh()
+다음 프레임에 리스트를 안전하게 갱신
+
+```c++
+void SListView::RequestListRefresh()
+{
+    // Invalidate만 호출하고 즉시 작업 수행 X
+    Invalidate(EInvalidateWidgetReason::Layout);
+}
+```
+
+- RebuildList()보다 성능 부하가 적음
+- 빈번한 업데이트에 적합 (예: 실시간 필터링)
+
+```c++
+ConstructedAssetListView->RequestListRefresh();
+```
+
+## 동작
+![](../../../../images/SListView-RequestListRefresh.png){: width="50%" height="50%"}
+
+## RebuildList()
+즉시 전체 리스트 재구성
+- 주의점: 대량 데이터에서 성능 저하 가능
+
+```c++
+void SListView::RebuildList()
+{
+    Private::TableViewBase::RebuildList(); // 전체 재생성 로직
+    // 모든 행을 새로 만들고 레이아웃 재계산
+}
+```
+
+## 동작
+![](../../../../images/SListView-RebuildList.png){: width="40%" height="40%"}
+
+### RebuildList() vs RequestListRefresh() 선택 가이드
+
+특징|RebuildList()	|RequestListRefresh()|
+실행 시점	|즉시	|다음 프레임|
+갱신 범위	|전체 리스트|	변경된 부분만|
+행 재사용	|모든 행 새로 생성(pool 초기화)|기존 행 유지(pool 재활용)|
+성능 영향	|항목 수에 선형적 부하|	변경량에 비례한 부하|
+사용 시나리오	|리스트 구조 변경 시|	데이터 내용 변경 시|
+
+- 여러 항목을 연속 삭제할 때 RebuildList()는 매 삭제마다 전체 재구성하므로 성능 저하 발생 가능
+- RequestListRefresh()는 변경 사항을 모아 한 번에 처리, 렌더링 프레임과 동기화되어 깜빡임 현상 감소
+
+## 네비게이션 & 스크롤 제어
+### ScrollToTop() / ScrollToBottom()
+```c++
+// 리스트의 시작/끝으로 스크롤
+ListView->ScrollToTop();
+ListView->ScrollToBottom();
+```
+
+### ScrollToItem()
+
+```c++
+// 특정 아이템으로 스크롤 (가시 영역 보장)
+ListView->ScrollToItem(SelectedItem);
+```
+
+### SetScrollOffset()
+```c++
+// 픽셀 단위 정밀 스크롤 제어
+ListView->SetScrollOffset(200.f);
+```
+
+## 선택 관리 메서드
+### SetSelection()
+```c++
+// 단일 아이템 선택
+ListView->SetSelection(SelectedItem);
+
+// 다중 선택 모드
+ListView->SetSelection(SelectedItems, ESelectInfo::OnMouseClick);
+```
+
+### ClearSelection()
+```c++
+// 모든 선택 해제
+ListView->ClearSelection();
+```
+
+### GetSelectedItems()
+```c++
+// 현재 선택된 아이템들 가져오기
+TArray<TSharedPtr<FAssetData>> SelectedItems;
+ListView->GetSelectedItems(SelectedItems);
+```
+
+## 데이터 소스 제어
+### SetItemsSource()
+```c++
+// 데이터 소스 변경 (자동 갱신 X)
+ListView->SetItemsSource(&NewDataArray);
+
+// 변경 후 수동 갱신 필요
+ListView->RequestListRefresh();
+```
+
+### GetNumItems()
+```c++
+// 아이템 총 개수 확인
+int32 ItemCount = ListView->GetNumItems();
+```
