@@ -2,7 +2,7 @@
 layout: default
 title: "Forward vs Deferred"
 parent: "Graphics rendering pipeline"
-nav_order: 2
+nav_order: 8
 ---
 
 # Forward Rendering (선행 렌더링)
