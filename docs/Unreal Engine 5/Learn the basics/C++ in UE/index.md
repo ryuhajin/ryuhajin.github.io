@@ -21,3 +21,20 @@ has_children: true
 1. 텍스트 편집기 ->  C/C++
 2. 뷰 -> 비활성 코드
 3. 비활성 블록 표시 -> False
+
+# Classes and Inheritance
+![](../../../../images/UEClassesInheritance.png){: width="70%" height="60%"}
+
+## 클래스에서 "Is A" VS "Has A"
+- Is A : 상속 관계
+  - 예 :  `a Child is a Parent`
+  - 예 :  `a Child is not a Grandchild`
+- Has A : 맴버 변수, 속성을 가지다
+  - 예: `a Package has a World` 
+  - 예: `a Level has Actors`
+
+![](../../../../images/hasARelationships.png)
+- 월드는 패키지의 서브 객체
+- 레벨은 월드의 서브 객체
+- 액터는 레벨의 서브 객체
+- 컴포넌트는 액터의 서브 객체
