@@ -10,6 +10,8 @@ github:
 
 nav_enabled: true
 
+math: katex
+
 favicon_ico: "/images/cat_yellow_bg.ico"
 
 callouts:

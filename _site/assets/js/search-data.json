@@ -3340,301 +3340,329 @@
   },"477": {
     "doc": "Math",
     "title": "Math",
-    "content": " ",
+    "content": ". ",
     "url": "/docs/Math/",
     
     "relUrl": "/docs/Math/"
   },"478": {
+    "doc": "Math",
+    "title": "연립방정식 풀이",
+    "content": " ",
+    "url": "/docs/Math/#%EC%97%B0%EB%A6%BD%EB%B0%A9%EC%A0%95%EC%8B%9D-%ED%92%80%EC%9D%B4",
+    
+    "relUrl": "/docs/Math/#연립방정식-풀이"
+  },"479": {
+    "doc": "Math",
+    "title": "Substitution Method 대입법",
+    "content": "하나의 방정식을 한 변수에 대해 정리한 후, 다른 방정식에 대입하여 해 구하기 . 예시 . \\(\\begin{cases} y = 2x + 1\\\\ 3x + 2y = 20 \\end{cases}\\) . 풀이 . 1.첫번째 식에서 y가 정리되어 있으므로 두번째 식에 대입 . \\[3x + 2(2x+1) = 20\\] 2.괄호 풀고 계산 . \\[3x + 4x + 2 = 20 \\\\ 7x + 2 = 20\\] 3.x 구하기 . \\[7x = 18 \\Rightarrow x = \\frac{18}{7}\\] 4.x를 첫번째 식에 대입해 y 구하기 . \\[y = 2 \\left ( \\frac{18}{7} \\right ) + 1 = \\frac{36}{7} + \\frac{7}{7} = \\frac{43}{7}\\] 최종 해 . \\[x = \\frac{18}{7}, \\; y = \\frac{43}{7}\\] . ",
+    "url": "/docs/Math/#substitution-method-%EB%8C%80%EC%9E%85%EB%B2%95",
+    
+    "relUrl": "/docs/Math/#substitution-method-대입법"
+  },"480": {
+    "doc": "Math",
+    "title": "Elimination Method 소거법",
+    "content": "두 방정식을 더하거나 빼서 하나의 변수를 제거한 후 해 구하기 . 예시 . \\(\\begin{cases} 2x + 3y = 12\\\\ 4x - y = 10 \\end{cases}\\) . 풀이 . 1.두번째 식 y 계수를 첫번째 식과 맞추기 위해 3을 곱하기 . \\[3 \\times 4x - y = 10 \\\\ \\Rightarrow 12x - 3y = 30\\] 2.첫번째 식과 두번째 식을 더해 y 소거 . \\[\\; 2x + 3y = 12\\\\ + 12x - 3y = 30\\\\ 14x = 42 \\\\ \\Rightarrow x = 3\\] 3.x=3을 대입해 y 구하기 . \\[4(3) - y = 10 \\\\ \\Rightarrow 12 - y = 10 \\\\\\Rightarrow y = 2\\] 최종 해 . \\[x = 3, \\; y = 2\\] . ",
+    "url": "/docs/Math/#elimination-method-%EC%86%8C%EA%B1%B0%EB%B2%95",
+    
+    "relUrl": "/docs/Math/#elimination-method-소거법"
+  },"481": {
+    "doc": "Math",
+    "title": "Graphing Method 그래프법",
+    "content": "두 방정식을 그래프로 그려 교점을 찾아 해 구하기 . | y = ax + n 기울기-절편식으로 주로 품 | . 예시 . \\[\\begin{cases} x + 3y = 12\\\\ 2x - y = 5 \\end{cases}\\] 풀이 . 1.첫번째 방정식을 기울기절편 형식으로 만들기 . \\[x - x + 3y = -x + 12 \\\\ 3y = -x + 12 \\\\\\] 2.첫번째 식 계산 . \\[\\frac{3y}{3} = -\\frac{x}{3} + \\frac{12}{3} \\\\ \\Rightarrow y = -\\frac{1}{3}x + 4\\] 3.두번째 방정식 기울기절편 형식으로 만들기 . \\[2x -2x -y = -2x + 5 \\\\ -y = -2x + 5 \\\\ \\Rightarrow y = 2x - 5\\] 4.그래프 그려서 두 선이 교차하는 점이 해 . ",
+    "url": "/docs/Math/#graphing-method-%EA%B7%B8%EB%9E%98%ED%94%84%EB%B2%95",
+    
+    "relUrl": "/docs/Math/#graphing-method-그래프법"
+  },"482": {
     "doc": "Linear Algebra",
     "title": "Linear Algebra",
     "content": " ",
     "url": "/docs/Math/linear%20algebra/",
     
     "relUrl": "/docs/Math/linear%20algebra/"
-  },"479": {
+  },"483": {
     "doc": "Computer Graphics",
     "title": "Computer Graphics",
     "content": " ",
     "url": "/docs/Computer%20Graphics/",
     
     "relUrl": "/docs/Computer%20Graphics/"
-  },"480": {
+  },"484": {
     "doc": "Graphics rendering pipeline",
     "title": "Graphics rendering pipeline",
     "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . | 참고 링크 Graphics Programming Compendium | 참고 링크 a trip through the graphics pipeline | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
-  },"481": {
+  },"485": {
     "doc": "2. Extend Content Browser Menu",
     "title": "1. Extend Content Browser Menu",
     "content": "에디터 내 Content Browser의 폴더/에셋을 우클릭할 때, “나만의 기능” 메뉴를 추가하기 . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#1-extend-content-browser-menu",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#1-extend-content-browser-menu"
-  },"482": {
+  },"486": {
     "doc": "2. Extend Content Browser Menu",
     "title": "에디터 메뉴 시스템 확장 과정",
     "content": ". | 모듈 생성 및 초기화 . | Editor 타입의 모듈 생성 (uplugin의 “Type”: “Editor”) | . | 명령(Command) 정의 . | 메뉴에 바인딩될 명령(이름, 단축키, 아이콘, 툴팁 등)을 TCommands를 상속받아 정의 | . | 실제 동작 (Action) 바인딩 . | 실제 실행할 동작을 정의 (함수 구현) 한 후 델리게이트로 바인딩 | 보통 플러그인이나 에디터 모듈의 StartupModule()에서 이루어짐 | . | 메뉴 확장(Menu Extension) 적용 . | FExtender/FMenuExtensionDelegate 를 통해 기존 메뉴 섹션에 새로운 엔트리(항목)를 추가 | 원하는 위치 (섹션명)은 엔진 문서 참고 | . | UI 적용 및 정리 . | 에디터가 종료될 때 ShutdownModule()를 통해 리소스 및 이벤트 정리 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EC%97%90%EB%94%94%ED%84%B0-%EB%A9%94%EB%89%B4-%EC%8B%9C%EC%8A%A4%ED%85%9C-%ED%99%95%EC%9E%A5-%EA%B3%BC%EC%A0%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#에디터-메뉴-시스템-확장-과정"
-  },"483": {
+  },"487": {
     "doc": "2. Extend Content Browser Menu",
     "title": "Delegate",
     "content": "이벤트 기반 프로그래밍을 구현하기 위한 강력한 시스템으로, C++의 함수 포인터나 콜백 시스템을 더 안전하고 유연하게 확장한 개념 . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#delegate",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#delegate"
-  },"484": {
+  },"488": {
     "doc": "2. Extend Content Browser Menu",
     "title": "델리게이트 특징",
     "content": ". | 타입 안전성: 컴파일 시점에 타입 검사를 수행 | 멤버 함수 바인딩: 객체 인스턴스와 함께 멤버 함수를 바인딩 가능 | 멀티캐스트 지원: 하나의 이벤트에 여러 함수를 등록 가능 | 다이나믹 델리게이트: 블루프린트와 연동 가능 | . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%ED%8A%B9%EC%A7%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-특징"
-  },"485": {
+  },"489": {
     "doc": "2. Extend Content Browser Menu",
     "title": "델리게이트 사용하기",
     "content": "Delegate 타입 선언 : 매크로 사용 . DECLARE_DELEGATE(FMyDelegate); DECLARE_DELEGATE_RetVal_OneParam(ReturnType, DelegateName, ParamType); . | ReturnType: 반환 타입 (예: int32) | DelegateName: 델리게이트 타입 이름 (예: FMyDelegateWithReturn) | ParamType: 함수에 전달될 파라미터의 타입 (예: FString) | . 바인딩 : 위에 선언한 델리게이트 타입 객체에 함수 연결 . FMyDelegate MyDelegate; // 선언(위 매크로로 정의된 타입) MyDelegate.BindRaw(this, &amp;FMyClass::Handler); . | Bind~(), Add~(), Execute(), Broadcast() 등의 멤버 함수를 사용해 연결/호출 | . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-사용하기"
-  },"486": {
+  },"490": {
     "doc": "2. Extend Content Browser Menu",
     "title": "델리게이트 종류",
     "content": "1. 단일 캐스트 델리게이트 (Single-cast Delegates) . | 하나의 함수만 바인딩 가능 | DECLARE_DELEGATE 매크로로 선언 | 반환 값이 있을 경우 DECLARE_DELEGATE_RetVal 사용 | . DECLARE_DELEGATE(FMyDelegate); // 기본 형태 DECLARE_DELEGATE_OneParam(FMyDelegateWithParam, FString); // 매개변수 하나 DECLARE_DELEGATE_RetVal_OneParam(int32, FMyDelegateWithReturn, FString); // 반환 값과 매개변수 // 사용 예 FMyDelegate MyDelegate; MyDelegate.BindUObject(this, &amp;AMyClass::MyFunction); MyDelegate.Execute(); . 2. 멀티캐스트 델리게이트 (Multi-cast Delegates) . | 여러 함수를 동시에 바인딩 가능 | DECLARE_MULTICAST_DELEGATE 매크로로 선언 | 반환 값 지원 안함 | . DECLARE_MULTICAST_DELEGATE(FMyMulticastDelegate); // 사용 예 FMyMulticastDelegate MyMulticastDelegate; MyMulticastDelegate.AddUObject(this, &amp;AMyClass::Function1); MyMulticastDelegate.AddUObject(OtherObject, &amp;AOtherClass::Function2); MyMulticastDelegate.Broadcast(); . 3. 다이나믹 델리게이트 (Dynamic Delegates) . | 블루프린트와 연동 가능 | 시리얼라이즈(직렬화) 지원 | 이름 기반 바인딩으로 런타임에 바인딩 가능 | DECLARE_DYNAMIC_DELEGATE로 선언 | . DECLARE_DYNAMIC_DELEGATE(FMyDynamicDelegate); // 사용 예 FMyDynamicDelegate MyDynamicDelegate; MyDynamicDelegate.BindDynamic(this, &amp;AMyClass::MyFunction); . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%EC%A2%85%EB%A5%98",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-종류"
-  },"487": {
+  },"491": {
     "doc": "2. Extend Content Browser Menu",
     "title": "델리게이트 바인딩 메서드",
     "content": "| 메서드 | 대상 유형 | 지원 Delegate 타입 | 자동 해제 | 용도/특징 | 주의점 | . | BindRaw | 일반 C++ 객체 | Single | X | 일반 포인터 대상, Raw C++ 객체 | 수명 관리 직접 필요 | . | AddRaw | 일반 C++ 객체 | Multi | X | 멀티캐스트 Delegate에 Raw 객체 바인딩 | 수명 관리 직접 필요 | . | BindUObject | UObject 파생 객체 | Single | O | Unreal UObject에 안전하게 바인딩 | GC 연동, 자동 해제 지원 | . | AddUObject | UObject 파생 객체 | Multi | O | 멀티캐스트 Delegate에 UObject 바인딩 | GC 연동, 자동 해제 지원 | . | BindSP | TSharedPtr 객체 | Single | O | TSharedPtr 기반 객체에 안전하게 바인딩 | WeakPtr로 자동 해제 | . | AddSP | TSharedPtr 객체 | Multi | O | 멀티캐스트 Delegate에 TSharedPtr 바인딩 | WeakPtr로 자동 해제 | . | BindLambda | 람다(익명함수) | Single | X | 임시 람다식 함수 직접 바인딩 | 캡처 객체 수명 주의 | . | AddLambda | 람다(익명함수) | Multi | X | 멀티캐스트 Delegate에 람다 함수 추가 | 캡처 객체 수명 주의 | . // Raw MyDelegate.BindRaw(this, &amp;FMyClass::Func); // this는 일반 C++ 객체 // UObject MyDelegate.BindUObject(this, &amp;UMyObject::Func); // this는 UObject 파생 클래스 // SharedPtr MyDelegate.BindSP(MySharedPtr, &amp;FMySharedClass::Func); // Lambda MyDelegate.BindLambda([](){ /* ... */ }); . ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#%EB%8D%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%EB%B0%94%EC%9D%B8%EB%94%A9-%EB%A9%94%EC%84%9C%EB%93%9C",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/#델리게이트-바인딩-메서드"
-  },"488": {
+  },"492": {
     "doc": "2. Extend Content Browser Menu",
     "title": "2. Extend Content Browser Menu",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/2.%20Extend%20Content%20Browser%20Menu/"
-  },"489": {
+  },"493": {
     "doc": "Realistic Landscapes",
     "title": "Realistic Landscapes",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Learn%20the%20basics/Realistic%20Landscapes/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Learn%20the%20basics/Realistic%20Landscapes/"
-  },"490": {
+  },"494": {
     "doc": "Learn the basics",
     "title": "Learn the basics",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Learn%20the%20basics/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Learn%20the%20basics/"
-  },"491": {
+  },"495": {
     "doc": "Computer architecture",
     "title": "Computer architecture",
     "content": " ",
     "url": "/docs/Computer%20architecture/",
     
     "relUrl": "/docs/Computer%20architecture/"
-  },"492": {
+  },"496": {
     "doc": "GPU Architecture",
     "title": "GPU Architecture",
     "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
     "url": "/docs/Computer%20architecture/GPU%20Architecture/",
     
     "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
-  },"493": {
+  },"497": {
     "doc": "C++",
     "title": "C++",
     "content": " ",
     "url": "/docs/C++/",
     
     "relUrl": "/docs/C++/"
-  },"494": {
+  },"498": {
     "doc": "C++",
     "title": "스마트 포인터",
     "content": ". | C++11부터 표준 라이브러리에 포함됨 | raw pointer보다 스마트 포인터 사용이 권장됨 | 상황에 맞는 스마트 포인터를 선택하고, 반드시 소유권 규칙을 명확히 해야 함 | . ",
     "url": "/docs/C++/#%EC%8A%A4%EB%A7%88%ED%8A%B8-%ED%8F%AC%EC%9D%B8%ED%84%B0",
     
     "relUrl": "/docs/C++/#스마트-포인터"
-  },"495": {
+  },"499": {
     "doc": "C++",
     "title": "스마트 포인터 종류",
     "content": "1. std::unique_ptr . | 단일 소유권(Exclusive ownership): 오직 하나의 포인터만 객체를 소유 | 소유자가 사라질 때(포인터 scope 종료, 소멸자 호출 등) 자동으로 자원 해제 | 복사가 금지되어 있고, 소유권 이동은 move(이동)만 허용 | 용도: 소유권 이전(transfer)이 명확하고, 참조 카운팅이 필요 없는 객체 | . #include &lt;memory&gt; void func() { std::unique_ptr&lt;int&gt; ptr1 = std::make_unique&lt;int&gt;(42); // std::unique_ptr&lt;int&gt; ptr2 = ptr1; // 컴파일 에러! 복사 불가 std::unique_ptr&lt;int&gt; ptr2 = std::move(ptr1); // 소유권 이동 } . 2. std::shared_ptr . | 공유 소유권(Shared ownership): 여러 개의 포인터가 동일한 객체를 소유 | 내부적으로 참조 카운트(reference count) 관리 . | (카운트가 0이 되면 자원 해제) | . | 용도: 여러 곳에서 동시에 객체를 소유/관리해야 할 때 | . #include &lt;memory&gt; void func() { std::shared_ptr&lt;int&gt; ptr1 = std::make_shared&lt;int&gt;(42); std::shared_ptr&lt;int&gt; ptr2 = ptr1; // 복사 가능, 참조 카운트 증가 // ptr1과 ptr2가 모두 소멸되면 메모리 해제 } . 3. std::weak_ptr . | 비소유 참조(Non-owning reference): shared_ptr로 관리되는 객체를 참조하지만, 참조 카운트에는 관여하지 않음 | 주로 순환 참조(circular reference) 방지 목적 | 용도: shared_ptr들 사이에서 서로 참조(특히 그래프, 트리 등)할 때 메모리 누수 방지 | . #include &lt;memory&gt; void func() { std::shared_ptr&lt;int&gt; shared = std::make_shared&lt;int&gt;(42); std::weak_ptr&lt;int&gt; weak = shared; // 소유권 없음, 참조 카운트 변하지 않음 if (auto locked = weak.lock()) { // shared_ptr로 잠금 가능 // 객체가 아직 살아있을 때만 접근 가능 int value = *locked; } } . 스마트 포인터의 장점 . | 자동 메모리 관리: RAII(Resource Acquisition Is Initialization) 패턴 적용 | 예외 안전성: 예외 발생 시에도 자원 누수 없음 | 명확한 소유권 모델: 객체의 라이프사이클이 코드상에서 드러남 | . 스마트 포인터의 단점 . | 순환 참조 문제: shared_ptr만 사용하면 서로를 참조하는 객체들에서 해제가 안 될 수 있음(→ weak_ptr로 해결) | 성능 오버헤드: 특히 shared_ptr의 참조 카운트 갱신 비용 | 사용법 혼동 주의: 소유권 이전/공유 규칙이 코딩 컨벤션으로 정립되어야 함 | . ",
     "url": "/docs/C++/#%EC%8A%A4%EB%A7%88%ED%8A%B8-%ED%8F%AC%EC%9D%B8%ED%84%B0-%EC%A2%85%EB%A5%98",
     
     "relUrl": "/docs/C++/#스마트-포인터-종류"
-  },"496": {
+  },"500": {
     "doc": "C++",
     "title": "람다",
     "content": ". | C++11에서 도입된 기능으로, 이름 없는 함수(익명 함수)를 만들 수 있게 해줌 | 간단한 함수 객체(functor)나 콜백(callback) 등을 즉석에서 정의 | . ",
     "url": "/docs/C++/#%EB%9E%8C%EB%8B%A4",
     
     "relUrl": "/docs/C++/#람다"
-  },"497": {
+  },"501": {
     "doc": "C++",
     "title": "기본 문법과 구조",
     "content": "람다 함수의 기본 형태 . // [캡처](매개변수) -&gt; 반환타입 { 함수본문 } [capture](parameters) -&gt; return_type { // 함수 본문 ... } // 예시 [my_mod](int v_) -&gt; int { return v_ % my_mod; } . | [capture] : 외부 변수(스코프 밖의 변수)를 람다 내부에서 사용할 때 어떻게 사용할지 지정 | (parameters) : 함수의 매개변수 목록 | -&gt; return_type : 반환 타입 (void 는 -&gt; 생략 가능 / 컴파일러가 추론) | . ",
     "url": "/docs/C++/#%EA%B8%B0%EB%B3%B8-%EB%AC%B8%EB%B2%95%EA%B3%BC-%EA%B5%AC%EC%A1%B0",
     
     "relUrl": "/docs/C++/#기본-문법과-구조"
-  },"498": {
+  },"502": {
     "doc": "C++",
     "title": "c++98 함수 객체 vs C++11 람다",
     "content": "c++98 . struct Compare { bool operator()(int a, int b) { return a &lt; b; } }; std::vector&lt;int&gt; v; std::sort(v.begin(), v.end(), Compare()); // 함수 객체 전달 . c++11 . std::vector&lt;int&gt; v; std::sort(v.begin(), v.end(), [](int a, int b) { return a &lt; b; // 람다로 간결하게 표현 }); . ",
     "url": "/docs/C++/#c98-%ED%95%A8%EC%88%98-%EA%B0%9D%EC%B2%B4-vs-c11-%EB%9E%8C%EB%8B%A4",
     
     "relUrl": "/docs/C++/#c98-함수-객체-vs-c11-람다"
-  },"499": {
+  },"503": {
     "doc": "C++",
     "title": "람다 핵심 개념 : 캡처 리스트",
     "content": "외부 변수를 람다에서 어떻게 참조할지 결정 . | 캡처 형태 | 의미 | 예시 | . | [] | 아무것도 캡처하지 않음 | []() { /* ... */ } | . | [=] | 모든 외부 변수를 값으로 복사 | [=]() { cout &lt;&lt; x; } | . | [&amp;] | 모든 외부 변수를 참조로 사용 | [&amp;]() { x = 42; } | . | [x, &amp;y] | 특정 변수 선택적 캡처 | [x, &amp;y]() { y += x; } | . [] . #include &lt;iostream&gt; int main() { int x = 10, y = 20; // 외부 변수 캡처 없음 → 오직 매개변수만 사용 가능 auto lambda = [](int a, int b) { return a + b; }; std::cout &lt;&lt; lambda(3, 5); // 출력: 8 // std::cout &lt;&lt; lambda(x, y); // ⚠️ x, y는 매개변수로 전달해야 함 } . [=] . | 원본 보존 필요시 사용 | . #include &lt;iostream&gt; int main() { int x = 10, y = 20; // 모든 외부 변수를 값으로 복사 (x, y의 복사본 사용) auto lambda = [=]() { std::cout &lt;&lt; x + y; // 출력: 30 (원본 x, y는 변경되지 않음) }; lambda(); x = 100; // 원본 수정 lambda(); // 출력: 30 (복사본은 영향 없음) } . | 람다가 생성될 때 [=]는 현재 스코프의 모든 변수 (x 등)를 값으로 복사해 저장 . | 람다 객체 내부에 int x_copy = x; 같은 복사본이 생김 | . | 람다는 항상 자신이 가진 복사본(x_copy)을 참조하므로, 원본이 변경되어도 복사본은 변하지 않음 | . [&amp;] . | 원본 제어 필요시 사용 | . #include &lt;iostream&gt; int main() { int x = 10, y = 20; // 모든 외부 변수를 참조로 캡처 (원본 직접 접근) auto lambda = [&amp;]() { x = 30; // 원본 수정 std::cout &lt;&lt; y; // 출력: 20 }; lambda(); std::cout &lt;&lt; x; // 출력: 30 (람다에서 수정된 값) } . [x, &amp;y] . | 특정 변수만 선택적으로 캡처할 때 사용 | . #include &lt;iostream&gt; int main() { int x = 10, y = 20; // x는 값으로, y는 참조로 캡처 auto lambda = [x, &amp;y]() { y += x; // y는 원본 참조 (y = 20 + 10) // x = 5; // x는 복사본이므로 수정 불가 (mutable 키워드 필요) }; lambda(); std::cout &lt;&lt; y; // 출력: 30 (원본 y 변경됨) } . 참고 링크 . | 람다(lambda) 함수 | . ",
     "url": "/docs/C++/#%EB%9E%8C%EB%8B%A4-%ED%95%B5%EC%8B%AC-%EA%B0%9C%EB%85%90--%EC%BA%A1%EC%B2%98-%EB%A6%AC%EC%8A%A4%ED%8A%B8",
     
     "relUrl": "/docs/C++/#람다-핵심-개념--캡처-리스트"
-  },"500": {
+  },"504": {
     "doc": "C++",
     "title": "아래부터 나중에 추가 정리해야 할 것",
     "content": ". 언리얼 엔진5의 스마트 포인터 UE5는 C++ 표준 라이브러리와의 호환성 문제(예: 모듈 경계, 플랫폼별 동작 차이)로 자체 스마트 포인터를 제공합니다. (1) TSharedPtr&lt;&gt; C++의 std::shared_ptr&lt;&gt;과 유사하지만 UE5 전용 최적화가 적용됨. 관리 대상: UObject를 상속받지 않은 일반 C++ 클래스. 특징: . 참조 카운팅 + 스레드 안전성 지원. TWeakPtr&lt;&gt;으로 약한 참조 가능. MakeShared&lt;&gt;()로 생성 최적화. (2) TUniquePtr&lt;&gt; C++의 std::unique_ptr&lt;&gt;과 거의 동일하지만 UE5 메모리 할당자와 통합됨. 관리 대상: UObject가 아닌 객체. 특징: . 복사 불가능, 이동만 가능. MakeUnique&lt;&gt;()로 생성. (3) FObjectPtr (UE5+) UObject 전용으로 설계된 경량 포인터. C++ 표준과 무관하며, UE5의 가비지 컬렉션 시스템과 연동됩니다. 특징: . UObject의 안전한 참조를 위해 사용 (예: 크로스-스레드 접근 방지). TSharedPtr&lt;&gt;과 달리 참조 카운팅 없이 엔진 내부에서 관리. | C++ vs UE5 스마트 포인터 비교 기능 C++ (std) UE5 차이점 공유 소유권 std::shared_ptr&lt;&gt; TSharedPtr&lt;&gt; UE5는 스레드 안전성 강화. 독점 소유권 std::unique_ptr&lt;&gt; TUniquePtr&lt;&gt; UE5는 할당자 통합. 약한 참조 std::weak_ptr&lt;&gt; TWeakPtr&lt;&gt; 동일한 개념. 가비지 컬렉션 없음 FObjectPtr UObject 전용. 생성 방법 std::make_shared&lt;&gt; MakeShared&lt;&gt; UE5는 커스텀 메모리 풀 사용 가능. | . ",
     "url": "/docs/C++/#%EC%95%84%EB%9E%98%EB%B6%80%ED%84%B0-%EB%82%98%EC%A4%91%EC%97%90-%EC%B6%94%EA%B0%80-%EC%A0%95%EB%A6%AC%ED%95%B4%EC%95%BC-%ED%95%A0-%EA%B2%83",
     
     "relUrl": "/docs/C++/#아래부터-나중에-추가-정리해야-할-것"
-  },"501": {
+  },"505": {
     "doc": "Material",
     "title": "Material",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"502": {
+  },"506": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
     "content": "참고하면 좋은 링크 . | UnrealEngine c++ Guide | blueprints vs c++ | Exploring Unreal’s physics framework | Unreal Engine UI Tutorials | Unreal Engine C++ API Reference | UE Classes API | . ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"503": {
+  },"507": {
     "doc": "Unreal Engine 5",
     "title": "Coordinate System",
     "content": "UE 좌표계는 왼손 좌표계 기준 . | 축 | 방향 | + | - | . | X | 깊이 | 앞(카메라와 멀어짐) | 뒤 (카메라와 가까워짐) | . | Y | 측면 | 오른쪽 | 왼쪽 | . | Z | 높이 | 위 | 아래 | . 참고하면 좋은 링크 . | coordinate-system | Coordinate System and Spaces | . ",
     "url": "/docs/Unreal%20Engine%205/#coordinate-system",
     
     "relUrl": "/docs/Unreal%20Engine%205/#coordinate-system"
-  },"504": {
+  },"508": {
     "doc": "Unreal Engine 5",
     "title": "Level Editor Viewport",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/#level-editor-viewport",
     
     "relUrl": "/docs/Unreal%20Engine%205/#level-editor-viewport"
-  },"505": {
+  },"509": {
     "doc": "Unreal Engine 5",
     "title": "카메라 동작",
     "content": ". | 우측 카메라 아이콘으로 속도 조절 가능 . | 왼쪽 클릭 : 카메라 수평 이동 | 오른쪽 클릭 : 카메라 상하 이동 | 왼쪽 클릭 + C : 줌인 (확대) | 클릭 + WASD : 카메라 이동 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%B9%B4%EB%A9%94%EB%9D%BC-%EB%8F%99%EC%9E%91",
     
     "relUrl": "/docs/Unreal%20Engine%205/#카메라-동작"
-  },"506": {
+  },"510": {
     "doc": "Unreal Engine 5",
     "title": "View Modes",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/#view-modes",
     
     "relUrl": "/docs/Unreal%20Engine%205/#view-modes"
-  },"507": {
+  },"511": {
     "doc": "Unreal Engine 5",
     "title": "Show",
     "content": "왼쪽 Show (표시)를 이용해 레벨에서 보고 싶은 에셋 플래그 on/off 설정 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#show",
     
     "relUrl": "/docs/Unreal%20Engine%205/#show"
-  },"508": {
+  },"512": {
     "doc": "Unreal Engine 5",
     "title": "Lit",
     "content": "레벨 라이팅 설정 on/off, 와이어 프레임 등 여러가지 설정 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#lit",
     
     "relUrl": "/docs/Unreal%20Engine%205/#lit"
-  },"509": {
+  },"513": {
     "doc": "Unreal Engine 5",
     "title": "perspective",
     "content": "카메라 원근 설정. 직교 투영으로 오브젝트트 배치 편하게 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#perspective",
     
     "relUrl": "/docs/Unreal%20Engine%205/#perspective"
-  },"510": {
+  },"514": {
     "doc": "Unreal Engine 5",
     "title": "맨 우측 화면 분할 아이콘",
     "content": "4개의 개별 뷰포트로 분할 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#%EB%A7%A8-%EC%9A%B0%EC%B8%A1-%ED%99%94%EB%A9%B4-%EB%B6%84%ED%95%A0-%EC%95%84%EC%9D%B4%EC%BD%98",
     
     "relUrl": "/docs/Unreal%20Engine%205/#맨-우측-화면-분할-아이콘"
-  },"511": {
+  },"515": {
     "doc": "Unreal Engine 5",
     "title": "맨 좌측 리스트 아이콘",
     "content": ". | Show FPS 로 프레임 보기 가능 . | ctrl + shift + H | . | Bookmarks 를 통해 시점 저장, 불러오기 가능 . | ctrl + 0 ~ 9 으로 북마크 저장 | 키보드 0 ~ 9 으로 저장한 북마크 불러오기 | . | 게임 뷰 . | 단축키 : G | 아이콘 사라짐 | . | 몰입 모드 . | 단축키 : F11 | 화면 크게 | . | 고해상도 스크린샷 . | 우측 상단 캡처 지정 아이콘 클릭 -&gt; 캡처 사각형 지정 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EB%A7%A8-%EC%A2%8C%EC%B8%A1-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%95%84%EC%9D%B4%EC%BD%98",
     
     "relUrl": "/docs/Unreal%20Engine%205/#맨-좌측-리스트-아이콘"
-  },"512": {
+  },"516": {
     "doc": "Unreal Engine 5",
     "title": "Object manipulate 오브젝트 조종",
     "content": ". | 오브젝트 선택 . | 단축키 : Q | . | 오브젝트 움직이기 (기즈모 사용) . | 단축키 : W | . | 오브젝트 회전 . | 단축키 : E | . | 오브젝트 스케일 조절 . | 단축키 : R | . | . ",
     "url": "/docs/Unreal%20Engine%205/#object-manipulate-%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%A1%B0%EC%A2%85",
     
     "relUrl": "/docs/Unreal%20Engine%205/#object-manipulate-오브젝트-조종"
-  },"513": {
+  },"517": {
     "doc": "Unreal Engine 5",
     "title": "스냅",
     "content": "스냅 유무를 아이콘을 통해 on/off. 스냅에 쓸 단위도 조절 가능 . | 그리드 아이콘 : 오브젝트 이동 스냅 | 각도 아이콘 : 오브젝트 회전 각도 스냅 | 스케일 아이콘 : 오브젝트 스케일 스냅 | 표면 스냅 아이콘 : 오브젝트 가져올 때 표면에 어떻게 놓을 것인지 설정 . | on/off로 표면에 딱 붙일 것인지 설정 | 오프셋으로 표면에서 얼마나 떨어트릴 것인지 설정 | 언리얼 엔진의 1 unit = 1cm | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%8A%A4%EB%83%85",
     
     "relUrl": "/docs/Unreal%20Engine%205/#스냅"
-  },"514": {
+  },"518": {
     "doc": "Unreal Engine 5",
     "title": "좌표",
     "content": "오브젝트 조종 옆에 있는 아이콘을 통해 어떤 좌표를 사용할 것인지 조절 가능 . | 단축키 : ctrl + ` | 세계 좌표에 있는 경우 세계 아이콘 표시 | 로컬 좌표에 있는 경우 로컬 아이콘 표시 | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%A2%8C%ED%91%9C",
     
     "relUrl": "/docs/Unreal%20Engine%205/#좌표"
-  },"515": {
+  },"519": {
     "doc": "Unreal Engine 5",
     "title": "오브젝트 복사",
     "content": ". | Alt + 기즈모 이동을 통해 복사 | 여러개 복사하고 싶으면 shift로 오브젝트 다중 선택 후 Alt + 기즈모 이동 . | 회전도 복사 가능 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EB%B3%B5%EC%82%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/#오브젝트-복사"
-  },"516": {
+  },"520": {
     "doc": "Unreal Engine 5",
     "title": "Panels 패널",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/#panels-%ED%8C%A8%EB%84%90",
     
     "relUrl": "/docs/Unreal%20Engine%205/#panels-패널"
-  },"517": {
+  },"521": {
     "doc": "Unreal Engine 5",
     "title": "Outliner",
     "content": "world에 있는 모든 오브젝트 목록 . | 아웃라이너에서 오브젝트 이름으로 오브젝트 찾기 가능 | 아웃라이너에서 오브젝트 이름 누른 뒤 F 키를 통해 오브젝트로 이동 | . ",
     "url": "/docs/Unreal%20Engine%205/#outliner",
     
     "relUrl": "/docs/Unreal%20Engine%205/#outliner"
-  },"518": {
+  },"522": {
     "doc": "Unreal Engine 5",
     "title": "Details",
     "content": "선택한 오브젝트 속성 변경 . | Location : 월드 좌표에서의 오브젝트 위치 | Physics . | Simulate physics : 체크 박스에 체크하면 물리학 활성화 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#details",
     
     "relUrl": "/docs/Unreal%20Engine%205/#details"
-  },"519": {
+  },"523": {
     "doc": "Home",
     "title": "Home",
-    "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ",
+    "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ✨2025-06-22 . | LaTex 기호 적용 | . ",
     "url": "/",
     
     "relUrl": "/"
