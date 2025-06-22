@@ -6,6 +6,29 @@ has_children: true
 ---
 # Unreal Engine 5
 
+**참고하면 좋은 링크**
+- [UnrealEngine c++ Guide](https://www.tomlooman.com/unreal-engine-cpp-guide/)
+- [blueprints vs c++](https://awforsythe.com/unreal/blueprints_vs_cpp/)
+- [Exploring Unreal's physics framework](https://itscai.us/blog/post/ue-physics-framework/)
+- [Unreal Engine UI Tutorials](https://unreal-garden.com/)
+- [Unreal Engine C++ API Reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/API)
+- [UE Classes API](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Classes)
+
+---
+
+# Coordinate System
+UE 좌표계는 왼손 좌표계 기준
+
+|축|방향|+|-|
+|X|깊이 |앞(카메라와 멀어짐)| 뒤 (카메라와 가까워짐)|
+|Y|측면 |오른쪽|왼쪽|
+|Z|높이 |위|아래|
+
+**참고하면 좋은 링크**
+- [coordinate-system](https://techarthub.com/a-practical-guide-to-unreal-engines-coordinate-system/)
+- [Coordinate System and Spaces](https://dev.epicgames.com/documentation/en-us/unreal-engine/coordinate-system-and-spaces-in-unreal-engine)
+
+
 # Level Editor Viewport
 
 ## 카메라 동작
@@ -88,11 +111,3 @@ world에 있는 모든 오브젝트 목록
 1. Location : 월드 좌표에서의 오브젝트 위치
 2. Physics
     - Simulate physics : 체크 박스에 체크하면 물리학 활성화
-
-**참고하면 좋은 링크**
-- [UnrealEngine c++ Guide](https://www.tomlooman.com/unreal-engine-cpp-guide/)
-- [blueprints vs c++](https://awforsythe.com/unreal/blueprints_vs_cpp/)
-- [Exploring Unreal's physics framework](https://itscai.us/blog/post/ue-physics-framework/)
-- [Unreal Engine UI Tutorials](https://unreal-garden.com/)
-- [Unreal Engine C++ API Reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/API)
-- [UE Classes API](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Classes)
