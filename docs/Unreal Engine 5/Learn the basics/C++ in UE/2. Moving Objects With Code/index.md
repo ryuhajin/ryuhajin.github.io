@@ -3,6 +3,7 @@ layout: default
 title: "2. Moving Objects With Code"
 parent: "C++ in UE"
 nav_order: 3
+has_children: true
 ---
 
 # 2. Moving Objects With Code
