@@ -6,7 +6,7 @@ nav_order: 2
 ---
 
 # Exposing Variables to Blueprint
-블루프린트에 클래스 변수 노출시키기
+클래스 변수 블루프린트에 노출시키기
 
 ## 사용 예시
 - `UPROPERTY` 매크로 사용
