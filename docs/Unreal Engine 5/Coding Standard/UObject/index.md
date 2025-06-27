@@ -167,31 +167,25 @@ enum EObjectFlags {
 - **UClass의 ObjectFlags**: 클래스 전체의 **정적 특성** 정의, 추상 클래스 여부, 블루프린트 노출
   - 클래스 전체에 적용되는 플래그
 
+---
 # 서브오브젝트 시스템 (Subobject System)
-## 서브오브젝트 (컴포넌트)
 **다른 UObject (주로 AActor나 UActorComponent)에 종속된 자식 객체**
 - “서브오브젝트”란 별도 클래스가 아니라, Outer 체계를 활용한 소유 관계/구조
+- 모든 컴포넌트는 서브오브젝트임
 
-- ACharacter 내부의 USkeletalMeshComponent (캐릭터 메시)
-- UCameraComponent (플레이어 카메라)
-- 커스텀 로직을 가진 UMyCustomComponent
-  
 ## 서브오브젝트의 특징
+- 생명주기 : 부모 종속 / 부모 객체가 파괴되면 함께 파괴됨 (GC 대상)
+- 생성 시점 제한 : 반드시 부모의 생성자에서 `CreateDefaultSubobject<T>()`로 생성해야 함
+- 자동 직렬화 : 부모와 함께 저장/로드됨 (에디터에서 편집 가능)
 
-특징|설명|
-|---|---|
-생명주기 |부모 종속	<br> 부모 객체가 파괴되면 함께 파괴됨 (GC 대상)|
-생성 시점 제한|반드시 부모의 생성자에서 `CreateDefaultSubobject()`로 생성해야 함|
-자동 직렬화|부모와 함께 저장/로드됨 (에디터에서 편집 가능)|
-
-## 서브오브젝트 vs UObject
+## Suboject vs UObject
 
 비교 항목	|서브오브젝트	|일반 UObject|
 ---|---|---|
-생성 방법|	CreateDefaultSubobject()|NewObject()|
-생명주기|부모 종속|독립적|
-에디터 노출|부모의 디테일 패널에 자동 표시|별도 관리 필요|
-사용 사례	|컴포넌트, 내부 부품 | 독립적인 데이터 에셋|
+생성 방법|`CreateDefaultSubobject<T>()` (생성자 내에서만 호출 가능)|`NewObject<T>()` (런타임 어디서나 가능)|
+생명주기|부모 종속(부모 삭제 시 함께 삭제)|독립적|
+에디터 노출|부모의 디테일 패널에 자동 표시|별도 에셋 또는 인스턴스로 관리|
+사용 사례	|액터의 컴포넌트(Mesh, Camera 등) | 독립적인 데이터 에셋|
 
 ## 서브오브젝트 구조
 ```c++

@@ -9,7 +9,7 @@ nav_order: 3
 클래스 함수 블루 프린트에 노출 시키기
 
 ## 사용 예시
-- `UFUNCIONT` 매크로 사용
+- `UFUNCTION` 매크로 사용
     - C++ 함수에 UFUNCTION 매크로 + 특정 Specifier를 붙이면 블루프린트에서 호출하거나, 이벤트/오버라이드/멀티캐스트 등 다양한 방식으로 사용할 수 있음
 
 ```c++
@@ -33,14 +33,14 @@ public:
 };
 ```
 
----
-
+# UFUNCIONT()
 ## Specifiers 정리
 
-- BlueprintCallable: 블루프린트에서 노드로 호출 가능
-- BlueprintPure: 순수 함수. 값만 반환함
-- BlueprintImplementableEvent: 함수의 구현을 블루프린트에서 작성
-- BlueprintNativeEvent: C++ 기본 구현 + 블루프린트에서 오버라이드 가능
+속성|설명|	예시|
+BlueprintCallable|	블루프린트에서 노드로 호출 가능	|UFUNCTION(BlueprintCallable)|
+BlueprintPure	|순수 함수. 값만 반환함	|UFUNCTION(BlueprintPure)|
+BlueprintImplementableEvent|함수의 구현을 블루프린트에서 작성 (C++ 구현 없음)|	UFUNCTION(BlueprintImplementableEvent)|
+BlueprintNativeEvent| C++ 기본 구현 + 블루프린트에서 오버라이드 가능	|UFUNCTION(BlueprintNativeEvent)|
 
 ## BlueprintCallable
 - 블루프린트의 함수 노드로 직접 호출 가능
