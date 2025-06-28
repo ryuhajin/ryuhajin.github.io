@@ -69,6 +69,15 @@ AItem::AItem()
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
 	RootComponent = ItemMesh;
 }
+
+// 혹은 바로 루트 컴포넌트로 설정 가능 2
+AItem::AItem()
+{
+	PrimaryActorTick.bCanEverTick = true;
+
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
+	SetRootComponent(ItemMesh);
+}
 ```
 
 - MyActor()의 생성자는 CDO 생성 때 한 번만 실행됨
