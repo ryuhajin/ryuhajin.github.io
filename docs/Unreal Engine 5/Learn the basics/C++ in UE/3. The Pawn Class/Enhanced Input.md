@@ -2,7 +2,7 @@
 layout: default
 title: "Enhanced Input"
 parent: "3. The Pawn Class"
-nav_order: 3
+nav_order: 4
 ---
 
 # Enhanced Input (UE 5.1)
@@ -149,3 +149,6 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
         }
     }
     ```
+
+**참고하면 좋은 링크**
+- [doc - enhanced-input](https://dev.epicgames.com/documentation/en-us/unreal-engine/enhanced-input-in-unreal-engine?application_version=5.0)
