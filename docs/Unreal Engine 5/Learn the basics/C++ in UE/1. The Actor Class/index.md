@@ -7,6 +7,8 @@ has_children: true
 ---
 
 # 1. The Actor Class
+월드에 배치되는 독립적 객체
+
 ---
 
 ## 클래스 생성

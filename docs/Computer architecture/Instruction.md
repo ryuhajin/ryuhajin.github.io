@@ -97,6 +97,109 @@ LOAD R1, 1000(R2)
 3. 메모리 접근
     - 예: `LOAD R1, 1000(20)` → R1 = 메모리[1020] (즉, A[5]의 값)
 
+---
+
+# Types of Instructions (명령어 종류)
+## Data Transfer Instructions 
+- 데이터 전송 명령어
+- 입출력 명령어가 포함됨
+
+| 전송명령어 | 니모닉  | 기 능|
+| Load  | LD| 기억장치로부터 레지스터로 전송  |
+| Store | ST| 레지스터로부터 기억장치로의 전송 |
+| Move  | MOVE | 레지스터로부터 다른 레지스터로의 전송 |
+| Exchange | XCH  | 두 레지스터 또는 한 레지스터와 기억장치 간의 데이터 교환 |
+| Push  | PUSH | 레지스터의 값을 스택에 저장|
+| Pop| POP  | 스택에서 레지스터로 값 복원|
+| Input | IN| 입출력장치로부터 레지스터로 데이터 전송|
+| Output| OUT  | 레지스터와 입출력장치 간의 데이터 전송|
+
+
+# Data Processing Instructions
+- 데이터 처리 명령어
+- 데이터에 대한 연산을 실행하고 계산함
+
+## 	Arithmetic Instructions
+- 산술 명령어
+
+| 산술 명령어   | 니모닉  | 기 능 |
+| Increment| INC  | 1 증가|
+| Decrement| DEC  | 1 감소|
+| Add| ADD  | 덧셈  |
+| Subtract | SUB  | 뺄셈  |
+| Multiply | MUL  | 곱셈  |
+| Divide   | DIV  | 나눗셈 |
+| Add with carry | ADDC | 캐리 포함한 덧셈 |
+| Subtract with borrow | SUBB | 빌림 포함한 뺄셈 |
+| Negate   | NEG  | 2의 보수     |
+
+
+## Logical Instructions
+- 논리비트 명령어
+- 레지스터나 기억장치에 저장된 데이터에 2진 연산
+
+| 논리 명령어| 니모닉  | 기 능 |
+| Clear  | CLR  | 모든 비트를 0으로 리셋 |
+| Set    | SET  | 모든 비트를 1로 셋   |
+| Complement  | COM  | 오퍼랜드에 저장된 모든 비트값 반전 |
+| AND    | AND  | 비트별 AND 연산    |
+| OR| OR   | 비트별 OR 연산|
+| Exclusive-OR| XOR  | 비트별 XOR 연산    |
+| Clear carry | CLRC | 캐리 비트 리셋 |
+| Set carry   | SETC | 캐리 비트 셋  |
+| Complement carry | COMC | 연산 결과에서 발생하는 캐리 비트만 반전  |
+
+## Shift Instructions
+- 시프트 명령어
+- logical : 비트열을 단순히 왼쪽 또는 오른쪽으로 밈
+  - 비어지는 자리는 항상 0 으로 채움
+  - **부호 비트도 이동**
+- Arithmetic : 부호 비트(MSB)를 유지하면서 나머지 비트만 이동
+  - 오른쪽 시프트의 경우 부호 비트는 원래 값 유지
+  - 왼쪽 시프트의 경우 부호 비트까지 움직임 (비는 자리는 0으로 채움)
+-  Rotate :  비트열을 밀 때, 밀려나간 비트가 반대쪽 끝으로 다시 들어감
+- Rotate with carry : 밀려나간 비트는 캐리 플래그로 이동
+  - 캐리 플래그의 값은 오퍼랜드의 반대편 끝에 들어옴
+
+| 시프트 명령어 | 니모닉  | 기 능   |
+| Logical shift left  | SHL  | 논리적 왼쪽 시프트(빈 비트는 0으로 채움)  |
+| Logical shift right | SHR  | 논리적 오른쪽 시프트(빈 비트는 0으로 채움) |
+| Arithmetic shift left   | SAL  | 산술적 왼쪽 시프트|
+| Arithmetic shift right  | SAR  | 산술적 오른쪽 시프트   |
+| Rotate left | ROL  | 비트를 왼쪽으로 순환   |
+| Rotate right| ROR  | 비트를 오른쪽으로 순환  |
+| Rotate left with carry  | ROLC | 캐리 비트 포함 왼쪽 순환|
+| Rotate right with carry | RORC | 캐리 비트 포함 오른쪽 순환   |
+
+### 시프트 예시
+```markdown
+로테이트 오른쪽 시프트의 경우
+- 원래 값:   1 0 1 1  1 0 0 1
+- 시프트 :   1 1 0 1  1 1 0 0
+
+로데이트 캐리 왼쪽 시프트의 경우
+- 캐리 플래그: C = 1
+- 레지스터: 0 1 0 1 1 0 1 0
+
+1.가장 왼쪽 비트(0)가 캐리로 이동
+    - 새 캐리 : 0
+2.기존 캐리(1)가 오른쪽 끝(LSB)으로 들어감
+    - 레지스터 : 1 0 1 1 0 1 0 **1** <- 캐리에서 온 1 추가
+```  
+
+## Control Flow Instructions
+- 프로그램 제어 명령어
+- 다른 프로그램의 세그먼트로 분기
+
+| 프로그램 제어 명령어  | 니모닉    | 기 능     |
+| Branch| BR| 조건 혹은 무조건적으로 유효 주소로 분기|
+| Jump   | JMP    |  조건 혹은 무조건적으로 유효 주소로 분기 |
+|Skip next instruction|SKP|조건이 만족되면 다음 명령어를 수행하지 않고 넘어감|
+| Call   | CALL   | 서브루틴 호출 |
+| Return | RET    | 서브루틴에서 복귀   |
+|Compare(by subtrction)|CMP|두 오퍼랜드의 뺄셈을 통해 상태 레지스터의 값을 반환|
+
+---
 # Instruction Set Architecture
 CPU가 이해하는 명령어의 집합으로, 주요 유형은 아래와 같다
 
@@ -113,3 +216,5 @@ CPU가 이해하는 명령어의 집합으로, 주요 유형은 아래와 같다
 MIPS	|1981, 스탠포드 대학|	RISC|	임베디드, 라우터, PS1/2|	쇠퇴, 일부 임베디드/네트워크에 잔존|
 x86	|1978, 인텔	|CISC	|PC, 서버, 산업용|	PC/서버 시장 지배, 저전력은 약세|
 ARM	|1985, 영국 Acorn	|RISC|	모바일, IoT, 임베디드|	모바일/임베디드 압도, PC/서버 확대|
+
+## 나중에 아키텍처 별 명령어 집합 유형 추가하기

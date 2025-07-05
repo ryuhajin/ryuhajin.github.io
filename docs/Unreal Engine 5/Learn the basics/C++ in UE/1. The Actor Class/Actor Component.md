@@ -34,14 +34,31 @@ UObject (최상위 베이스 클래스)
 ## UActorComponent
 가장 기본적인 컴포넌트로, 논리적 기능만 제공
 
+> 액터 컴포넌트는 액터에 추가하여 동작을 확장할 수 있다
+
 **사용 사례**
-- 데이터 저장
+- 데이터 관리
 - 타이머 기반 로직
 - 네트워크 동기화가 필요한 기능
 
 **특징**
 - 변환(Transform) 정보 없음
 - 렌더링 기능 없음
+
+```c++
+// UHealthComponent.h
+UCLASS()
+class UHealthComponent : public UActorComponent
+{
+    GENERATED_BODY()
+    
+    UPROPERTY(EditDefaultsOnly)
+    float MaxHealth = 100.0f;
+    
+    UFUNCTION()
+    void TakeDamage(float Damage);
+};
+```
 
 ## USceneComponent
 위치, 회전, 스케일 정보를 가짐
