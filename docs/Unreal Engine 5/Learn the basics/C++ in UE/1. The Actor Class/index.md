@@ -89,3 +89,7 @@ FVector AActor::GetActorForwardVector() const;
 4. 만들 종류로 헤더 파일 선택 -> 헤더 이름 정하기
 5. 헤더가 들어갈 폴더 지정해주기
    - 예: `사용자 모듈\Source\사용자 모듈 이름`
+
+
+**참고하면 좋은 링크**
+- [Actor Lifecycle](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-actor-lifecycle?application_version=5.5)
