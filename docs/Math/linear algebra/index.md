@@ -115,3 +115,8 @@ $$
 4 & 5 & 6
 \end{pmatrix}
 $$
+
+---
+
+**참고하면 좋은 링크**
+- [선형대수 1: 벡터 공간과 열 공간](https://ai.plainenglish.io/linear-algebra-1-vector-spaces-and-the-columnspace-8c7c61943549)
