@@ -4,3 +4,15 @@
   {% when "katex" %}
     {% include katex.html %}
 {% endcase %}
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const origin = window.location.origin;
+  document.querySelectorAll('a[href^="http"]').forEach(a => {
+    if (!a.href.startsWith(origin)) {
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener');
+    }
+  });
+});
+</script>
