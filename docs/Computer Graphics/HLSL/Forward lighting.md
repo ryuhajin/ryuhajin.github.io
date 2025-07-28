@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "3. Forward lighting"
+title: "Forward lighting"
 parent: "HLSL"
-nav_order: 4
+nav_order: 10
 ---
 
 # 1. Forward lighting
