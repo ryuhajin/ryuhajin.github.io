@@ -4936,312 +4936,354 @@
   },"705": {
     "doc": "HLSL",
     "title": "High-Level Shading Language (HLSL)",
-    "content": "쉐이더 프로그래밍은 그래픽 렌더링 파이프라인에서 특정 단계를 처리하는 작은 프로그램을 작성하는 것이다 . | 정점 쉐이더(Vertex Shader, VS) : 3D 모델 정점 → 클립 공간 변환 | 테셀레이션 (세 개의 서브 스테이지로 구성됨) . | Hull Shader (HS) : 분할 팩터·패치 상수 계산 | Tessellator (Fixed) : 하드웨어 세분화 | Domain Shader (DS) : 세분화된 점 위치 계산 | . | 기하 쉐이더(Geometry Shader, GS) : 기하학적 도형 (프리미티브) 생성, 변형 / 스트림 출력 | 픽셀 쉐이더(Pixel Shader, PS), 프래그먼트 쉐이더 : 픽셀 색, 머티리얼 계산 | 컴퓨트 쉐이더(Compute Shader, CS) : Dispatch 호출 기반 범용 병렬 작업 | . ",
+    "content": "쉐이더 프로그래밍은 그래픽 렌더링 파이프라인에서 특정 단계를 프로그래밍하는 기술이다 . 각각의 쉐이더는 GPU에서 병렬로 실행되는 작은 프로그램이다 . ",
     "url": "/docs/Computer%20Graphics/HLSL/#high-level-shading-language-hlsl",
     
     "relUrl": "/docs/Computer%20Graphics/HLSL/#high-level-shading-language-hlsl"
   },"706": {
     "doc": "HLSL",
+    "title": "쉐이더 종류",
+    "content": ". | 정점 쉐이더 (Vertex Shader, VS) . | 입력: 3D 모델의 개별 정점 데이터 (위치, 색상, 노멀, 텍스처 좌표 등) | 역할: 정점의 위치를 모델 공간에서 클립 공간으로 변환 (필수 출력: SV_POSITION) | 출력: 변환된 정점 위치와 픽셀 쉐이더로 전달할 데이터 (보간될 값) | . | 테셀레이션 (Tessellation): 높은 디테일의 메시를 동적으로 생성 . | Hull Shader (HS): 패치(patch)의 분할 수준(tessellation factor)과 패치별 상수를 계산 | Tessellator (Fixed-Function): HS가 지정한 분할 수준에 따라 하드웨어에서 정점을 세분화 | Domain Shader (DS): 세분화된 각 점의 최종 위치를 계산 | . | 기하 쉐이더 (Geometry Shader, GS) . | 입력: 프리미티브(점, 선, 삼각형) 단위의 정점 데이터 | 역할: 프리미티브를 생성, 수정 또는 제거(예: 파티클 생성, 실루엣 렌더링) | 출력: 하나 이상의 프리미티브를 스트림으로 출력 | . | 픽셀 쉐이더 (Pixel Shader, PS / Fragment Shader) . | 입력: 래스터라이저에 의해 생성된 픽셀 조각(fragment)과 VS에서 보간된 데이터 | 역할: 각 픽셀의 최종 색상을 계산 (예: 텍스처 샘플링, 조명 계산) | 출력: 최종 픽셀 색상 (SV_Target) | . | 컴퓨트 쉐이더 (Compute Shader, CS) . | 역할: 렌더링 파이프라인과 독립적으로 범용 병렬 계산(GPGPU)을 수행 | Dispatch 호출로 실행 | . | . ",
+    "url": "/docs/Computer%20Graphics/HLSL/#%EC%89%90%EC%9D%B4%EB%8D%94-%EC%A2%85%EB%A5%98",
+    
+    "relUrl": "/docs/Computer%20Graphics/HLSL/#쉐이더-종류"
+  },"707": {
+    "doc": "HLSL",
     "title": "쉐이더 프로젝트 구조",
-    "content": "MyGame/ ├─ Assets/ │ └─ Textures/ … ├─ Shaders/ │ ├─ Common.hlsli // 공통 상수·구조체 │ ├─ BasicVS.hlsl // 정점 쉐이더 │ ├─ BasicPS.hlsl // 픽셀 쉐이더 │ ├─ Lighting.hlsli // 라이트 계산 공통 함수 │ └─ PostProcess/ │ └─ BloomCS.hlsl ├─ Src/ │ ├─ Renderer.cpp // D3D 초기화·리소스 관리 │ └─ ShaderManager.cpp // 컴파일·캐시·Hot-Reload └─ BuildScripts/ // fxc/dxc 오프라인 컴파일 배치 . | .hlsli : 여러 쉐이더 간 공유되는 struct, 함수, 매크로 정의 | .cso : 빌드 단계에서 생성되는 컴파일 결과물(바이트 코드) | ShaderManager : 런타임에서 .cso를 읽어 Create*Shader 호출 . | 개발 중에는 파일 타임스탬프를 보고 Hot Reload 지원 | . | . ",
+    "content": "MyGame/ ├─ Assets/ │ └─ Textures/ … ├─ Shaders/ │ ├─ Common.hlsli // 공통 상수·구조체 │ ├─ BasicVS.hlsl // 정점 쉐이더 │ ├─ BasicPS.hlsl // 픽셀 쉐이더 │ ├─ Lighting.hlsli // 라이트 계산 공통 함수 │ └─ PostProcess/ │ └─ BloomCS.hlsl ├─ Src/ │ ├─ Renderer.cpp // D3D 초기화·리소스 관리 │ └─ ShaderManager.cpp // 컴파일·캐시·Hot-Reload └─ BuildScripts/ // fxc/dxc 오프라인 컴파일 배치 . | .hlsli : 여러 쉐이더 간 공유되는 struct, 함수, 매크로를 정의하는 헤더 파일 | .cso : 빌드 단계에서 생성되는 컴파일된 쉐이더 바이트 코드 | ShaderManager : 런타임에서 .cso를 읽어 CreateVertexShader, CreatePixelShader 등의 D3D 함수를 호출하여 쉐이더 객체를 생성 . | 개발 중에는 파일 타임스탬프를 감지하여 핫 리로딩(Hot Reloading)을 지원 | . | . ",
     "url": "/docs/Computer%20Graphics/HLSL/#%EC%89%90%EC%9D%B4%EB%8D%94-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B5%AC%EC%A1%B0",
     
     "relUrl": "/docs/Computer%20Graphics/HLSL/#쉐이더-프로젝트-구조"
-  },"707": {
+  },"708": {
     "doc": "HLSL",
     "title": "GPU와 CPU의 역할 분담 및 쉐이더 실행 흐름 이해",
-    "content": "CPU (애플리케이션) . | 자원(리소스) 준비 . | 정점 버퍼(Vertex Buffer), 인덱스 버퍼(Index Buffer) 생성 및 데이터 채우기 | 텍스처, 상수 버퍼(Constant Buffer) 준비 | 쉐이더 코드 컴파일 (D3DCompileFromFile() 등 사용) | . | 상태 설정 . | 입력 레이아웃(Input Layout) 정의 | 렌더링 파이프라인 상태 설정 (깊이 버퍼, 블렌딩 등) | 쉐이더 프로그램 바인딩 | . | 명령 내리기 . | 드로우 콜(Draw Call) 실행 (Draw(), DrawIndexed() 등) | 리소스 업데이트 명령 전달 | . | . GPU . | 파이프라인 실행 . | CPU가 전달한 명령을 비동기적으로 처리 | 모든 쉐이더 단계 병렬 실행 | . | 정점 처리 -&gt; 테셀레이션 -&gt; 기하 처리 -&gt; 래스터화 -&gt; 픽셀 처리 | . | 데이터 병렬 처리 . | 수천 개의 코어에서 동시에 쉐이더 프로그램 실행 | 정점/픽셀 별로 독립적 처리 | . | . 그림으로 보는 흐름 . CPU GPU ┌──────────────┐ bytecode ┌─────────────────┐ │ HLSL compile │────────────▶│ Driver/µ-code │ └──────────────┘ └─────────────────┘ ▲ │ Create*│Shader (once) ▼ │ ┌─────────────────┐ │ Bind VS/PS (n번) │ Command Buffer │ └────────────────────▶ │ /Cmd Processor │ └─────────────────┘ │ Shader cores 실행 . | 쉐이더 소스코드를 컴파일 하여 쉐이더 생성 함수를 호출하고 나면 GPU에 업로드 된다 | 이후 Draw 를 호출하면 쉐이더 핸들 (쉐이더 포인터)로 쉐이더를 불러 GPU에서 계산을 한다 | . 참고 링크 . | The Book of Shaders | Processing | DirectX Tutorial | . ",
+    "content": " ",
     "url": "/docs/Computer%20Graphics/HLSL/#gpu%EC%99%80-cpu%EC%9D%98-%EC%97%AD%ED%95%A0-%EB%B6%84%EB%8B%B4-%EB%B0%8F-%EC%89%90%EC%9D%B4%EB%8D%94-%EC%8B%A4%ED%96%89-%ED%9D%90%EB%A6%84-%EC%9D%B4%ED%95%B4",
     
     "relUrl": "/docs/Computer%20Graphics/HLSL/#gpu와-cpu의-역할-분담-및-쉐이더-실행-흐름-이해"
-  },"708": {
+  },"709": {
+    "doc": "HLSL",
+    "title": "CPU (애플리케이션)",
+    "content": ". | 리소스 생성 및 관리: . | 버퍼 생성: 정점 버퍼(Vertex Buffer), 인덱스 버퍼(Index Buffer), 상수 버퍼(Constant Buffer) 등을 생성하고 데이터를 채움 | 텍스처 로딩: 텍스처 파일을 읽어 GPU 메모리에 텍스처 리소스를 생성 | 쉐이더 컴파일: D3DCompileFromFile과 같은 함수를 사용해 HLSL 코드를 바이트 코드로 컴파일 | . | 파이프라인 상태 설정 (Pipeline State Objects, PSOs): . | 입력 레이아웃 (Input Layout): 정점 버퍼의 데이터 구조가 VS의 입력 시그니처와 어떻게 매핑되는지 정의 | 쉐이더 바인딩: VSSetShader, PSSetShader 등으로 각 파이프라인 단계에 사용할 쉐이더를 설정 | 리소스 뷰 바인딩: PSSetShaderResources (SRV), OMSetRenderTargets (RTV) 등으로 쉐이더가 접근할 리소스 뷰를 바인딩 | 기타 상태 설정: 래스터라이저 상태(culling, fill mode), 블렌드 상태, 깊이/스텐실 상태 등을 설정 | . | 렌더링 명령 (Draw Calls): . | 상수 버퍼 업데이트: UpdateSubresource 또는 Map/Unmap을 통해 월드/뷰/프로젝션 행렬과 같은 데이터를 상수 버퍼에 업데이트 | 드로우 콜: DrawIndexed 또는 Draw를 호출하여 GPU에 렌더링 작업을 명령 | 이 명령은 커맨드 버퍼에 기록됨 | . | . ",
+    "url": "/docs/Computer%20Graphics/HLSL/#cpu-%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98",
+    
+    "relUrl": "/docs/Computer%20Graphics/HLSL/#cpu-애플리케이션"
+  },"710": {
+    "doc": "HLSL",
+    "title": "GPU",
+    "content": ". | 커맨드 버퍼 처리: CPU가 보낸 명령들을 비동기적으로 처리 | 파이프라인 실행: . | 입력 조립기 (Input Assembler): 정점/인덱스 버퍼에서 데이터를 읽어 프리미티브를 조립 | 정점 쉐이더 (VS): 각 정점을 처리 | (테셀레이션/기하 쉐이더): (활성화된 경우) 실행 | 래스터라이저 (Rasterizer): 프리미티브를 픽셀 조각(fragment)으로 변환 | 픽셀 쉐이더 (PS): 각 픽셀 조각의 색상을 계산 | 출력 병합기 (Output Merger): 픽셀 쉐이더의 결과를 렌더 타겟 뷰(RTV)에 쓰고, 깊이/스텐실 테스트를 수행 | . | . ",
+    "url": "/docs/Computer%20Graphics/HLSL/#gpu",
+    
+    "relUrl": "/docs/Computer%20Graphics/HLSL/#gpu"
+  },"711": {
+    "doc": "HLSL",
+    "title": "초기화 단계 (보통 로딩 시 한 번)",
+    "content": ". | 쉐이더를 컴파일해서 GPU에 올리는 과정 | . | 파일 읽기 및 컴파일 (CPU) . | D3DCompileFromFile() 같은 함수로 .hlsl 쉐이더 소스 코드를 읽어 바이트 코드(Bytecode)로 컴파일 | 이 바이트 코드는 아직 CPU의 메모리에 있음 | . | 쉐이더 객체 생성 (CPU -&gt; GPU) . | CreateVertexShader(), CreatePixelShader() 같은 함수 호출 | 이 함수들은 컴파일된 바이트 코드를 GPU 드라이버에 전달 | . | GPU 메모리에 저장 . | 드라이버는 이 바이트 코드를 받아서 GPU가 직접 실행할 수 있는 형태로 변환하고 GPU 메모리의 특정 공간에 저장 | . | 핸들(Handle) 반환 . | GPU는 쉐이더를 가리키는 일종의 ‘포인터’ 또는 ‘참조 ID’를 CPU에게 돌려줌 (예: ID3D11VertexShader* 객체) | CPU는 무거운 바이트 코드 덩어리 대신, 이 가벼운 핸들(포인터)를 가지고 쉐이더를 제어 | . | . ",
+    "url": "/docs/Computer%20Graphics/HLSL/#%EC%B4%88%EA%B8%B0%ED%99%94-%EB%8B%A8%EA%B3%84-%EB%B3%B4%ED%86%B5-%EB%A1%9C%EB%94%A9-%EC%8B%9C-%ED%95%9C-%EB%B2%88",
+    
+    "relUrl": "/docs/Computer%20Graphics/HLSL/#초기화-단계-보통-로딩-시-한-번"
+  },"712": {
+    "doc": "HLSL",
+    "title": "렌더링 루프 단계 (매 프레임 반복)",
+    "content": ". | 매 프레임마다 오브젝트를 그릴 때 일어나는 과정 | . | 파이프라인 상태 설정 (State Binding) . | Draw()를 호출하기 전에, CPU는 DirectX API를 통해 GPU에게 “이번에 그림을 그릴 때 사용할 도구들은 이것들이야” 라고 미리 알림 (인풋 레이아웃 설정 / 버퍼 설정) . | IASetInputLayout(…): “정점 데이터는 이런 형식으로 들어올 거야.” | IASetVertexBuffers(…): “정점 데이터는 저기 있는 버퍼에서 가져다 써.” | VSSetShader(…), PSSetShader(…): “이번 그리기에 쓸 정점 쉐이더는 아까 만들어 둔 A번 쉐이더(핸들)고, 픽셀 쉐이더는 B번 쉐이더(핸들)야.” | PSSetShaderResources(…): “픽셀 쉐이더가 쓸 텍스처는 저기 있는 C번 텍스처야.” | VSSetConstantBuffers(…): “월드/뷰/프로젝션 행렬 같은 데이터는 저기 D번 상수 버퍼에서 가져다 써.” | . | . | 그리기 명령 (Draw Call) . | 모든 설정이 끝나면, CPU는 마침내 DrawIndexed() 또는 Draw()를 호출 | 이 호출의 의미는 “GPU 너가 일할 차례야. 방금 내가 세팅해 준 그 상태 그대로, 정점 3,000개 그려!” 라는 ‘실행 트리거’ | . | . ",
+    "url": "/docs/Computer%20Graphics/HLSL/#%EB%A0%8C%EB%8D%94%EB%A7%81-%EB%A3%A8%ED%94%84-%EB%8B%A8%EA%B3%84-%EB%A7%A4-%ED%94%84%EB%A0%88%EC%9E%84-%EB%B0%98%EB%B3%B5",
+    
+    "relUrl": "/docs/Computer%20Graphics/HLSL/#렌더링-루프-단계-매-프레임-반복"
+  },"713": {
+    "doc": "HLSL",
+    "title": "GPU의 작업 실행",
+    "content": ". | 명령 수신 . | GPU는 CPU로부터 Draw 명령을 받음 | . | 상태 확인 . | GPU는 현재 파이프라인에 바인딩된 쉐이더, 버퍼, 텍스처 등을 확인 | . | 계산 수행 . | 바인딩된 정점 버퍼에서 데이터를 가져와, 바인딩된 정점 쉐이더(의 바이트 코드)를 실행하여 정점들을 변환 | 그리고 이어서 픽셀 쉐이더 등 나머지 파이프라인 단계를 실행하여 최종 픽셀 색상을 계산 | . | . 참고 링크 . | The Book of Shaders | Processing | DirectX Tutorial | . ",
+    "url": "/docs/Computer%20Graphics/HLSL/#gpu%EC%9D%98-%EC%9E%91%EC%97%85-%EC%8B%A4%ED%96%89",
+    
+    "relUrl": "/docs/Computer%20Graphics/HLSL/#gpu의-작업-실행"
+  },"714": {
     "doc": "HLSL",
     "title": "HLSL",
     "content": " ",
     "url": "/docs/Computer%20Graphics/HLSL/",
     
     "relUrl": "/docs/Computer%20Graphics/HLSL/"
-  },"709": {
+  },"715": {
     "doc": "Graphics rendering pipeline",
     "title": "Graphics rendering pipeline",
     "content": "3D 좌표로 표현된 기하학적 객체의 장면을 2D 디스플레이에 렌더링하는 데 필요한 일련의 단계 . 참고 링크 . | Graphics Programming Compendium | a trip through the graphics pipeline | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/"
-  },"710": {
+  },"716": {
     "doc": "Graphics rendering pipeline",
     "title": "아핀 변환",
     "content": ". | 선형 변환(Linear Transformation)과 평행 이동(Translation)을 결합한 변환 | 기하학적 특성 보존: . | 직선성 유지 (직선 → 직선) | 평행성 유지 (평행선 → 평행선) | 중심점 보존 (무게중심 보존) | . | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#%EC%95%84%ED%95%80-%EB%B3%80%ED%99%98",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#아핀-변환"
-  },"711": {
+  },"717": {
     "doc": "Graphics rendering pipeline",
     "title": "주요 변환 유형",
     "content": "| 변환 유형 | 설명 | 특징 | . | 이동(Translation) | 객체 위치 변경 | 방향/크기 불변 | . | 회전(Rotation) | 각도 θ만큼 회전 | 거리 보존 | . | 크기 변환(Scaling) | 축별 크기 조정 | \\(s_x, s_y\\) 배율 | . | 대칭(Reflection) | 축에 대한 반사 | 행렬식 = -1 | . | 전단(Shear) | 층밀림 효과 | 각도 변화 | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#%EC%A3%BC%EC%9A%94-%EB%B3%80%ED%99%98-%EC%9C%A0%ED%98%95",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#주요-변환-유형"
-  },"712": {
+  },"718": {
     "doc": "Graphics rendering pipeline",
     "title": "정의",
     "content": ". \\[\\vec{y} = A\\vec{x} + \\vec{b}\\] . | A : 선형 변환을 나타내는 행렬 | \\(\\vec{b}\\) : 평행이동(translation) 벡터 | \\(\\vec{x}\\) : 입력 벡터 (좌표) | \\(\\vec{y}\\) : 변환된 출력 벡터 | . \\[\\begin{aligned} \\begin{bmatrix} x' \\\\ y' \\end{bmatrix} &amp;= \\begin{bmatrix} a &amp; b \\\\ c &amp; d \\end{bmatrix} \\begin{bmatrix} x \\\\ y \\end{bmatrix} + \\begin{bmatrix} e \\\\ f \\end{bmatrix} \\\\ &amp;= \\begin{bmatrix} a x + b y + e \\\\ c x + d y + f \\end{bmatrix} \\end{aligned}\\] . | \\(\\begin{bmatrix} a &amp; b \\\\ c &amp; d \\end{bmatrix}\\) : 선형 변환을 나타내는 행렬 (아핀 변환 행렬) | \\(\\begin{bmatrix} x \\\\ y \\end{bmatrix}\\) : 입력 벡터 | \\(\\begin{bmatrix} e \\\\ f \\end{bmatrix}\\) : 평행 이동 벡터 | \\(\\begin{bmatrix} x' \\\\ y' \\end{bmatrix}\\) : 변환된 출력 벡터 | . 참고하면 좋은 링크 . | 아핀 변환 | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#%EC%A0%95%EC%9D%98",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#정의"
-  },"713": {
+  },"719": {
     "doc": "Graphics rendering pipeline",
     "title": "homogeneous coordinates (동차 좌표)",
     "content": ". | 아핀변환을 행렬 곱셈 하나로 표현하기 위해 도입된 확장 좌표계 | n차원 공간의 점을 n+1차원 공간의 벡터로 확장하여 표현하는 방식 | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#homogeneous-coordinates-%EB%8F%99%EC%B0%A8-%EC%A2%8C%ED%91%9C",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#homogeneous-coordinates-동차-좌표"
-  },"714": {
+  },"720": {
     "doc": "Graphics rendering pipeline",
     "title": "동차좌표가 필요한 이유",
     "content": ". | 문제점 : 기존의 2×2 행렬 곱셈 만으로는 이동(translation) 변환을 행렬 곱셈으로 표현할 수 없다 | . \\[\\begin{bmatrix} x' \\\\ y' \\end{bmatrix} = \\begin{bmatrix} a &amp; b \\\\ c &amp; d \\end{bmatrix} \\begin{bmatrix} x \\\\ y \\end{bmatrix}\\] . | 이동 변환을 (예 : \\(x' = x + t_x, \\ y' = y + t_y\\)) 위 수식으로 표현 불가 | . | 따라서 좌표를 한 차원 올려 3차원 벡터 (x,y,1)로 보고 | 3×3 행렬 곱셈으로 이동/회전/스케일/전단 등을 한 번에 처리 | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#%EB%8F%99%EC%B0%A8%EC%A2%8C%ED%91%9C%EA%B0%80-%ED%95%84%EC%9A%94%ED%95%9C-%EC%9D%B4%EC%9C%A0",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#동차좌표가-필요한-이유"
-  },"715": {
+  },"721": {
     "doc": "Graphics rendering pipeline",
     "title": "동차 좌표에서 점(Point) vs 방향 벡터(Direction)",
     "content": "w의 값에 따라 점이냐 벡터냐를 알 수 있다 . | 기하학적 의미 차이 | . | 구분 | 동차좌표 표현 | 의미 | w 성분 | . | 점 | (x,y,1) | 공간의 특정 위치 | w = 1 | . | 방향 벡터 | (x,y,0) | 크기와 방향만 가짐 (위치 없음) | w = 0 | . | 점 : “어디에 있는가?” → 위치 정보 포함 | . \\[\\text{예: } (3, 4, 1) = \\text{좌표 (3,4)}\\] . | 방향 벡터 : “어느 방향인가?” → 이동 가능성만 표현 | . \\[\\text{예: } (1, -2, 0) = \\text{오른쪽+아래 방향}\\] . 아핀 변환의 동차좌표 표현 (2D) . \\[T = \\begin{bmatrix} A &amp; \\mathbf{b} \\\\ \\mathbf{0}^T &amp; 1 \\end{bmatrix} = \\begin{bmatrix} a_{11} &amp; a_{12} &amp; b_{1} \\\\ a_{21} &amp; a_{22} &amp; b_{2} \\\\ 0 &amp; 0 &amp; 1 \\end{bmatrix}\\] . | \\(T\\) : \\(\\ \\vec{y} = A\\vec{x} + \\vec{b}\\) 꼴을 동차좌표계에서 표현한 아핀 변환 행렬 | \\(A \\in \\mathbb{R}^{2\\times2}\\) : 회전, 스케일, 전단, 대칭 등 선형 변환 | \\(\\mathbf{b} \\in \\mathbb{R}^{2}\\) : 이동(translation) 벡터 | \\(\\mathbf{0}^T = [0\\;0]\\) : 이동을 w성분으로 제어하기 위해 필요한 마지막 행 | . 점(Point) vs 방향 벡터(Direction) . | 점(point): \\((x, y, 1)^T\\) | 방향 벡터(direction): \\((v_x, v_y, 0)^T\\) | . 점에 적용: . \\[T \\begin{bmatrix} x \\\\ y \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} A\\begin{bmatrix}x \\\\ y\\end{bmatrix} + \\mathbf{b} \\\\ 1 \\end{bmatrix}\\] 방향 벡터에 적용: . \\[T \\begin{bmatrix} v_x \\\\ v_y \\\\ 0 \\end{bmatrix} = \\begin{bmatrix} A\\begin{bmatrix}v_x \\\\ v_y\\end{bmatrix} \\\\ 0 \\end{bmatrix}\\] 핵심: 동일한 행렬 (T)를 써도, (w=1)이면 이동이 적용되고 (w=0)이면 이동이 자동으로 사라짐 . 예시 1: 순수 이동 . \\[T_{\\text{trans}} = \\begin{bmatrix} 1 &amp; 0 &amp; t_x \\\\ 0 &amp; 1 &amp; t_y \\\\ 0 &amp; 0 &amp; 1 \\end{bmatrix}\\] 점: . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} x + t_x \\\\ y + t_y \\\\ 1 \\end{bmatrix}\\] 방향 벡터: . \\[\\begin{bmatrix} v_x' \\\\ v_y' \\\\ 0 \\end{bmatrix} = \\begin{bmatrix} v_x \\\\ v_y \\\\ 0 \\end{bmatrix}\\] . 예시 2: 순수 회전(원점 기준) . \\[R(\\theta) = \\begin{bmatrix} \\cos\\theta &amp; -\\sin\\theta &amp; 0 \\\\ \\sin\\theta &amp; \\cos\\theta &amp; 0 \\\\ 0 &amp; 0 &amp; 1 \\end{bmatrix}\\] 점: . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} x\\cos\\theta - y\\sin\\theta \\\\ x\\sin\\theta + y\\cos\\theta \\\\ 1 \\end{bmatrix}\\] 방향 벡터: . \\[\\begin{bmatrix} v_x' \\\\ v_y' \\\\ 0 \\end{bmatrix} = \\begin{bmatrix} v_x\\cos\\theta - v_y\\sin\\theta \\\\ v_x\\sin\\theta + v_y\\cos\\theta \\\\ 0 \\end{bmatrix}\\] . 예시 3: 임의의 점 (p_0=(p_x,p_y)) 주변 회전 . \\[T = T_{+p_0} \\; R(\\theta) \\; T_{-p_0}\\] . | 여기서 (T_{\\pm p_0})는 평행이동 행렬 | 결과 행렬의 (\\mathbf{b}\\neq 0): 점에는 이동+회전, 방향 벡터에는 회전만 적용 | . 물리적 해석 . | 점과 점 빼기 → 방향벡터 생성 | . \\[(x_2,y_2,1) - (x_1,y_1,1) = (x_2-x_1, y_2-y_1, 0)\\] . | 점 + 방향벡터 → 새로운 점 | . \\[(x,y,1) + (a,b,0) = (x+a, y+b, 1)\\] . 실제 적용 사례 . 3D 그래픽스에서 활용되는 예시 . | 점 : 객체의 월드 좌표 위치 | . \\[\\text{예: 삼각형의 꼭짓점 } (x,y,z,1)\\] . | 방향벡터 : 빛의 방향/법선 벡터 | . \\[\\text{예: 조명 방향 } (dx,dy,dz,0)\\] 방향벡터를 w=1로 설정하면 이동 변환 시 의도치 않은 왜곡이 발생한다 . ❓ 동차좌표에서 점과 방향 벡터를 왜 구분해야 해? . | 변환의 물리적 정확성: 이동 변환 시 방향은 불변해야 함 | 기하학적 연산의 명확성: 점-벡터 연산 규칙 보장 (예: 점 - 점 = 벡터) | 렌더링 시스템의 안정성: 3D 엔진에서 광원, 법선 등 방향성 데이터 오염 방지 | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#%EB%8F%99%EC%B0%A8-%EC%A2%8C%ED%91%9C%EC%97%90%EC%84%9C-%EC%A0%90point-vs-%EB%B0%A9%ED%96%A5-%EB%B2%A1%ED%84%B0direction",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#동차-좌표에서-점point-vs-방향-벡터direction"
-  },"716": {
+  },"722": {
     "doc": "Graphics rendering pipeline",
     "title": "아핀변환의 동차좌표 표현",
     "content": ". | 2D 예시 | . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} a &amp; b &amp; e \\\\ c &amp; d &amp; f \\\\ 0 &amp; 0 &amp; 1 \\end{bmatrix} \\begin{bmatrix} x \\\\ y \\\\ 1 \\end{bmatrix}\\] . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#%EC%95%84%ED%95%80%EB%B3%80%ED%99%98%EC%9D%98-%EB%8F%99%EC%B0%A8%EC%A2%8C%ED%91%9C-%ED%91%9C%ED%98%84",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#아핀변환의-동차좌표-표현"
-  },"717": {
+  },"723": {
     "doc": "Graphics rendering pipeline",
     "title": "아핀변환 예시",
     "content": ". | 평행 이동(Translation) : x축으로 \\(t_x\\), y축으로 \\(t_y\\) 만큼 이동 | . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} 1 &amp; 0 &amp; t_x \\\\ 0 &amp; 1 &amp; t_y \\\\ 0 &amp; 0 &amp; 1 \\end{bmatrix} \\begin{bmatrix} x \\\\ y \\\\ 1 \\end{bmatrix}\\] . \\[\\begin{bmatrix} 1 &amp; 0 &amp; t_x \\\\ 0 &amp; 1 &amp; t_y \\\\ 0 &amp; 0 &amp; 1 \\end{bmatrix} \\begin{bmatrix} x \\\\ y \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} x+t_x \\\\ y+t_y \\\\ 1 \\end{bmatrix}\\] . | 회전 (Rotation) : 원점을 중심으로 \\(\\theta\\) 만큼 회전 | . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} \\cos\\theta &amp; -\\sin\\theta &amp; 0 \\\\ \\sin\\theta &amp; \\cos\\theta &amp; 0 \\\\ 0 &amp; 0 &amp; 1 \\end{bmatrix} \\begin{bmatrix} x \\\\ y \\\\ 1 \\end{bmatrix}\\] . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} x\\cosθ - y\\sinθ \\\\ x\\sinθ + y\\cosθ \\\\ 1 \\end{bmatrix}\\] . | 크기 조절 (Scaling) : x축으로 \\(s_x\\) 배, y축으로 \\(s_y\\) 배 확대/축소 | . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} s_x &amp; 0 &amp; 0 \\\\ 0 &amp; s_y &amp; 0 \\\\ 0 &amp; 0 &amp; 1 \\end{bmatrix} \\begin{bmatrix} x \\\\ y \\\\ 1 \\end{bmatrix}\\] . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} s_x x \\\\ s_y y \\\\ 1 \\end{bmatrix}\\] . | 전단(Shear) : x축 방향으로 k만큼 전단 | . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} 1 &amp; k &amp; 0 \\\\ 0 &amp; 1 &amp; 0 \\\\ 0 &amp; 0 &amp; 1 \\end{bmatrix} \\begin{bmatrix} x \\\\ y \\\\ 1 \\end{bmatrix}\\] . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} x + k y \\\\ y \\\\ 1 \\end{bmatrix}\\] . | 대칭(Reflection) : x축에 대한 대칭 | . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} 1 &amp; 0 &amp; 0 \\\\ 0 &amp; -1 &amp; 0 \\\\ 0 &amp; 0 &amp; 1 \\end{bmatrix} \\begin{bmatrix} x \\\\ y \\\\ 1 \\end{bmatrix}\\] . \\[\\begin{bmatrix} x' \\\\ y' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} x \\\\ - y \\\\ 1 \\end{bmatrix}\\] . | 아핀변환 조합 : 여러 아핀변환을 연속적으로 적용할 때는 행렬을 곱하여 하나의 변환 행렬로 결합 가능 . | 열벡터 기준 오른쪽의 \\(T_1\\) 이 먼저 적용 | . | . \\[T_{\\text{total}} = T_n \\cdots T_2 T_1\\] . 참고하면 좋은 링크 . | 동차 좌표계 | 렌더링 파이프라인에서 왜 동차 좌표계를 쓸까 | . ",
     "url": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#%EC%95%84%ED%95%80%EB%B3%80%ED%99%98-%EC%98%88%EC%8B%9C",
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#아핀변환-예시"
-  },"718": {
+  },"724": {
     "doc": "Realistic Landscapes",
     "title": "Realistic Landscapes",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Learn%20the%20basics/Realistic%20Landscapes/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Learn%20the%20basics/Realistic%20Landscapes/"
-  },"719": {
+  },"725": {
     "doc": "Learn the basics",
     "title": "Learn the basics",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Learn%20the%20basics/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Learn%20the%20basics/"
-  },"720": {
+  },"726": {
     "doc": "Computer architecture",
     "title": "Computer architecture",
     "content": ". | SRISHTI:Computer Architecture | . ",
     "url": "/docs/Computer%20architecture/",
     
     "relUrl": "/docs/Computer%20architecture/"
-  },"721": {
+  },"727": {
     "doc": "GPU Architecture",
     "title": "GPU Architecture",
     "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
     "url": "/docs/Computer%20architecture/GPU%20Architecture/",
     
     "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
-  },"722": {
+  },"728": {
     "doc": "Coding Standard",
     "title": "Coding Standard",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/"
-  },"723": {
+  },"729": {
     "doc": "Coding Standard",
     "title": "저작권 고지",
     "content": "배포하는 모든 소스 파일(.h, .cpp, .xaml 등)에는 파일의 첫 줄에 반드시 다음과 같은 저작권 공지가 포함되어야 한다. // Copyright Epic Games, Inc. All Rights Reserved. 해당 줄이 없거나 형식이 다르면 오류 -&gt; 빌드 실패 처리됨 . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A0%80%EC%9E%91%EA%B6%8C-%EA%B3%A0%EC%A7%80",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#저작권-고지"
-  },"724": {
+  },"730": {
     "doc": "Coding Standard",
     "title": "클래스 구성",
     "content": "클래스는 읽는 사람을 우선으로 구성해야 한다. 대부분 클래스를 읽는 사람들은 public 인터페이스를 사용한다. 따라서 클래스는 . | public | protected | private | . 순으로 작성한다. ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EA%B5%AC%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-구성"
-  },"725": {
+  },"731": {
     "doc": "Coding Standard",
     "title": "클래스 접두사",
     "content": "언리얼 엔진의 클래스에는 접두사가 있다. 해당 접두사를 알고있으면 어떤 클래스에서 파생됐는지 알 수 있다. | 접두사 | 클래스 | 예시 | . | A | AActor | AActor, APawn, AGameMode | . | U | UObject | UTexture, UBlueprintFunctionLibrary | . | S | SWidget | SButton, Swidget | . | F | 사용자 구조체 | FVector, FHitResult | . | I | 추상 인터페이스 | IInterface | . | T | 템플릿 클래스 | TArray&lt;T&gt;, TMap&lt;&lt;T&gt; | . | E | Enum 타입 | EGAmeState | . | G | globals 전역변수 | GEngine | . | b | Boolean 변수 | bHasFadedIn, bDied | . 사용예시 . typedef TArray&lt;FMytype&gt; FArrayOfMyTypes; . typedef에는 해당 타입에 적합한 문자가 접두사로 붙어야 한다. 위 예시는 사용자 구조체 타입을 받는 템플릿 클래스다. ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%A0%91%EB%91%90%EC%82%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-접두사"
-  },"726": {
+  },"732": {
     "doc": "Coding Standard",
     "title": "네이밍 규칙",
     "content": ". | 단어 사이에 언더스코어(_) 를 사용하지 않는다 | 단어의 첫 글자는 대문자로 표기한다 . | 예: MouseCoordinates (o), delta_x (x) | . | 타입명에는 추가로 대문자 접두사를 붙여 변수명과 구분한다 . | 예: FSkin (타입), Skin (FSkin 타입의 인스턴스) | . | 모든 변수는 한줄씩 선언한다 | 반환값이 있는 함수는 이름만으로 반환값을 명확히 한다 . | O: bool IsTeaFresh(FTea Tea) True 의미 명확 | X: bool CheckTea(FTea Tea) 어떤걸 반환할지 의미 불명확 | . | 반환값이 없는 절차 함수는 강한 동사+목적어 형식 . | 메서드의 목적어가 자기 자신이면 (맴버 함수) 생략 가능 | Handle, Process 등 모호한 동사 피하기 | . | bool 반환 함수는 항상 Yes/No 질문 형태를 취한다 . | IsVisible(), ShouldClearBuffer() | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EB%84%A4%EC%9D%B4%EB%B0%8D-%EA%B7%9C%EC%B9%99",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#네이밍-규칙"
-  },"727": {
+  },"733": {
     "doc": "Coding Standard",
     "title": "Const 정확성",
     "content": ". | 함수 인자가 함수 내에서 변경되지 않는다면, const pointer 또는 const reference로 전달 | 객체를 변경하지 않는 메서드는 const로 명시 | 컨테이너를 수정하지 않는 반복문은 const 반복자 사용 | . 사용예시 . void SomeMutatingOperation(FThing&amp; OutResult, const TArray&lt;Int32&gt;&amp; InArray) { // InArray는 수정되지 않음, OutResult는 아마 수정될것임 } void FThing::SomeNonMutatingOperation() const { // 이 코드는 FThing을 변경하지 않음 } TArray&lt;FString&gt; StringArray; for (const FString&amp; : StringArray) { // 반복문 내부에서 StringArray를 수정하지 않음 } . | 반환 타입에 const 사용 금지 (컴파일 경고 발생) . | 단 const 레퍼런스, 포인터 반환은 허용 | . | . // 좋은 예시 - const 참조 반환 const TArray&lt;FString&gt;&amp; GetSomeArray(); // 좋은 예시 - const 포인터 반환 const TArray&lt;FString&gt;* GetSomeArray(); // 나쁜 예시 - const 배열 반환 const TArray&lt;FString&gt; GetSomeArray(); // 나쁜 예시 - const 포인터를 const로 반환 const TArray&lt;FString&gt;* const GetSomeArray(); . | 포인터 자체를 const로 만들 때는 타입 뒤에 const . | 포인터가 가리키는 값이 아닌, 포인터 자체의 재할당을 막음 | . | . // 포인터는 재할당 불가, T는 변경 가능 T* const Ptr = ...; // 잘못된 사용: 불가(레퍼런스는 재할당 불가 특성상 의미 없음) T&amp; const Ref = ...; . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-%EC%A0%95%ED%99%95%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-정확성"
-  },"728": {
+  },"734": {
     "doc": "Coding Standard",
     "title": "주석",
     "content": ". | 클래스 주석 . | 이 클래스가 해결하는 문제 | 클래스 생성 이유 | . | 함수 (메서드) 주석 . | 함수 목적 기입 | . | 매개변수 주석 @param . | 측정 단위 | 예상 값 범위 | 불가능한 값 | 상태/오류 코드 의미 | . | 반환값 주석 @return . | 예상 반환 값 | . | 추가 정보 . | @warning 경고, @See보기 등을을 선택적으로 사용함 | . | . 사용예시 . /** The interface for drinkable objects. */ class IDrinkable { public: /** * Called when a player drinks this object. * @param OutFocusMultiplier - 반환 시, 마시는 사람의 집중력에 곱할 배수를 담는다. * @param OutThirstQuenchingFraction - 반환 시, 갈증 해소 정도(0~1)를 담는다. * @warning 반드시 음료가 제대로 준비된 후 호출해야 함. */ virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) = 0; }; /** 단일 찻잔 */ class FTea : public IDrinkable { public: /** * 주어진 물의 부피와 온도로 우려냈을 때, 차의 맛 변화량을 계산 * @param VolumeOfWater - 우릴 때 사용된 물의 양(mL) * @param TemperatureOfWater - 물의 온도(Kelvin) * @param OutNewPotency - 우려낸 후 차의 효능(0.97~1.04) * @return 차의 맛 강도 변화량(1분당 TTU) */ float Steep( const float VolumeOfWater, const float TemperatureOfWater, float&amp; OutNewPotency ); /** 설탕 당도 기준으로 감미를 추가 */ void Sweeten(const float EquivalentGramsOfSucrose); /** 일본 내 판매가(엔) */ float GetPrice() const { return Price; } virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) override; private: /** 가격(엔) */ float Price; /** 감미(설탕 환산 그램) */ float Sweetness; }; . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A3%BC%EC%84%9D",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#주석"
-  },"729": {
+  },"735": {
     "doc": "Coding Standard",
     "title": "차후 더 추가 예정",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%B0%A8%ED%9B%84-%EB%8D%94-%EC%B6%94%EA%B0%80-%EC%98%88%EC%A0%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#차후-더-추가-예정"
-  },"730": {
+  },"736": {
     "doc": "Coding Standard",
     "title": "사용가능한 표준 라이브러리 목록",
     "content": ". | &lt;atomic&gt; : 신규 코드는 std::atomic 사용. 기존 TAtomic은 부분 구현만 되어 있음. | &lt;type_traits&gt; : 겹치는 부분은 표준 trait 사용. (표준 trait는 value/type 소문자, 기존 UE는 대문자 Value/Type 주의) | &lt;initializer_list&gt; : braced initializer 지원에 필수, 대체재 없음 | &lt;regex&gt; : 직접 사용 가능하나 에디터 전용 코드에 한정. 자체 구현 계획 없음. | &lt;limits&gt; : std::numeric_limits 전부 사용 가능 | &lt;cmath&gt; : 부동소수점 비교 함수만 사용 허용 | . 참고 링크 . | Coding Standard | Recommended Asset Naming Conventions | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%82%AC%EC%9A%A9%EA%B0%80%EB%8A%A5%ED%95%9C-%ED%91%9C%EC%A4%80-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%AA%A9%EB%A1%9D",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#사용가능한-표준-라이브러리-목록"
-  },"731": {
+  },"737": {
     "doc": "Material",
     "title": "Material",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Material/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"732": {
+  },"738": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
     "content": "참고하면 좋은 링크 . | UnrealEngine c++ Guide | blueprints vs c++ | Exploring Unreal’s physics framework | Unreal Engine UI Tutorials | Unreal Engine C++ API Reference | UE Classes API | . ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"733": {
+  },"739": {
     "doc": "Unreal Engine 5",
     "title": "Coordinate System",
     "content": "UE 좌표계는 왼손 좌표계 기준 . | 축 | 방향 | + | - | . | X | 깊이 | 앞(카메라와 멀어짐) | 뒤 (카메라와 가까워짐) | . | Y | 측면 | 오른쪽 | 왼쪽 | . | Z | 높이 | 위 | 아래 | . 참고하면 좋은 링크 . | coordinate-system | Coordinate System and Spaces | . ",
     "url": "/docs/Unreal%20Engine%205/#coordinate-system",
     
     "relUrl": "/docs/Unreal%20Engine%205/#coordinate-system"
-  },"734": {
+  },"740": {
     "doc": "Unreal Engine 5",
     "title": "Level Editor Viewport",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/#level-editor-viewport",
     
     "relUrl": "/docs/Unreal%20Engine%205/#level-editor-viewport"
-  },"735": {
+  },"741": {
     "doc": "Unreal Engine 5",
     "title": "카메라 동작",
     "content": ". | 우측 카메라 아이콘으로 속도 조절 가능 . | 왼쪽 클릭 : 카메라 수평 이동 | 오른쪽 클릭 : 카메라 상하 이동 | 왼쪽 클릭 + C : 줌인 (확대) | 클릭 + WASD : 카메라 이동 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%B9%B4%EB%A9%94%EB%9D%BC-%EB%8F%99%EC%9E%91",
     
     "relUrl": "/docs/Unreal%20Engine%205/#카메라-동작"
-  },"736": {
+  },"742": {
     "doc": "Unreal Engine 5",
     "title": "View Modes",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/#view-modes",
     
     "relUrl": "/docs/Unreal%20Engine%205/#view-modes"
-  },"737": {
+  },"743": {
     "doc": "Unreal Engine 5",
     "title": "Show",
     "content": "왼쪽 Show (표시)를 이용해 레벨에서 보고 싶은 에셋 플래그 on/off 설정 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#show",
     
     "relUrl": "/docs/Unreal%20Engine%205/#show"
-  },"738": {
+  },"744": {
     "doc": "Unreal Engine 5",
     "title": "Lit",
     "content": "레벨 라이팅 설정 on/off, 와이어 프레임 등 여러가지 설정 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#lit",
     
     "relUrl": "/docs/Unreal%20Engine%205/#lit"
-  },"739": {
+  },"745": {
     "doc": "Unreal Engine 5",
     "title": "perspective",
     "content": "카메라 원근 설정. 직교 투영으로 오브젝트트 배치 편하게 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#perspective",
     
     "relUrl": "/docs/Unreal%20Engine%205/#perspective"
-  },"740": {
+  },"746": {
     "doc": "Unreal Engine 5",
     "title": "맨 우측 화면 분할 아이콘",
     "content": "4개의 개별 뷰포트로 분할 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#%EB%A7%A8-%EC%9A%B0%EC%B8%A1-%ED%99%94%EB%A9%B4-%EB%B6%84%ED%95%A0-%EC%95%84%EC%9D%B4%EC%BD%98",
     
     "relUrl": "/docs/Unreal%20Engine%205/#맨-우측-화면-분할-아이콘"
-  },"741": {
+  },"747": {
     "doc": "Unreal Engine 5",
     "title": "맨 좌측 리스트 아이콘",
     "content": ". | Show FPS 로 프레임 보기 가능 . | ctrl + shift + H | . | Bookmarks 를 통해 시점 저장, 불러오기 가능 . | ctrl + 0 ~ 9 으로 북마크 저장 | 키보드 0 ~ 9 으로 저장한 북마크 불러오기 | . | 게임 뷰 . | 단축키 : G | 아이콘 사라짐 | . | 몰입 모드 . | 단축키 : F11 | 화면 크게 | . | 고해상도 스크린샷 . | 우측 상단 캡처 지정 아이콘 클릭 -&gt; 캡처 사각형 지정 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EB%A7%A8-%EC%A2%8C%EC%B8%A1-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%95%84%EC%9D%B4%EC%BD%98",
     
     "relUrl": "/docs/Unreal%20Engine%205/#맨-좌측-리스트-아이콘"
-  },"742": {
+  },"748": {
     "doc": "Unreal Engine 5",
     "title": "Object manipulate 오브젝트 조종",
     "content": ". | 오브젝트 선택 . | 단축키 : Q | . | 오브젝트 움직이기 (기즈모 사용) . | 단축키 : W | . | 오브젝트 회전 . | 단축키 : E | . | 오브젝트 스케일 조절 . | 단축키 : R | . | . ",
     "url": "/docs/Unreal%20Engine%205/#object-manipulate-%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%A1%B0%EC%A2%85",
     
     "relUrl": "/docs/Unreal%20Engine%205/#object-manipulate-오브젝트-조종"
-  },"743": {
+  },"749": {
     "doc": "Unreal Engine 5",
     "title": "스냅",
     "content": "스냅 유무를 아이콘을 통해 on/off. 스냅에 쓸 단위도 조절 가능 . | 그리드 아이콘 : 오브젝트 이동 스냅 | 각도 아이콘 : 오브젝트 회전 각도 스냅 | 스케일 아이콘 : 오브젝트 스케일 스냅 | 표면 스냅 아이콘 : 오브젝트 가져올 때 표면에 어떻게 놓을 것인지 설정 . | on/off로 표면에 딱 붙일 것인지 설정 | 오프셋으로 표면에서 얼마나 떨어트릴 것인지 설정 | 언리얼 엔진의 1 unit = 1cm | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%8A%A4%EB%83%85",
     
     "relUrl": "/docs/Unreal%20Engine%205/#스냅"
-  },"744": {
+  },"750": {
     "doc": "Unreal Engine 5",
     "title": "좌표",
     "content": "오브젝트 조종 옆에 있는 아이콘을 통해 어떤 좌표를 사용할 것인지 조절 가능 . | 단축키 : ctrl + ` | 세계 좌표에 있는 경우 세계 아이콘 표시 | 로컬 좌표에 있는 경우 로컬 아이콘 표시 | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%A2%8C%ED%91%9C",
     
     "relUrl": "/docs/Unreal%20Engine%205/#좌표"
-  },"745": {
+  },"751": {
     "doc": "Unreal Engine 5",
     "title": "오브젝트 복사",
     "content": ". | Alt + 기즈모 이동을 통해 복사 | 여러개 복사하고 싶으면 shift로 오브젝트 다중 선택 후 Alt + 기즈모 이동 . | 회전도 복사 가능 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EB%B3%B5%EC%82%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/#오브젝트-복사"
-  },"746": {
+  },"752": {
     "doc": "Unreal Engine 5",
     "title": "Panels 패널",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/#panels-%ED%8C%A8%EB%84%90",
     
     "relUrl": "/docs/Unreal%20Engine%205/#panels-패널"
-  },"747": {
+  },"753": {
     "doc": "Unreal Engine 5",
     "title": "Outliner",
     "content": "world에 있는 모든 오브젝트 목록 . | 아웃라이너에서 오브젝트 이름으로 오브젝트 찾기 가능 | 아웃라이너에서 오브젝트 이름 누른 뒤 F 키를 통해 오브젝트로 이동 | . ",
     "url": "/docs/Unreal%20Engine%205/#outliner",
     
     "relUrl": "/docs/Unreal%20Engine%205/#outliner"
-  },"748": {
+  },"754": {
     "doc": "Unreal Engine 5",
     "title": "Details",
     "content": "선택한 오브젝트 속성 변경 . | Location : 월드 좌표에서의 오브젝트 위치 | Physics . | Simulate physics : 체크 박스에 체크하면 물리학 활성화 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#details",
     
     "relUrl": "/docs/Unreal%20Engine%205/#details"
-  },"749": {
+  },"755": {
     "doc": "Home",
     "title": "Home",
     "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ✨2025-06-22 . | LaTex 기호 적용 | . ✨2025-07-11 . | 외부 링크 새 탭으로 열리게 적용 | . ",
