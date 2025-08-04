@@ -137,8 +137,8 @@ MyGame/
 
 ---
 
-**참고 링크**
+**참고하면 좋은 링크**
 
 - [The Book of Shaders](https://thebookofshaders.com/)
 - [Processing](https://processing.org/tutorials/)
-- [DirectX Tutorial](http://www.directxtutorial.com/LessonList.aspx?listid=11)
+- [OGL Dev](https://ogldev.org/)
