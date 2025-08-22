@@ -11,6 +11,9 @@ has_children: true
 
 > 각각의 쉐이더는 GPU에서 병렬로 실행되는 작은 프로그램이다
 
+- [HLSL Reference](https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-intrinsic-functions)
+- [direct3dhlsl](https://learn.microsoft.com/ko-kr/windows/win32/direct3dhlsl/pachaging-a-shader-library)
+
 ## 쉐이더 종류
 
 - **정점 쉐이더 (Vertex Shader, VS)**

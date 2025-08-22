@@ -8,6 +8,8 @@ has_children: true
 
 # Linear Algebra
 
+- [An Intuitive Guide to Linear Algebra](https://betterexplained.com/articles/linear-algebra-guide/)
+
 ---
 
 ## lining up the variable
