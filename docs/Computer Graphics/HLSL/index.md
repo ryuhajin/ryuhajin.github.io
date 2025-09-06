@@ -142,6 +142,7 @@ MyGame/
 
 **참고하면 좋은 링크**
 
+- [Real-Time Rendering Resources](https://www.realtimerendering.com/)
 - [The Book of Shaders](https://thebookofshaders.com/)
 - [Processing](https://processing.org/tutorials/)
 - [OGL Dev](https://ogldev.org/)
