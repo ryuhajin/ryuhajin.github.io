@@ -211,51 +211,49 @@ int main() {
 **참고 링크**
 - [람다(lambda) 함수](https://modoocode.com/196)
 
-# 아래부터 나중에 추가 정리해야 할 것
 ---
 
-언리얼 엔진5의 스마트 포인터
-UE5는 C++ 표준 라이브러리와의 호환성 문제(예: 모듈 경계, 플랫폼별 동작 차이)로 자체 스마트 포인터를 제공합니다.
+# 아래부터 나중에 추가 정리해야 할 것
 
-(1) TSharedPtr<>
-C++의 std::shared_ptr<>과 유사하지만 UE5 전용 최적화가 적용됨.
+---
 
-관리 대상: UObject를 상속받지 않은 일반 C++ 클래스.
+## 언리얼 엔진5의 스마트 포인터
+UE5는 C++ 표준 라이브러리와의 호환성 문제(예: 모듈 경계, 플랫폼별 동작 차이)로 자체 스마트 포인터를 제공
 
-특징:
+### TSharedPtr<>
+- C++의 std::shared_ptr<>과 유사하지만 UE5 전용 최적화가 적용됨.
+- 관리 대상: UObject를 상속받지 않은 일반 C++ 클래스.
 
-참조 카운팅 + 스레드 안전성 지원.
+### 특징
+1. 참조 카운팅 + 스레드 안전성 지원.
+2. TWeakPtr<>으로 약한 참조 가능.
+3. MakeShared<>()로 생성 최적화.
 
-TWeakPtr<>으로 약한 참조 가능.
+---
 
-MakeShared<>()로 생성 최적화.
+### TUniquePtr<>
+- C++의 std::unique_ptr<>과 거의 동일하지만 UE5 메모리 할당자와 통합됨.
+- 관리 대상: UObject가 아닌 객체.
 
-(2) TUniquePtr<>
-C++의 std::unique_ptr<>과 거의 동일하지만 UE5 메모리 할당자와 통합됨.
+### 특징
+1. 복사 불가능, 이동만 가능.
+2. MakeUnique<>()로 생성.
 
-관리 대상: UObject가 아닌 객체.
+### FObjectPtr (UE5+)
+- UObject 전용으로 설계된 경량 포인터.
+- C++ 표준과 무관하며, UE5의 가비지 컬렉션 시스템과 연동
 
-특징:
+### 특징
+1. UObject의 안전한 참조를 위해 사용 (예: 크로스-스레드 접근 방지).
+2. TSharedPtr<>과 달리 참조 카운팅 없이 엔진 내부에서 관리.
 
-복사 불가능, 이동만 가능.
+----
 
-MakeUnique<>()로 생성.
+## C++ vs UE5 스마트 포인터 비교
 
-(3) FObjectPtr (UE5+)
-UObject 전용으로 설계된 경량 포인터.
-
-C++ 표준과 무관하며, UE5의 가비지 컬렉션 시스템과 연동됩니다.
-
-특징:
-
-UObject의 안전한 참조를 위해 사용 (예: 크로스-스레드 접근 방지).
-
-TSharedPtr<>과 달리 참조 카운팅 없이 엔진 내부에서 관리.
-
-3. C++ vs UE5 스마트 포인터 비교
-기능	C++ (std)	UE5	차이점
-공유 소유권	std::shared_ptr<>	TSharedPtr<>	UE5는 스레드 안전성 강화.
-독점 소유권	std::unique_ptr<>	TUniquePtr<>	UE5는 할당자 통합.
-약한 참조	std::weak_ptr<>	TWeakPtr<>	동일한 개념.
-가비지 컬렉션	없음	FObjectPtr	UObject 전용.
-생성 방법	std::make_shared<>	MakeShared<>	UE5는 커스텀 메모리 풀 사용 가능.
+기능 |	C++ (std)	 |UE5	 |차이점 |
+공유 소유권 |	std::shared_ptr<> |	TSharedPtr<> |	UE5는 스레드 안전성 강화|
+독점 소유권	 |std::unique_ptr<>	 |TUniquePtr<> |	UE5는 할당자 통합 |
+약한 참조	 |std::weak_ptr<>	 |TWeakPtr<> |	동일한 개념|
+가비지 컬렉션	 |없음 |	FObjectPtr	 |UObject 전용|
+생성 방법	 |std::make_shared<> |	MakeShared<>	 |UE5는 커스텀 메모리 풀 사용 가능|
