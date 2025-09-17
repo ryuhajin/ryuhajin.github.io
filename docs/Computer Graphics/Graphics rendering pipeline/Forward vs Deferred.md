@@ -143,151 +143,171 @@ $$
 
 ---
 
-- Deferred Rendering 과정 코드 예시
+# Deferred Rendering shader
+디퍼드 렌더링은 **지오메트리 패스와 라이팅 패스 모두** 각각의 목적에 맞는 **버텍스 셰이더와 픽셀 셰이더를 사용**
 
-```c++
-// 개념 설명을 위한 의사 코드
+## Geometry Pass
+목표: 3D 모델의 정보를 G-Buffer 텍스처에 기록
 
-// G-Buffer를 생성하고 설정하는 과정이 먼저 필요
-void SetupGBuffer(int width, int height) {
-    // 위치, 노멀, 알베도 등을 저장할 텍스처들을 생성하고
-    // 여러 개의 렌더 타겟(Multiple Render Targets, MRT)으로 설정
-    // ...
-}
-
-/* Deferred Rendering 에 필요한 과정 시작 */
-
-// 1단계 : 지오메트리 패스
-void GeometryPass(Scene& scene) {
-    // 렌더 타겟을 G-Buffer로 설정
-    SetRenderTargetToGBuffer();
-    ClearGBuffer(); // G-Buffer 초기화
-
-    // 씬의 모든 오브젝트를 렌더링
-    for (const auto& object : scene.GetObjects()) {
-        // G-Buffer를 채우는 전용 쉐이더를 활성화
-        g_gbufferShader->Bind();
-
-        // 월드 변환 행렬 등 필요 데이터 전달
-        SetShaderConstants(object.GetWorldMatrix(), viewMatrix, projectionMatrix);
-        
-        // 오브젝트를 그림.
-        // 이 때 픽셀 쉐이더는 조명 계산 없이
-        // G-Buffer에 위치, 노멀, 색상 등의 정보를 기록
-        object.GetMesh()->Draw();
-    }
-}
-
-// 2단계 : 라이팅 패스
-void LightingPass(Scene& scene) {
-    // 렌더 타겟을 최종 화면(Back Buffer)으로 설정
-    SetRenderTargetToBackBuffer();
-    ClearRenderTarget();
-
-    // 라이팅 계산용 쉐이더를 활성화
-    g_lightingShader->Bind();
-
-    // 쉐이더가 G-Buffer 텍스처들을 읽을 수 있도록 바인딩
-    BindGBufferTextures();
-
-    // 쉐이더에 광원 정보를 전달
-    SetShaderLights(scene.GetLights());
-
-    // 화면을 꽉 채우는 사각형 하나를 그림
-    // 이 사각형의 각 픽셀에서 라이팅 계산이 수행
-    DrawFullScreenQuad();
-}
-```
-
----
-
-## Deferred Rendering pixel shader
-- 지오매트리 패스, 라이팅 패스 두 군데서 모두 픽셀 쉐이더가 사용됨
-
-### 지오메트리 패스 - 픽셀 쉐이더
+- Vertex Shader
 
 ```hlsl
-// G-Buffer 출력을 위한 구조체
-struct GBufferOutput
+// GeometryPass_VS
+
+cbuffer MatrixBuffer : register(b0)
 {
-    // SV_TARGET0, 1, 2... 는 여러 렌더 타겟으로 출력됨을 의미
-    float4 position : SV_TARGET0; // 월드 공간 위치
-    float4 normal   : SV_TARGET1; // 월드 공간 노멀
-    float4 albedo   : SV_TARGET2; // 기본 색상 (Albedo)
+    matrix worldMatrix;
+    matrix viewMatrix;
+    matrix projectionMatrix;
 };
 
-// 정점 쉐이더에서 넘어온 입력
-struct PixelInput
+struct VertexInputType
 {
-    float4 positionH : SV_POSITION;
-    float3 positionW : POSITION;
-    float3 normalW   : NORMAL;
-    float2 texCoord  : TEXCOORD;
+    float3 position : POSITION;
+    float2 tex      : TEXCOORD0;
+    float3 normal   : NORMAL;
 };
 
-// 텍스처 리소스
-Texture2D g_albedoTexture : register(t0);
-SamplerState g_sampler   : register(s0);
-
-GBufferOutput main(PixelInput input)
+// 픽셀 셰이더로 넘겨줄 데이터 구조
+struct PixelInputType
 {
-    GBufferOutput output;
+    float4 position   : SV_POSITION; // 클립 공간 위치 (필수)
+    float2 tex        : TEXCOORD0;   // 텍스처 좌표
+    float3 normal     : NORMAL;      // 월드 공간 법선
+    float3 worldPos   : WORLDPOS;    // 월드 공간 위치
+};
 
-    // 조명 계산은 하지 않고, 필요한 정보만 G-Buffer에 기록
-    output.position = float4(input.positionW, 1.0f);
-    output.normal = float4(normalize(input.normalW), 1.0f);
-    output.albedo = g_albedoTexture.Sample(g_sampler, input.texCoord);
+PixelInputType main(VertexInputType input)
+{
+    PixelInputType output;
+
+    // 1. 정점 위치를 월드, 뷰, 프로젝션 순으로 변환
+    float4 worldPos = mul(float4(input.position, 1.0f), worldMatrix);
+    float4 viewPos = mul(worldPos, viewMatrix);
+    output.position = mul(viewPos, projectionMatrix);
+
+    // 2. 픽셀 셰이더에서 사용할 월드 공간 위치와 법선을 계산
+    output.worldPos = worldPos.xyz;
+    output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));
+
+    // 3. 텍스처 좌표 전달
+    output.tex = input.tex;
 
     return output;
 }
 ```
 
-### 라이팅 패스 - 픽셀 쉐이더
+---
+
+- Pixel Shader
 
 ```hlsl
-// G-Buffer 텍스처들을 입력으로 받음
-Texture2D g_positionBuffer : register(t0);
-Texture2D g_normalBuffer   : register(t1);
-Texture2D g_albedoBuffer   : register(t2);
-SamplerState g_sampler     : register(s0);
+//GeometryPass_PS
 
-// 광원 정보 및 카메라 위치 (C++에서 전달)
-cbuffer LightConstants : register(b0)
+Texture2D shaderTexture : register(t0);
+  SamplerState SampleType  : register(s0);
+
+  struct PixelInputType
+  {
+      float4 position   : SV_POSITION;
+      float2 tex        : TEXCOORD0;
+      float3 normal     : NORMAL;
+      float3 worldPos   : WORLDPOS;
+  };
+
+  // G-Buffer 출력을 위한 구조체 (MRT: Multiple Render Targets)
+  struct GBufferOutputType
+  {
+      float4 worldPos : SV_Target0; // 타겟 0: 월드 위치 텍스처
+      float4 albedo   : SV_Target1; // 타겟 1: Albedo 색상 텍스처
+      float4 normal   : SV_Target2; // 타겟 2: 월드 법선 텍스처
+  };
+
+  GBufferOutputType main(PixelInputType input)
+  {
+      GBufferOutputType output;
+
+      // 입력 데이터를 각 G-Buffer 타겟에 맞게 채워넣기
+      output.worldPos = float4(input.worldPos, 1.0f);
+      output.albedo = shaderTexture.Sample(SampleType, input.tex);
+      output.normal = float4(normalize(input.normal), 1.0f);
+
+      return output;
+  }
+```
+---
+
+## Lighting Pass
+목표: G-Buffer의 정보를 읽어와 최종 조명 계산을 수행
+
+- Vertex Shader
+
+```hlsl
+//LightingPass_VS
+
+struct VertexInputType
 {
-    Light g_lights[MAX_LIGHTS];
-    int g_lightCount;
-    float3 g_eyePosition;
+    float3 position : POSITION;
+    float2 tex      : TEXCOORD0;
 };
 
-// 픽셀 쉐이더 입력 (화면 사각형의 좌표)
-struct PixelInput
+struct PixelInputType
 {
-    float4 positionH : SV_POSITION;
-    float2 texCoord  : TEXCOORD;
+    float4 position : SV_POSITION;
+    float2 tex      : TEXCOORD0;
 };
 
-float4 main(PixelInput input) : SV_TARGET
+PixelInputType main(VertexInputType input)
 {
-    // 현재 픽셀 좌표(texCoord)를 이용해 G-Buffer에서 데이터를 읽어옴
-    float3 worldPos = g_positionBuffer.Sample(g_sampler, input.texCoord).xyz;
-    float3 normal = g_normalBuffer.Sample(g_sampler, input.texCoord).xyz;
-    float3 albedo = g_albedoBuffer.Sample(g_sampler, input.texCoord).rgb;
+    PixelInputType output;
 
-    // 이제 읽어온 데이터를 사용하여 
-    // forward 렌더링의 픽셀 쉐이더와 동일한 방식으로 조명 계산을 수행
-    float3 finalColor = float3(0.0f, 0.0f, 0.0f);
-    for (int i = 0; i < g_lightCount; ++i)
-    {
-        // ... (퐁 조명 계산 로직은 순방향 렌더링 예시와 동일) ...
-        float3 ambient = albedo * 0.1f;
-        float3 lightDir = normalize(g_lights[i].position - worldPos);
-        float diff = max(dot(normal, lightDir), 0.0f);
-        float3 diffuse = g_lights[i].color * albedo * diff;
-        // ... (정반사광 계산 등) ...
-        finalColor += ambient + diffuse; // + specular ...
-    }
+    // 이미 화면 좌표계로 정점이 들어온다고 가정하고 그대로 출력
+    output.position = float4(input.position, 1.0f);
+    output.tex = input.tex;
 
-    return float4(finalColor, 1.0f);
+    return output;
+}
+```
+
+---
+
+- Pixel Shader
+
+```hlsl
+// LightingPass_PS
+
+// 지오메트리 패스에서 만든 G-Buffer 텍스처들을 입력으로 받음
+Texture2D worldPosTexture : register(t0);
+Texture2D albedoTexture   : register(t1);
+Texture2D normalTexture   : register(t2);
+SamplerState SampleType   : register(s0);
+
+cbuffer LightBuffer : register(b0)
+{
+    float3 lightDirection;
+    float4 diffuseColor;
+};
+
+struct PixelInputType
+{
+    float4 position : SV_POSITION;
+    float2 tex      : TEXCOORD0;
+};
+
+// 최종 출력은 색상 하나
+float4 main(PixelInputType input) : SV_TARGET
+{
+    // 1. 현재 픽셀의 UV 좌표를 이용해 G-Buffer에서 데이터 샘플링
+    float3 worldPos = worldPosTexture.Sample(SampleType, input.tex).xyz;
+    float4 albedo = albedoTexture.Sample(SampleType, input.tex);
+    float3 normal = normalize(normalTexture.Sample(SampleType, input.tex).xyz);
+
+    // 2. 간단한 방향성 광원(Directional Light) 계산
+    float lightIntensity = saturate(dot(normal, -lightDirection));
+    float4 finalColor = lightIntensity  diffuseColor  albedo;
+
+    // 3. 최종 계산된 색상 출력
+    return finalColor;
 }
 ```
 
