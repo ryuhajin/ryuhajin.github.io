@@ -34,6 +34,19 @@ nav_order: 2
 
 ---
 
+## 좌표 용어 정리
+
+| 접미사| 풀네임| 좌표 공간 설명   | 예시 노드  | 주요 용도|
+| --- | --- | --- | --- | --- |
+| **WS** | World Space| 월드 좌표계 (월드 원점(0,0,0), 월드 축 기준) | `PixelNormalWS`, `AbsoluteWorldPosition`, `CameraVectorWS` | 프레넬, 림라이트, 거리 계산, 월드 정렬 텍스처  |
+| **OS** | Object Space   | 오브젝트(메시) 자체의 로컬 좌표계| `ObjectPosition`, `ObjectOrientation`  | 오브젝트 로컬 기준 이펙트 (예: 메시 기반 패턴) |
+| **TS** | Tangent Space  | 표면의 탄젠트/바이노멀/노멀 축으로 정의된 로컬 좌표계 | `TextureCoordinate`, `TangentSpaceNormal`  | 노멀맵, POM, 애니소트로픽 |
+| **VS** | View Space (종종 사용) | 카메라 기준 좌표계 (카메라가 원점)   | 일반 노드에선 잘 안 보임, HLSL에서 자주 사용   | 스크린 공간 효과, 화면 기반 변환  |
+| **CS** | Clip/Camera Space  | 클립 공간(투영 좌표) (-1에서 1 사이의 정규화된 공간)  | `ScreenPosition`   | 화면 UV, GrabPass, 포스트 프로세싱|
+| **SS** | Screen Space   | 정규화된 스크린 좌표 (0~1 UV)   | `ScreenPosition`의 xy   | 화면 기반 마스크, 포스트 효과|
+
+---
+
 # EP 2 : Basics if PBR
 
 ## PBR 개요
@@ -205,6 +218,33 @@ TextureCoordinate = "좌표 공급자" (데이터만 제공)
 3. Unreal의 TextureCoordinate 노드
 - 머티리얼 그래프의 TextureCoordinate 노드는 추가 연산 없이 이 UV 입력을 그대로 참조하는 래퍼.
 - 단순히 메시에서 이미 넘어오는 **TexCoord[n]**을 가져와서 옵션(타일링/오프셋)을 곱해주는 것.
+
+---
+
+## TextureCoordinate mul
+
+### UV 좌표와 샘플링
+텍스처 샘플링은 **UV 좌표 (0~1)** 기준
+
+- U가 0 → 1이면 텍스처의 가로 전체가 딱 한 번 샘플
+- V가 0 → 1이면 텍스처의 세로 전체가 한 번 샘플
+
+### 곱셈의 의미
+UV에 2.0을 곱할 때
+
+$$ U' = 2 \cdot U$$
+
+U의 0 → 1 범위는 0 → 2로 바뀜
+- 하지만 텍스처는 여전히 0 ~ 1 범위에서 래핑 (Address Mode가 Wrap일 때)
+- 결과 : 0 ~ 1에서 한 번, 1 ~ 2에서 또 한 번 → 두 번 반복
+
+반대로 0.2를 곱하면
+
+$$ U' = 0.5 \cdot U$$
+
+- 0 → 1 범위가 0 → 0.5로 축소
+- 텍스처 좌표의 절반만 쓰게 됨
+- 결과 : 텍스처가 늘어나서 확대된 것처럼 보임
 
 ---
 
