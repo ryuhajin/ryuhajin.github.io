@@ -13,6 +13,35 @@ has_children: true
 
 ---
 
+## shortcut key
+
+| 단축키           | 표현식 노드                    | 설명                  |
+| ------------- | ------------------------- | ------------------- |
+| **A**         | Add                       | 두 값 더하기             |
+| **B**         | BumpOffset                | 텍스처 좌표를 시차 기반으로 오프셋 |
+| **C**         | Comment                   | 코멘트 박스 생성           |
+| **D**         | Divide                    | 나누기                 |
+| **E**         | Power                     | 거듭제곱 연산             |
+| **F**         | Material Function Call    | 머티리얼 함수 호출          |
+| **I**         | If                        | 조건 분기 처리            |
+| **L**         | Linear Interpolate (Lerp) | 선형 보간               |
+| **M**         | Multiply                  | 곱셈                  |
+| **N**         | Normalize                 | 벡터 정규화              |
+| **O**         | OneMinus                  | 1 - 입력값             |
+| **P**         | Panner                    | 텍스처 UV 이동           |
+| **R**         | Reflection Vector         | 반사 벡터 생성            |
+| **S**         | Scalar Parameter          | 파라미터화된 스칼라 값        |
+| **T**         | Texture Sample            | 텍스처 샘플링             |
+| **U**         | Texture Coordinate        | UV 좌표 제어            |
+| **V**         | Vector Parameter          | 파라미터화된 벡터 값         |
+| **1**         | Constant                  | 단일 실수 값             |
+| **2**         | Constant2Vector           | 2D 벡터 값             |
+| **3**         | Constant3Vector           | 3D 벡터 값 (색상 자주 사용)  |
+| **4**         | Constant4Vector           | 4D 벡터 값             |
+| **Shift + C** | Component Mask            | RGB 채널 마스크          |
+
+---
+
 ## All-in-One Master
 하나의 거대한 마스터 머티리얼 안에 프로젝트에 필요한 모든 기능 (바람, 투명, 피부, 코팅 등)을 전부 다 넣어두는 방식. 스위치(Switch) 파라미터를 이용해 필요한 기능만 켜고 끄는 방식으로 사용
 
