@@ -1,0 +1,160 @@
+---
+layout: default
+title: "BluePrint"
+parent: "Dynamic Sky"
+nav_order: 1
+---
+
+# BluePrint
+
+## BP editor
+**상단 바**
+1. viewport : 에디터 뷰포트와 비슷함. 단축키, 카메라 이동 동일
+2. construction script : **게임이 시작되기 전에 발생하는 블루프린트 로직**을 저장하는 그래프
+    - 에디터 모드에서만 실행
+3. Event Graph : 게임이 시작되거나 **런타임일때 실행될 모든 블루프린트 로직**을 저장하는 그래프
+
+---
+
+### construction script VS Event Graph
+
+- construction script
+
+```
+사용처: 레벨 디자인, 에디터 작업
+실행: 에디터에서 수정할 때마다
+예시: 건물 높이 조정, 스폰 설정, 경로 배치
+```
+
+- Event Graph
+
+```
+사용처: 게임플레이, 전투, AI
+실행: 게임 시작시 1번만
+예시: 플레이어 체력 설정, 적 AI 활성화, 게임 시작
+```
+
+---
+
+**왼,오른쪽 패널**
+
+1. components : 블루프린트 구성 요소
+2. my Blueprint : 블루프린트에 있는 모든 요소들 리스트
+
+---
+
+**상단 설정바**
+
+1. save
+2. content browser : 누르면 현재 BP가 있는 content floder 나옴
+3. compile : 컴파일 후 오류가 있으면 알림, 오류 없으면 초록색
+4. diff : GitHub와 같은 것을 사용하는 경우 이 버튼은 해당 버전의 특정 버전을 표시
+5. find : 누르면 하단에 패널이 뜨고 찾을 변수명 검색 가능
+6. hide : 관련없는 노드 숨김
+7. Class setting : 다양한 설정 가능. 깊은 내용은 나중에 추가
+8. Class Defaults : 세부 정보 패널과 비슷.
+9. 플레이 버튼 : 새 창이 뜨며 게임을 빠르게 플레이
+10. 디버깅할 오브젝트 선택 : 디버깅 용. 깊은 내용은 나중에 추가
+
+---
+
+## Variables
+변수를 설정해 리스트에서 끌고와 get, set 사용 가능
+
+---
+
+## view port에 추가하기
+우측 상단에 +Add 버튼을 사용하여 스태틱 메시, 충돌 박스등 컴포넌트 추가 가능
+
+> component도 그래프에 끌고 가져올 수 있음
+
+---
+
+## 충돌 판정
+1. content 에서 스태틱 메시 더블 클릭
+2. 정적 메시 편집기 우측 상단에 collision 선택
+3. 원하는 충돌 판정 추가하기
+4. 저장
+
+> 이렇게 해야 실제 충돌 판정이 이루어짐
+> - 안그러면 뚫고 지나감
+
+---
+
+## Timeline
+1. BP 이벤트 그래프에서 Add Timeline -> 더블클릭
+2. 타임라인 설정 창 나옴
+3. `+Track` 버튼으로 설정하고 싶은 트랙 추가. 트랙은 x축이 시간
+4. 트랙 + 우클릭으로 키 추가 가능
+5. 추가한 키 우클릭하면 곡선 설정 가능
+6. 상단 length로 트랙 길이 설정
+
+---
+
+## Construction Script
+게임이 시작되기 전, **에디터에서 오브젝트가 배치되거나 수정될 때 자동으로 실행되는 스크립트**
+
+1. 액터를 맵에 놓는 순간 → Construction Script 발동 → 미리 설정된 모양으로 변함
+2. 액터를 움직일 때마다 → Construction Script 다시 발동 → 새로운 위치에 맞게 모양 변경
+
+---
+
+## Construction Script 특징
+1. **실행 시점**
+    - 에디터 모드에서만 실행 (게임 실행 중에는 X)
+    - 액터를 맵에 배치할 때
+    - 액터의 속성(프로퍼티)을 변경할 때
+    - 맵을 열 때
+2. **게임 실행과의 차이점**
+    - Construction Script: "레벨 디자인 도구" (준비 단계)
+    - Begin Play: "게임 시작 신호" (실전 시작)
+3. **시각적 피드백**
+    - 변경사항이 즉시 에디터에서 보임
+    - 실시간으로 결과 확인 가능
+
+---
+
+## Instance Editable
+인스턴스 편집 불가 속성의 컴포넌트일 경우 Construction Script에서 변경하려 해도 엔진이 무시하거나 경고한다
+
+- Construction Script가 클래스 기본값(CDO)나 잠긴 속성을 바꾸면 **다른 인스턴스에 부작용이 생길 수 있어 엔진이 막음**
+
+### 사용 가능 범위
+1. **블루프린트 변수** 
+    - **Details : Instance Editable 체크**된 것만 Construction Script에서 사용 가능
+2. 컴포넌트/상속된 컴포넌트의 속성
+    - **Editable (EditAnywhere) / Editable when Inherited 로 노출**된 것만 Construction Script에서 사용 가능
+
+> 편집 불가 항목 (예: 상위 BP에서 잠근 컴포넌트 속성, C++에서 EditDefaultsOnly 등)은
+> - Construction Script에서 반영되지 않음
+
+---
+
+### 인스턴스 편집 가능 변수 (Instance Editable)
+```
+[블루프린트에서]
+변수 생성 → "Editable" 체크박스 ✅
+
+[특징]
+- 각 오브젝트마다 다른 값 설정 가능
+- 에디터에서 직접 수정 가능
+- Construction Script에서 자유롭게 사용 가능
+```
+
+### 인스턴스 편집 불가능 변수 (Instance Editable ❌)
+```
+[블루프린트에서]
+변수 생성 → "Editable" 체크박스 ❌
+
+[특징]
+- 모든 오브젝트가 같은 값 공유
+- 에디터에서 수정 불가
+- Construction Script에서 변경 불가
+```
+
+**왜 이런 제한이 있을까?**
+1. **일관성 유지**: 모든 인스턴스가 동일하게 동작하도록 보장
+2. **예측 가능성**: 특정 변수는 블루프린트 설계시 고정값으로 유지
+3. **안정성**: 실수로 중요한 설정이 변경되는 것 방지
+
+> 개별 오브젝트마다 다르게 설정하고 싶은 변수는 Editable 체크해야 Construction Script에서 사용할 수 있음
