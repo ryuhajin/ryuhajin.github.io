@@ -130,4 +130,4 @@ SetForegroundColor()|	전경색 (텍스트, 아이콘 등)	|FSlateColor::UseFore
 5. 사용자 입력/이벤트 처리 및 갱신
 - Slate Application이 마우스/키보드/포커스 등 이벤트 분배
 
-![](../../../../images/SlateWidgetprocess.png)
+![](/images/SlateWidgetprocess.png)

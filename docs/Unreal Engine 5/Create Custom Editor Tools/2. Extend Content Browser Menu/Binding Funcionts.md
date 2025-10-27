@@ -93,7 +93,7 @@ MenuExtender->AddMenuExtension(
     - `TArray< TSharedPtr< const FExtensionBase > > Extensions`
 
 ### FExtender 다이어그램
-![](../../../../images/FExtender.png){: width="50%" height="50%"}
+![](/images/FExtender.png){: width="50%" height="50%"}
 
 ### 3. 실제 메뉴 생성
 사용자가 콘텐트 폴더를 우클릭하면 Slate가 `FExtender::Apply()`를 호출

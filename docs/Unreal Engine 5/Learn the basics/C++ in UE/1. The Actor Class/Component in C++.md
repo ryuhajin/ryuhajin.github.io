@@ -27,7 +27,7 @@ nav_order: 4
 - 에디터 통합: 블루프린트/프로퍼티 윈도우에서 편집하는 값들이 CDO에 저장
 - 메모리 효율: 모든 인스턴스가 공유하는 기본값을 중앙에서 관리
 
-![](../../../../../images/UECOD.png)
+![](/images/UECOD.png)
 
 - CDO Constructor : 모든 인스턴스에 공통적으로 적용되는 설정 초기화
   - 월드 의존 로직 X (월드 내 위치 값 등), 인풋 바인딩 X (컨트롤러 미확정) 
@@ -45,7 +45,7 @@ nav_order: 4
 - `CreateDefaultSubobject<T>()` 로 생성
   - `Type*` 반환 
 
-![](../../../../../images/UEDSO.png)
+![](/images/UEDSO.png)
 
 ## 사용 예시
 ```c++

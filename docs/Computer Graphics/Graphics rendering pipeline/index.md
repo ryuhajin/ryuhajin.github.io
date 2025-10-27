@@ -11,7 +11,7 @@ has_children: true
 
 <br>
 
-![graphics pipeline](../../../images/graphics-pipeline.png)
+![graphics pipeline](/images/graphics-pipeline.png)
 
 
 **참고 링크**

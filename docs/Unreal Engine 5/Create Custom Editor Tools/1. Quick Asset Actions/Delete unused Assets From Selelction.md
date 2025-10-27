@@ -27,7 +27,7 @@ nav_order: 4
 - `AssetRegistry`를 통해 조회 시 `TArray<FAssetData>`로 반환됨
 
 ### AssetRegistry 다이어그램
-![](../../../../images/AssetRegistry.png){: width="80%" height="80%"}
+![](/images/AssetRegistry.png){: width="80%" height="80%"}
 
 - FARFilter : AssetRegistry 에서 검색에 사용되는 필터
 - FAssetData → UObject:  필요에 따라 일시적으로 참조(사용)한다 (예: GetAsset() 호출)

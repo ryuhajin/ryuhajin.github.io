@@ -215,7 +215,7 @@ void SMyCustomLayout::Construct(const FArguments& InArgs)
 - 델리게이트를 사용한 커스텀 이벤트
 
 # 언리얼 에디터 슬레이트 계층 구조
-![](../../../../images/UEEditorUILayer.png)
+![](/images/UEEditorUILayer.png)
 
 1. 루트 레벨 (FSlateApplication)
 - 모든 슬레이트 위젯의 최상위 관리자
