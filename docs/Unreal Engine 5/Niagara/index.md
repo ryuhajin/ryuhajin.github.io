@@ -180,3 +180,19 @@ Dynamic Bounds는
 | **Set Velocity / Set Position / Set Color**    | 덮어쓰기 (Override)  | 속성에 직접 새로운 값 할당   |
 | **Scale Color / Size**	 | 곱셈 (Multiply)	 | 기존 값에 비율 적용  | 
 | **Initialize Particle**  | 초기값 설정 후, 아래 모듈이 수정 가능 | 실행 순서에 따라 최종값 결정 |
+
+---
+
+## Orientation
+파티클의 회전 방향(Orientation in 3D space)
+
+- 즉 **이 파티클이 어떤 축으로, 어느 방향을 바라보는가를 정의하는 속성**
+
+| 용어 | 의미 |
+| --- | --- |
+| **Rotation** | “이 프레임에서의 회전량(입력값)” |
+| **Orientation**  | “누적된 회전 상태(결과값)”    |
+
+> 즉, Rotation은 변화량. Orientation은 최종 방향(상태)
+
+
