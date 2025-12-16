@@ -2,7 +2,7 @@
 layout: default
 title: "legacy"
 parent: "Material"
-nav_order: 10
+nav_order: 100
 has_children: true
 ---
 
