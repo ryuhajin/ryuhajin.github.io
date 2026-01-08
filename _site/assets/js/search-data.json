@@ -12466,19 +12466,19 @@
     
     "relUrl": "/docs/Unreal%20Engine%205/Learn%20the%20basics/C++%20in%20UE/3.%20The%20Pawn%20Class/UPlayer.html#역할"
   },"1781": {
-    "doc": "EP [21, 30]",
-    "title": "EP [21, 30]",
-    "content": ". ",
-    "url": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B21,%2030%5D/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B21,%2030%5D/"
-  },"1782": {
     "doc": "EP [11, 20]",
     "title": "EP [11, 20]",
     "content": ". ",
     "url": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B11,%2020%5D/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B11,%2020%5D/"
+  },"1782": {
+    "doc": "EP [21, 30]",
+    "title": "EP [21, 30]",
+    "content": ". ",
+    "url": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B21,%2030%5D/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B21,%2030%5D/"
   },"1783": {
     "doc": "EP [1, 10]",
     "title": "EP [1, 10]",
@@ -12606,19 +12606,19 @@
     
     "relUrl": "/docs/Unreal%20Engine%205/Material/legacy/"
   },"1801": {
-    "doc": "EP [31, 40]",
-    "title": "EP [31, 40]",
-    "content": ". ",
-    "url": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B31,%2040%5D/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B31,%2040%5D/"
-  },"1802": {
     "doc": "Learn the basics",
     "title": "Learn the basics",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Learn%20the%20basics/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Learn%20the%20basics/"
+  },"1802": {
+    "doc": "EP [31, 40]",
+    "title": "EP [31, 40]",
+    "content": ". ",
+    "url": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B31,%2040%5D/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B31,%2040%5D/"
   },"1803": {
     "doc": "Realistic Landscapes",
     "title": "Realistic Landscapes",
@@ -12627,26 +12627,26 @@
     
     "relUrl": "/docs/Unreal%20Engine%205/Learn%20the%20basics/Realistic%20Landscapes/"
   },"1804": {
-    "doc": "EP [41, 50]",
-    "title": "EP [41, 50]",
-    "content": ". ",
-    "url": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B41,%2050%5D/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B41,%2050%5D/"
-  },"1805": {
-    "doc": "Shader Graph Basics",
-    "title": "Shader Graph Basics",
-    "content": "쉐이더 그래프 기초 강의 . 링크 . | Shader Graph Basics | . ",
-    "url": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/"
-  },"1806": {
     "doc": "Physics in UE",
     "title": "Physics in UE",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Learn%20the%20basics/Physics/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Learn%20the%20basics/Physics/"
+  },"1805": {
+    "doc": "EP [41, 50]",
+    "title": "EP [41, 50]",
+    "content": ". ",
+    "url": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B41,%2050%5D/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/EP%20%5B41,%2050%5D/"
+  },"1806": {
+    "doc": "Shader Graph Basics",
+    "title": "Shader Graph Basics",
+    "content": "쉐이더 그래프 기초 강의 . 링크 . | Shader Graph Basics | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/Shader%20Graph%20Basics/"
   },"1807": {
     "doc": "C++ in UE",
     "title": "C++ in UE",
@@ -12935,26 +12935,26 @@
     
     "relUrl": "/docs/Unreal%20Engine%205/Dynamic%20Sky/#folder-path"
   },"1848": {
-    "doc": "EP [1, 10]",
-    "title": "EP [1 , 10]",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B1,%2010%5D/#ep-1--10",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B1,%2010%5D/#ep-1--10"
-  },"1849": {
-    "doc": "EP [1, 10]",
-    "title": "EP [1, 10]",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B1,%2010%5D/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B1,%2010%5D/"
-  },"1850": {
     "doc": "Sun, Moon cycle",
     "title": "Sun, Moon cycle",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Dynamic%20Sky/Sun,%20Moon%20cycle/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Dynamic%20Sky/Sun,%20Moon%20cycle/"
+  },"1849": {
+    "doc": "EP [1, 10]",
+    "title": "EP [1 , 10]",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B1,%2010%5D/#ep-1--10",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B1,%2010%5D/#ep-1--10"
+  },"1850": {
+    "doc": "EP [1, 10]",
+    "title": "EP [1, 10]",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B1,%2010%5D/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B1,%2010%5D/"
   },"1851": {
     "doc": "Clouds",
     "title": "Clouds",
@@ -13236,187 +13236,187 @@
     
     "relUrl": "/docs/Unreal%20Engine%205/Create%20Custom%20Editor%20Tools/1.%20Quick%20Asset%20Actions/#단축키"
   },"1891": {
-    "doc": "EP [11 , 20]",
-    "title": "EP [11 , 20]",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B11,%2020%5D/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B11,%2020%5D/"
-  },"1892": {
     "doc": "Coding Standard",
     "title": "Coding Standard",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/"
-  },"1893": {
+  },"1892": {
     "doc": "Coding Standard",
     "title": "저작권 고지",
     "content": "배포하는 모든 소스 파일(.h, .cpp, .xaml 등)에는 파일의 첫 줄에 반드시 다음과 같은 저작권 공지가 포함되어야 한다. // Copyright Epic Games, Inc. All Rights Reserved. 해당 줄이 없거나 형식이 다르면 오류 -&gt; 빌드 실패 처리됨 . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A0%80%EC%9E%91%EA%B6%8C-%EA%B3%A0%EC%A7%80",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#저작권-고지"
-  },"1894": {
+  },"1893": {
     "doc": "Coding Standard",
     "title": "클래스 구성",
     "content": "클래스는 읽는 사람을 우선으로 구성해야 한다. 대부분 클래스를 읽는 사람들은 public 인터페이스를 사용한다. 따라서 클래스는 . | public | protected | private | . 순으로 작성한다. ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EA%B5%AC%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-구성"
-  },"1895": {
+  },"1894": {
     "doc": "Coding Standard",
     "title": "클래스 접두사",
     "content": "언리얼 엔진의 클래스에는 접두사가 있다. 해당 접두사를 알고있으면 어떤 클래스에서 파생됐는지 알 수 있다. | 접두사 | 클래스 | 예시 | . | A | AActor | AActor, APawn, AGameMode | . | U | UObject | UTexture, UBlueprintFunctionLibrary | . | S | SWidget | SButton, Swidget | . | F | 사용자 구조체 | FVector, FHitResult | . | I | 추상 인터페이스 | IInterface | . | T | 템플릿 클래스 | TArray&lt;T&gt;, TMap&lt;&lt;T&gt; | . | E | Enum 타입 | EGAmeState | . | G | globals 전역변수 | GEngine | . | b | Boolean 변수 | bHasFadedIn, bDied | . 사용예시 . typedef TArray&lt;FMytype&gt; FArrayOfMyTypes; . typedef에는 해당 타입에 적합한 문자가 접두사로 붙어야 한다. 위 예시는 사용자 구조체 타입을 받는 템플릿 클래스다. ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%A0%91%EB%91%90%EC%82%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#클래스-접두사"
-  },"1896": {
+  },"1895": {
     "doc": "Coding Standard",
     "title": "네이밍 규칙",
     "content": ". | 단어 사이에 언더스코어(_) 를 사용하지 않는다 | 단어의 첫 글자는 대문자로 표기한다 . | 예: MouseCoordinates (o), delta_x (x) | . | 타입명에는 추가로 대문자 접두사를 붙여 변수명과 구분한다 . | 예: FSkin (타입), Skin (FSkin 타입의 인스턴스) | . | 모든 변수는 한줄씩 선언한다 | 반환값이 있는 함수는 이름만으로 반환값을 명확히 한다 . | O: bool IsTeaFresh(FTea Tea) True 의미 명확 | X: bool CheckTea(FTea Tea) 어떤걸 반환할지 의미 불명확 | . | 반환값이 없는 절차 함수는 강한 동사+목적어 형식 . | 메서드의 목적어가 자기 자신이면 (맴버 함수) 생략 가능 | Handle, Process 등 모호한 동사 피하기 | . | bool 반환 함수는 항상 Yes/No 질문 형태를 취한다 . | IsVisible(), ShouldClearBuffer() | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EB%84%A4%EC%9D%B4%EB%B0%8D-%EA%B7%9C%EC%B9%99",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#네이밍-규칙"
-  },"1897": {
+  },"1896": {
     "doc": "Coding Standard",
     "title": "Const 정확성",
     "content": ". | 함수 인자가 함수 내에서 변경되지 않는다면, const pointer 또는 const reference로 전달 | 객체를 변경하지 않는 메서드는 const로 명시 | 컨테이너를 수정하지 않는 반복문은 const 반복자 사용 | . 사용예시 . void SomeMutatingOperation(FThing&amp; OutResult, const TArray&lt;Int32&gt;&amp; InArray) { // InArray는 수정되지 않음, OutResult는 아마 수정될것임 } void FThing::SomeNonMutatingOperation() const { // 이 코드는 FThing을 변경하지 않음 } TArray&lt;FString&gt; StringArray; for (const FString&amp; : StringArray) { // 반복문 내부에서 StringArray를 수정하지 않음 } . | 반환 타입에 const 사용 금지 (컴파일 경고 발생) . | 단 const 레퍼런스, 포인터 반환은 허용 | . | . // 좋은 예시 - const 참조 반환 const TArray&lt;FString&gt;&amp; GetSomeArray(); // 좋은 예시 - const 포인터 반환 const TArray&lt;FString&gt;* GetSomeArray(); // 나쁜 예시 - const 배열 반환 const TArray&lt;FString&gt; GetSomeArray(); // 나쁜 예시 - const 포인터를 const로 반환 const TArray&lt;FString&gt;* const GetSomeArray(); . | 포인터 자체를 const로 만들 때는 타입 뒤에 const . | 포인터가 가리키는 값이 아닌, 포인터 자체의 재할당을 막음 | . | . // 포인터는 재할당 불가, T는 변경 가능 T* const Ptr = ...; // 잘못된 사용: 불가(레퍼런스는 재할당 불가 특성상 의미 없음) T&amp; const Ref = ...; . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-%EC%A0%95%ED%99%95%EC%84%B1",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#const-정확성"
-  },"1898": {
+  },"1897": {
     "doc": "Coding Standard",
     "title": "주석",
     "content": ". | 클래스 주석 . | 이 클래스가 해결하는 문제 | 클래스 생성 이유 | . | 함수 (메서드) 주석 . | 함수 목적 기입 | . | 매개변수 주석 @param . | 측정 단위 | 예상 값 범위 | 불가능한 값 | 상태/오류 코드 의미 | . | 반환값 주석 @return . | 예상 반환 값 | . | 추가 정보 . | @warning 경고, @See보기 등을을 선택적으로 사용함 | . | . 사용예시 . /** The interface for drinkable objects. */ class IDrinkable { public: /** * Called when a player drinks this object. * @param OutFocusMultiplier - 반환 시, 마시는 사람의 집중력에 곱할 배수를 담는다. * @param OutThirstQuenchingFraction - 반환 시, 갈증 해소 정도(0~1)를 담는다. * @warning 반드시 음료가 제대로 준비된 후 호출해야 함. */ virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) = 0; }; /** 단일 찻잔 */ class FTea : public IDrinkable { public: /** * 주어진 물의 부피와 온도로 우려냈을 때, 차의 맛 변화량을 계산 * @param VolumeOfWater - 우릴 때 사용된 물의 양(mL) * @param TemperatureOfWater - 물의 온도(Kelvin) * @param OutNewPotency - 우려낸 후 차의 효능(0.97~1.04) * @return 차의 맛 강도 변화량(1분당 TTU) */ float Steep( const float VolumeOfWater, const float TemperatureOfWater, float&amp; OutNewPotency ); /** 설탕 당도 기준으로 감미를 추가 */ void Sweeten(const float EquivalentGramsOfSucrose); /** 일본 내 판매가(엔) */ float GetPrice() const { return Price; } virtual void Drink(float&amp; OutFocusMultiplier, float&amp; OutThirstQuenchingFraction) override; private: /** 가격(엔) */ float Price; /** 감미(설탕 환산 그램) */ float Sweetness; }; . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%A3%BC%EC%84%9D",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#주석"
-  },"1899": {
+  },"1898": {
     "doc": "Coding Standard",
     "title": "차후 더 추가 예정",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%B0%A8%ED%9B%84-%EB%8D%94-%EC%B6%94%EA%B0%80-%EC%98%88%EC%A0%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#차후-더-추가-예정"
-  },"1900": {
+  },"1899": {
     "doc": "Coding Standard",
     "title": "사용가능한 표준 라이브러리 목록",
     "content": ". | &lt;atomic&gt; : 신규 코드는 std::atomic 사용. 기존 TAtomic은 부분 구현만 되어 있음. | &lt;type_traits&gt; : 겹치는 부분은 표준 trait 사용. (표준 trait는 value/type 소문자, 기존 UE는 대문자 Value/Type 주의) | &lt;initializer_list&gt; : braced initializer 지원에 필수, 대체재 없음 | &lt;regex&gt; : 직접 사용 가능하나 에디터 전용 코드에 한정. 자체 구현 계획 없음. | &lt;limits&gt; : std::numeric_limits 전부 사용 가능 | &lt;cmath&gt; : 부동소수점 비교 함수만 사용 허용 | . 참고 링크 . | Coding Standard | Recommended Asset Naming Conventions | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/#%EC%82%AC%EC%9A%A9%EA%B0%80%EB%8A%A5%ED%95%9C-%ED%91%9C%EC%A4%80-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%AA%A9%EB%A1%9D",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/#사용가능한-표준-라이브러리-목록"
-  },"1901": {
-    "doc": "UE4 Materials 101",
-    "title": "UE4 Materials 101",
-    "content": "강의 영상 보면서 메모 . | Unreal Material Editor - Unreal Materials 101 | . ",
-    "url": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/",
+  },"1900": {
+    "doc": "EP [11 , 20]",
+    "title": "EP [11 , 20]",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B11,%2020%5D/",
     
-    "relUrl": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/"
-  },"1902": {
+    "relUrl": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/EP%20%5B11,%2020%5D/"
+  },"1901": {
     "doc": "UObject",
     "title": "UObject",
     "content": "언리얼 엔진의 모든 객체 지향 시스템의 기반이 되는 핵심 클래스. | 게임플레이 요소, 컴포넌트, 에셋 등 거의 모든 UE5 객체가 UObject에서 파생됨 | UObject 객체를 생성함으로써 리플렉션, 가비지 컬렉션(GC), 직렬화 등의 기능을 사용할 수 있다 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/"
-  },"1903": {
+  },"1902": {
     "doc": "UObject",
     "title": "개발자가 직접 사용하는 도구 (원인)",
     "content": ". | 객체 생성 및 관리 . | NewObject(), IsValid(), ConditionalBeginDestroy() | . | 라이프사이클 관리 . | PostInitProperties(), BeginDestroy(), AddToRoot() | . | 메타데이터 시스템 . | UPROPERTY(meta=(...)), UFUNCTION() 지정자 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80-%EC%A7%81%EC%A0%91-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%8F%84%EA%B5%AC-%EC%9B%90%EC%9D%B8",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#개발자가-직접-사용하는-도구-원인"
-  },"1904": {
+  },"1903": {
     "doc": "UObject",
     "title": "UObject를 사용함으로써 자동으로 얻는 기능 (결과)",
     "content": ". | 리플렉션 . | UCLASS()로 등록한 클래스가 블루프린트/파이썬에서 자동 인식 | . | 가비지 컬렉션 . | UPROPERTY() 참조가 없어지면 GC가 자동으로 객체 제거 | . | 직렬화 . | SaveGame 지정 시 별도 코드 없이도 디스크에 저장 가능 | . | 에디터 통합 . | EditAnywhere 메타데이터로 자동으로 디테일 패널 생성 | . | . UObject 상속 계층 구조 . UObject (최상위 베이스 클래스) ├─ UActorComponent (액터 컴포넌트 베이스) │ ├─ USceneComponent (변환 기능 포함) │ │ ├─ UPrimitiveComponent (렌더링 가능) │ │ │ ├─ UMeshComponent (메시 기반) │ │ │ │ ├─ USkeletalMeshComponent (스켈레탈 메시) │ │ │ │ └─ UStaticMeshComponent (스태틱 메시) │ │ │ └─ ULightComponent (라이트 소스) │ │ └─ UCameraComponent (카메라) │ └─ UAudioComponent (사운드) ├─ AActor (월드 배치 객체) │ ├─ APawn (플레이어/AI 제어 가능) │ │ ├─ ACharacter (캐릭터 메시/이동 포함) │ │ └─ ADefaultPawn (기본 이동 기능) │ └─ AStaticMeshActor (스태틱 메시 배치) ├─ UDataAsset (데이터 전용 에셋) │ ├─ UPrimaryDataAsset (프라이머리 에셋 시스템) │ └─ UAnimSequence (애니메이션 데이터) ├─ UBlueprintFunctionLibrary (블루프린트 함수) │ ├─ UKismetSystemLibrary (시스템 유틸리티) │ └─ UKismetMathLibrary (수학 함수) └─ 기타 주요 클래스 ├─ UGameInstance (게임 인스턴스) ├─ UWorld (월드 컨텍스트) ├─ UUserWidget (UMG 위젯) └─ UMaterial (머티리얼) . 주의사항 . | 스택 할당 금지: 반드시 힙에 생성 (GC 관리 대상이어야 함) | 다중 상속 제한: UObject를 다중 상속할 때는 주의가 필요 (일반적으로 UInterface 사용) | 표준 C++ 타입과의 호환성: std::vector 등은 UPROPERTY()로 표시할 수 없으며, TArray를 사용함 | 아주 가벼운 데이터만 다룰 경우 USTRUCT를 권장 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%A8%EC%9C%BC%EB%A1%9C%EC%8D%A8-%EC%9E%90%EB%8F%99%EC%9C%BC%EB%A1%9C-%EC%96%BB%EB%8A%94-%EA%B8%B0%EB%8A%A5-%EA%B2%B0%EA%B3%BC",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject를-사용함으로써-자동으로-얻는-기능-결과"
-  },"1905": {
+  },"1904": {
     "doc": "UObject",
     "title": "UObject의 내부 구조",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject%EC%9D%98-%EB%82%B4%EB%B6%80-%EA%B5%AC%EC%A1%B0",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject의-내부-구조"
-  },"1906": {
+  },"1905": {
     "doc": "UObject",
     "title": "UClass",
     "content": ". | UClass는 UObject 객체의 청사진 (UObject 타입에 대한 메타데이터와 구조 정보) | 프로퍼티의 이름/타입/위치(오프셋) . | (예: “고양이” 종류의 객체는 “고양이 클래스” DNA를 가짐) | . | 모든 UObject는 자신의 클래스 정보 (UClass)를 가리키는 ClassPrivate 포인터를 갖는다 | . class UClass : public UObject { TArray&lt;UProperty*&gt; Properties; // 프로퍼티 목록 (예: 체력, 공격력) TArray&lt;UFunction*&gt; Functions; // 함수 목록 (예: 점프(), 공격()) UClass* SuperClass; // 부모 클래스 (상속 관계) UObject* ClassDefaultObject; // CDO 포인터 // ... 기타 메타데이터 }; . 동작 예시 . UMyObject* Obj = NewObject&lt;UMyObject&gt;(); UClass* ObjClass = Obj-&gt;GetClass(); // 데이터 추출 . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uclass",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uclass"
-  },"1907": {
+  },"1906": {
     "doc": "UObject",
     "title": "CDO (Class Default Object)",
     "content": ". | UClass가 관리하는 특별한 UObject 인스턴스 | 모든 UObject 인스턴스의 초기값을 제공하는 원본 . | (예: “고양이 클래스”의 기본 색상=검정, 기본 체력=100) | . | . | 클래스가 언리얼 모듈에 로드될 때 한 번만 생성됨 | . 내부 구조와 CDO의 관계 다이어그램 . | UClass : 모든 인스턴스가 공유하는 “청사진” | CDO : 인스턴스들이 참조하는 변하지 않는 원본 | UObject 인스턴스 : CDO의 기본값을 복사받아 생성된 개별 객체 | . CDO 접근 방법 . // CDO 얻기 UMyObject* Defaults = GetDefault&lt;UMyObject&gt;(); // 기본값 사용 예시 float DefaultHealth = Defaults-&gt;Health; // 에디터에서 설정한 Health 값 . CDO 실제 활용 . | 에디터 연동 (인스턴스 초기값 세팅) UPROPERTY(EditDefaultsOnly, Category=\"Settings\") float Health; // CDO에서만 편집 가능 . | 런타임 검사 if (MyObj-&gt;Health == GetDefault&lt;UMyObject&gt;()-&gt;Health) { UE_LOG(LogTemp, Warning, TEXT(\"체력이 기본값입니다!\")); } . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#cdo-class-default-object",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#cdo-class-default-object"
-  },"1908": {
+  },"1907": {
     "doc": "UObject",
     "title": "UObject 객체 생성 과정",
     "content": ". | UClass 로드 : 엔진 시작 시 UMyObject::StaticClass() 호출 → UClass 생성 | CDO 생성 : UClass 초기화 과정에서 GetDefaultObject()가 CDO 생성 | UObject 인스턴스 생성 : NewObject() 시 CDO의 프로퍼티 값을 복사 | . CDO vs 인스턴스 . | 비교 항목 | CDO | 일반 인스턴스 | . | 생성 시점 | 모듈 로드 시 1회 | NewObject() 호출 시 | . | 수정 가능성 | 에디터에서만 (런타임 X) | 런타임 자유롭게 변경 가능 | . | 메모리 위치 | 영구적 (게임 종료 시까지) | GC에 의해 삭제 가능 | . | 용도 | 기본값 템플릿 | 실제 게임 내 객체 | . | 에디터에서 Health=200 변경 → 모든 새 인스턴스는 Health=200으로 생성됨 | 기존 인스턴스는 영향 없음 (이미 생성된 객체는 독립적) | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject-%EA%B0%9D%EC%B2%B4-%EC%83%9D%EC%84%B1-%EA%B3%BC%EC%A0%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#uobject-객체-생성-과정"
-  },"1909": {
+  },"1908": {
     "doc": "UObject",
     "title": "ObjectFlags",
     "content": "객체의 상태를 나타내는 비트 플래그 . enum EObjectFlags { RF_Public = 0x00000001, // 에디터에 노출 여부 RF_Transactional= 0x00002000, // Undo/Redo 지원 RF_Transient = 0x00004000, // 임시 객체 (저장 안 됨) // ... 30여 가지 플래그 }; . | UObject 인스턴스는 자신만의 ObjectFlags를 보유 | UClass는 UObject의 파생 클래스이므로, UClass도 자신만의 ObjectFlags를 가짐 | . ObjectFlags 내부 구조 다이어그램 . | UObject 인스턴스의 ObjectFlags: 개별 인스턴스의 런타임 상태 제어 . | 이 객체만의 상태 플래그 | . | UClass의 ObjectFlags: 클래스 전체의 정적 특성 정의, 추상 클래스 여부, 블루프린트 노출 . | 클래스 전체에 적용되는 플래그 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#objectflags",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#objectflags"
-  },"1910": {
+  },"1909": {
     "doc": "UObject",
     "title": "서브오브젝트 시스템 (Subobject System)",
     "content": "다른 UObject (주로 AActor나 UActorComponent)에 종속된 자식 객체 . | “서브오브젝트”란 별도 클래스가 아니라, Outer 체계를 활용한 소유 관계/구조 | 모든 컴포넌트는 서브오브젝트임 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%8B%9C%EC%8A%A4%ED%85%9C-subobject-system",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-시스템-subobject-system"
-  },"1911": {
+  },"1910": {
     "doc": "UObject",
     "title": "서브오브젝트의 특징",
     "content": ". | 생명주기 : 부모 종속 / 부모 객체가 파괴되면 함께 파괴됨 (GC 대상) | 생성 시점 제한 : 반드시 부모의 생성자에서 CreateDefaultSubobject&lt;T&gt;()로 생성해야 함 | 자동 직렬화 : 부모와 함께 저장/로드됨 (에디터에서 편집 가능) | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8%EC%9D%98-%ED%8A%B9%EC%A7%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트의-특징"
-  },"1912": {
+  },"1911": {
     "doc": "UObject",
     "title": "Suboject vs UObject",
     "content": "| 비교 항목 | 서브오브젝트 | 일반 UObject | . | 생성 방법 | CreateDefaultSubobject&lt;T&gt;() (생성자 내에서만 호출 가능) | NewObject&lt;T&gt;() (런타임 어디서나 가능) | . | 생명주기 | 부모 종속(부모 삭제 시 함께 삭제) | 독립적 | . | 에디터 노출 | 부모의 디테일 패널에 자동 표시 | 별도 에셋 또는 인스턴스로 관리 | . | 사용 사례 | 액터의 컴포넌트(Mesh, Camera 등) | 독립적인 데이터 에셋 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#suboject-vs-uobject",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#suboject-vs-uobject"
-  },"1913": {
+  },"1912": {
     "doc": "UObject",
     "title": "서브오브젝트 구조",
     "content": "class UObject { protected: UObject* Outer; // 상위 객체 (서브오브젝트인 경우 소유자) FName Name; // 고유 이름 (Outer + Name으로 식별) UClass* Class; // 타입 정보 // 기타... }; . | Outer : 서브 오브젝트의 소유자 (예: USceneComponent의 Outer는 일반적으로 소유자 AActor) | Name : 같은 소유자를 가진 그룹에서 고유하게 가져야함 (중복 시 경고 발생) | 블루프린트: 에디터에서 Add Component 버튼으로 추가 가능 | AActor: Actor의 경우 추가로 Components 배열 사용 | . UClass와의 관계 . | UClass는 서브오브젝트 목록을 직접 관리하지 않음 | UPROPERTY 메타데이터를 통해 리플렉션 및 자동 탐색이 이루어짐 | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EA%B5%AC%EC%A1%B0",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-구조"
-  },"1914": {
+  },"1913": {
     "doc": "UObject",
     "title": "서브오브젝트 탐색 방식",
     "content": "1. 리플렉션 기반 탐색 (UPROPERTY) . | UPROPERTY()로 표시된 멤버만 탐색 가능 UCLASS() class AMyActor : public AActor { GENERATED_BODY() public: UPROPERTY(VisibleAnywhere) UMyComponent* Comp; // 서브오브젝트는 UPROPERTY로 노출됨 }; . | . 2. Outer 체인 탐색 . | AActor가 아닌 일반 UObject 서브오브젝트를 찾을 때 사용 | . // 모든 서브오브젝트 순회 (예시 코드) TArray&lt;UObject*&gt; Subobjects; GetObjectsWithOuter(MyActor, Subobjects); // MyActor를 Outer로 가진 객체 찾기 // 결과 출력 for (UObject* Obj : Subobjects) { UE_LOG(LogTemp, Warning, TEXT(\"Subobject: %s\"), *Obj-&gt;GetName()); } . 3. AActor 특수 처리 . | AActor만 Components 배열을 명시적으로 별도 관리 | . class AActor : public UObject { TArray&lt;UActorComponent*&gt; Components; // 서브오브젝트 명시적 관리 }; // FindComponentByClass 활용 (최적화된 탐색) UMyComponent* MyComp = FindComponentByClass&lt;UMyComponent&gt;(); . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%ED%83%90%EC%83%89-%EB%B0%A9%EC%8B%9D",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-탐색-방식"
-  },"1915": {
+  },"1914": {
     "doc": "UObject",
     "title": "서브오브젝트 생성 및 과정",
     "content": "// MyActor.h UCLASS() class AMyActor : public AActor { GENERATED_BODY() public: UPROPERTY(VisibleAnywhere) UMyComponent* MyComp; // 서브오브젝트 포인터 AMyActor() { // 생성자에서 서브오브젝트 생성 MyComp = CreateDefaultSubobject&lt;UMyComponent&gt;(TEXT(\"MyComp\")); } }; . | 생성자 호출 . | 반드시 부모 객체의 생성자 내에서 호출 . | 예외: UActorComponent는 InitializeComponent()에서 추가 초기화 | . | . | 메모리 할당 . | 엔진은 UMyComponent 인스턴스를 생성하고, Outer를 AMyActor로 설정 | . | 이름 등록 . | TEXT(“MyComp”)를 이름으로 지정, 중복 검사 수행 | . | 리플렉션 연동 . | UPROPERTY가 없어도 서브오브젝트 생성 (에디터에서 수정 불가. 블루 프린트 노출 X) | UPROPERTY가 있으면 디테일 패널에 노출 | . | Actor에 등록 . | AActor 전용으로 Actor와 연관된 오브젝트가 아닐 경우 패스됨 | AActor의 경우 Components 배열에 자동 추가 | . | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EA%B3%BC%EC%A0%95",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-생성-및-과정"
-  },"1916": {
+  },"1915": {
     "doc": "UObject",
     "title": "서브오브젝트 다이어그램",
     "content": ". | 실선: 명시적 참조 (AActor의 Components 배열) | 점선: 암시적 참조 (Outer 포인터) | . ",
     "url": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#%EC%84%9C%EB%B8%8C%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8",
     
     "relUrl": "/docs/Unreal%20Engine%205/Coding%20Standard/UObject/#서브오브젝트-다이어그램"
+  },"1916": {
+    "doc": "UE4 Materials 101",
+    "title": "UE4 Materials 101",
+    "content": "강의 영상 보면서 메모 . | Unreal Material Editor - Unreal Materials 101 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/UE4%20Materials%20101/"
   },"1917": {
     "doc": "Macro",
     "title": "Macro",
@@ -13558,117 +13558,117 @@
     
     "relUrl": "/docs/Math/linear%20algebra/#add-a-row-to-another-row"
   },"1937": {
-    "doc": "Technical Shading",
-    "title": "Technical Shading",
-    "content": "HLSL / SDF 예제 . 링크 . | Unreal Engine 5 Tutorial - Technical Shading | . ",
-    "url": "/docs/Unreal%20Engine%205/Material/Various%20examples/Technical%20Shading/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/Various%20examples/Technical%20Shading/"
-  },"1938": {
-    "doc": "Technical Shading",
-    "title": "Cost",
-    "content": "ALU 명령어(산술 연산)의 복잡도 수준은 다양하다 (GPU 아키텍처에 따라 다를 수 있음) . FREE (on most GPUs) . | saturate | abs | multiply by 2/4 | divide 2/4 (실제로 일부 하드웨어 명령어는 입력이나 출력에 “출력에 2를 곱하라”와 같은 수정자를 받을 수 있다) | . CHEAP TIER . | add | subtract | multiply | min | max | floor | ceil | round | frac | clamp | step | lerp | dot product | if (분기 없는 삼항 비교라고도 함) | . MID TIER . | divide | sin | cos | square root | log2 | exp2 | sign | cross product | length | distance | smoothstep | . EXPENSIVE TIER . | power | fmod | tan | inverse trigonometry (asin, acos, atan, atan2) . | 역삼각법 | . | . 상수로 전달된 값(매개변수가 아닌)은 컴파일 시간에 최적화 됨 (따라서 0.5를 곱하는 것과 2로 나누는 것은 상수인 경우 동일하게 처리되므로 걱정할 필요가 없음) . 사용자 지정 노드는 필요한 경우에만 사용 (예: 노드 형태로 제공되지 않는 작업) 사용자 지정 노드는 일반 노드처럼 컴파일 시 최적화되지 않고, 모든 단계를 미리 볼 수 없으며, 팀원들이 이해하기 어려울 수 있다 . ",
-    "url": "/docs/Unreal%20Engine%205/Material/Various%20examples/Technical%20Shading/#cost",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/Various%20examples/Technical%20Shading/#cost"
-  },"1939": {
-    "doc": "Various examples",
-    "title": "Various examples",
-    "content": "여러 예제보며 공부하기 . ",
-    "url": "/docs/Unreal%20Engine%205/Material/Various%20examples/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/Various%20examples/"
-  },"1940": {
     "doc": "Operations on two matrices",
     "title": "Operations on two matrices",
     "content": "두 행렬에 대한 연산 . ",
     "url": "/docs/Math/linear%20algebra/Operations%20on%20two%20matrices/",
     
     "relUrl": "/docs/Math/linear%20algebra/Operations%20on%20two%20matrices/"
+  },"1938": {
+    "doc": "Technical Shading",
+    "title": "Technical Shading",
+    "content": "HLSL / SDF 예제 . 링크 . | Unreal Engine 5 Tutorial - Technical Shading | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/Various%20examples/Technical%20Shading/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/Various%20examples/Technical%20Shading/"
+  },"1939": {
+    "doc": "Technical Shading",
+    "title": "Cost",
+    "content": "ALU 명령어(산술 연산)의 복잡도 수준은 다양하다 (GPU 아키텍처에 따라 다를 수 있음) . FREE (on most GPUs) . | saturate | abs | multiply by 2/4 | divide 2/4 (실제로 일부 하드웨어 명령어는 입력이나 출력에 “출력에 2를 곱하라”와 같은 수정자를 받을 수 있다) | . CHEAP TIER . | add | subtract | multiply | min | max | floor | ceil | round | frac | clamp | step | lerp | dot product | if (분기 없는 삼항 비교라고도 함) | . MID TIER . | divide | sin | cos | square root | log2 | exp2 | sign | cross product | length | distance | smoothstep | . EXPENSIVE TIER . | power | fmod | tan | inverse trigonometry (asin, acos, atan, atan2) . | 역삼각법 | . | . 상수로 전달된 값(매개변수가 아닌)은 컴파일 시간에 최적화 됨 (따라서 0.5를 곱하는 것과 2로 나누는 것은 상수인 경우 동일하게 처리되므로 걱정할 필요가 없음) . 사용자 지정 노드는 필요한 경우에만 사용 (예: 노드 형태로 제공되지 않는 작업) 사용자 지정 노드는 일반 노드처럼 컴파일 시 최적화되지 않고, 모든 단계를 미리 볼 수 없으며, 팀원들이 이해하기 어려울 수 있다 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/Various%20examples/Technical%20Shading/#cost",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/Various%20examples/Technical%20Shading/#cost"
+  },"1940": {
+    "doc": "Various examples",
+    "title": "Various examples",
+    "content": "여러 예제보며 공부하기 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/Various%20examples/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/Various%20examples/"
   },"1941": {
-    "doc": "Material",
-    "title": "Material",
-    "content": "메뉴얼 링크 . | material concepts | Material Blend Modes | . ",
-    "url": "/docs/Unreal%20Engine%205/Material/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/"
-  },"1942": {
-    "doc": "Material",
-    "title": "shortcut key",
-    "content": "| 단축키 | 표현식 노드 | 설명 | . | A | Add | 두 값 더하기 | . | B | BumpOffset | 텍스처 좌표를 시차 기반으로 오프셋 | . | C | Comment | 코멘트 박스 생성 | . | D | Divide | 나누기 | . | E | Power | 거듭제곱 연산 | . | F | Material Function Call | 머티리얼 함수 호출 | . | I | If | 조건 분기 처리 | . | L | Linear Interpolate (Lerp) | 선형 보간 | . | M | Multiply | 곱셈 | . | N | Normalize | 벡터 정규화 | . | O | OneMinus | 1 - 입력값 | . | P | Panner | 텍스처 UV 이동 | . | R | Reflection Vector | 반사 벡터 생성 | . | S | Scalar Parameter | 파라미터화된 스칼라 값 | . | T | Texture Sample | 텍스처 샘플링 | . | U | Texture Coordinate | UV 좌표 제어 | . | V | Vector Parameter | 파라미터화된 벡터 값 | . | 1 | Constant | 단일 실수 값 | . | 2 | Constant2Vector | 2D 벡터 값 | . | 3 | Constant3Vector | 3D 벡터 값 (색상 자주 사용) | . | 4 | Constant4Vector | 4D 벡터 값 | . | Shift + C | Component Mask | RGB 채널 마스크 | . ",
-    "url": "/docs/Unreal%20Engine%205/Material/#shortcut-key",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/#shortcut-key"
-  },"1943": {
-    "doc": "Material",
-    "title": "Material Details",
-    "content": ". ",
-    "url": "/docs/Unreal%20Engine%205/Material/#material-details",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/#material-details"
-  },"1944": {
-    "doc": "Material",
-    "title": "blend mode",
-    "content": "머티리얼의 색상이 배경과 어떻게 혼합되는지를 결정 . 각 블렌드 모드 반사광 확인용 . ",
-    "url": "/docs/Unreal%20Engine%205/Material/#blend-mode",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/#blend-mode"
-  },"1945": {
-    "doc": "Material",
-    "title": "Opaque (불투명)",
-    "content": "머티리얼 출력값이 화면 뒤의 픽셀과 블렌딩되지 않고 완전 덮어씀 . Final color = Source color . | 조명 및 깊이 정보, Z-prepass 등의 최적화가 가능하며 대부분의 일반적 표면(금속, 플라스틱, 돌 등)에 사용 | 투명도를 갖는 머티리얼이 아님 | 따라서 렌더링 순서(Ordering) 문제, 뒤에 있는 객체가 보이는 문제 등을 신경 쓸 필요 적음 | . 활용 예시 . | 건물 벽, 바닥, 캐릭터 복장 등의 일반적이고 완전 불투명한 오브젝트 | 렌더링에서 깊이 정보 이용한 그림자, 반사, 굴절 등이 필요한 경우 | 퍼포먼스가 중요한 영역에서는 기본으로 선택할 모드 | . 주의사항 . 투명하거나 반투명한 효과가 필요할 경우 사용 불가 머티리얼 내부에 Opacity(불투명도) 입력을 사용해도, Blend Mode가 Opaque이면 무시되거나 동작하지 않을 수 있음 . ",
-    "url": "/docs/Unreal%20Engine%205/Material/#opaque-%EB%B6%88%ED%88%AC%EB%AA%85",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/#opaque-불투명"
-  },"1946": {
-    "doc": "Material",
-    "title": "Masked (알파 컷오프/알파 테스트)",
-    "content": "Opacity Mask 입력을 사용해 픽셀을 100% 그리거나(Opaque), 100% 그리지 않는다 (Transparent) . Final color = Source color if (OpacityMask &gt; OpacityMaskClipValue) . | 중간 투명도는 허용되지 않음 (참/거짓 이진 투명도) | 마스크 모드에서 제거된 픽셀은 그려지지 않음. 따라서 그려지지 않은 곳은 어떤 반사도 볼 수 없음 | . 활용 예시 . | 사슬망이나 울타리처럼 구멍이 많이 있는 구조물 | 나뭇잎이나 덩굴처럼 뚫린 형상을 가진 표면 | 투명도 변화 없이 단순히 보이거나 안 보이게 처리하고자 할 때 | . 주의사항 . 중간 단계의 반투명(예: 반쯤 보이는 모습)은 지원하지 않음. 반투명 효과가 필요하다면 Translucent 등이 적합 Masked 모드는 Z-prepass 최적화 효과가 크나, 너무 복잡한 마스크 텍스처나 오버드로우가 많으면 성능이 저하될 수 있음 . ",
-    "url": "/docs/Unreal%20Engine%205/Material/#masked-%EC%95%8C%ED%8C%8C-%EC%BB%B7%EC%98%A4%ED%94%84%EC%95%8C%ED%8C%8C-%ED%85%8C%EC%8A%A4%ED%8A%B8",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/#masked-알파-컷오프알파-테스트"
-  },"1947": {
-    "doc": "Material",
-    "title": "Translucent (반투명)",
-    "content": "머리티리얼이 화면 뒤의 픽셀과 Opacity 값에 따라(0~1) 블렌딩 . FinalColor = SourceColor × Opacity + DestColor × (1 − Opacity) . 활용 예시 . | 유리 창, 플라스틱 커버, 물방울, 안개 효과 등 | 파티클 시스템의 연기, 먼지, 흐림 효과 등 다양한 반투명 시각 효과 | UI 요소 중 투명도를 가진 요소 | . 주의사항 . 투명물체끼리 겹칠 때 올바른 깊이 처리 문제가 발생할 수 있다 성능 비용이 상대적으로 높을 수 있다 (특히 많은 픽셀/오버드로우) 스펙큘러(반사)나 그림자 처리가 일반 불투명 처리에 비해 제한적이다 . ",
-    "url": "/docs/Unreal%20Engine%205/Material/#translucent-%EB%B0%98%ED%88%AC%EB%AA%85",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/#translucent-반투명"
-  },"1948": {
-    "doc": "Material",
-    "title": "Additive (덧셈 블렌드)",
-    "content": "머티리얼 색상(source)과 배경 색상(dest)이 더해진다 . FinalColor = SourceColor + DestColor . | 검정(0,0,0)이 있는 곳은 배경이 그대로 보이고, 색상이 있는 부분은 가산 | . 활용 예시 . | 불꽃, 발광 효과(glow), 홀로그램, 마법 효과 등 밝게 빛나는 효과 | 파티클 이펙트에서 오버레이 효과로 많이 사용됨 | . ",
-    "url": "/docs/Unreal%20Engine%205/Material/#additive-%EB%8D%A7%EC%85%88-%EB%B8%94%EB%A0%8C%EB%93%9C",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/#additive-덧셈-블렌드"
-  },"1949": {
-    "doc": "Material",
-    "title": "Modulate (곱셈 블렌드)",
-    "content": "머티리얼 색상(source)과 배경 색상(dest)이 곱해짐 . FinalColor = SourceColor × DestColor . 활용 예시 . | 파티클 이펙트 중 어두운 오버레이, 스모크, 그림자 느낌을 강조하는 효과 | 배경 텍스처와 색상을 조합해 분위기 조명이나 색감 필터를 만드는 경우 | . 주의사항 . 일반 모델링된 표면(material)보다는 언리얼 엔진 상에서 ‘이펙트’ 또는 디칼 영역에서 더 적합 곱셈으로 인해 색이 매우 어두워질 수 있으므로 밝기 조절이 필요 깊이 쓰기/조명 등이 제한될 수 있으므로 쓰임을 정확히 이해하고 사용해야 함 . ",
-    "url": "/docs/Unreal%20Engine%205/Material/#modulate-%EA%B3%B1%EC%85%88-%EB%B8%94%EB%A0%8C%EB%93%9C",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/#modulate-곱셈-블렌드"
-  },"1950": {
-    "doc": "Material",
-    "title": "Alpha Composite (프리멀티플라이드 알파 블렌드)",
-    "content": "머티리얼의 어느 부분을 가산적으로 블렌딩하고, 어느 부분을 재료의 불투명도를 이용해 반투명하게 블렌딩할지 수동으로 지정 . FinalColor = SourceColor + DestColor × (1 − SourceOpacity) . 활용 예시 . 파티클 및 이펙트에서 배경이 밝거나 여러 겹이 겹치는 상황에서 디테일이 사라지는 문제를 줄이고자 할 때 . 주의사항 . 텍스처가 미리 Premultiplied alpha 상태인지 확인해야 함 (색상 * 알파가 이미 곱해져 있어야 기대한 대로 작동) . ",
-    "url": "/docs/Unreal%20Engine%205/Material/#alpha-composite-%ED%94%84%EB%A6%AC%EB%A9%80%ED%8B%B0%ED%94%8C%EB%9D%BC%EC%9D%B4%EB%93%9C-%EC%95%8C%ED%8C%8C-%EB%B8%94%EB%A0%8C%EB%93%9C",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/#alpha-composite-프리멀티플라이드-알파-블렌드"
-  },"1951": {
-    "doc": "Material",
-    "title": "Alpha Holdout",
-    "content": "색상을 그리는 대신, 자신의 알파 값만큼 배경을 ‘지우는’ 역할. 즉, 화면에 ‘구멍’을 뚫는다 . | 이 블렌드 모드는 Unlit 셰이딩 모델을 사용해야 함 | . FinalColor = DestColor × (1 − SourceOpacity) . ",
-    "url": "/docs/Unreal%20Engine%205/Material/#alpha-holdout",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Material/#alpha-holdout"
-  },"1952": {
     "doc": "Multiplying matrices and vectors",
     "title": "Multiplying matrices and vectors",
     "content": " ",
     "url": "/docs/Math/linear%20algebra/Multiplying%20matrices%20and%20vectors/",
     
     "relUrl": "/docs/Math/linear%20algebra/Multiplying%20matrices%20and%20vectors/"
+  },"1942": {
+    "doc": "Material",
+    "title": "Material",
+    "content": "메뉴얼 링크 . | material concepts | Material Blend Modes | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/"
+  },"1943": {
+    "doc": "Material",
+    "title": "shortcut key",
+    "content": "| 단축키 | 표현식 노드 | 설명 | . | A | Add | 두 값 더하기 | . | B | BumpOffset | 텍스처 좌표를 시차 기반으로 오프셋 | . | C | Comment | 코멘트 박스 생성 | . | D | Divide | 나누기 | . | E | Power | 거듭제곱 연산 | . | F | Material Function Call | 머티리얼 함수 호출 | . | I | If | 조건 분기 처리 | . | L | Linear Interpolate (Lerp) | 선형 보간 | . | M | Multiply | 곱셈 | . | N | Normalize | 벡터 정규화 | . | O | OneMinus | 1 - 입력값 | . | P | Panner | 텍스처 UV 이동 | . | R | Reflection Vector | 반사 벡터 생성 | . | S | Scalar Parameter | 파라미터화된 스칼라 값 | . | T | Texture Sample | 텍스처 샘플링 | . | U | Texture Coordinate | UV 좌표 제어 | . | V | Vector Parameter | 파라미터화된 벡터 값 | . | 1 | Constant | 단일 실수 값 | . | 2 | Constant2Vector | 2D 벡터 값 | . | 3 | Constant3Vector | 3D 벡터 값 (색상 자주 사용) | . | 4 | Constant4Vector | 4D 벡터 값 | . | Shift + C | Component Mask | RGB 채널 마스크 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/#shortcut-key",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/#shortcut-key"
+  },"1944": {
+    "doc": "Material",
+    "title": "Material Details",
+    "content": ". ",
+    "url": "/docs/Unreal%20Engine%205/Material/#material-details",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/#material-details"
+  },"1945": {
+    "doc": "Material",
+    "title": "blend mode",
+    "content": "머티리얼의 색상이 배경과 어떻게 혼합되는지를 결정 . 각 블렌드 모드 반사광 확인용 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/#blend-mode",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/#blend-mode"
+  },"1946": {
+    "doc": "Material",
+    "title": "Opaque (불투명)",
+    "content": "머티리얼 출력값이 화면 뒤의 픽셀과 블렌딩되지 않고 완전 덮어씀 . Final color = Source color . | 조명 및 깊이 정보, Z-prepass 등의 최적화가 가능하며 대부분의 일반적 표면(금속, 플라스틱, 돌 등)에 사용 | 투명도를 갖는 머티리얼이 아님 | 따라서 렌더링 순서(Ordering) 문제, 뒤에 있는 객체가 보이는 문제 등을 신경 쓸 필요 적음 | . 활용 예시 . | 건물 벽, 바닥, 캐릭터 복장 등의 일반적이고 완전 불투명한 오브젝트 | 렌더링에서 깊이 정보 이용한 그림자, 반사, 굴절 등이 필요한 경우 | 퍼포먼스가 중요한 영역에서는 기본으로 선택할 모드 | . 주의사항 . 투명하거나 반투명한 효과가 필요할 경우 사용 불가 머티리얼 내부에 Opacity(불투명도) 입력을 사용해도, Blend Mode가 Opaque이면 무시되거나 동작하지 않을 수 있음 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/#opaque-%EB%B6%88%ED%88%AC%EB%AA%85",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/#opaque-불투명"
+  },"1947": {
+    "doc": "Material",
+    "title": "Masked (알파 컷오프/알파 테스트)",
+    "content": "Opacity Mask 입력을 사용해 픽셀을 100% 그리거나(Opaque), 100% 그리지 않는다 (Transparent) . Final color = Source color if (OpacityMask &gt; OpacityMaskClipValue) . | 중간 투명도는 허용되지 않음 (참/거짓 이진 투명도) | 마스크 모드에서 제거된 픽셀은 그려지지 않음. 따라서 그려지지 않은 곳은 어떤 반사도 볼 수 없음 | . 활용 예시 . | 사슬망이나 울타리처럼 구멍이 많이 있는 구조물 | 나뭇잎이나 덩굴처럼 뚫린 형상을 가진 표면 | 투명도 변화 없이 단순히 보이거나 안 보이게 처리하고자 할 때 | . 주의사항 . 중간 단계의 반투명(예: 반쯤 보이는 모습)은 지원하지 않음. 반투명 효과가 필요하다면 Translucent 등이 적합 Masked 모드는 Z-prepass 최적화 효과가 크나, 너무 복잡한 마스크 텍스처나 오버드로우가 많으면 성능이 저하될 수 있음 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/#masked-%EC%95%8C%ED%8C%8C-%EC%BB%B7%EC%98%A4%ED%94%84%EC%95%8C%ED%8C%8C-%ED%85%8C%EC%8A%A4%ED%8A%B8",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/#masked-알파-컷오프알파-테스트"
+  },"1948": {
+    "doc": "Material",
+    "title": "Translucent (반투명)",
+    "content": "머리티리얼이 화면 뒤의 픽셀과 Opacity 값에 따라(0~1) 블렌딩 . FinalColor = SourceColor × Opacity + DestColor × (1 − Opacity) . 활용 예시 . | 유리 창, 플라스틱 커버, 물방울, 안개 효과 등 | 파티클 시스템의 연기, 먼지, 흐림 효과 등 다양한 반투명 시각 효과 | UI 요소 중 투명도를 가진 요소 | . 주의사항 . 투명물체끼리 겹칠 때 올바른 깊이 처리 문제가 발생할 수 있다 성능 비용이 상대적으로 높을 수 있다 (특히 많은 픽셀/오버드로우) 스펙큘러(반사)나 그림자 처리가 일반 불투명 처리에 비해 제한적이다 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/#translucent-%EB%B0%98%ED%88%AC%EB%AA%85",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/#translucent-반투명"
+  },"1949": {
+    "doc": "Material",
+    "title": "Additive (덧셈 블렌드)",
+    "content": "머티리얼 색상(source)과 배경 색상(dest)이 더해진다 . FinalColor = SourceColor + DestColor . | 검정(0,0,0)이 있는 곳은 배경이 그대로 보이고, 색상이 있는 부분은 가산 | . 활용 예시 . | 불꽃, 발광 효과(glow), 홀로그램, 마법 효과 등 밝게 빛나는 효과 | 파티클 이펙트에서 오버레이 효과로 많이 사용됨 | . ",
+    "url": "/docs/Unreal%20Engine%205/Material/#additive-%EB%8D%A7%EC%85%88-%EB%B8%94%EB%A0%8C%EB%93%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/#additive-덧셈-블렌드"
+  },"1950": {
+    "doc": "Material",
+    "title": "Modulate (곱셈 블렌드)",
+    "content": "머티리얼 색상(source)과 배경 색상(dest)이 곱해짐 . FinalColor = SourceColor × DestColor . 활용 예시 . | 파티클 이펙트 중 어두운 오버레이, 스모크, 그림자 느낌을 강조하는 효과 | 배경 텍스처와 색상을 조합해 분위기 조명이나 색감 필터를 만드는 경우 | . 주의사항 . 일반 모델링된 표면(material)보다는 언리얼 엔진 상에서 ‘이펙트’ 또는 디칼 영역에서 더 적합 곱셈으로 인해 색이 매우 어두워질 수 있으므로 밝기 조절이 필요 깊이 쓰기/조명 등이 제한될 수 있으므로 쓰임을 정확히 이해하고 사용해야 함 . ",
+    "url": "/docs/Unreal%20Engine%205/Material/#modulate-%EA%B3%B1%EC%85%88-%EB%B8%94%EB%A0%8C%EB%93%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/#modulate-곱셈-블렌드"
+  },"1951": {
+    "doc": "Material",
+    "title": "Alpha Composite (프리멀티플라이드 알파 블렌드)",
+    "content": "머티리얼의 어느 부분을 가산적으로 블렌딩하고, 어느 부분을 재료의 불투명도를 이용해 반투명하게 블렌딩할지 수동으로 지정 . FinalColor = SourceColor + DestColor × (1 − SourceOpacity) . 활용 예시 . 파티클 및 이펙트에서 배경이 밝거나 여러 겹이 겹치는 상황에서 디테일이 사라지는 문제를 줄이고자 할 때 . 주의사항 . 텍스처가 미리 Premultiplied alpha 상태인지 확인해야 함 (색상 * 알파가 이미 곱해져 있어야 기대한 대로 작동) . ",
+    "url": "/docs/Unreal%20Engine%205/Material/#alpha-composite-%ED%94%84%EB%A6%AC%EB%A9%80%ED%8B%B0%ED%94%8C%EB%9D%BC%EC%9D%B4%EB%93%9C-%EC%95%8C%ED%8C%8C-%EB%B8%94%EB%A0%8C%EB%93%9C",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/#alpha-composite-프리멀티플라이드-알파-블렌드"
+  },"1952": {
+    "doc": "Material",
+    "title": "Alpha Holdout",
+    "content": "색상을 그리는 대신, 자신의 알파 값만큼 배경을 ‘지우는’ 역할. 즉, 화면에 ‘구멍’을 뚫는다 . | 이 블렌드 모드는 Unlit 셰이딩 모델을 사용해야 함 | . FinalColor = DestColor × (1 − SourceOpacity) . ",
+    "url": "/docs/Unreal%20Engine%205/Material/#alpha-holdout",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Material/#alpha-holdout"
   },"1953": {
     "doc": "Matrices as vectors",
     "title": "Matrices as vectors",
@@ -13831,68 +13831,68 @@
     
     "relUrl": "/docs/Computer%20Graphics/HLSL/ResterTekTutorial/#lerp-선형-보간-와-관계"
   },"1976": {
-    "doc": "generative Motion Design",
-    "title": "generative Motion Design",
-    "content": ". ",
-    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/"
-  },"1977": {
-    "doc": "generative Motion Design",
-    "title": "Introduce",
-    "content": ". | 현재 언리얼에서는, 메시(Mesh)를 한 번만 분할할 수 있다 . | 후디니의 경우 절차적 방식을 사용해 이미 분할된 메시를 또 쪼개는 재귀적 분할이 가능하다 | . | 따라서 기존 큐브에 완벽하게 들어맞는 8개의 더 작은 큐브를 스폰(spawn)시켜서, 마치 그것이 실제로 분할된 것처럼 보이게 만든다 | 블루프린트에서는, 특정 조건이 충족될 때까지 이 ‘분할 함수(splitting function)’를 지속적으로 반복 . | while 조건문은 큐브가 분할될 수 있는 횟수의 상한선이 됨 | . | 하지만 모든 큐브가 동일한 (상한선) 값을 가진다면, 모든 조각이 동일한 크기로 끝나게 되어 지루한 결과가 나옴 . | 따라서 상한선을 난수로 설정 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#introduce",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#introduce"
-  },"1978": {
-    "doc": "generative Motion Design",
-    "title": "Project settings",
-    "content": ". | Texture Streaming = Disabled | Auto-Exposure = Disabled | SetEditor Startup Map andGame Default Map = MAP_1 | SetDefault Game Mode = BP_GameModeBase | . ",
-    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#project-settings",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#project-settings"
-  },"1979": {
-    "doc": "generative Motion Design",
-    "title": "BP settings",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#bp-settings",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#bp-settings"
-  },"1980": {
-    "doc": "generative Motion Design",
-    "title": "GameModeBase",
-    "content": "게임의 규칙과 방식을 정의 . 주요 역할 . | “플레이어가 몇 점을 얻으면 이기는 거지?” (승패 조건) | “게임이 시작되면 어떤 플레이어 캐릭터(Pawn)를 생성해야 하지?” (기본 Pawn 설정) | “플레이어가 죽으면 어떻게 되지? (리스폰 규칙)” | “게임에 참여하는 플레이어 컨트롤러(Player Controller)는 무엇인가?” | “맵에 HUD(화면 UI)는 무엇을 쓸까?” | . 특징 . 레벨(맵)에 오직 하나만 존재 일반적으로 레벨 안에 직접 배치하지 않고, 프로젝트 설정에서 '기본 게임 모드'로 지정 그러면 엔진이 자동으로 생성 . ",
-    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#gamemodebase",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#gamemodebase"
-  },"1981": {
-    "doc": "generative Motion Design",
-    "title": "Pawn",
-    "content": "플레이어나 AI가 조종할 수 있는 게임 내의 아바타(캐릭터 또는 물체) . 주요 역할 . | 플레이어의 입력(키보드, 마우스)을 받아 움직임을 처리 | 물리적인 충돌을 처리 | 애니메이션을 재생 | 카메라를 장착 | . 특징 . 플레이어 그 자체는 아님. 플레이어가 조종하는 대상 Character 클래스는 Pawn의 가장 일반적인 자식 클래스로, 걷고 뛰는 캐릭터에 특화된 기능(예: 이동 컴포넌트)이 이미 들어있어 초보자에게 가장 많이 사용 . level BP . 특정 맵(레벨)에서만 일어나는 사건(이벤트)을 처리하는 스크립트 . 해당 레벨에 배치된 오브젝트들 간의 1회성 또는 지역적인 상호작용을 처리 . 주요 역할 . | “문에 다가가서 E 키를 누르면 문이 열리는” 트리거 이벤트 | “보스가 등장할 때 배경음악을 바꾸는” 이벤트 | “플레이어가 특정 지역에 들어오면 적을 소환하는” 트리거 | . 특징 . 레벨 별로 하나씩 존재하며, 오직 그 레벨 안에서만 작동 다른 레벨에서는 재사용이 불가능 매우 쉽고 빠르게 이벤트를 만들 수 있어 초보자에게 유용하지만, 남용하면 관리하기 힘든 코드가 될 수 있어 주의가 필요 . 사용한 노드 . | set view target with blend . | 플레이어 컨트롤러의 기능으로, 플레이어의 시점을 다른 액터(주로 카메라)로 부드럽게 전환 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#pawn",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#pawn"
-  },"1982": {
-    "doc": "Motion Design",
-    "title": "Motion Design",
-    "content": "real-time generative Motion Design / VFX . ",
-    "url": "/docs/Unreal%20Engine%205/Motion%20Design/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/"
-  },"1983": {
     "doc": "directXTutorial",
     "title": "directXTotorial",
     "content": "direct3D 11 tutorial . 참고 링크 . | DirectX Tutorial | rastertek | . ",
     "url": "/docs/Computer%20Graphics/HLSL/directXTutorial/#directxtotorial",
     
     "relUrl": "/docs/Computer%20Graphics/HLSL/directXTutorial/#directxtotorial"
-  },"1984": {
+  },"1977": {
     "doc": "directXTutorial",
     "title": "directXTutorial",
     "content": " ",
     "url": "/docs/Computer%20Graphics/HLSL/directXTutorial/",
     
     "relUrl": "/docs/Computer%20Graphics/HLSL/directXTutorial/"
+  },"1978": {
+    "doc": "generative Motion Design",
+    "title": "generative Motion Design",
+    "content": ". ",
+    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/"
+  },"1979": {
+    "doc": "generative Motion Design",
+    "title": "Introduce",
+    "content": ". | 현재 언리얼에서는, 메시(Mesh)를 한 번만 분할할 수 있다 . | 후디니의 경우 절차적 방식을 사용해 이미 분할된 메시를 또 쪼개는 재귀적 분할이 가능하다 | . | 따라서 기존 큐브에 완벽하게 들어맞는 8개의 더 작은 큐브를 스폰(spawn)시켜서, 마치 그것이 실제로 분할된 것처럼 보이게 만든다 | 블루프린트에서는, 특정 조건이 충족될 때까지 이 ‘분할 함수(splitting function)’를 지속적으로 반복 . | while 조건문은 큐브가 분할될 수 있는 횟수의 상한선이 됨 | . | 하지만 모든 큐브가 동일한 (상한선) 값을 가진다면, 모든 조각이 동일한 크기로 끝나게 되어 지루한 결과가 나옴 . | 따라서 상한선을 난수로 설정 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#introduce",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#introduce"
+  },"1980": {
+    "doc": "generative Motion Design",
+    "title": "Project settings",
+    "content": ". | Texture Streaming = Disabled | Auto-Exposure = Disabled | SetEditor Startup Map andGame Default Map = MAP_1 | SetDefault Game Mode = BP_GameModeBase | . ",
+    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#project-settings",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#project-settings"
+  },"1981": {
+    "doc": "generative Motion Design",
+    "title": "BP settings",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#bp-settings",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#bp-settings"
+  },"1982": {
+    "doc": "generative Motion Design",
+    "title": "GameModeBase",
+    "content": "게임의 규칙과 방식을 정의 . 주요 역할 . | “플레이어가 몇 점을 얻으면 이기는 거지?” (승패 조건) | “게임이 시작되면 어떤 플레이어 캐릭터(Pawn)를 생성해야 하지?” (기본 Pawn 설정) | “플레이어가 죽으면 어떻게 되지? (리스폰 규칙)” | “게임에 참여하는 플레이어 컨트롤러(Player Controller)는 무엇인가?” | “맵에 HUD(화면 UI)는 무엇을 쓸까?” | . 특징 . 레벨(맵)에 오직 하나만 존재 일반적으로 레벨 안에 직접 배치하지 않고, 프로젝트 설정에서 '기본 게임 모드'로 지정 그러면 엔진이 자동으로 생성 . ",
+    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#gamemodebase",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#gamemodebase"
+  },"1983": {
+    "doc": "generative Motion Design",
+    "title": "Pawn",
+    "content": "플레이어나 AI가 조종할 수 있는 게임 내의 아바타(캐릭터 또는 물체) . 주요 역할 . | 플레이어의 입력(키보드, 마우스)을 받아 움직임을 처리 | 물리적인 충돌을 처리 | 애니메이션을 재생 | 카메라를 장착 | . 특징 . 플레이어 그 자체는 아님. 플레이어가 조종하는 대상 Character 클래스는 Pawn의 가장 일반적인 자식 클래스로, 걷고 뛰는 캐릭터에 특화된 기능(예: 이동 컴포넌트)이 이미 들어있어 초보자에게 가장 많이 사용 . level BP . 특정 맵(레벨)에서만 일어나는 사건(이벤트)을 처리하는 스크립트 . 해당 레벨에 배치된 오브젝트들 간의 1회성 또는 지역적인 상호작용을 처리 . 주요 역할 . | “문에 다가가서 E 키를 누르면 문이 열리는” 트리거 이벤트 | “보스가 등장할 때 배경음악을 바꾸는” 이벤트 | “플레이어가 특정 지역에 들어오면 적을 소환하는” 트리거 | . 특징 . 레벨 별로 하나씩 존재하며, 오직 그 레벨 안에서만 작동 다른 레벨에서는 재사용이 불가능 매우 쉽고 빠르게 이벤트를 만들 수 있어 초보자에게 유용하지만, 남용하면 관리하기 힘든 코드가 될 수 있어 주의가 필요 . 사용한 노드 . | set view target with blend . | 플레이어 컨트롤러의 기능으로, 플레이어의 시점을 다른 액터(주로 카메라)로 부드럽게 전환 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#pawn",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/generative%20Motion%20Design/#pawn"
+  },"1984": {
+    "doc": "Motion Design",
+    "title": "Motion Design",
+    "content": "real-time generative Motion Design / VFX . ",
+    "url": "/docs/Unreal%20Engine%205/Motion%20Design/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Motion%20Design/"
   },"1985": {
     "doc": "Graphics rendering pipeline",
     "title": "Graphics rendering pipeline",
@@ -13957,131 +13957,131 @@
     
     "relUrl": "/docs/Computer%20Graphics/Graphics%20rendering%20pipeline/#아핀변환-예시"
   },"1994": {
-    "doc": "Niagara",
-    "title": "Niagara",
-    "content": "나이아가라 VFX . | UE - niagara 개요 | UE - GPU Sprite Effect | . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/"
-  },"1995": {
-    "doc": "Niagara",
-    "title": "시스템 핵심 개념",
-    "content": "| 핵심 구성 요소 | 설명 | . | 시스템 (System) | 이펙트에 필요한 모든 요소(이미터, 모듈 등)를 담는 최상위 컨테이너 최종적으로 레벨에 배치하는 단위 | . | 이미터 (Emitter) | 시스템 내에서 실제로 파티클을 생성하고 제어하는 주체 하나의 시스템에 여러 이미터를 넣어 복잡한 효과를 만들 수 있다 | . | 모듈 (Module) | 이미터에 추가되어 파티클의 특정 행동(속도 추가, 색상 변경 등)을 정의하는 기능의 기본 단위 모듈은 스택(Stack)에 쌓아 순차적으로 적용 | . | 파라미터 (Parameter) | 시뮬레이션 내의 데이터를 추상화한 것으로, 숫자, 벡터, 색상 등 다양한 형태를 가질 수 있다 사용자 파라미터(User Parameter)를 만들어 외부(블루프린트 등)에서 쉽게 값을 제어할 수 있음 | . 나이아가라의 스택(Stack) 은 위에서 아래로 실행된다 . 스택의 상단(Top)에 있는 모듈이 먼저 실행되고, 아래로 내려갈수록 나중에 실행 모듈의 동작 방식은 두 가지로 구분 • 덮어쓰기(Override): Set Velocity, Set Color 등 - 아래 모듈이 위 모듈의 결과를 덮어쓴다 • 누적(Additive): Add Velocity, Add Force 등 - 위에서 아래로 실행되며 효과가 누적 따라서 모듈의 종류에 따라 최종 결과가 달라짐 . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#%EC%8B%9C%EC%8A%A4%ED%85%9C-%ED%95%B5%EC%8B%AC-%EA%B0%9C%EB%85%90",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#시스템-핵심-개념"
-  },"1996": {
-    "doc": "Niagara",
-    "title": "Stages In Niagara",
-    "content": " ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#stages-in-niagara",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#stages-in-niagara"
-  },"1997": {
-    "doc": "Niagara",
-    "title": "Renderer",
-    "content": "나이아가라 파티클 데이터를 실제 화면 픽셀로 그리는 최종 단계 . | Niagara Renderers | . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#renderer",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#renderer"
-  },"1998": {
-    "doc": "Niagara",
-    "title": "렌더러 역할",
-    "content": ". | 데이터 변환 . | 파티클 속성을 GPU 버퍼로 전송하여 각 파티클이 어떤 위치·크기·색으로 그려질지 정의 | . | 드로우콜 구성 . | Sprite면 쿼드 (2D 평면) | Mesh면 3D 메시 인스턴스를 배치 | Ribbon이면 연속선 형태로 연결 | . | 머티리얼 바인딩 . | 파티클 속성(Particle.Color, Particle.CustomData0~3, Particle.Position)을 머티리얼의 파라미터와 매핑 | 이때 GPU Instance Data 구조를 정의해 머티리얼에서 Particle 노드로 접근 가능 | . | 정렬·카메라 대응 . | Billboard 회전, Depth Sort, Facing Mode, Camera Facing, Screen Alignment 등 수행 | . | 버퍼 관리 . | 파티클 수만큼 GPU 인스턴싱 데이터 생성 및 업데이트 | LOD/Distance Culling/Visibility 처리 포함 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#%EB%A0%8C%EB%8D%94%EB%9F%AC-%EC%97%AD%ED%95%A0",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#렌더러-역할"
-  },"1999": {
-    "doc": "Niagara",
-    "title": "렌더러 종류",
-    "content": "| 렌더러 유형 | 용도 | 특징 | . | Sprite Renderer | 일반 파티클 (불, 연기, 먼지 등) | 2D 카메라 정면 Billboard. 가장 기본적이며 GPU 인스턴싱 효율적 | . | Mesh Renderer | 입자마다 3D 메시를 그릴 때 (파편, 잔해 등) | 스태틱 메시 또는 스켈레탈 메시 사용 가능. 메시 오리엔테이션, 스케일, 색 지원 | . | Ribbon Renderer | 궤적, 트레일, 라이트스트릭 | 파티클 순서를 따라 선분 연결. UV 제어 및 카메라 정렬 지원 | . | Light Renderer | 파티클을 라이트 소스로 사용 | 동적 포인트 라이트/스포트라이트 생성 주의: 성능 부담이 매우 크므로 신중하게 사용 개별 파티클마다 라이트 컴포넌트 생성 | . | Decal Renderer | 파티클로 데칼 투사 | 표면에 충돌 시 스코치, 블러드, 먼지 흔적 등 Projection Distance, Size, Fade 설정으로 표면에 데칼 부착 | . | GPU Volume / Grid Renderer | 볼륨 효과, 필드 시각화 | Simulation Stage에서 생성한 3D 필드(Grid Data Interface) 시각화 | . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#%EB%A0%8C%EB%8D%94%EB%9F%AC-%EC%A2%85%EB%A5%98",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#렌더러-종류"
-  },"2000": {
-    "doc": "Niagara",
-    "title": "Emitter",
-    "content": "이미터 전체 흐름 . [Emitter Lifecycle] Emitter Spawn → Emitter Update → [Particle Spawn → Particle Update] 반복 → Emitter Death [Particle Lifecycle] Particle Spawn (한 번) → Particle Update (매 프레임) → Particle Death (한 번) . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#emitter",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#emitter"
-  },"2001": {
-    "doc": "Niagara",
-    "title": "Spawn, Update 속성",
-    "content": ". | Spawn . | Event BeginPlay와 비슷 | Runs once 한번 런하고 끝 | . | Update . | Event Tick과 비슷 | Every Frame 계속 프레임에 그려짐 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#spawn-update-%EC%86%8D%EC%84%B1",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#spawn-update-속성"
-  },"2002": {
-    "doc": "Niagara",
-    "title": "Emitter Stage",
-    "content": ". | Emitter Spawn . | 이미터 시작 스테이지 | 이미터가 처음 생성될 때 단 한 번만 실행 . | 이미터의 초기 위치 설정 | 한 번만 계산할 파라미터 초기화 | 특정 조건에서 이미터 비활성화 | . | . | Emitter Update . | 이미터 업데이트 스테이지 | 다양한 모듈을 넣을 수 있음 | 중요한 것 : 생성하는 파티클 | 이미터가 스폰하는 파티클 수 지정 | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#emitter-stage",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#emitter-stage"
-  },"2003": {
-    "doc": "Niagara",
-    "title": "Particle Stage",
-    "content": ". | Paticle Spawn . | 이미터가 스폰한 파티클을 제어한다 | 초기 위치, 크기, 색상 등 설정 | 중요한 것 : 파티클 수명 | . | Paticle Update . | 파티클의 움직임 제어 | Movement, Scaling, Fading | . | . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#particle-stage",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#particle-stage"
-  },"2004": {
-    "doc": "Niagara",
-    "title": "Properties",
-    "content": "이미터의 전체적인 행동을 정의하는 마스터 컨트롤 . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#properties",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#properties"
-  },"2005": {
-    "doc": "Niagara",
-    "title": "주요 설정",
-    "content": "Simulation Target (CPU vs GPU) . 이미터의 파티클 연산을 어디서 할 것인지 결정 . | CPU . | 복잡한 로직과 상호작용에 사용 | 블루프린트와의 실시간 통신, 복잡한 충돌 검사 | 각 파티클마다 다른 행동 등 다양한 조건문과 분기 처리가 필요할 때 선택 | 단점: 한계가 뚜렷해 수천 ~ 수만 개 이상의 파티클을 안정적으로 돌리기 어렵디 | . | GPU . | 대량의 파티클과 최고의 성능이 필요할 때 사용 | 수만, 수십만 개의 파티클을 부드럽게 표현해야 하는 효과 (비, 눈, 먼지, 대규모 폭발) | 단점: CPU와의 직접적인 통신이 매우 제한적이며, 복잡한 분기 로직을 구현하기 어려움 | . | . Bounds . 렌더링 엔진이 이 이펙트를 얼마만큼의 공간을 차지하는 것으로 인식하게 할 것인가? 를 정의 . | Dynamic (동적) . | CPU가 매 프레임 파티클들이 퍼져있는 영역을 실시간으로 계산하여 Bounds를 자동으로 조절 | CPU 시뮬레이션에 사용 | 파티클이 예측 불가능하게 퍼져나가도 Bounds가 따라오기 때문에 화면에서 사라지는 현상을 방지 | . | Fixed (고정) . | 사용자가 직접 Bounds의 크기와 위치를 지정 | 시뮬레이션이 실행되어도 이 경계는 변하지 않음 | GPU 시뮬레이션에 필수로 사용 | . | . ❓ 왜 GPU로 설정하면 Fixed Bounds를 쓰라고 할까? . Dynamic Bounds는 1. CPU가 파티클들의 위치를 모니터링 2. 매 프레임 가장자리를 찾아 새로운 Bounds를 계산 3. 그 결과를 GPU에 알려야 함 느린 CPU-GPU 통신을 매 프레임 유발하는 꼴! 따라서 Fixed Bounds를 사용하면 Bounds는 고정. CPU는 GPU에게 Bounds 정보를 단 한 번만 전달 . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#%EC%A3%BC%EC%9A%94-%EC%84%A4%EC%A0%95",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#주요-설정"
-  },"2006": {
-    "doc": "Niagara",
-    "title": "Module override",
-    "content": "단일 스칼라나 벡터를 직접 세팅하는 모듈은 아래쪽 모듈이 같은 파라미터 이름을 쓸 때 덮어씀 . | 예: Set Velocity, Set Color | . | 모듈 유형 | 스택 아래 모듈의 영향 | 이유 | . | Force류 (Gravity, Drag, Point Force, Noise) | 누적 (Add) | 물리 법칙은 중첩되어 적용됨 | . | Add Velocity / Acceleration | 누적 (Add) | 벡터 값이 기존 속도에 더해짐 | . | Set Velocity / Set Position / Set Color | 덮어쓰기 (Override) | 속성에 직접 새로운 값 할당 | . | Scale Color / Size | 곱셈 (Multiply) | 기존 값에 비율 적용 | . | Initialize Particle | 초기값 설정 후, 아래 모듈이 수정 가능 | 실행 순서에 따라 최종값 결정 | . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#module-override",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#module-override"
-  },"2007": {
-    "doc": "Niagara",
-    "title": "Orientation",
-    "content": "파티클의 회전 방향(Orientation in 3D space) . | 즉 이 파티클이 어떤 축으로, 어느 방향을 바라보는가를 정의하는 속성 | . | 용어 | 의미 | . | Rotation | “이 프레임에서의 회전량(입력값)” | . | Orientation | “누적된 회전 상태(결과값)” | . 즉, Rotation은 변화량. Orientation은 최종 방향(상태) . ",
-    "url": "/docs/Unreal%20Engine%205/Niagara/#orientation",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#orientation"
-  },"2008": {
     "doc": "Computer architecture",
     "title": "Computer architecture",
     "content": ". | SRISHTI:Computer Architecture | . ",
     "url": "/docs/Computer%20architecture/",
     
     "relUrl": "/docs/Computer%20architecture/"
+  },"1995": {
+    "doc": "Niagara",
+    "title": "Niagara",
+    "content": "나이아가라 VFX . | UE - niagara 개요 | UE - GPU Sprite Effect | . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/"
+  },"1996": {
+    "doc": "Niagara",
+    "title": "시스템 핵심 개념",
+    "content": "| 핵심 구성 요소 | 설명 | . | 시스템 (System) | 이펙트에 필요한 모든 요소(이미터, 모듈 등)를 담는 최상위 컨테이너 최종적으로 레벨에 배치하는 단위 | . | 이미터 (Emitter) | 시스템 내에서 실제로 파티클을 생성하고 제어하는 주체 하나의 시스템에 여러 이미터를 넣어 복잡한 효과를 만들 수 있다 | . | 모듈 (Module) | 이미터에 추가되어 파티클의 특정 행동(속도 추가, 색상 변경 등)을 정의하는 기능의 기본 단위 모듈은 스택(Stack)에 쌓아 순차적으로 적용 | . | 파라미터 (Parameter) | 시뮬레이션 내의 데이터를 추상화한 것으로, 숫자, 벡터, 색상 등 다양한 형태를 가질 수 있다 사용자 파라미터(User Parameter)를 만들어 외부(블루프린트 등)에서 쉽게 값을 제어할 수 있음 | . 나이아가라의 스택(Stack) 은 위에서 아래로 실행된다 . 스택의 상단(Top)에 있는 모듈이 먼저 실행되고, 아래로 내려갈수록 나중에 실행 모듈의 동작 방식은 두 가지로 구분 • 덮어쓰기(Override): Set Velocity, Set Color 등 - 아래 모듈이 위 모듈의 결과를 덮어쓴다 • 누적(Additive): Add Velocity, Add Force 등 - 위에서 아래로 실행되며 효과가 누적 따라서 모듈의 종류에 따라 최종 결과가 달라짐 . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#%EC%8B%9C%EC%8A%A4%ED%85%9C-%ED%95%B5%EC%8B%AC-%EA%B0%9C%EB%85%90",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#시스템-핵심-개념"
+  },"1997": {
+    "doc": "Niagara",
+    "title": "Stages In Niagara",
+    "content": " ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#stages-in-niagara",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#stages-in-niagara"
+  },"1998": {
+    "doc": "Niagara",
+    "title": "Renderer",
+    "content": "나이아가라 파티클 데이터를 실제 화면 픽셀로 그리는 최종 단계 . | Niagara Renderers | . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#renderer",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#renderer"
+  },"1999": {
+    "doc": "Niagara",
+    "title": "렌더러 역할",
+    "content": ". | 데이터 변환 . | 파티클 속성을 GPU 버퍼로 전송하여 각 파티클이 어떤 위치·크기·색으로 그려질지 정의 | . | 드로우콜 구성 . | Sprite면 쿼드 (2D 평면) | Mesh면 3D 메시 인스턴스를 배치 | Ribbon이면 연속선 형태로 연결 | . | 머티리얼 바인딩 . | 파티클 속성(Particle.Color, Particle.CustomData0~3, Particle.Position)을 머티리얼의 파라미터와 매핑 | 이때 GPU Instance Data 구조를 정의해 머티리얼에서 Particle 노드로 접근 가능 | . | 정렬·카메라 대응 . | Billboard 회전, Depth Sort, Facing Mode, Camera Facing, Screen Alignment 등 수행 | . | 버퍼 관리 . | 파티클 수만큼 GPU 인스턴싱 데이터 생성 및 업데이트 | LOD/Distance Culling/Visibility 처리 포함 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#%EB%A0%8C%EB%8D%94%EB%9F%AC-%EC%97%AD%ED%95%A0",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#렌더러-역할"
+  },"2000": {
+    "doc": "Niagara",
+    "title": "렌더러 종류",
+    "content": "| 렌더러 유형 | 용도 | 특징 | . | Sprite Renderer | 일반 파티클 (불, 연기, 먼지 등) | 2D 카메라 정면 Billboard. 가장 기본적이며 GPU 인스턴싱 효율적 | . | Mesh Renderer | 입자마다 3D 메시를 그릴 때 (파편, 잔해 등) | 스태틱 메시 또는 스켈레탈 메시 사용 가능. 메시 오리엔테이션, 스케일, 색 지원 | . | Ribbon Renderer | 궤적, 트레일, 라이트스트릭 | 파티클 순서를 따라 선분 연결. UV 제어 및 카메라 정렬 지원 | . | Light Renderer | 파티클을 라이트 소스로 사용 | 동적 포인트 라이트/스포트라이트 생성 주의: 성능 부담이 매우 크므로 신중하게 사용 개별 파티클마다 라이트 컴포넌트 생성 | . | Decal Renderer | 파티클로 데칼 투사 | 표면에 충돌 시 스코치, 블러드, 먼지 흔적 등 Projection Distance, Size, Fade 설정으로 표면에 데칼 부착 | . | GPU Volume / Grid Renderer | 볼륨 효과, 필드 시각화 | Simulation Stage에서 생성한 3D 필드(Grid Data Interface) 시각화 | . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#%EB%A0%8C%EB%8D%94%EB%9F%AC-%EC%A2%85%EB%A5%98",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#렌더러-종류"
+  },"2001": {
+    "doc": "Niagara",
+    "title": "Emitter",
+    "content": "이미터 전체 흐름 . [Emitter Lifecycle] Emitter Spawn → Emitter Update → [Particle Spawn → Particle Update] 반복 → Emitter Death [Particle Lifecycle] Particle Spawn (한 번) → Particle Update (매 프레임) → Particle Death (한 번) . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#emitter",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#emitter"
+  },"2002": {
+    "doc": "Niagara",
+    "title": "Spawn, Update 속성",
+    "content": ". | Spawn . | Event BeginPlay와 비슷 | Runs once 한번 런하고 끝 | . | Update . | Event Tick과 비슷 | Every Frame 계속 프레임에 그려짐 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#spawn-update-%EC%86%8D%EC%84%B1",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#spawn-update-속성"
+  },"2003": {
+    "doc": "Niagara",
+    "title": "Emitter Stage",
+    "content": ". | Emitter Spawn . | 이미터 시작 스테이지 | 이미터가 처음 생성될 때 단 한 번만 실행 . | 이미터의 초기 위치 설정 | 한 번만 계산할 파라미터 초기화 | 특정 조건에서 이미터 비활성화 | . | . | Emitter Update . | 이미터 업데이트 스테이지 | 다양한 모듈을 넣을 수 있음 | 중요한 것 : 생성하는 파티클 | 이미터가 스폰하는 파티클 수 지정 | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#emitter-stage",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#emitter-stage"
+  },"2004": {
+    "doc": "Niagara",
+    "title": "Particle Stage",
+    "content": ". | Paticle Spawn . | 이미터가 스폰한 파티클을 제어한다 | 초기 위치, 크기, 색상 등 설정 | 중요한 것 : 파티클 수명 | . | Paticle Update . | 파티클의 움직임 제어 | Movement, Scaling, Fading | . | . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#particle-stage",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#particle-stage"
+  },"2005": {
+    "doc": "Niagara",
+    "title": "Properties",
+    "content": "이미터의 전체적인 행동을 정의하는 마스터 컨트롤 . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#properties",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#properties"
+  },"2006": {
+    "doc": "Niagara",
+    "title": "주요 설정",
+    "content": "Simulation Target (CPU vs GPU) . 이미터의 파티클 연산을 어디서 할 것인지 결정 . | CPU . | 복잡한 로직과 상호작용에 사용 | 블루프린트와의 실시간 통신, 복잡한 충돌 검사 | 각 파티클마다 다른 행동 등 다양한 조건문과 분기 처리가 필요할 때 선택 | 단점: 한계가 뚜렷해 수천 ~ 수만 개 이상의 파티클을 안정적으로 돌리기 어렵디 | . | GPU . | 대량의 파티클과 최고의 성능이 필요할 때 사용 | 수만, 수십만 개의 파티클을 부드럽게 표현해야 하는 효과 (비, 눈, 먼지, 대규모 폭발) | 단점: CPU와의 직접적인 통신이 매우 제한적이며, 복잡한 분기 로직을 구현하기 어려움 | . | . Bounds . 렌더링 엔진이 이 이펙트를 얼마만큼의 공간을 차지하는 것으로 인식하게 할 것인가? 를 정의 . | Dynamic (동적) . | CPU가 매 프레임 파티클들이 퍼져있는 영역을 실시간으로 계산하여 Bounds를 자동으로 조절 | CPU 시뮬레이션에 사용 | 파티클이 예측 불가능하게 퍼져나가도 Bounds가 따라오기 때문에 화면에서 사라지는 현상을 방지 | . | Fixed (고정) . | 사용자가 직접 Bounds의 크기와 위치를 지정 | 시뮬레이션이 실행되어도 이 경계는 변하지 않음 | GPU 시뮬레이션에 필수로 사용 | . | . ❓ 왜 GPU로 설정하면 Fixed Bounds를 쓰라고 할까? . Dynamic Bounds는 1. CPU가 파티클들의 위치를 모니터링 2. 매 프레임 가장자리를 찾아 새로운 Bounds를 계산 3. 그 결과를 GPU에 알려야 함 느린 CPU-GPU 통신을 매 프레임 유발하는 꼴! 따라서 Fixed Bounds를 사용하면 Bounds는 고정. CPU는 GPU에게 Bounds 정보를 단 한 번만 전달 . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#%EC%A3%BC%EC%9A%94-%EC%84%A4%EC%A0%95",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#주요-설정"
+  },"2007": {
+    "doc": "Niagara",
+    "title": "Module override",
+    "content": "단일 스칼라나 벡터를 직접 세팅하는 모듈은 아래쪽 모듈이 같은 파라미터 이름을 쓸 때 덮어씀 . | 예: Set Velocity, Set Color | . | 모듈 유형 | 스택 아래 모듈의 영향 | 이유 | . | Force류 (Gravity, Drag, Point Force, Noise) | 누적 (Add) | 물리 법칙은 중첩되어 적용됨 | . | Add Velocity / Acceleration | 누적 (Add) | 벡터 값이 기존 속도에 더해짐 | . | Set Velocity / Set Position / Set Color | 덮어쓰기 (Override) | 속성에 직접 새로운 값 할당 | . | Scale Color / Size | 곱셈 (Multiply) | 기존 값에 비율 적용 | . | Initialize Particle | 초기값 설정 후, 아래 모듈이 수정 가능 | 실행 순서에 따라 최종값 결정 | . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#module-override",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#module-override"
+  },"2008": {
+    "doc": "Niagara",
+    "title": "Orientation",
+    "content": "파티클의 회전 방향(Orientation in 3D space) . | 즉 이 파티클이 어떤 축으로, 어느 방향을 바라보는가를 정의하는 속성 | . | 용어 | 의미 | . | Rotation | “이 프레임에서의 회전량(입력값)” | . | Orientation | “누적된 회전 상태(결과값)” | . 즉, Rotation은 변화량. Orientation은 최종 방향(상태) . ",
+    "url": "/docs/Unreal%20Engine%205/Niagara/#orientation",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Niagara/#orientation"
   },"2009": {
-    "doc": "Procedural Content Generation",
-    "title": "Procedural Content Generation",
-    "content": "PCG . | UE 5.7 - PCG framework | . ",
-    "url": "/docs/Unreal%20Engine%205/Procedural%20Content%20Generation/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Procedural%20Content%20Generation/"
-  },"2010": {
-    "doc": "Rendering pipeline",
-    "title": "Rendering pipeline",
-    "content": "UE5 렌더링 파이프라인 정리하기 . 참고하면 좋은 링크 . | Rendering pipeline UE5 | UE4 Graphics Profiling: All Categories Guide (Rendering Passes) | GPU and Rendering Pipelines | Unreal’s Rendering Passes | Interplay of Light | Gamedev Guide | . 나중에 옮기기 . | hierarchical-depth-buffers | Precomputed Atmospheric Scattering: a New Implementation | visibility-and-occlusion-culling | lumen-technical-details | dynamic-global-illumination-with-lumen | 언리얼 엔진 5 루멘의 메커니즘과 중요한 부분 - 번역 | 언리얼 엔진 5 루멘의 메커니즘과 중요한 부분 - original | . ",
-    "url": "/docs/Unreal%20Engine%205/Rendering%20pipeline/",
-    
-    "relUrl": "/docs/Unreal%20Engine%205/Rendering%20pipeline/"
-  },"2011": {
     "doc": "GPU Architecture",
     "title": "GPU Architecture",
     "content": "GPU에서 실행되는 애플리케이션 프로그램을 준비할 때 GPU 하드웨어 설계의 주요 기능을 이해하고 CPU와의 유사점과 차이점을 파악하고자 한다. | 참고링크 Conrnell Virtual Workshop | . ",
     "url": "/docs/Computer%20architecture/GPU%20Architecture/",
     
     "relUrl": "/docs/Computer%20architecture/GPU%20Architecture/"
+  },"2010": {
+    "doc": "Procedural Content Generation",
+    "title": "Procedural Content Generation",
+    "content": "PCG . | UE 5.7 - PCG framework | . ",
+    "url": "/docs/Unreal%20Engine%205/Procedural%20Content%20Generation/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Procedural%20Content%20Generation/"
+  },"2011": {
+    "doc": "Rendering pipeline",
+    "title": "Rendering pipeline",
+    "content": "UE5 렌더링 파이프라인 정리하기 . 참고하면 좋은 링크 . | Rendering pipeline UE5 | UE4 Graphics Profiling: All Categories Guide (Rendering Passes) | GPU and Rendering Pipelines | Unreal’s Rendering Passes | Interplay of Light | Gamedev Guide | . 나중에 옮기기 . | hierarchical-depth-buffers | Precomputed Atmospheric Scattering: a New Implementation | visibility-and-occlusion-culling | lumen-technical-details | dynamic-global-illumination-with-lumen | 언리얼 엔진 5 루멘의 메커니즘과 중요한 부분 - 번역 | 언리얼 엔진 5 루멘의 메커니즘과 중요한 부분 - original | . ",
+    "url": "/docs/Unreal%20Engine%205/Rendering%20pipeline/",
+    
+    "relUrl": "/docs/Unreal%20Engine%205/Rendering%20pipeline/"
   },"2012": {
     "doc": "C++",
     "title": "C++",
@@ -14153,125 +14153,174 @@
     
     "relUrl": "/docs/C++/#c-vs-ue5-스마트-포인터-비교"
   },"2022": {
+    "doc": "Blender",
+    "title": "Blender",
+    "content": " ",
+    "url": "/docs/Blender/",
+    
+    "relUrl": "/docs/Blender/"
+  },"2023": {
+    "doc": "Blender",
+    "title": "Beginners Tutorial",
+    "content": "시작 시 뷰 포트 창에 3가지 객체 존재 . | cube | camera | light | . ",
+    "url": "/docs/Blender/#beginners-tutorial",
+    
+    "relUrl": "/docs/Blender/#beginners-tutorial"
+  },"2024": {
+    "doc": "Blender",
+    "title": "shortcut",
+    "content": "단축키 . 마우스 오른쪽 버튼은 언제나 ‘취소’ 기능을 수행 . ",
+    "url": "/docs/Blender/#shortcut",
+    
+    "relUrl": "/docs/Blender/#shortcut"
+  },"2025": {
+    "doc": "Blender",
+    "title": "뷰포트 조작 (Navigation)",
+    "content": ". | 마우스 휠 | . | 단축키 | 기능 | 설명 | . | 마우스 휠 + 드래그 | 화면 회전 | 시점을 중심으로 회전 (Orbit) | . | 마우스 휠 Up/Down | 확대/축소 | 시점 줌 인/아웃 (Zoom) | . | shift + b + 원하는 영역 드래그 | 화면 회전 | 시점을 중심으로 회전 (Orbit) | . | Shift + 마우스 휠 + 드래그 | 확대/축소 | 드래그한 영역으로 확대 | . | alt + 마우스 휠 + 오브젝트 클릭 | 객체 집중 | 해당 오브젝트로 화면 중심 이동 | . | alt + 마우스 휠 + 원하는 뷰 각도로 드래그 | 정면 / 측면 / 평면 | 각 축의 정사영 뷰로 전환 | . | 숫자 패드 | . | 단축키 | 기능 | 설명 | . | Numpad 0 | 카메라 뷰 | 카메라 시점 화면으로 전환 | . | Numpad 1 / 3 / 7 | 정면 / 측면 / 평면 | 각 축의 정사영 뷰로 전환 | . | Numpad 5 | 투영법 전환 | 원근법(Perspective) ↔ 등각 투영(Orthographic) | . | Numpad . (점) | 객체 집중 | 선택한 오브젝트를 화면 중앙에 꽉 차게 배치 | . | shift + 우클릭 : 3D 커서 이동 | shift + c : 3D 커서 센터로 이동 . | 투시 모드 | . | 단축키 | 기능 | 설명 | . | Alt + Z | 투명 모드 | 엑스레이(X-Ray) 모드 켜기/끄기 (뒷면 선택 시 필수) | . | Shift + Z | 와이어 프레임 | 면을 숨기고 뼈대(점, 선) 만 집중해서 보기 | . | Shift + H | 선택 외 숨기기 | 선택 한 오브젝트 외 모두 숨기기 | . | Alt + H | 숨기기 취소 | 숨기기 한 오브젝트 다시 보이게 | . ",
+    "url": "/docs/Blender/#%EB%B7%B0%ED%8F%AC%ED%8A%B8-%EC%A1%B0%EC%9E%91-navigation",
+    
+    "relUrl": "/docs/Blender/#뷰포트-조작-navigation"
+  },"2026": {
+    "doc": "Blender",
+    "title": "오브젝트 모드 (Object Mode)",
+    "content": "| 단축키 | 기능 | 로직 및 팁 | . | G | 이동 (Grab) | G + X/Y/Z 를 눌러 특정 축으로만 이동 가능 | . | R | 회전 (Rotate) | R + R 을 누르면 트랙볼 방식으로 자유 회전 | . | S | 크기 (Scale) | S + 수치 입력 시 정확한 배율 조정 가능 | . | Shift + A | 추가 (Add) | 메쉬, 조명, 카메라 등 생성 메뉴 호출 | . | X / Del | 삭제 (Delete) | 선택한 객체 삭제 (X는 확인 팝업 발생) | . | Shift + D | 복제 (Duplicate) | 복제 후 즉시 이동 모드 진입 | . | Alt + G/R/S | 변형 초기화 | 이동/회전/크기 값을 기본값(0 또는 1)으로 리셋 | . ",
+    "url": "/docs/Blender/#%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EB%AA%A8%EB%93%9C-object-mode",
+    
+    "relUrl": "/docs/Blender/#오브젝트-모드-object-mode"
+  },"2027": {
+    "doc": "Blender",
+    "title": "기타 유틸리티",
+    "content": ". | Shift + Alt + Z : 뷰포트 전체 오버레이 끄기 | . | 단축키 | 기능 | 설명 | . | Z | 쉐이딩 메뉴 | 와이어프레임, 렌더 뷰 등 파이 메뉴 호출 | . | N | 사이드바 | 위치, 크기 등 속성 값이 표시되는 우측 패널 | . | T | 툴바 | 좌측 도구 상자 표시/숨김 | . | Ctrl + J | 통합 (Join) | 선택한 여러 오브젝트를 하나의 오브젝트로 합침 | . | / (Slash) | 독립 뷰 | 선택한 객체만 남기고 나머지를 일시적으로 숨김 | . | Ctrl + Z | 실행 취소 | 작업 단계 되돌리기 | . ",
+    "url": "/docs/Blender/#%EA%B8%B0%ED%83%80-%EC%9C%A0%ED%8B%B8%EB%A6%AC%ED%8B%B0",
+    
+    "relUrl": "/docs/Blender/#기타-유틸리티"
+  },"2028": {
+    "doc": "Blender",
+    "title": "에디트 모드 (Edit Mode)",
+    "content": "에디트 모드에서 1, 2, 3 키가 점/선/면 선택 모드로 작동하지 않고 화면 시점이 돌아가는 이유 . | Emulate Numpad(넘패드 에뮬레이트) 옵션이 활성화 . | 해당 기능을 끄고 ~ (파이 메뉴) 를 눌러 시점 전환 메뉴를 사용할 수 있다 | 혹은 자신만의 단축키 지정하기 | . | . | 단축키 | 기능 | 설명 | . | Tab | 모드 전환 | 오브젝트 모드 ↔ 에디트 모드 전환 | . | 1 / 2 / 3 | 선택 모드 | 점(Vertex) / 선(Edge) / 면(Face) 선택 모드 전환 | . | E | 돌출 (Extrude) | 선택한 요소를 뽑아내어 새로운 메쉬 생성 | . | I | 면 삽입 (Inset) | 선택한 면의 안쪽에 새로운 면 삽입 | . | Y | 분리 (Split) | 선택한 메쉬를 인접한 메쉬와 연결만 끊음 (동일 오브젝트 유지) | . | P | 추출 (Separate) | 선택한 메쉬를 별도의 새로운 오브젝트로 분리 (아웃라이너에 새 객체 생성) | . | Ctrl + B | 베벨 (Bevel) | 모서리를 깎아 면을 나누고 부드럽게 처리 | . | Ctrl + R | 루프 컷 (Loop Cut) | 메쉬를 가로지르는 절단선 추가 (휠로 개수 조절) | . | K | 나이프 (Knife) | 사용자가 원하는 경로대로 직접 메쉬를 컷팅 | . | F | 면 생성 (Face) | 선택된 점이나 선들 사이에 면을 채움 | . | M | 병합 (Merge) | 선택한 점들을 하나로 합침 (중심, 거리 기준 등) | . | Y로 split . | 오브젝트 내 파편 | 매쉬 연결만 끊어짐 | 특정 부위만 떼어내 변형할 때 사용 | . | P로 separate . | 새로운 오브젝트로 생성 | 아웃라이너에 별도 객체 생김 | 파츠를 완전히 분리하여 관리할 때 | . | . ",
+    "url": "/docs/Blender/#%EC%97%90%EB%94%94%ED%8A%B8-%EB%AA%A8%EB%93%9C-edit-mode",
+    
+    "relUrl": "/docs/Blender/#에디트-모드-edit-mode"
+  },"2029": {
     "doc": "Unreal Engine 5",
     "title": "Unreal Engine 5",
     "content": "참고하면 좋은 링크 . | UE - get Started | UnrealEngine c++ Guide | blueprints vs c++ | Exploring Unreal’s physics framework | Unreal Engine UI Tutorials | Unreal Engine C++ API Reference | UE Classes API | . ",
     "url": "/docs/Unreal%20Engine%205/",
     
     "relUrl": "/docs/Unreal%20Engine%205/"
-  },"2023": {
+  },"2030": {
     "doc": "Unreal Engine 5",
     "title": "Coordinate System",
     "content": "UE 좌표계는 왼손 좌표계 기준 . | 축 | 방향 | + | - | . | X | 깊이 | 앞(카메라와 멀어짐) | 뒤 (카메라와 가까워짐) | . | Y | 측면 | 오른쪽 | 왼쪽 | . | Z | 높이 | 위 | 아래 | . 참고하면 좋은 링크 . | coordinate-system | Coordinate System and Spaces | . ",
     "url": "/docs/Unreal%20Engine%205/#coordinate-system",
     
     "relUrl": "/docs/Unreal%20Engine%205/#coordinate-system"
-  },"2024": {
+  },"2031": {
     "doc": "Unreal Engine 5",
     "title": "Level Editor Viewport",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/#level-editor-viewport",
     
     "relUrl": "/docs/Unreal%20Engine%205/#level-editor-viewport"
-  },"2025": {
+  },"2032": {
     "doc": "Unreal Engine 5",
     "title": "카메라 동작",
     "content": ". | 우측 카메라 아이콘으로 속도 조절 가능 . | 왼쪽 클릭 : 카메라 수평 이동 | 오른쪽 클릭 : 카메라 상하 이동 | 왼쪽 클릭 + C : 줌인 (확대) | 클릭 + WASD : 카메라 이동 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%B9%B4%EB%A9%94%EB%9D%BC-%EB%8F%99%EC%9E%91",
     
     "relUrl": "/docs/Unreal%20Engine%205/#카메라-동작"
-  },"2026": {
+  },"2033": {
     "doc": "Unreal Engine 5",
     "title": "View Modes",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/#view-modes",
     
     "relUrl": "/docs/Unreal%20Engine%205/#view-modes"
-  },"2027": {
+  },"2034": {
     "doc": "Unreal Engine 5",
     "title": "Show",
     "content": "왼쪽 Show (표시)를 이용해 레벨에서 보고 싶은 에셋 플래그 on/off 설정 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#show",
     
     "relUrl": "/docs/Unreal%20Engine%205/#show"
-  },"2028": {
+  },"2035": {
     "doc": "Unreal Engine 5",
     "title": "Lit",
     "content": "레벨 라이팅 설정 on/off, 와이어 프레임 등 여러가지 설정 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#lit",
     
     "relUrl": "/docs/Unreal%20Engine%205/#lit"
-  },"2029": {
+  },"2036": {
     "doc": "Unreal Engine 5",
     "title": "perspective",
     "content": "카메라 원근 설정. 직교 투영으로 오브젝트트 배치 편하게 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#perspective",
     
     "relUrl": "/docs/Unreal%20Engine%205/#perspective"
-  },"2030": {
+  },"2037": {
     "doc": "Unreal Engine 5",
     "title": "맨 우측 화면 분할 아이콘",
     "content": "4개의 개별 뷰포트로 분할 가능 . ",
     "url": "/docs/Unreal%20Engine%205/#%EB%A7%A8-%EC%9A%B0%EC%B8%A1-%ED%99%94%EB%A9%B4-%EB%B6%84%ED%95%A0-%EC%95%84%EC%9D%B4%EC%BD%98",
     
     "relUrl": "/docs/Unreal%20Engine%205/#맨-우측-화면-분할-아이콘"
-  },"2031": {
+  },"2038": {
     "doc": "Unreal Engine 5",
     "title": "맨 좌측 리스트 아이콘",
     "content": ". | Show FPS 로 프레임 보기 가능 . | ctrl + shift + H | . | Bookmarks 를 통해 시점 저장, 불러오기 가능 . | ctrl + 0 ~ 9 으로 북마크 저장 | 키보드 0 ~ 9 으로 저장한 북마크 불러오기 | . | 게임 뷰 . | 단축키 : G | 아이콘 사라짐 | . | 몰입 모드 . | 단축키 : F11 | 화면 크게 | . | 고해상도 스크린샷 . | 우측 상단 캡처 지정 아이콘 클릭 -&gt; 캡처 사각형 지정 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EB%A7%A8-%EC%A2%8C%EC%B8%A1-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%95%84%EC%9D%B4%EC%BD%98",
     
     "relUrl": "/docs/Unreal%20Engine%205/#맨-좌측-리스트-아이콘"
-  },"2032": {
+  },"2039": {
     "doc": "Unreal Engine 5",
     "title": "Object manipulate 오브젝트 조종",
     "content": ". | 오브젝트 선택 . | 단축키 : Q | . | 오브젝트 움직이기 (기즈모 사용) . | 단축키 : W | . | 오브젝트 회전 . | 단축키 : E | . | 오브젝트 스케일 조절 . | 단축키 : R | . | . ",
     "url": "/docs/Unreal%20Engine%205/#object-manipulate-%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EC%A1%B0%EC%A2%85",
     
     "relUrl": "/docs/Unreal%20Engine%205/#object-manipulate-오브젝트-조종"
-  },"2033": {
+  },"2040": {
     "doc": "Unreal Engine 5",
     "title": "스냅",
     "content": "스냅 유무를 아이콘을 통해 on/off. 스냅에 쓸 단위도 조절 가능 . | 그리드 아이콘 : 오브젝트 이동 스냅 | 각도 아이콘 : 오브젝트 회전 각도 스냅 | 스케일 아이콘 : 오브젝트 스케일 스냅 | 표면 스냅 아이콘 : 오브젝트 가져올 때 표면에 어떻게 놓을 것인지 설정 . | on/off로 표면에 딱 붙일 것인지 설정 | 오프셋으로 표면에서 얼마나 떨어트릴 것인지 설정 | 언리얼 엔진의 1 unit = 1cm | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%8A%A4%EB%83%85",
     
     "relUrl": "/docs/Unreal%20Engine%205/#스냅"
-  },"2034": {
+  },"2041": {
     "doc": "Unreal Engine 5",
     "title": "좌표",
     "content": "오브젝트 조종 옆에 있는 아이콘을 통해 어떤 좌표를 사용할 것인지 조절 가능 . | 단축키 : ctrl + ` | 세계 좌표에 있는 경우 세계 아이콘 표시 | 로컬 좌표에 있는 경우 로컬 아이콘 표시 | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%A2%8C%ED%91%9C",
     
     "relUrl": "/docs/Unreal%20Engine%205/#좌표"
-  },"2035": {
+  },"2042": {
     "doc": "Unreal Engine 5",
     "title": "오브젝트 복사",
     "content": ". | Alt + 기즈모 이동을 통해 복사 | 여러개 복사하고 싶으면 shift로 오브젝트 다중 선택 후 Alt + 기즈모 이동 . | 회전도 복사 가능 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EB%B3%B5%EC%82%AC",
     
     "relUrl": "/docs/Unreal%20Engine%205/#오브젝트-복사"
-  },"2036": {
+  },"2043": {
     "doc": "Unreal Engine 5",
     "title": "Panels 패널",
     "content": " ",
     "url": "/docs/Unreal%20Engine%205/#panels-%ED%8C%A8%EB%84%90",
     
     "relUrl": "/docs/Unreal%20Engine%205/#panels-패널"
-  },"2037": {
+  },"2044": {
     "doc": "Unreal Engine 5",
     "title": "Outliner",
     "content": "world에 있는 모든 오브젝트 목록 . | 아웃라이너에서 오브젝트 이름으로 오브젝트 찾기 가능 | 아웃라이너에서 오브젝트 이름 누른 뒤 F 키를 통해 오브젝트로 이동 | . ",
     "url": "/docs/Unreal%20Engine%205/#outliner",
     
     "relUrl": "/docs/Unreal%20Engine%205/#outliner"
-  },"2038": {
+  },"2045": {
     "doc": "Unreal Engine 5",
     "title": "Details",
     "content": "선택한 오브젝트 속성 변경 . | Location : 월드 좌표에서의 오브젝트 위치 | Physics . | Simulate physics : 체크 박스에 체크하면 물리학 활성화 | . | . ",
     "url": "/docs/Unreal%20Engine%205/#details",
     
     "relUrl": "/docs/Unreal%20Engine%205/#details"
-  },"2039": {
+  },"2046": {
     "doc": "Home",
     "title": "Home",
     "content": ". ✨2025-05-02 . | 깃허브 블로그 개설 | 커스텀 설정 추가 (custom.scss) . | site-title font : Darumadrop One 으로 변경 | .nav-list-link : color 수정 | . | . ✨2025-05-03 . | 커스텀 설정 추가 . | 마크다운 font : Noto Sans KR 로 변경 | 인용 블록 : border-radius 추가, 색상 변경 | 코드 블록 : font Rubik 으로 변경, border-radius 추가, Rouge github 테마로 폰트 색상 변경 | . | . ✨2025-05-04 . | 커스텀 설정 추가 . | 테이블 : font IBM Plex Sans KR 로 변경, 라인 색상 변경, 사이드 라인 제거 | 링크 버튼 : btn-purple color 변경 | 인용 블록 종류 추가 : warning, highlight, note, important, new | . | . ✨2025-05-06 . | 로고 추가 | 푸터 추가 | . ✨2025-06-22 . | LaTex 기호 적용 | . ✨2025-07-11 . | 외부 링크 새 탭으로 열리게 적용 | . ",
