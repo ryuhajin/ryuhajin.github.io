@@ -16,6 +16,10 @@ has_children: true
 - [Unreal Engine C++ API Reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/API)
 - [UE Classes API](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Classes)
 
+**sheets**
+- [UE5 Chear Sheets : C++, Blueprints, Editor](https://forums.unrealengine.com/t/ue5-cheat-sheets-c-blueprints-editor/533979)
+- [Blueprint Editor Cheat Sheet](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-editor-cheat-sheet-in-unreal-engine)
+
 ---
 
 # Coordinate System
