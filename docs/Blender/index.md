@@ -59,6 +59,7 @@ has_children: true
 ---
 
 ## 오브젝트 모드 (Object Mode)
+- [Object Mode 기본 컨트롤](https://youtu.be/EwbM7_vzq3I?si=3LVaNc3Vcft3pul4)
 
 | 단축키 | 기능 | 로직 및 팁 |
 | --- | --- | --- |
@@ -87,6 +88,8 @@ has_children: true
 ---
 
 ## 에디트 모드 (Edit Mode)
+- [Edit Mode 기본 컨트롤](https://youtu.be/VZEiDJArKgQ?si=6sIGYIjqtdCJ7x9T)
+
 에디트 모드에서 1, 2, 3 키가 점/선/면 선택 모드로 작동하지 않고 화면 시점이 돌아가는 이유
 - **Emulate Numpad(넘패드 에뮬레이트) 옵션**이 활성화
   - 해당 기능을 끄고 `~` (파이 메뉴) 를 눌러 시점 전환 메뉴를 사용할 수 있다

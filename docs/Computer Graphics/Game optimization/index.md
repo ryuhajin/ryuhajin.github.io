@@ -7,6 +7,7 @@ has_children: true
 ---
 
 # Game optimization
+- [UE 5.7 콘텐츠 테스팅 및 최적화](https://dev.epicgames.com/documentation/unreal-engine/testing-and-optimizing-your-content?application_version=5.7)
 
 # 게임 최적화 기초: 원칙과 전략 가이드
 게임 개발에서 최적화는 단순히 '사양을 낮추는 것'이 아니라, **사용자의 상호작용(Interactivity)을 보존하는 핵심 작업**
