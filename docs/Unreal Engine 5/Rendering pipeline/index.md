@@ -22,11 +22,20 @@ UE5 렌더링 파이프라인 정리하기
 - [Gamedev Guide](https://ikrima.dev/ue4guide/graphics-development/shader-development/add-custom-shading-model/)
 
 
-**나중에 옮기기**
+### 나중에 문서로 옮기기
+
+1. [Visibility and Occlusion Culling](https://dev.epicgames.com/documentation/unreal-engine/visibility-and-occlusion-culling-in-unreal-engine?application_version=5.7)
+2. [가상 텍스처의 실제 작동 방식](https://www.shlom.dev/articles/how-virtual-textures-really-work/)
+3. [Runtime Virtual Textures: The Ultimate Starter Guide](https://youtu.be/RLEPA16QDRw?si=NK7PB2NXY6XrP_TD)
+4. [Unreal Engine 5 Tutorial - Instanced Static Meshes - ISM/HISM](https://youtu.be/cfR36FTbvcQ?si=we_OzA-WgZmdFQzm)
+5. 
+
+
+---
+
 - [hierarchical-depth-buffers](https://miketuritzin.com/post/hierarchical-depth-buffers/)
 - [Precomputed Atmospheric Scattering:
 a New Implementation](https://ebruneton.github.io/precomputed_atmospheric_scattering/)
-- [visibility-and-occlusion-culling](https://dev.epicgames.com/documentation/en-us/unreal-engine/visibility-and-occlusion-culling-in-unreal-engine)
 - [lumen-technical-details](https://dev.epicgames.com/documentation/en-us/unreal-engine/lumen-technical-details-in-unreal-engine)
 - [dynamic-global-illumination-with-lumen](https://www.unrealengine.com/en-US/tech-blog/unreal-engine-5-goes-all-in-on-dynamic-global-illumination-with-lumen)
 - [언리얼 엔진 5 루멘의 메커니즘과 중요한 부분 - 번역](https://illu.tistory.com/1502)

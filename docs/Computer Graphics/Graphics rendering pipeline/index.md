@@ -19,6 +19,9 @@ has_children: true
 - [Graphics Programming Compendium](https://graphicscompendium.com/index.html)
 - [a trip through the graphics pipeline](https://alaingalvan.gitbook.io/a-trip-through-the-graphics-pipeline)
 
+**유튜브 영상**
+- [실시간 컴퓨터 그래픽과 래스터화 작동 방식](https://youtu.be/brDJVEPOeY8?si=Ul18PJ5KJXbXRzre)
+
 ---
 
 # 아핀 변환
