@@ -332,3 +332,4 @@ float4 main(PixelInputType input) : SV_TARGET
 
 - [forward-and-deferred-rendering](https://www.benmandrew.com/articles/forward-and-deferred-rendering)
 - [Interactive Graphics 21 - Deferred, Variable-Rate, & Adaptive Shading](https://youtu.be/9_v8cvd-BSQ?feature=shared)
+- [포워드 및 지연 렌더링 - 케임브리지 컴퓨터 과학 토크](https://youtu.be/n5OiqJP2f7w?si=z7mXD7cwyddwj964)
