@@ -2,7 +2,7 @@
 layout: default
 title: "Light Mobility"
 parent: "Dynamic Sky"
-nav_order: 0
+nav_order: 1
 ---
 
 # Light Mobility
