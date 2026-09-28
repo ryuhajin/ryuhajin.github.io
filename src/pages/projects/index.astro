@@ -8,14 +8,14 @@ const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <PortfolioLayout title="Projects" current="projects">
-	<main class="projects" data-view="grid">
+	<main class="projects" data-view="list">
 		<header class="head">
 			<h1>
 				Selected Projects <sup class="mono">({pad(projects.length)})</sup>
 			</h1>
 			<div class="toggle mono" role="group" aria-label="보기 방식">
-				<button type="button" data-set-view="grid" aria-pressed="true">Grid</button>
-				<button type="button" data-set-view="list" aria-pressed="false">List</button>
+				<button type="button" data-set-view="list" aria-pressed="true">List</button>
+				<button type="button" data-set-view="grid" aria-pressed="false">Grid</button>
 			</div>
 		</header>
 
@@ -86,7 +86,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 <script>
 	import { initHoverMedia } from '../../scripts/portfolio/hover-media';
 
-	const KEY = 'projects-view';
+	// v2: list became the default; the old key may still hold an earlier "grid" choice
+	const KEY = 'projects-view-v2';
 	const main = document.querySelector<HTMLElement>('main.projects');
 	if (main) {
 		const buttons = [...main.querySelectorAll<HTMLButtonElement>('[data-set-view]')];

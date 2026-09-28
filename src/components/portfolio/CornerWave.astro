@@ -10,7 +10,9 @@
 
 <script>
 	const video = document.querySelector<HTMLVideoElement>('.top-wave video');
-	if (video && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+	// skip entirely when hidden (reduced motion, or the ?deco= preview switch turned it off)
+	const hidden = !video || getComputedStyle(video.parentElement!).display === 'none';
+	if (video && !hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
 		const play = () => video.play().catch(() => {});
 		const start = () => {
 			video.src = video.dataset.src!;

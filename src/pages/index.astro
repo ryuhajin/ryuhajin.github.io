@@ -13,6 +13,13 @@ const projects = await getCollection('projects');
 ---
 
 <PortfolioLayout bar={false}>
+	{/* preview switch for the decorations: /?deco=shapes | wave | none (default: both) */}
+	<script is:inline>
+		{
+			const d = new URLSearchParams(location.search).get('deco');
+			if (d === 'shapes' || d === 'wave' || d === 'none') document.documentElement.dataset.deco = d;
+		}
+	</script>
 	<main class="home">
 		<!-- decoration stage: everything above the bottom bar, clipped so nothing runs into it -->
 		<div class="stage" aria-hidden="true">
@@ -25,7 +32,7 @@ const projects = await getCollection('projects');
 		</header>
 
 		<section class="menu">
-			<p class="kicker mono">{site.role} — {site.focus}</p>
+			<p class="kicker mono" data-kicker>{site.role} — {site.focus}</p>
 			<SiteNav mode="hero" hoverSets={hoverSets} />
 		</section>
 
@@ -44,9 +51,11 @@ const projects = await getCollection('projects');
 <script>
 	import { initCursorTrail } from '../scripts/portfolio/cursor-trail';
 	import { initHeroShapes } from '../scripts/portfolio/hero-shapes';
+	import { initKickerHint } from '../scripts/portfolio/kicker-hint';
 
 	initCursorTrail();
 	initHeroShapes();
+	initKickerHint();
 
 	const clock = document.querySelector<HTMLElement>('[data-clock]');
 	if (clock) {
@@ -148,6 +157,11 @@ const projects = await getCollection('projects');
 		.intro {
 			font-size: 0.875rem;
 		}
+	}
+
+	:global(html:is([data-deco='shapes'], [data-deco='none']) .top-wave),
+	:global(html:is([data-deco='wave'], [data-deco='none']) .hero-shapes) {
+		display: none;
 	}
 
 	/* hover image compositions (layer below the menu text) */
