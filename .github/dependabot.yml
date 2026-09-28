@@ -1,14 +1,16 @@
 version: 2
 updates:
-  - package-ecosystem: bundler
+  - package-ecosystem: npm
     directory: /
     schedule:
-      interval: daily
+      interval: weekly
     allow:
       - dependency-type: direct
+    groups:
+      astro:
+        patterns: ["astro", "@astrojs/*"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: daily
-      time: "10:00"
+      interval: weekly
     open-pull-requests-limit: 10

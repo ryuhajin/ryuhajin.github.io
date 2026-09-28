@@ -1,0 +1,20 @@
+---
+import { palettes, defaultPalette, storageKey } from '../../notes/palettes.mjs';
+
+const modes = Object.fromEntries(palettes.map((p) => [p.id, p.mode]));
+---
+
+{/* Inlined to avoid a flash of the wrong palette. Replaces Starlight's dark/light ThemeProvider. */}
+<script is:inline define:vars={{ modes, defaultPalette, storageKey }}>
+	(() => {
+		let id = null;
+		try {
+			id = localStorage.getItem(storageKey);
+		} catch {}
+		if (!id || !modes[id]) id = defaultPalette;
+		document.documentElement.dataset.palette = id;
+		document.documentElement.dataset.theme = modes[id];
+	})();
+	// Starlight components may still call this; palette pickers manage themselves.
+	window.StarlightThemeProvider = { updatePickers() {} };
+</script>

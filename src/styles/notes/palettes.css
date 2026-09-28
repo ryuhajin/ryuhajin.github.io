@@ -1,0 +1,174 @@
+/*
+ * Notes palettes — selected via <html data-palette="...">. See src/notes/palettes.mjs.
+ *
+ * Every palette sets the same tokens:
+ *   --sl-color-white … --sl-color-black   Starlight gray ramp (white = strongest text, black = page bg;
+ *                                         reversed in light palettes, like Starlight itself)
+ *   --sl-color-accent-low/-/-high         accent color
+ *   --sl-color-bg-nav / -bg-sidebar       header + sidebar surfaces
+ *   --notes-code-bg / -chrome / -border   code block surface, tab/title bar, border
+ *   --notes-inline-code-*                 `inline code`
+ */
+
+:root[data-palette='obsidian'] {
+	--sl-color-white: #f4f4f5;
+	--sl-color-gray-1: #dadada;
+	--sl-color-gray-2: #bcbcbc;
+	--sl-color-gray-3: #8e8e8e;
+	--sl-color-gray-4: #5f5f5f;
+	--sl-color-gray-5: #363636;
+	--sl-color-gray-6: #262626;
+	--sl-color-black: #1e1e1e;
+	--sl-color-accent-low: #3a2d63;
+	--sl-color-accent: #a882ff;
+	--sl-color-accent-high: #cbb6ff;
+	--sl-color-bg-nav: #1e1e1e;
+	--sl-color-bg-sidebar: #232323;
+	--sl-color-hairline: #2e2e2e;
+	--sl-color-hairline-light: #363636;
+	--notes-code-bg: #181818;
+	--notes-code-chrome: #202020;
+	--notes-code-border: #333;
+	--notes-inline-code-bg: #2c2c2c;
+	--notes-inline-code-fg: #e39bff;
+}
+
+:root[data-palette='md3'] {
+	--sl-color-white: #f4eff4;
+	--sl-color-gray-1: #e6e0e9;
+	--sl-color-gray-2: #cac4d0;
+	--sl-color-gray-3: #938f99;
+	--sl-color-gray-4: #625b71;
+	--sl-color-gray-5: #49454f;
+	--sl-color-gray-6: #211f26;
+	--sl-color-black: #141218;
+	--sl-color-accent-low: #4f378b;
+	--sl-color-accent: #d0bcff;
+	--sl-color-accent-high: #eaddff;
+	--sl-color-bg-nav: #141218;
+	--sl-color-bg-sidebar: #1d1b20;
+	--sl-color-hairline: #2b2930;
+	--sl-color-hairline-light: #36343b;
+	--notes-code-bg: #0f0d13;
+	--notes-code-chrome: #1d1b20;
+	--notes-code-border: #36343b;
+	--notes-inline-code-bg: #2b2930;
+	--notes-inline-code-fg: #efb8c8;
+}
+
+:root[data-palette='coal'] {
+	--sl-color-white: #e3e9ee;
+	--sl-color-gray-1: #c6cfd6;
+	--sl-color-gray-2: #a1adb8;
+	--sl-color-gray-3: #737f8a;
+	--sl-color-gray-4: #505a63;
+	--sl-color-gray-5: #33383d;
+	--sl-color-gray-6: #1d2022;
+	--sl-color-black: #141617;
+	--sl-color-accent-low: #16374a;
+	--sl-color-accent: #4fa0cf;
+	--sl-color-accent-high: #9fd0ec;
+	--sl-color-bg-nav: #141617;
+	--sl-color-bg-sidebar: #1d1f21;
+	--sl-color-hairline: #25282b;
+	--sl-color-hairline-light: #303438;
+	--notes-code-bg: #1d1f21;
+	--notes-code-chrome: #25282b;
+	--notes-code-border: #303438;
+	--notes-inline-code-bg: #25282b;
+	--notes-inline-code-fg: #c5c8c6;
+}
+
+:root[data-palette='navy'] {
+	--sl-color-white: #eceef9;
+	--sl-color-gray-1: #d3d4e6;
+	--sl-color-gray-2: #bcbdd0;
+	--sl-color-gray-3: #8b8ea8;
+	--sl-color-gray-4: #5a5e78;
+	--sl-color-gray-5: #363b52;
+	--sl-color-gray-6: #1f2332;
+	--sl-color-black: #161923;
+	--sl-color-accent-low: #25306a;
+	--sl-color-accent: #7c9cf0;
+	--sl-color-accent-high: #bccbf7;
+	--sl-color-bg-nav: #161923;
+	--sl-color-bg-sidebar: #1b1f2c;
+	--sl-color-hairline: #242939;
+	--sl-color-hairline-light: #2f3548;
+	--notes-code-bg: #1a1b26;
+	--notes-code-chrome: #20222f;
+	--notes-code-border: #2f3548;
+	--notes-inline-code-bg: #242939;
+	--notes-inline-code-fg: #c5c8e8;
+}
+
+:root[data-palette='ayu'] {
+	--sl-color-white: #f3f4f5;
+	--sl-color-gray-1: #dcdcdc;
+	--sl-color-gray-2: #c5c5c5;
+	--sl-color-gray-3: #8a9199;
+	--sl-color-gray-4: #5c6773;
+	--sl-color-gray-5: #2d3640;
+	--sl-color-gray-6: #14191f;
+	--sl-color-black: #0f1419;
+	--sl-color-accent-low: #4a3413;
+	--sl-color-accent: #ffb454;
+	--sl-color-accent-high: #ffd9a0;
+	--sl-color-bg-nav: #0f1419;
+	--sl-color-bg-sidebar: #12171d;
+	--sl-color-hairline: #1c232b;
+	--sl-color-hairline-light: #262f39;
+	--notes-code-bg: #0b0e14;
+	--notes-code-chrome: #12171d;
+	--notes-code-border: #262f39;
+	--notes-inline-code-bg: #1c232b;
+	--notes-inline-code-fg: #ffb454;
+}
+
+:root[data-palette='six'] {
+	--sl-color-white: #0f172a;
+	--sl-color-gray-1: #1e293b;
+	--sl-color-gray-2: #334155;
+	--sl-color-gray-3: #64748b;
+	--sl-color-gray-4: #94a3b8;
+	--sl-color-gray-5: #cbd5e1;
+	--sl-color-gray-6: #eef1f5;
+	--sl-color-gray-7: #f6f8fa;
+	--sl-color-black: #ffffff;
+	--sl-color-accent-low: #dbe6fe;
+	--sl-color-accent: #2563eb;
+	--sl-color-accent-high: #1e40af;
+	--sl-color-bg-nav: #ffffff;
+	--sl-color-bg-sidebar: #fbfcfd;
+	--sl-color-hairline: #edf0f4;
+	--sl-color-hairline-light: #e2e8f0;
+	--notes-code-bg: #f8fafc;
+	--notes-code-chrome: #f1f5f9;
+	--notes-code-border: #e2e8f0;
+	--notes-inline-code-bg: #f1f5f9;
+	--notes-inline-code-fg: #0f172a;
+}
+
+:root[data-palette='rust'] {
+	--sl-color-white: #1c1b1a;
+	--sl-color-gray-1: #262625;
+	--sl-color-gray-2: #3b3a38;
+	--sl-color-gray-3: #6b6860;
+	--sl-color-gray-4: #9b988e;
+	--sl-color-gray-5: #c4c2b8;
+	--sl-color-gray-6: #d6d6ce;
+	--sl-color-gray-7: #dcdcd5;
+	--sl-color-black: #e1e1db;
+	--sl-color-accent-low: #f0d2c2;
+	--sl-color-accent: #b7410e;
+	--sl-color-accent-high: #7a2a08;
+	--sl-color-bg-nav: #e1e1db;
+	--sl-color-bg-sidebar: #d9d9d2;
+	--sl-color-hairline: #d0d0c8;
+	--sl-color-hairline-light: #c8c7bd;
+	--notes-code-bg: #eaeae5;
+	--notes-code-chrome: #dcdcd5;
+	--notes-code-border: #c8c7bd;
+	--notes-inline-code-bg: #d6d6ce;
+	--notes-inline-code-fg: #6e2c0f;
+}
