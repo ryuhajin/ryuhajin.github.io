@@ -1,5 +1,5 @@
 ---
-import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+import '../styles/fonts.css';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/portfolio-themes.css';
 import '../styles/portfolio.css';
@@ -29,6 +29,7 @@ const themaIds = themas.map((t) => t.id);
 		<title>{fullTitle}</title>
 		<meta name="description" content={description} />
 		<link rel="icon" href="/images/cat_yellow_bg.ico" />
+		<link rel="preload" href="/fonts/pretendard-subset.woff2" as="font" type="font/woff2" crossorigin />
 		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
 		<meta property="og:title" content={fullTitle} />
 		<meta property="og:description" content={description} />

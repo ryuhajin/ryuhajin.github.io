@@ -5,6 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
+    "fonts": "node scripts/build-fonts.mjs",
+    "prebuild": "node scripts/build-fonts.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -26,5 +28,8 @@
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "subset-font": "^2.9.0"
   }
 }

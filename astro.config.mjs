@@ -18,12 +18,15 @@ export default defineConfig({
 			title: "RyuHaJin's Notes",
 			description: '그래픽스 · 엔진 · 수학 공부 기록',
 			favicon: '/images/cat_yellow_bg.ico',
+			head: [
+				{ tag: 'link', attrs: { rel: 'preload', href: '/fonts/pretendard-subset.woff2', as: 'font', type: 'font/woff2', crossorigin: '' } },
+			],
 			locales: { root: { label: '한국어', lang: 'ko' } },
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ryuhajin' }],
 			sidebar: [{ autogenerate: { directory: 'notes', collapsed: true } }],
 			customCss: [
 				'katex/dist/katex.min.css',
-				'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css',
+				'./src/styles/fonts.css',
 				'@fontsource-variable/jetbrains-mono',
 				'./src/styles/page-transitions.css',
 				'./src/styles/glitch.css',

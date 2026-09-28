@@ -15,13 +15,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <PortfolioLayout bar={false}>
-	{/* preview switch for the GitHub / Thema buttons: /?btn=thick | solid (default: 1px outline) */}
-	<script is:inline>
-		{
-			const b = new URLSearchParams(location.search).get('btn');
-			if (b === 'thick' || b === 'solid') document.documentElement.dataset.btn = b;
-		}
-	</script>
 	<main class="home">
 		<!-- decoration stage: everything above the bottom bar, clipped so nothing runs into it -->
 		<div class="stage" aria-hidden="true">
