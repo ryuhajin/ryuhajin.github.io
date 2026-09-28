@@ -26,8 +26,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 					<li>
 						<a href={item.href} data-hover-set={JSON.stringify(hoverSets[item.id] ?? [])} data-hint={`${item.hint} →`}>
 							<span class="idx mono">{pad(i)}</span>
-							<span class="label display glitch" data-text={item.label} style={`view-transition-name: nav-${item.id}`}>
-								{item.label}
+							<span class="label display gl" style={`view-transition-name: nav-${item.id}`}>
+								<span class="glitch">{item.label}</span>
 							</span>
 						</a>
 					</li>
@@ -46,8 +46,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 						{nav.map((item) => (
 							<li>
 								<a href={item.href} class:list={{ active: item.id === current }} aria-current={item.id === current ? 'page' : undefined}>
-									<span class="label glitch" data-text={item.label} style={`view-transition-name: nav-${item.id}`}>
-										{item.label}
+									<span class="label gl" style={`view-transition-name: nav-${item.id}`}>
+										<span class="glitch">{item.label}</span>
 									</span>
 								</a>
 							</li>
@@ -143,30 +143,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
 		padding-block: 0.25rem;
 		transition: color var(--t-micro) var(--ease);
 	}
-	.bar a::after {
-		content: '';
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: -2px;
-		height: 1px;
-		background: currentColor;
-		transform: scaleX(0);
-		transform-origin: right;
-		transition: transform var(--t-fast) var(--ease-out);
-	}
 	.bar a:hover {
 		color: var(--fg);
-	}
-	.bar a:hover::after,
-	.bar a.active::after {
-		transform: scaleX(1);
-		transform-origin: left;
 	}
 	.bar a.active {
 		color: var(--fg);
 	}
-	.bar a.active::after {
+	.bar a.active :global(.gl::after) {
 		background: var(--accent);
 	}
 

@@ -79,7 +79,6 @@ Starlight aside 문법. note / tip / caution / danger
 - 메뉴 hover 글리치: `src/styles/glitch.css`
 - 메뉴 hover 이미지 구성: `src/portfolio/hover-sets.ts` (이미지 위치·크기·회전), 파일은 `public/trail/<menu>/` (출처 `public/trail/CREDITS.md`)
 - 랜딩 우측 도형: `src/components/portfolio/HeroShapes.astro` + `src/scripts/portfolio/hero-shapes.ts`
-- 상단 파도: `src/components/portfolio/CornerWave.astro` + `public/wave/shore.mp4` (출처 `public/wave/CREDITS.md`)
 
 ## 기타
 

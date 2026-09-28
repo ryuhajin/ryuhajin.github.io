@@ -3,27 +3,21 @@ import { getCollection } from 'astro:content';
 import PortfolioLayout from '../layouts/PortfolioLayout.astro';
 import SiteNav from '../components/portfolio/SiteNav.astro';
 import HeroShapes from '../components/portfolio/HeroShapes.astro';
-import CornerWave from '../components/portfolio/CornerWave.astro';
 import Brand from '../components/shared/Brand.astro';
 import { site } from '../site';
 import { hoverSets } from '../portfolio/hover-sets';
 
+// counted at build time: add a project .md / a note .md and the numbers update on the next build
 const projects = await getCollection('projects');
+const notes = (await getCollection('docs')).filter((d) => d.id.startsWith('notes/'));
+const pad = (n: number) => String(n).padStart(2, '0');
 
 ---
 
 <PortfolioLayout bar={false}>
-	{/* preview switch for the decorations: /?deco=shapes | wave | none (default: both) */}
-	<script is:inline>
-		{
-			const d = new URLSearchParams(location.search).get('deco');
-			if (d === 'shapes' || d === 'wave' || d === 'none') document.documentElement.dataset.deco = d;
-		}
-	</script>
 	<main class="home">
 		<!-- decoration stage: everything above the bottom bar, clipped so nothing runs into it -->
 		<div class="stage" aria-hidden="true">
-			<CornerWave />
 			<HeroShapes />
 		</div>
 
@@ -39,9 +33,10 @@ const projects = await getCollection('projects');
 		<footer class="bottom">
 			<p class="intro">{site.intro}</p>
 			<dl class="meta mono">
-				<div><dt>Based</dt><dd>{site.location}</dd></div>
-				<div><dt>Local</dt><dd data-clock>--:--:--</dd></div>
-				<div><dt>Projects</dt><dd>{String(projects.length).padStart(2, '0')}</dd></div>
+				<div><dt>Date</dt><dd data-date>----.--.--</dd></div>
+				<div><dt>Time</dt><dd data-clock>--:--:--</dd></div>
+				<div><dt>Projects</dt><dd>{pad(projects.length)}</dd></div>
+				<div><dt>Notes</dt><dd>{pad(notes.length)}</dd></div>
 			</dl>
 		</footer>
 	</main>
@@ -57,10 +52,18 @@ const projects = await getCollection('projects');
 	initHeroShapes();
 	initKickerHint();
 
+	// date + time in Seoul (the site owner's time zone), regardless of where the visitor is
 	const clock = document.querySelector<HTMLElement>('[data-clock]');
-	if (clock) {
-		const fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Seoul' });
-		const tick = () => (clock.textContent = `${fmt.format(new Date())} KST`);
+	const date = document.querySelector<HTMLElement>('[data-date]');
+	if (clock && date) {
+		const tz = { timeZone: 'Asia/Seoul' } as const;
+		const time = new Intl.DateTimeFormat('en-GB', { ...tz, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+		const day = new Intl.DateTimeFormat('en-CA', { ...tz, year: 'numeric', month: '2-digit', day: '2-digit' });
+		const tick = () => {
+			const now = new Date();
+			clock.textContent = `${time.format(now)} KST`;
+			date.textContent = day.format(now).replaceAll('-', '.');
+		};
 		tick();
 		setInterval(tick, 1000);
 	}
@@ -136,7 +139,8 @@ const projects = await getCollection('projects');
 	}
 	.meta {
 		display: flex;
-		gap: clamp(1rem, 3vw, 2.5rem);
+		flex-wrap: wrap;
+		gap: 0.9rem clamp(1rem, 3vw, 2.5rem);
 		margin: 0;
 	}
 	.meta dt {
@@ -157,11 +161,6 @@ const projects = await getCollection('projects');
 		.intro {
 			font-size: 0.875rem;
 		}
-	}
-
-	:global(html:is([data-deco='shapes'], [data-deco='none']) .top-wave),
-	:global(html:is([data-deco='wave'], [data-deco='none']) .hero-shapes) {
-		display: none;
 	}
 
 	/* hover image compositions (layer below the menu text) */

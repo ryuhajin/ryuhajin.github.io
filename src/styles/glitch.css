@@ -1,188 +1,118 @@
-/* Menu glitch (plays once on hover), monochrome:
- *   ::before — the label, sliced into a few bands that jump sideways
- *   ::after  — a darker copy dropped at 45° (down-right), like a shadow that flickers and fades out
- * Band thickness and frame timing are deliberately irregular (mostly hairlines, sometimes a thick slab, some blank frames).
- * Usage: <a><span class="glitch" data-text="Label">Label</span></a>. Shared by the Portfolio and the Notes header.
- * Keyframes are generated (seeded) — regenerate rather than hand-edit. */
+/*
+ * Menu glitch, after the Grafio header nav: on hover the label itself is flipped and pushed aside, and only a
+ * thin band of it shows — the band jumps up and down — then it snaps back whole (0.4s). At the same time a
+ * 1px underline hops around in two-step jumps and lands under the label.
+ *
+ * Markup: <a …><span class="gl"><span class="glitch">Label</span></span></a>
+ *   .gl      — wrapper that owns the underline (so it doesn't flip with the text)
+ *   .glitch  — the label that glitches
+ * The current page (aria-current / .active) keeps its underline. Shared by the Portfolio and the Notes header.
+ */
 
-.glitch {
-	--glitch-shadow: 0.07em;
+.gl {
 	position: relative;
 	display: inline-block;
 }
-.glitch::before,
-.glitch::after {
-	content: attr(data-text);
+.gl::after {
+	content: '';
 	position: absolute;
-	inset: 0;
+	left: 0;
+	right: 0;
+	top: 100%;
+	height: max(1px, 0.025em);
+	background: currentColor;
 	opacity: 0;
 	pointer-events: none;
-	white-space: nowrap;
 }
-.glitch::before {
-	color: var(--fg-2, var(--sl-color-gray-2));
-}
-.glitch::after {
-	z-index: -1;
-	color: var(--fg-3, var(--sl-color-gray-4));
-}
-:is(a, button):hover > .glitch::before,
-:is(a, button):focus-visible > .glitch::before {
-	animation: glitch-slice 560ms steps(1, end) 1 both;
-}
-:is(a, button):hover > .glitch::after,
-:is(a, button):focus-visible > .glitch::after {
-	animation: glitch-shadow 700ms steps(1, end) 1 both;
-}
-:is(a, button):hover > .glitch {
-	animation: glitch-flicker 560ms steps(1, end) 1;
+.glitch {
+	display: inline-block;
 }
 
-@keyframes glitch-slice {
-	0% {
-		opacity: 0.82;
-		clip-path: polygon(0 10%, 100% 10%, 100% 12%, 0 12%, 0 46%, 100% 46%, 100% 51%, 0 51%);
-		translate: -0.0px 0;
-	}
-	2% {
-		opacity: 0.66;
-		clip-path: polygon(0 42%, 100% 42%, 100% 45%, 0 45%);
-		translate: -2.7px 0;
-	}
-	11% {
-		opacity: 0;
-	}
-	16% {
-		opacity: 0.76;
-		clip-path: polygon(0 5%, 100% 5%, 100% 6%, 0 6%, 0 8%, 100% 8%, 100% 24%, 0 24%, 0 35%, 100% 35%, 100% 38%, 0 38%, 0 43%, 100% 43%, 100% 44%, 0 44%);
-		translate: -1.6px 0;
-	}
-	22% {
-		opacity: 0.70;
-		clip-path: polygon(0 18%, 100% 18%, 100% 23%, 0 23%, 0 66%, 100% 66%, 100% 67%, 0 67%);
-		translate: -3.0px 0;
-	}
-	30% {
-		opacity: 0.89;
-		clip-path: polygon(0 27%, 100% 27%, 100% 28%, 0 28%, 0 49%, 100% 49%, 100% 63%, 0 63%, 0 62%, 100% 62%, 100% 84%, 0 84%, 0 62%, 100% 62%, 100% 65%, 0 65%, 0 68%, 100% 68%, 100% 71%, 0 71%);
-		translate: 2.5px 0;
-	}
-	34% {
-		opacity: 0.68;
-		clip-path: polygon(0 21%, 100% 21%, 100% 24%, 0 24%);
-		translate: -3.0px 0;
-	}
-	41% {
-		opacity: 0.98;
-		clip-path: polygon(0 4%, 100% 4%, 100% 12%, 0 12%);
-		translate: 2.0px 0;
-	}
-	51% {
-		opacity: 0.99;
-		clip-path: polygon(0 12%, 100% 12%, 100% 14%, 0 14%, 0 29%, 100% 29%, 100% 32%, 0 32%, 0 34%, 100% 34%, 100% 37%, 0 37%, 0 69%, 100% 69%, 100% 86%, 0 86%);
-		translate: 3.1px 0;
-	}
-	61% {
-		opacity: 0.73;
-		clip-path: polygon(0 18%, 100% 18%, 100% 24%, 0 24%, 0 59%, 100% 59%, 100% 66%, 0 66%, 0 81%, 100% 81%, 100% 83%, 0 83%, 0 89%, 100% 89%, 100% 98%, 0 98%);
-		translate: -1.6px 0;
-	}
-	69% {
-		opacity: 0.57;
-		clip-path: polygon(0 29%, 100% 29%, 100% 36%, 0 36%, 0 40%, 100% 40%, 100% 45%, 0 45%);
-		translate: 3.2px 0;
-	}
-	80%,
-	100% {
-		opacity: 0;
-		clip-path: inset(50% 0 50% 0);
-		translate: none;
+:is(a, button):is(:hover, :focus-visible) .gl > .glitch {
+	animation: glitch-text 400ms linear 1;
+}
+@media (hover: hover) and (pointer: fine) {
+	:is(a, button):hover .gl::after {
+		opacity: 1;
+		animation: glitch-line 400ms steps(2, start) 1 forwards;
 	}
 }
-
-@keyframes glitch-shadow {
-	0% {
-		opacity: 0.70;
-		clip-path: none;
-		translate: calc(var(--glitch-shadow) + -0.2px) var(--glitch-shadow);
-	}
-	2% {
-		opacity: 0.65;
-		clip-path: polygon(0 4%, 100% 4%, 100% 7%, 0 7%, 0 17%, 100% 17%, 100% 19%, 0 19%, 0 34%, 100% 34%, 100% 41%, 0 41%, 0 69%, 100% 69%, 100% 72%, 0 72%, 0 73%, 100% 73%, 100% 82%, 0 82%);
-		translate: calc(var(--glitch-shadow) + -3.3px) var(--glitch-shadow);
-	}
-	6% {
-		opacity: 0.60;
-		clip-path: polygon(0 16%, 100% 16%, 100% 19%, 0 19%, 0 36%, 100% 36%, 100% 58%, 0 58%, 0 45%, 100% 45%, 100% 62%, 0 62%, 0 87%, 100% 87%, 100% 88%, 0 88%);
-		translate: calc(var(--glitch-shadow) + 0.9px) var(--glitch-shadow);
-	}
-	14% {
-		opacity: 0.55;
-		clip-path: none;
-		translate: calc(var(--glitch-shadow) + 5.0px) var(--glitch-shadow);
-	}
-	25% {
-		opacity: 0.50;
-		clip-path: none;
-		translate: calc(var(--glitch-shadow) + 0.0px) var(--glitch-shadow);
-	}
-	30% {
-		opacity: 0.45;
-		clip-path: polygon(0 9%, 100% 9%, 100% 31%, 0 31%, 0 53%, 100% 53%, 100% 60%, 0 60%, 0 60%, 100% 60%, 100% 62%, 0 62%, 0 89%, 100% 89%, 100% 90%, 0 90%, 0 93%, 100% 93%, 100% 94%, 0 94%);
-		translate: calc(var(--glitch-shadow) + -1.0px) var(--glitch-shadow);
-	}
-	35% {
-		opacity: 0.40;
-		clip-path: polygon(0 52%, 100% 52%, 100% 54%, 0 54%, 0 74%, 100% 74%, 100% 96%, 0 96%);
-		translate: calc(var(--glitch-shadow) + -1.9px) var(--glitch-shadow);
-	}
-	43% {
-		opacity: 0.35;
-		clip-path: polygon(0 15%, 100% 15%, 100% 18%, 0 18%, 0 96%, 100% 96%, 100% 99%, 0 99%);
-		translate: calc(var(--glitch-shadow) + 1.7px) var(--glitch-shadow);
-	}
-	52% {
-		opacity: 0.30;
-		clip-path: polygon(0 20%, 100% 20%, 100% 43%, 0 43%, 0 23%, 100% 23%, 100% 29%, 0 29%, 0 46%, 100% 46%, 100% 56%, 0 56%, 0 90%, 100% 90%, 100% 92%, 0 92%);
-		translate: calc(var(--glitch-shadow) + -0.7px) var(--glitch-shadow);
-	}
-	61% {
-		opacity: 0.25;
-		clip-path: polygon(0 55%, 100% 55%, 100% 56%, 0 56%);
-		translate: calc(var(--glitch-shadow) + 4.8px) var(--glitch-shadow);
-	}
-	90%,
-	100% {
-		opacity: 0;
-		translate: var(--glitch-shadow) var(--glitch-shadow);
-	}
+:is(a, button):focus-visible .gl::after {
+	opacity: 1;
+	animation: glitch-line 400ms steps(2, start) 1 forwards;
+}
+:is([aria-current], .active) .gl::after {
+	opacity: 1;
 }
 
-/* the base text: faint flicker + 1px horizontal slips */
-@keyframes glitch-flicker {
+/* the label: flipped + shifted, visible only through a moving hairline band, then whole again */
+@keyframes glitch-text {
 	0% {
-		opacity: 0.85;
-		transform: translateX(1px);
+		clip-path: polygon(0 18%, 100% 18%, 100% 20%, 0 20%);
+		transform: translateX(min(-10px, -0.08em)) scale(-1);
 	}
 	12% {
-		opacity: 1;
-		transform: none;
+		clip-path: polygon(0 35%, 100% 35%, 100% 36%, 0 36%);
 	}
-	25% {
-		opacity: 0.75;
-		transform: translateX(-1px);
+	24% {
+		clip-path: polygon(0 47%, 100% 47%, 100% 47%, 0 47%);
 	}
-	31% {
-		opacity: 1;
+	36% {
+		clip-path: polygon(0 54%, 100% 54%, 100% 22%, 0 22%);
 	}
 	50% {
-		opacity: 0.9;
-		transform: translateX(0.5px);
+		clip-path: polygon(0 71%, 100% 71%, 100% 72%, 0 72%);
 	}
-	62%,
+	62% {
+		clip-path: polygon(0 83%, 100% 83%, 100% 83%, 0 83%);
+	}
+	74% {
+		clip-path: polygon(0 51%, 100% 51%, 100% 57%, 0 57%);
+	}
+	86% {
+		clip-path: polygon(0 66%, 100% 66%, 100% 79%, 0 79%);
+		transform: translateX(min(-10px, -0.08em)) scale(-1);
+	}
 	100% {
-		opacity: 1;
+		clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 		transform: none;
+	}
+}
+
+/* the underline: two-step hops (squash, fling, drop back) before it settles */
+@keyframes glitch-line {
+	0% {
+		transform: none;
+	}
+	10% {
+		transform: translateX(12px);
+	}
+	20% {
+		transform: translateY(5px);
+	}
+	30% {
+		transform-origin: 100% 0;
+		transform: scale(0.15, 1.5) translateY(-22px);
+	}
+	40% {
+		transform: scaleY(0.4) translateY(20px);
+	}
+	50% {
+		transform: scale(0.55, 0.4) translate(-90px, -70px);
+	}
+	60% {
+		transform: scaleY(1.3) translate(12px, -6px);
+	}
+	70% {
+		transform: scale(0.45) translateY(18px);
+	}
+	90% {
+		transform-origin: 0 50%;
+		transform: scaleY(0.5) translateY(-12px);
+	}
+	100% {
+		transform: none;
+		opacity: 1;
 	}
 }
 
@@ -251,8 +181,7 @@
 @media (prefers-reduced-motion: reduce) {
 	.shape-static,
 	.glitch,
-	.glitch::before,
-	.glitch::after {
+	.gl::after {
 		animation: none !important;
 	}
 }
