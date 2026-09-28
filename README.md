@@ -77,9 +77,9 @@ Starlight aside 문법. note / tip / caution / danger
 ### Portfolio 연출
 - 페이지 전환: `src/styles/page-transitions.css` (방향별 애니메이션, `--vt-dur` 전환 시간) + `src/scripts/vt-types.js` (목적지별 방향: Projects ↑, Notes ←, About ↓)
 - 메뉴 hover 글리치: `src/styles/glitch.css`
-- 메뉴 hover 이미지: `public/trail/<projects|notes|about>/` 폴더에 이미지를 넣으면 자동 반영 (투명 배경 WebP/PNG 권장, 출처는 `public/trail/CREDITS.md`)
+- 메뉴 hover 이미지 구성: `src/portfolio/hover-sets.ts` (이미지 위치·크기·회전), 파일은 `public/trail/<menu>/` (출처 `public/trail/CREDITS.md`)
 - 랜딩 우측 도형: `src/components/portfolio/HeroShapes.astro` + `src/scripts/portfolio/hero-shapes.ts`
-- 우측 상단 파도: `src/components/portfolio/CornerWave.astro`
+- 상단 파도: `src/components/portfolio/CornerWave.astro` + `public/wave/shore.mp4` (출처 `public/wave/CREDITS.md`)
 
 ## 기타
 

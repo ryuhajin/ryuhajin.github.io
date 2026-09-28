@@ -1,6 +1,6 @@
 ---
 // Landing-page decoration on the right edge (partly off-screen). One shape set per theme (see themes.ts `shapes`):
-//   geo   — halftone sphere / lissajous / square spiral / moiré / wireframe globe + upright triangle (mono, paper, violet)
+//   geo   — halftone sphere / lissajous / square spiral / moiré / wireframe globe (mono, paper, violet)
 //   space — planet, tilted orbits with satellites, star field                         (space)
 //   candy — tilted checkerboard plane + separate ribbon bows                            (candy)
 //   pixel — pixel sprites with stepped motion                                         (gameboy)
@@ -76,8 +76,6 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 
 		<!-- geo -->
 		<g class="set" data-set="geo">
-			<!-- upright right triangle, right angle bottom-left -->
-			<polygon class="plane" points="70,110 70,990 600,990"></polygon>
 			<g class="spin" id="hs-spin-geo">
 				<g class="layer on" data-layer="halftone">
 					{halftone.map((p) => <circle cx={p.x} cy={p.y} r={p.r} />)}
@@ -217,11 +215,6 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 	[data-layer='globe'] {
 		stroke-width: 1.5;
 	}
-	.plane {
-		fill: var(--shape-fill);
-		stroke: none;
-		opacity: 0.9;
-	}
 	.sparks path {
 		stroke: none;
 		fill: var(--accent);
@@ -309,12 +302,6 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 	}
 
 	/* glitch helpers toggled by the script */
-	.hero-shapes:global(.flash) svg {
-		filter: invert(1);
-	}
-	.hero-shapes:global(.pop) {
-		scale: 1.06;
-	}
 	.slices :global(use) {
 		pointer-events: none;
 	}

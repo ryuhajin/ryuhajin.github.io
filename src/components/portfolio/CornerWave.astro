@@ -1,15 +1,15 @@
 ---
-// Top-right corner: a real black & white shoreline (aerial footage, 8s seamless loop — public/wave/, see CREDITS.md),
-// turned 45° so the surf rolls in diagonally from the corner, and faded out toward the page.
+// Top band: a real black & white shoreline (aerial footage, 8s seamless loop — public/wave/, see CREDITS.md),
+// tilted so the foam line runs diagonally from the upper middle of the page down to the right edge.
 // The video only starts loading once the page is idle; reduced-motion shows the still poster.
 ---
 
-<div class="corner-wave" aria-hidden="true">
+<div class="top-wave" aria-hidden="true">
 	<video class="shore" data-src="/wave/shore.mp4" poster="/wave/shore.jpg" muted loop playsinline preload="none"></video>
 </div>
 
 <script>
-	const video = document.querySelector<HTMLVideoElement>('.corner-wave video');
+	const video = document.querySelector<HTMLVideoElement>('.top-wave video');
 	if (video && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
 		const play = () => video.play().catch(() => {});
 		const start = () => {
@@ -24,48 +24,49 @@
 </script>
 
 <style>
-	.corner-wave {
+	.top-wave {
 		position: absolute;
 		top: 0;
 		right: 0;
-		width: clamp(220px, 30vw, 440px);
-		aspect-ratio: 1;
+		width: 70vw;
+		height: 44vh;
 		overflow: hidden;
 		pointer-events: none;
 		z-index: 0;
-		/* keep the corner, fade diagonally toward the page */
-		mask-image: linear-gradient(to bottom left, #000 12%, rgb(0 0 0 / 0.55) 32%, transparent 52%);
+		/* fade in from the left so the band starts around the upper middle of the page */
+		mask-image: linear-gradient(to right, transparent 0%, #000 22%);
 	}
 	.shore {
 		position: absolute;
-		left: 50%;
-		top: 50%;
-		width: 150%;
-		height: 150%;
+		left: 56%;
+		top: 10%;
+		width: 128%;
+		height: auto;
+		aspect-ratio: 960 / 400;
 		max-width: none;
 		object-fit: cover;
-		/* nudged toward the corner so the foam line sits inside the visible wedge */
-		translate: -40% -60%;
-		/* sea toward the top-right corner, sand toward the page */
-		rotate: 45deg;
+		translate: -50% -50%;
+		/* sea up top, foam line tilted down toward the right edge */
+		rotate: 12deg;
 		filter: grayscale(1) contrast(1.15);
+		/* the sand side fades into the page */
+		mask-image: linear-gradient(to bottom, #000 58%, transparent 86%);
 	}
 	/* dark themes: black sand melts into the page, only water + white foam remain */
-	:global(:root:is([data-ptheme='mono'], [data-ptheme='space'], [data-ptheme='violet'], :not([data-ptheme]))) .shore {
+	:global(:root:is([data-ptheme='mono'], [data-ptheme='space'], [data-ptheme='violet'])) .shore {
 		mix-blend-mode: screen;
 	}
-	/* light themes: keep it as a photo, a bit softer */
-	:global(:root:is([data-ptheme='paper'], [data-ptheme='candy'])) .corner-wave {
+	:global(:root:is([data-ptheme='paper'], [data-ptheme='candy'])) .top-wave {
 		opacity: 0.9;
 	}
 	/* 8-bit: tint it to the Game Boy greens */
 	:global(:root[data-ptheme='gameboy']) .shore {
 		filter: grayscale(1) contrast(1.4) sepia(1) hue-rotate(40deg) saturate(2.2) brightness(0.8);
-		image-rendering: pixelated;
 	}
-	@media (max-width: 640px) {
-		.corner-wave {
-			width: 170px;
+	@media (max-width: 720px) {
+		.top-wave {
+			width: 100vw;
+			height: 26vh;
 		}
 	}
 </style>

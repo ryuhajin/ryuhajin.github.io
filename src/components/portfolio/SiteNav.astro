@@ -1,5 +1,6 @@
 ---
 import { nav, type NavId } from '../../site';
+import type { HoverItem } from '../../portfolio/hover-sets';
 import { themas, themaStorageKey } from '../../portfolio/themes';
 import Brand from '../shared/Brand.astro';
 import NavTools from '../shared/NavTools.astro';
@@ -8,11 +9,11 @@ interface Props {
 	/** hero: big vertical menu on the landing page. bar: compact top bar on inner pages. */
 	mode: 'hero' | 'bar';
 	current?: NavId;
-	/** Per-item cursor-trail images (hero mode). */
-	trails?: Partial<Record<NavId, string[]>>;
+	/** Per-item hover image compositions (hero mode). */
+	hoverSets?: Partial<Record<NavId, HoverItem[]>>;
 }
 
-const { mode, current, trails = {} } = Astro.props;
+const { mode, current, hoverSets = {} } = Astro.props;
 const thema = { items: themas, storageKey: themaStorageKey, attr: 'ptheme' };
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
@@ -23,7 +24,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 			<ol>
 				{nav.map((item, i) => (
 					<li>
-						<a href={item.href} data-trail={JSON.stringify(trails[item.id] ?? [])}>
+						<a href={item.href} data-hover-set={JSON.stringify(hoverSets[item.id] ?? [])}>
 							<span class="idx mono">{pad(i)}</span>
 							<span class="label display glitch" data-text={item.label} style={`view-transition-name: nav-${item.id}`}>
 								{item.label}

@@ -71,7 +71,8 @@ export function initHeroShapes() {
 			const use = document.createElementNS(SVGNS, 'use');
 			use.setAttribute('href', `#${spin.id}`);
 			use.setAttribute('clip-path', `url(#${id})`);
-			use.setAttribute('transform', `translate(${Math.round(rnd(-70, 70))} 0)`);
+			use.setAttribute('transform', `translate(${Math.round(rnd(-24, 24))} 0)`);
+			use.setAttribute('opacity', '0.5');
 			slices.append(use);
 		});
 		spin.style.opacity = '0.35';
@@ -94,18 +95,26 @@ export function initHeroShapes() {
 		for (let k = 0; k < 10 && cells.length; k++) pick(cells).classList.toggle('on');
 	}
 
+	/** TV-static tear on the shapes and the corner triangle (see .shape-static in glitch.css) */
+	function staticTear() {
+		const targets = [host, document.querySelector<HTMLElement | SVGElement>('.corner-tri')].filter(Boolean) as Element[];
+		targets.forEach((el) => {
+			el.classList.remove('shape-static');
+			void (el as HTMLElement).offsetWidth; // restart the animation
+			el.classList.add('shape-static');
+			setTimeout(() => el.classList.remove('shape-static'), 400);
+		});
+	}
+
 	function glitch(set: SVGGElement) {
-		const kind = pick(['jump', 'slice', 'slice', 'flash', 'swap', 'swap', 'pop']);
+		const kind = pick(['jump', 'slice', 'static', 'static', 'swap', 'swap']);
 		if (kind === 'jump') {
 			angle += pick([-1, 1]) * rnd(15, 40);
 			lissKick += rnd(0.4, 1.2);
 		}
 		if (kind === 'slice') sliceGlitch(set);
 		if (kind === 'swap') swapLayer(set);
-		if (kind === 'flash' || kind === 'pop') {
-			host.classList.add(kind);
-			setTimeout(() => host.classList.remove(kind), kind === 'flash' ? 90 : 160);
-		}
+		if (kind === 'static') staticTear();
 		// a burst of speed right after a hit, then it settles back
 		speed = pick([-1, 1]) * rnd(18, 40);
 	}

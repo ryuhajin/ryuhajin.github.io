@@ -1,7 +1,7 @@
 // Page transitions for cross-document View Transitions (see src/styles/page-transitions.css).
 // Must run as an inline, render-blocking <head> script so `pagereveal` is registered before the first frame.
 //
-// A "curtain" (dark panel → gray panel → tile grid) sweeps across and covers the screen, the page swaps
+// A "curtain" (dark panel, then a gray panel) sweeps across and covers the screen, the page swaps
 // underneath, then the curtain leaves. Direction depends on where you're going:
 //   /projects → up · /notes → left · /about → down · / → right · back navigation → opposite
 (() => {
@@ -31,7 +31,7 @@
 		curtain.className = 'vt-curtain';
 		curtain.dataset.dir = dir;
 		curtain.setAttribute('aria-hidden', 'true');
-		curtain.innerHTML = '<i class="vt-a"></i><i class="vt-grid"></i><i class="vt-b"></i>';
+		curtain.innerHTML = '<i class="vt-a"></i><i class="vt-b"></i>';
 		root.append(curtain);
 		vt.finished.finally(() => {
 			curtain.remove();
