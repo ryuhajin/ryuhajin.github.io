@@ -95,10 +95,9 @@ export function initHeroShapes() {
 		for (let k = 0; k < 10 && cells.length; k++) pick(cells).classList.toggle('on');
 	}
 
-	/** TV-static tear on the shapes and the corner triangle (see .shape-static in glitch.css) */
+	/** TV-static tear on the shapes (see .shape-static in glitch.css) */
 	function staticTear() {
-		const targets = [host, document.querySelector<HTMLElement | SVGElement>('.corner-tri')].filter(Boolean) as Element[];
-		targets.forEach((el) => {
+		[host].forEach((el) => {
 			el.classList.remove('shape-static');
 			void (el as HTMLElement).offsetWidth; // restart the animation
 			el.classList.add('shape-static');

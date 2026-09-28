@@ -170,7 +170,8 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 <style>
 	/* about 30% of the right and bottom edges run off-screen */
 	.hero-shapes {
-		--hs: min(96vh, 66vw);
+		/* grows with the window but stops at ~640px so it stays an accent on large screens */
+		--hs: clamp(320px, min(70vh, 44vw), 640px);
 		position: absolute;
 		right: calc(var(--hs) * -0.3);
 		bottom: calc(var(--hs) * -0.3);

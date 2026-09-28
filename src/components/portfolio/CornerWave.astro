@@ -28,19 +28,20 @@
 		position: absolute;
 		top: 0;
 		right: 0;
-		width: 70vw;
-		height: 44vh;
+		/* only a sliver of surf peeks in along the top-right */
+		width: 68vw;
+		height: min(24vh, 15vw);
 		overflow: hidden;
 		pointer-events: none;
 		z-index: 0;
 		/* fade in from the left so the band starts around the upper middle of the page */
-		mask-image: linear-gradient(to right, transparent 0%, #000 22%);
+		mask-image: linear-gradient(to right, transparent 0%, #000 30%);
 	}
 	.shore {
 		position: absolute;
 		left: 56%;
-		top: 10%;
-		width: 128%;
+		top: -8%;
+		width: 118%;
 		height: auto;
 		aspect-ratio: 960 / 400;
 		max-width: none;
@@ -50,7 +51,7 @@
 		rotate: 12deg;
 		filter: grayscale(1) contrast(1.15);
 		/* the sand side fades into the page */
-		mask-image: linear-gradient(to bottom, #000 58%, transparent 86%);
+		mask-image: linear-gradient(to bottom, #000 46%, transparent 72%);
 	}
 	/* dark themes: black sand melts into the page, only water + white foam remain */
 	:global(:root:is([data-ptheme='mono'], [data-ptheme='space'], [data-ptheme='violet'])) .shore {
@@ -66,7 +67,7 @@
 	@media (max-width: 720px) {
 		.top-wave {
 			width: 100vw;
-			height: 26vh;
+			height: 16vh;
 		}
 	}
 </style>

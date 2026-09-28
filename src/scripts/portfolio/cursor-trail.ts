@@ -1,12 +1,16 @@
 // Menu hover compositions (Till Solenthaler–style objects, Dennis Snellenberg–style easing):
-// hovering a menu item with [data-hover-set] shows its whole set of images at once around the cursor.
-// The set fades/unblurs in with a small stagger, drifts after the cursor (each image with its own lag),
-// and fades out slowly when the pointer leaves.
+// hovering a menu item with [data-hover-set] shows its three images together, grouped just to the right of the
+// label so they never cover the text. The group leans a little toward the cursor (each image with its own lag),
+// fades/unblurs in with a small stagger and fades out slowly when the pointer leaves.
 
 import type { HoverItem } from '../../portfolio/hover-sets';
 
+const DRIFT = 0.06; // how much the group leans toward the cursor
+const MAX_DRIFT = 22; // px
+
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = () => matchMedia('(hover: hover) and (pointer: fine)').matches;
+const clamp = (v: number, m: number) => Math.max(-m, Math.min(m, v));
 
 export function initCursorTrail() {
 	const layer = document.getElementById('trail-layer');
@@ -20,6 +24,7 @@ export function initCursorTrail() {
 		try {
 			items = JSON.parse(trigger.dataset.hoverSet || '[]');
 		} catch {}
+		const label = trigger.querySelector<HTMLElement>('.label') ?? trigger;
 		const el = document.createElement('div');
 		el.className = 'hover-cluster';
 		const parts = items.map((it, i) => {
@@ -27,31 +32,34 @@ export function initCursorTrail() {
 			img.src = it.src;
 			img.alt = '';
 			img.decoding = 'async';
-			img.style.setProperty('--w', `${it.w}px`);
 			img.style.setProperty('--r', `${it.r ?? 0}deg`);
 			img.style.setProperty('--i', String(i));
 			el.append(img);
-			// each image trails the cursor at its own pace -> a little depth while moving
-			return { img, it, lag: 0.1 + (i % 3) * 0.035, x: 0, y: 0 };
+			return { img, it, lag: 0.09 + i * 0.035, x: 0, y: 0 };
 		});
 		layer.append(el);
-		return { trigger, el, parts };
+		return { trigger, label, el, parts, anchor: { x: 0, y: 0 } };
 	});
 
-	let target = { x: innerWidth / 2, y: innerHeight / 2 };
+	let pointer = { x: 0, y: 0 };
 	let active: (typeof clusters)[number] | null = null;
 	let raf = 0;
 	let idleTimer = 0;
 
-	const tick = () => {
+	const goal = (c: (typeof clusters)[number], p: (typeof clusters)[number]['parts'][number]) => {
 		const k = scale();
+		const dx = clamp((pointer.x - c.anchor.x) * DRIFT, MAX_DRIFT);
+		const dy = clamp((pointer.y - c.anchor.y) * DRIFT, MAX_DRIFT);
+		return { x: c.anchor.x + p.it.x * k + dx, y: c.anchor.y + p.it.y * k + dy };
+	};
+
+	const tick = () => {
 		for (const c of clusters) {
-			if (!c.el.classList.contains('show') && c !== active) continue;
+			if (!c.el.classList.contains('show')) continue;
 			for (const p of c.parts) {
-				const tx = target.x + p.it.x * k;
-				const ty = target.y + p.it.y * k;
-				p.x += (tx - p.x) * p.lag;
-				p.y += (ty - p.y) * p.lag;
+				const g = goal(c, p);
+				p.x += (g.x - p.x) * p.lag;
+				p.y += (g.y - p.y) * p.lag;
 				p.img.style.translate = `${p.x.toFixed(1)}px ${p.y.toFixed(1)}px`;
 			}
 		}
@@ -70,13 +78,16 @@ export function initCursorTrail() {
 
 	for (const c of clusters) {
 		c.trigger.addEventListener('pointerenter', (e) => {
-			target = { x: e.clientX, y: e.clientY };
+			pointer = { x: e.clientX, y: e.clientY };
+			const r = c.label.getBoundingClientRect();
+			c.anchor = { x: r.right + 24 * scale(), y: r.top + r.height / 2 };
 			if (!c.el.classList.contains('show')) {
-				// start from the final layout (no fly-in from the previous position)
+				// start in place (no fly-in)
 				const k = scale();
 				for (const p of c.parts) {
-					p.x = target.x + p.it.x * k;
-					p.y = target.y + p.it.y * k;
+					const g = goal(c, p);
+					p.x = g.x;
+					p.y = g.y;
 					p.img.style.translate = `${p.x}px ${p.y}px`;
 					p.img.style.setProperty('--w', `${Math.round(p.it.w * k)}px`);
 				}
@@ -86,7 +97,7 @@ export function initCursorTrail() {
 			run();
 		});
 		c.trigger.addEventListener('pointermove', (e) => {
-			target = { x: e.clientX, y: e.clientY };
+			pointer = { x: e.clientX, y: e.clientY };
 		});
 		c.trigger.addEventListener('pointerleave', () => {
 			c.el.classList.remove('show');
