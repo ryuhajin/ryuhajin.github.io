@@ -1,0 +1,215 @@
+---
+import { nav, site, type NavId } from '../../site';
+
+interface Props {
+	/** hero: big vertical menu on the landing page. bar: compact top bar on inner pages. */
+	mode: 'hero' | 'bar';
+	current?: NavId;
+	/** Per-item cursor-trail objects (hero mode). */
+	trails?: Partial<Record<NavId, { img?: string; text?: string }[]>>;
+}
+
+const { mode, current, trails = {} } = Astro.props;
+---
+
+{
+	mode === 'hero' ? (
+		<nav class="hero-nav" aria-label="Main">
+			<ol>
+				{nav.map((item, i) => (
+					<li>
+						<a
+							href={item.href}
+							target={item.external ? '_blank' : undefined}
+							rel={item.external ? 'noopener' : undefined}
+							data-astro-reload={item.id === 'notes' ? true : undefined}
+							data-trail={JSON.stringify(trails[item.id] ?? [])}
+						>
+							<span class="idx mono">{String(i + 1).padStart(2, '0')}</span>
+							<span class="label" transition:name={`nav-${item.id}`}>
+								{item.label}
+							</span>
+							<span class="hint mono">
+								{item.hint}
+								{item.external ? ' ↗' : ' →'}
+							</span>
+						</a>
+					</li>
+				))}
+			</ol>
+		</nav>
+	) : (
+		<header class="bar">
+			<a href="/" class="brand" transition:name="brand">
+				<span class="dot" />
+				{site.handle}
+			</a>
+			<nav aria-label="Main">
+				<ul>
+					{nav.map((item) => (
+						<li>
+							<a
+								href={item.href}
+								class:list={{ active: item.id === current }}
+								aria-current={item.id === current ? 'page' : undefined}
+								target={item.external ? '_blank' : undefined}
+								rel={item.external ? 'noopener' : undefined}
+								data-astro-reload={item.id === 'notes' ? true : undefined}
+							>
+								<span class="label" transition:name={`nav-${item.id}`}>
+									{item.label}
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</nav>
+		</header>
+	)
+}
+
+<style>
+	/* ---------------- hero (landing) ---------------- */
+	.hero-nav ol {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: clamp(0rem, 0.6vh, 0.5rem);
+	}
+	.hero-nav a {
+		position: relative;
+		display: grid;
+		grid-template-columns: 2.5rem auto 1fr;
+		align-items: baseline;
+		gap: 0.75rem;
+		padding-block: 0.15rem;
+		transition: opacity var(--t-fast) var(--ease);
+	}
+	.hero-nav .label {
+		font-size: clamp(2.75rem, 8.5vh, 6.25rem);
+		font-weight: 700;
+		letter-spacing: -0.045em;
+		line-height: 1;
+		width: fit-content;
+		transition:
+			transform var(--t-fast) var(--ease-out),
+			color var(--t-fast) var(--ease);
+	}
+	.hero-nav .hint {
+		opacity: 0;
+		transform: translateX(-0.5rem);
+		transition:
+			opacity var(--t-fast) var(--ease),
+			transform var(--t-fast) var(--ease-out);
+		color: var(--fg-2);
+	}
+	.hero-nav .idx {
+		transition: color var(--t-fast);
+	}
+	.hero-nav ol:has(a:hover) a:not(:hover) {
+		opacity: 0.22;
+	}
+	.hero-nav a:hover .label,
+	.hero-nav a:focus-visible .label {
+		transform: translateX(0.6rem);
+	}
+	.hero-nav a:hover .hint,
+	.hero-nav a:focus-visible .hint {
+		opacity: 1;
+		transform: none;
+	}
+	.hero-nav a:hover .idx {
+		color: var(--accent);
+	}
+
+	/* ---------------- bar (inner pages) ---------------- */
+	.bar {
+		position: fixed;
+		inset: 0 0 auto 0;
+		z-index: 50;
+		height: var(--nav-h);
+		padding-inline: var(--pad);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: linear-gradient(to bottom, rgb(9 9 11 / 0.85), rgb(9 9 11 / 0));
+		backdrop-filter: blur(6px);
+		mask-image: linear-gradient(to bottom, #000 70%, transparent);
+	}
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-family: var(--mono);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+	.dot {
+		width: 0.55rem;
+		height: 0.55rem;
+		background: var(--accent);
+		border-radius: 2px;
+		transform: rotate(45deg);
+	}
+	.bar ul {
+		list-style: none;
+		display: flex;
+		gap: clamp(0.75rem, 2.5vw, 2rem);
+		margin: 0;
+		padding: 0;
+	}
+	.bar a {
+		position: relative;
+		display: inline-block;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		color: var(--fg-2);
+		padding-block: 0.25rem;
+		transition: color var(--t-micro) var(--ease);
+	}
+	.bar .label {
+		display: inline-block;
+	}
+	.bar a::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -2px;
+		height: 1px;
+		background: currentColor;
+		transform: scaleX(0);
+		transform-origin: right;
+		transition: transform var(--t-fast) var(--ease-out);
+	}
+	.bar a:hover {
+		color: var(--fg);
+	}
+	.bar a:hover::after,
+	.bar a.active::after {
+		transform: scaleX(1);
+		transform-origin: left;
+	}
+	.bar a.active {
+		color: var(--fg);
+	}
+	.bar a.active::after {
+		background: var(--accent);
+	}
+
+	@media (max-width: 640px) {
+		.hero-nav a {
+			grid-template-columns: 2rem auto;
+		}
+		.hero-nav .hint {
+			display: none;
+		}
+		.bar ul {
+			gap: 0.9rem;
+		}
+		.bar a {
+			font-size: 0.8125rem;
+		}
+	}
+</style>

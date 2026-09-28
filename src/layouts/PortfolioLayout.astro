@@ -1,0 +1,41 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/portfolio.css';
+import SiteNav from '../components/portfolio/SiteNav.astro';
+import { site, type NavId } from '../site';
+
+interface Props {
+	title?: string;
+	description?: string;
+	/** Omit to render no top bar (landing page draws its own hero menu). */
+	current?: NavId;
+	bar?: boolean;
+}
+
+const { title, description = site.intro, current, bar = true } = Astro.props;
+const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.role}`;
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{fullTitle}</title>
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#09090b" />
+		<link rel="icon" href="/images/cat_yellow_bg.ico" />
+		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+		<meta property="og:title" content={fullTitle} />
+		<meta property="og:description" content={description} />
+		<ClientRouter />
+	</head>
+	<body>
+		<div class="backdrop" aria-hidden="true"></div>
+		{bar && <SiteNav mode="bar" current={current} />}
+		<slot />
+		<div id="trail-layer" aria-hidden="true" transition:persist></div>
+	</body>
+</html>

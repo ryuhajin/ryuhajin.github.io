@@ -1,0 +1,181 @@
+/* Portfolio design tokens + shared styles. Notes has its own design (src/styles/notes). */
+
+:root {
+	--bg: #09090b;
+	--bg-2: #111114;
+	--bg-3: #18181c;
+	--line: #1d1d22;
+	--line-2: #2a2a31;
+	--fg: #ededef;
+	--fg-2: #a3a3ad;
+	--fg-3: #66666f;
+	--accent: #d4ff5a;
+
+	--sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+	--mono: 'JetBrains Mono Variable', 'Cascadia Code', ui-monospace, monospace;
+
+	/* motion — tune transition feel here */
+	--t-micro: 140ms;
+	--t-fast: 220ms;
+	--t-page: 340ms;
+	--ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+
+	--nav-h: 4rem;
+	--pad: clamp(1rem, 3vw, 2.5rem);
+
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	height: 100%;
+	background: var(--bg);
+	color: var(--fg);
+	font-family: var(--sans);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	word-break: keep-all;
+}
+
+body {
+	overflow: hidden; /* screen-based layout: no long page scroll */
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+img,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+::selection {
+	background: var(--accent);
+	color: #000;
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+	border-radius: 2px;
+}
+
+.mono {
+	font-family: var(--mono);
+	font-size: 0.75rem;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	color: var(--fg-3);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* subtle dot grid backdrop */
+.backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	background-image: radial-gradient(circle at 1px 1px, #1c1c21 1px, transparent 0);
+	background-size: 28px 28px;
+	mask-image: radial-gradient(ellipse at 30% 40%, #000 30%, transparent 75%);
+	pointer-events: none;
+}
+
+.chip {
+	display: inline-flex;
+	align-items: center;
+	font-family: var(--mono);
+	font-size: 0.6875rem;
+	padding: 0.2rem 0.5rem;
+	border: 1px solid var(--line-2);
+	border-radius: 999px;
+	color: var(--fg-2);
+	white-space: nowrap;
+}
+
+.sample-badge {
+	display: inline-flex;
+	font-family: var(--mono);
+	font-size: 0.625rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	padding: 0.15rem 0.45rem;
+	border-radius: 4px;
+	background: #ffb45422;
+	color: #ffb454;
+	border: 1px dashed #ffb45477;
+}
+
+/* ---------------------------------------------------------------- page transitions (View Transitions API) */
+
+::view-transition-group(*) {
+	animation-duration: var(--t-page);
+	animation-timing-function: var(--ease-out);
+}
+
+::view-transition-old(root) {
+	animation: var(--t-page) var(--ease-in-out) both vt-leave;
+}
+::view-transition-new(root) {
+	animation: var(--t-page) var(--ease-in-out) both vt-enter;
+}
+html[data-astro-transition='back']::view-transition-new(root) {
+	animation-name: vt-enter-back;
+}
+
+@keyframes vt-leave {
+	to {
+		opacity: 0.35;
+		transform: scale(0.985);
+		filter: brightness(0.6);
+	}
+}
+@keyframes vt-enter {
+	from {
+		clip-path: inset(100% 0 0 0);
+	}
+	to {
+		clip-path: inset(0 0 0 0);
+	}
+}
+@keyframes vt-enter-back {
+	from {
+		clip-path: inset(0 0 100% 0);
+	}
+	to {
+		clip-path: inset(0 0 0 0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation: none !important;
+	}
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0ms !important;
+		animation-duration: 0ms !important;
+	}
+}
