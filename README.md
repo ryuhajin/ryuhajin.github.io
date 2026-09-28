@@ -62,16 +62,24 @@ Starlight aside 문법. note / tip / caution / danger
 
 ## 디자인 커스터마이징
 
-### Notes 색상 테마
+### Notes Thema
 - 목록: `src/notes/palettes.mjs` (id, 이름, dark/light, 코드블록 Shiki 테마)
 - 색상: `src/styles/notes/palettes.css` 의 `[data-palette='<id>']` 블록 (배경, 텍스트, border, accent, 코드블록 배경 등)
 - 새 테마 추가: 두 파일에 같은 id 로 항목 하나씩 추가
 - 타이포/레이아웃/사이드바/표/인용: `src/styles/notes/base.css`
 - 코드블록(폰트, 테두리, 패딩, 탭 바): `ec.config.mjs`
 
-### Portfolio
-- 색상/폰트/전환 속도: `src/styles/portfolio.css` 의 `:root` 토큰 (`--t-page` 가 페이지 전환 시간)
-- 커서 트레일 오브젝트: `src/pages/index.astro` 의 `trails`
+### Portfolio Thema (Notes 테마와 별개)
+- 목록/카드 미리보기/우측 도형 세트: `src/portfolio/themes.ts`
+- 색상·폰트 토큰: `src/styles/portfolio-themes.css` 의 `[data-ptheme='<id>']`
+- 새 테마 추가: 두 파일에 같은 id 로 항목 하나씩 추가 (`shapes`: geo / space / candy / pixel)
+
+### Portfolio 연출
+- 페이지 전환: `src/styles/page-transitions.css` (방향별 애니메이션, `--vt-dur` 전환 시간) + `src/scripts/vt-types.js` (목적지별 방향: Projects ↑, Notes ←, About ↓)
+- 메뉴 hover 글리치: `src/styles/glitch.css`
+- 메뉴 hover 이미지: `public/trail/<projects|notes|about>/` 폴더에 이미지를 넣으면 자동 반영 (투명 배경 WebP/PNG 권장, 출처는 `public/trail/CREDITS.md`)
+- 랜딩 우측 도형: `src/components/portfolio/HeroShapes.astro` + `src/scripts/portfolio/hero-shapes.ts`
+- 우측 상단 파도: `src/components/portfolio/CornerWave.astro`
 
 ## 기타
 

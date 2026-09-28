@@ -1,5 +1,6 @@
 ---
 import { palettes, defaultPalette, storageKey } from '../../notes/palettes.mjs';
+import vtTypes from '../../scripts/vt-types.js?raw';
 
 const modes = Object.fromEntries(palettes.map((p) => [p.id, p.mode]));
 ---
@@ -18,3 +19,6 @@ const modes = Object.fromEntries(palettes.map((p) => [p.id, p.mode]));
 	// Starlight components may still call this; palette pickers manage themselves.
 	window.StarlightThemeProvider = { updatePickers() {} };
 </script>
+
+{/* page-transition direction (shared with the Portfolio) */}
+<script is:inline set:html={vtTypes} />

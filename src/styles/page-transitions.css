@@ -1,0 +1,184 @@
+/*
+ * Cross-document View Transitions (shared by Portfolio + Notes), driven by src/scripts/vt-types.js.
+ *
+ * Timeline (--vt-dur), layers top → bottom:
+ *   dark panel   0 → 32% sweeps in and covers, 32 → 66% sweeps out (same direction)
+ *   gray panel   trails behind: fully covers 40 → 48%, then sweeps out by 82%
+ *   tile grid    blinks over the new page as the gray panel leaves, then vanishes
+ *   the old page is swapped for the new one at 44%, while the gray panel covers everything
+ * Direction per destination: <html data-vt="up|down|left|right"> and .vt-curtain[data-dir].
+ * Browsers without cross-document view transitions (e.g. Firefox) simply navigate instantly.
+ */
+
+@view-transition {
+	navigation: auto;
+}
+
+:root {
+	--vt-dur: 780ms;
+	--vt-ease: cubic-bezier(0.76, 0, 0.24, 1);
+	/* curtain colors; portfolio themes override these, Notes falls back to its palette */
+	--vt-a: var(--curtain-a, #050506);
+	--vt-b: var(--curtain-b, var(--sl-color-gray-5, #3a3a42));
+}
+
+/* shared elements morph, but underneath the curtain */
+::view-transition-group(*) {
+	animation-duration: var(--vt-dur);
+	animation-timing-function: var(--vt-ease);
+}
+
+/* old page stays still until covered, new page appears while covered */
+html[data-vt]::view-transition-old(root) {
+	animation: var(--vt-dur) steps(1, end) both vt-hide-mid;
+}
+html[data-vt]::view-transition-new(root) {
+	animation: var(--vt-dur) steps(1, end) both vt-show-mid;
+}
+@keyframes vt-hide-mid {
+	0%,
+	43% {
+		opacity: 1;
+	}
+	44%,
+	100% {
+		opacity: 0;
+	}
+}
+@keyframes vt-show-mid {
+	0%,
+	43% {
+		opacity: 0;
+	}
+	44%,
+	100% {
+		opacity: 1;
+	}
+}
+/* the curtain itself is live DOM, so it simply renders on top without any cross-fade */
+::view-transition-group(vt-curtain) {
+	animation: none;
+	z-index: 10;
+}
+::view-transition-new(vt-curtain) {
+	animation: none;
+}
+
+.vt-curtain {
+	position: fixed;
+	inset: 0;
+	z-index: 2147483647;
+	pointer-events: none;
+	overflow: hidden;
+	view-transition-name: vt-curtain;
+}
+.vt-curtain i {
+	position: absolute;
+	inset: 0;
+	animation: var(--vt-dur) var(--vt-ease) both;
+}
+.vt-curtain .vt-a {
+	z-index: 3;
+	background: var(--vt-a);
+	animation-name: vt-sweep-lead;
+}
+.vt-curtain .vt-b {
+	z-index: 2;
+	background: var(--vt-b);
+	animation-name: vt-sweep-trail;
+}
+.vt-curtain .vt-grid {
+	z-index: 1;
+	background-image:
+		linear-gradient(var(--vt-a) 1px, transparent 1px),
+		linear-gradient(90deg, var(--vt-a) 1px, transparent 1px),
+		conic-gradient(from 90deg, var(--vt-b) 25%, transparent 0 50%, var(--vt-b) 0 75%, transparent 0);
+	background-size:
+		56px 56px,
+		56px 56px,
+		112px 112px;
+	animation-name: vt-grid-blink;
+	animation-timing-function: steps(1, end);
+}
+
+/* direction the panels travel in: (--vt-x, --vt-y), 1 = one screen */
+.vt-curtain[data-dir='left'] {
+	--vt-x: -1;
+	--vt-y: 0;
+}
+.vt-curtain[data-dir='right'] {
+	--vt-x: 1;
+	--vt-y: 0;
+}
+.vt-curtain[data-dir='up'] {
+	--vt-x: 0;
+	--vt-y: -1;
+}
+.vt-curtain[data-dir='down'] {
+	--vt-x: 0;
+	--vt-y: 1;
+}
+
+@keyframes vt-sweep-lead {
+	0% {
+		transform: translate(calc(var(--vt-x) * -100%), calc(var(--vt-y) * -100%));
+	}
+	32% {
+		transform: translate(0, 0);
+	}
+	66%,
+	100% {
+		transform: translate(calc(var(--vt-x) * 100%), calc(var(--vt-y) * 100%));
+	}
+}
+@keyframes vt-sweep-trail {
+	0%,
+	8% {
+		transform: translate(calc(var(--vt-x) * -100%), calc(var(--vt-y) * -100%));
+	}
+	40%,
+	48% {
+		transform: translate(0, 0);
+	}
+	82%,
+	100% {
+		transform: translate(calc(var(--vt-x) * 100%), calc(var(--vt-y) * 100%));
+	}
+}
+/* tiles show through as the gray panel leaves, blink twice, gone */
+@keyframes vt-grid-blink {
+	0%,
+	40% {
+		opacity: 0;
+	}
+	44% {
+		opacity: 0.85;
+	}
+	70% {
+		opacity: 0.55;
+	}
+	76% {
+		opacity: 0.9;
+	}
+	84% {
+		opacity: 0.3;
+	}
+	88% {
+		opacity: 0.7;
+	}
+	92%,
+	100% {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation: none !important;
+	}
+	.vt-curtain {
+		display: none;
+	}
+}

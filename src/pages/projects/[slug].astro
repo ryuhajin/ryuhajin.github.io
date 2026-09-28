@@ -27,14 +27,14 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 	<main class="snap" data-snap style={`--accent-p: ${d.accent}`}>
 		<!-- 1. hero -->
 		<section class="s hero" data-snap-section>
-			<ProjectMedia class="hero-media" poster={d.cover.poster} video={d.cover.video} alt={d.cover.alt} autoplay eager transition:name={`media-${project.id}`} />
+			<ProjectMedia class="hero-media" poster={d.cover.poster} video={d.cover.video} alt={d.cover.alt} autoplay eager vtName={`media-${project.id}`} />
 			<div class="hero-shade" aria-hidden="true"></div>
 			<div class="hero-copy">
 				<p class="mono eyebrow">
 					P/{pad(index + 1)} · {d.year}
 					{d.sample && <span class="sample-badge">sample content</span>}
 				</p>
-				<h1 transition:name={`title-${project.id}`}>{d.title}</h1>
+				<h1 style={`view-transition-name: title-${project.id}`}>{d.title}</h1>
 				<p class="tagline">{d.tagline}</p>
 			</div>
 			<p class="mono scroll-hint">scroll · ↑↓ keys</p>
@@ -153,7 +153,7 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 						{
 							d.links.map((l) => (
 								<li>
-									<a href={l.href} data-astro-reload={l.href.startsWith('/notes') ? true : undefined}>
+									<a href={l.href}>
 										{l.label} <span aria-hidden="true">↗</span>
 									</a>
 								</li>
@@ -186,10 +186,8 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 <script>
 	import { initSnapSections } from '../../scripts/portfolio/snap-sections';
 	import { initHoverMedia } from '../../scripts/portfolio/hover-media';
-	document.addEventListener('astro:page-load', () => {
-		initSnapSections();
-		initHoverMedia();
-	});
+	initSnapSections();
+	initHoverMedia();
 </script>
 
 <style>
@@ -230,7 +228,9 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 	h2 {
 		margin: 0 0 clamp(1.25rem, 4vh, 2.5rem);
 		font-size: clamp(1.75rem, 4.5vh, 3rem);
-		letter-spacing: -0.035em;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
 		line-height: 1.1;
 	}
 	h3 {
@@ -271,8 +271,8 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 		position: absolute;
 		inset: 0;
 		background:
-			linear-gradient(to top, var(--bg) 0%, rgb(9 9 11 / 0.6) 30%, transparent 60%),
-			linear-gradient(to bottom, rgb(9 9 11 / 0.6), transparent 20%);
+			linear-gradient(to top, var(--bg) 0%, color-mix(in srgb, var(--bg) 60%, transparent) 30%, transparent 60%),
+			linear-gradient(to bottom, color-mix(in srgb, var(--bg) 60%, transparent), transparent 20%);
 	}
 	.hero-copy {
 		position: relative;
@@ -289,8 +289,9 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 	.hero h1 {
 		margin: 0;
 		font-size: clamp(2.5rem, 9vh, 6.5rem);
-		font-weight: 750;
-		letter-spacing: -0.05em;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
 		line-height: 0.95;
 		width: fit-content;
 	}
@@ -516,7 +517,9 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 	}
 	.next-card strong {
 		font-size: 1.5rem;
-		letter-spacing: -0.03em;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
 	}
 
 	/* ---------- side indicator ---------- */

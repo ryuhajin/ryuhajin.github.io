@@ -1,26 +1,32 @@
 ---
+import fs from 'node:fs';
 import { getCollection } from 'astro:content';
 import PortfolioLayout from '../layouts/PortfolioLayout.astro';
 import SiteNav from '../components/portfolio/SiteNav.astro';
-import { site } from '../site';
+import HeroShapes from '../components/portfolio/HeroShapes.astro';
+import CornerWave from '../components/portfolio/CornerWave.astro';
+import Brand from '../components/shared/Brand.astro';
+import { site, nav } from '../site';
 
-const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const projects = await getCollection('projects');
 
-const trails = {
-	projects: projects.map((p) => ({ img: p.data.cover.poster })),
-	notes: ['float4', 'SV_Target', 'lerp(a, b, t)', 'M·V·P', 'N·L', 'Nanite', '∂f/∂x', 'SListView', 'cbuffer'].map((text) => ({ text })),
-	about: ['C++', 'HLSL', 'UE5', 'DX11', 'Blender', 'RenderDoc'].map((text) => ({ text })),
-	github: ['git push', 'main', '+128 −42', 'PR #12', 'commit a1f3c9e'].map((text) => ({ text })),
-};
+// hover images per menu: every image in public/trail/<menu-id>/
+const trails = Object.fromEntries(
+	nav.map(({ id }) => {
+		const dir = `public/trail/${id}`;
+		const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => /\.(webp|png|jpe?g|avif|gif|svg)$/i.test(f)) : [];
+		return [id, files.sort().map((f) => `/trail/${id}/${encodeURIComponent(f)}`)];
+	})
+);
 ---
 
 <PortfolioLayout bar={false}>
 	<main class="home">
+		<HeroShapes />
+		<CornerWave />
+
 		<header class="top">
-			<a href="/" class="brand" transition:name="brand"><span class="dot"></span>{site.handle}</a>
-			<div class="status mono">
-				<span class="pulse" aria-hidden="true"></span>{site.status}
-			</div>
+			<Brand />
 		</header>
 
 		<section class="menu">
@@ -37,82 +43,52 @@ const trails = {
 			</dl>
 		</footer>
 	</main>
+	<div id="trail-layer" aria-hidden="true"></div>
 </PortfolioLayout>
 
 <script>
 	import { initCursorTrail } from '../scripts/portfolio/cursor-trail';
+	import { initHeroShapes } from '../scripts/portfolio/hero-shapes';
 
-	let timer = 0;
-	document.addEventListener('astro:page-load', () => {
-		initCursorTrail();
-		clearInterval(timer);
-		const clock = document.querySelector<HTMLElement>('[data-clock]');
-		if (!clock) return;
+	initCursorTrail();
+	initHeroShapes();
+
+	const clock = document.querySelector<HTMLElement>('[data-clock]');
+	if (clock) {
 		const fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Seoul' });
 		const tick = () => (clock.textContent = `${fmt.format(new Date())} KST`);
 		tick();
-		timer = window.setInterval(tick, 1000);
-	});
+		setInterval(tick, 1000);
+	}
 </script>
 
 <style>
 	.home {
+		position: relative;
 		height: 100dvh;
 		display: grid;
 		grid-template-rows: auto 1fr auto;
 		padding: calc(var(--pad) * 0.75) var(--pad) var(--pad);
+		overflow: hidden;
+	}
+	.top,
+	.menu,
+	.bottom {
 		position: relative;
 		z-index: 1;
 	}
 	.top {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
 		height: calc(var(--nav-h) - var(--pad) * 0.75);
-	}
-	.brand {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.55rem;
-		font-family: var(--mono);
-		font-size: 0.875rem;
-		font-weight: 600;
-	}
-	.dot {
-		width: 0.55rem;
-		height: 0.55rem;
-		background: var(--accent);
-		border-radius: 2px;
-		transform: rotate(45deg);
-	}
-	.status {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		color: var(--fg-2);
-		text-transform: none;
-	}
-	.pulse {
-		width: 0.45rem;
-		height: 0.45rem;
-		border-radius: 50%;
-		background: #4ade80;
-		box-shadow: 0 0 0 0 #4ade8088;
-		animation: pulse 2s infinite;
-	}
-	@keyframes pulse {
-		70% {
-			box-shadow: 0 0 0 7px #4ade8000;
-		}
-		100% {
-			box-shadow: 0 0 0 0 #4ade8000;
-		}
 	}
 
 	.menu {
 		align-self: center;
 		display: grid;
 		gap: clamp(1rem, 3vh, 2rem);
+		width: fit-content;
+		max-width: 100%;
 	}
 	.kicker {
 		margin: 0;
@@ -127,6 +103,7 @@ const trails = {
 		gap: 2rem;
 		border-top: 1px solid var(--line);
 		padding-top: 1.25rem;
+		background: linear-gradient(to top, var(--bg) 40%, transparent);
 	}
 	.intro {
 		margin: 0;
@@ -160,8 +137,8 @@ const trails = {
 		}
 	}
 
-	/* cursor-trail objects (layer lives in the layout, styled here for the landing page) */
-	:global(#trail-layer) {
+	/* hover images (layer below the menu text) */
+	#trail-layer {
 		position: fixed;
 		inset: 0;
 		pointer-events: none;
@@ -172,38 +149,30 @@ const trails = {
 		position: absolute;
 		left: 0;
 		top: 0;
-		transform: translate3d(var(--x), var(--y), 0) translate(-50%, -50%) rotate(var(--r)) scale(0.6);
+		transform: translate3d(var(--x), var(--y), 0) translate(-50%, -50%) rotate(var(--r)) scale(calc(var(--s) * 0.88));
 		opacity: 0;
+		filter: blur(8px);
 		transition:
-			transform 360ms var(--ease-out),
-			opacity 200ms var(--ease);
-		will-change: transform, opacity;
+			transform 520ms cubic-bezier(0.16, 1, 0.3, 1),
+			opacity 460ms cubic-bezier(0.25, 1, 0.5, 1),
+			filter 460ms cubic-bezier(0.25, 1, 0.5, 1);
+		will-change: transform, opacity, filter;
 	}
 	:global(.trail-obj.in) {
-		transform: translate3d(var(--x), var(--y), 0) translate(-50%, -50%) rotate(var(--r)) scale(1);
+		transform: translate3d(var(--x), var(--y), 0) translate(-50%, -50%) rotate(var(--r)) scale(var(--s));
 		opacity: 1;
+		filter: blur(0);
 	}
 	:global(.trail-obj.out) {
-		transform: translate3d(var(--x), var(--y), 0) translate(-50%, -50%) rotate(var(--r)) scale(0.85);
+		transform: translate3d(var(--x), calc(var(--y) - 24px), 0) translate(-50%, -50%) rotate(var(--r)) scale(calc(var(--s) * 0.94));
 		opacity: 0;
-		transition-duration: 420ms, 420ms;
+		filter: blur(4px);
+		transition-duration: 720ms, 720ms, 720ms;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 	}
-	:global(.trail-obj.is-img img) {
-		width: clamp(9rem, 16vw, 15rem);
-		aspect-ratio: 16 / 10;
-		object-fit: cover;
-		border-radius: 6px;
-		box-shadow: 0 20px 40px -12px #000c;
-	}
-	:global(.trail-obj.is-text) {
-		font-family: var(--mono);
-		font-size: 0.875rem;
-		padding: 0.45rem 0.75rem;
-		border-radius: 6px;
-		background: var(--bg-3);
-		border: 1px solid var(--line-2);
-		color: var(--accent);
-		white-space: nowrap;
-		box-shadow: 0 12px 30px -10px #000c;
+	:global(.trail-obj img) {
+		width: clamp(10rem, 15vw, 15rem);
+		height: auto;
+		filter: drop-shadow(0 18px 24px rgb(0 0 0 / 0.35));
 	}
 </style>

@@ -7,15 +7,16 @@ interface Props {
 	autoplay?: boolean;
 	class?: string;
 	eager?: boolean;
+	/** view-transition-name for the shared-element morph between list and detail */
+	vtName?: string;
 }
 
-// `...rest` forwards transition:name (compiled to data-astro-transition-* attributes) to the root element.
-const { poster, video, alt, autoplay = false, class: className, eager = false, ...rest } = Astro.props;
+const { poster, video, alt, autoplay = false, class: className, eager = false, vtName } = Astro.props;
 const isVideo = video && /\.(webm|mp4)$/i.test(video);
 const motionImage = video && !isVideo ? video : undefined; // gif / animated svg
 ---
 
-<div class:list={['pm', className]} {...rest}>
+<div class:list={['pm', className]} style={vtName ? `view-transition-name: ${vtName}` : undefined}>
 	<img src={motionImage ?? poster} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
 	{
 		isVideo &&

@@ -50,13 +50,4 @@ export function initSnapSections() {
 		e.preventDefault();
 	};
 	document.addEventListener('keydown', onKey);
-	document.addEventListener(
-		'astro:before-swap',
-		() => {
-			io.disconnect();
-			document.removeEventListener('keydown', onKey);
-			delete document.documentElement.dataset.snapIndex;
-		},
-		{ once: true }
-	);
 }

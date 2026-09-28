@@ -1,0 +1,40 @@
+---
+// Mobile menu footer: portfolio links + GitHub + Thema (the header hides these on small screens).
+import NavTools from '../shared/NavTools.astro';
+import { nav } from '../../site';
+import { notesThema } from '../../notes/thema';
+---
+
+<div class="mobile-footer">
+	<nav aria-label="Main">
+		{nav.map((item) => <a href={item.href} aria-current={item.id === 'notes' ? 'true' : undefined}>{item.label}</a>)}
+	</nav>
+	<NavTools thema={notesThema} placement="up" />
+</div>
+
+<style>
+	.mobile-footer {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		border-top: 1px solid var(--sl-color-hairline-light);
+		padding: 0.9rem 0 0.5rem;
+	}
+	nav {
+		display: flex;
+		gap: 1rem;
+	}
+	a {
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+		font-weight: 500;
+	}
+	a[aria-current] {
+		color: var(--sl-color-white);
+		text-decoration: underline;
+		text-decoration-color: var(--sl-color-accent);
+		text-underline-offset: 0.3em;
+	}
+</style>

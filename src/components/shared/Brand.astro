@@ -1,0 +1,59 @@
+---
+// Four-point sparkle + handle. Shared by the landing page, the portfolio top bar and the Notes header.
+import { site } from '../../site';
+
+interface Props {
+	href?: string;
+	class?: string;
+}
+const { href = '/', class: className } = Astro.props;
+---
+
+<a href={href} class:list={['brand', className]} style="view-transition-name: brand">
+	<svg class="spark" viewBox="0 0 24 24" aria-hidden="true">
+		<path d="M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.4 7.6 12.9 0 12C7.6 11.1 11.1 7.6 12 0Z"></path>
+	</svg>
+	<span>{site.handle}</span>
+</a>
+
+<style>
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-family: var(--mono, var(--sl-font-mono));
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--fg, var(--sl-color-white));
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.spark {
+		width: 1rem;
+		height: 1rem;
+		fill: var(--accent, var(--sl-color-accent));
+		transition: transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+		animation: twinkle 4.8s ease-in-out infinite;
+	}
+	.brand:hover .spark {
+		transform: rotate(90deg) scale(1.25);
+	}
+	@keyframes twinkle {
+		0%,
+		86%,
+		100% {
+			scale: 1;
+		}
+		90% {
+			scale: 0.55 1.2;
+		}
+		94% {
+			scale: 1.15;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.spark {
+			animation: none;
+		}
+	}
+</style>

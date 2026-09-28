@@ -1,15 +1,20 @@
 ---
-import { nav, site, type NavId } from '../../site';
+import { nav, type NavId } from '../../site';
+import { themas, themaStorageKey } from '../../portfolio/themes';
+import Brand from '../shared/Brand.astro';
+import NavTools from '../shared/NavTools.astro';
 
 interface Props {
 	/** hero: big vertical menu on the landing page. bar: compact top bar on inner pages. */
 	mode: 'hero' | 'bar';
 	current?: NavId;
-	/** Per-item cursor-trail objects (hero mode). */
-	trails?: Partial<Record<NavId, { img?: string; text?: string }[]>>;
+	/** Per-item cursor-trail images (hero mode). */
+	trails?: Partial<Record<NavId, string[]>>;
 }
 
 const { mode, current, trails = {} } = Astro.props;
+const thema = { items: themas, storageKey: themaStorageKey, attr: 'ptheme' };
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 {
@@ -18,52 +23,41 @@ const { mode, current, trails = {} } = Astro.props;
 			<ol>
 				{nav.map((item, i) => (
 					<li>
-						<a
-							href={item.href}
-							target={item.external ? '_blank' : undefined}
-							rel={item.external ? 'noopener' : undefined}
-							data-astro-reload={item.id === 'notes' ? true : undefined}
-							data-trail={JSON.stringify(trails[item.id] ?? [])}
-						>
-							<span class="idx mono">{String(i + 1).padStart(2, '0')}</span>
-							<span class="label" transition:name={`nav-${item.id}`}>
+						<a href={item.href} data-trail={JSON.stringify(trails[item.id] ?? [])}>
+							<span class="idx mono">{pad(i)}</span>
+							<span class="label display glitch" data-text={item.label} style={`view-transition-name: nav-${item.id}`}>
 								{item.label}
 							</span>
-							<span class="hint mono">
-								{item.hint}
-								{item.external ? ' ↗' : ' →'}
-							</span>
+							<span class="hint mono">{item.hint} →</span>
 						</a>
 					</li>
 				))}
 			</ol>
+			<div class="hero-tools" style="view-transition-name: nav-tools">
+				<NavTools thema={thema} align="left" />
+			</div>
 		</nav>
 	) : (
 		<header class="bar">
-			<a href="/" class="brand" transition:name="brand">
-				<span class="dot" />
-				{site.handle}
-			</a>
-			<nav aria-label="Main">
-				<ul>
-					{nav.map((item) => (
-						<li>
-							<a
-								href={item.href}
-								class:list={{ active: item.id === current }}
-								aria-current={item.id === current ? 'page' : undefined}
-								target={item.external ? '_blank' : undefined}
-								rel={item.external ? 'noopener' : undefined}
-								data-astro-reload={item.id === 'notes' ? true : undefined}
-							>
-								<span class="label" transition:name={`nav-${item.id}`}>
-									{item.label}
-								</span>
-							</a>
-						</li>
-					))}
-				</ul>
-			</nav>
+			<Brand />
+			<div class="bar-right">
+				<nav aria-label="Main">
+					<ul>
+						{nav.map((item) => (
+							<li>
+								<a href={item.href} class:list={{ active: item.id === current }} aria-current={item.id === current ? 'page' : undefined}>
+									<span class="label glitch" data-text={item.label} style={`view-transition-name: nav-${item.id}`}>
+										{item.label}
+									</span>
+								</a>
+							</li>
+						))}
+					</ul>
+				</nav>
+				<div style="view-transition-name: nav-tools">
+					<NavTools thema={thema} />
+				</div>
+			</div>
 		</header>
 	)
 }
@@ -87,14 +81,16 @@ const { mode, current, trails = {} } = Astro.props;
 		transition: opacity var(--t-fast) var(--ease);
 	}
 	.hero-nav .label {
-		font-size: clamp(2.75rem, 8.5vh, 6.25rem);
-		font-weight: 700;
-		letter-spacing: -0.045em;
-		line-height: 1;
+		font-size: clamp(2.5rem, min(10vh, 15vw), 7rem);
+		line-height: 1.02;
 		width: fit-content;
 		transition:
 			transform var(--t-fast) var(--ease-out),
 			color var(--t-fast) var(--ease);
+	}
+	:global(:root[data-ptheme='gameboy']) .hero-nav .label {
+		font-size: clamp(1.5rem, min(7vh, 9vw), 4.5rem);
+		line-height: 1.3;
 	}
 	.hero-nav .hint {
 		opacity: 0;
@@ -122,6 +118,10 @@ const { mode, current, trails = {} } = Astro.props;
 	.hero-nav a:hover .idx {
 		color: var(--accent);
 	}
+	.hero-tools {
+		margin: clamp(1rem, 3vh, 1.75rem) 0 0 3.25rem;
+		width: fit-content;
+	}
 
 	/* ---------------- bar (inner pages) ---------------- */
 	.bar {
@@ -133,24 +133,12 @@ const { mode, current, trails = {} } = Astro.props;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		background: linear-gradient(to bottom, rgb(9 9 11 / 0.85), rgb(9 9 11 / 0));
-		backdrop-filter: blur(6px);
-		mask-image: linear-gradient(to bottom, #000 70%, transparent);
+		background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 88%, transparent), transparent);
 	}
-	.brand {
-		display: inline-flex;
+	.bar-right {
+		display: flex;
 		align-items: center;
-		gap: 0.55rem;
-		font-family: var(--mono);
-		font-size: 0.875rem;
-		font-weight: 600;
-	}
-	.dot {
-		width: 0.55rem;
-		height: 0.55rem;
-		background: var(--accent);
-		border-radius: 2px;
-		transform: rotate(45deg);
+		gap: clamp(0.75rem, 2.5vw, 2rem);
 	}
 	.bar ul {
 		list-style: none;
@@ -167,9 +155,6 @@ const { mode, current, trails = {} } = Astro.props;
 		color: var(--fg-2);
 		padding-block: 0.25rem;
 		transition: color var(--t-micro) var(--ease);
-	}
-	.bar .label {
-		display: inline-block;
 	}
 	.bar a::after {
 		content: '';
@@ -205,11 +190,25 @@ const { mode, current, trails = {} } = Astro.props;
 		.hero-nav .hint {
 			display: none;
 		}
+		.hero-tools {
+			margin-left: 2.75rem;
+		}
+		.bar :global(.brand span) {
+			display: none;
+		}
 		.bar ul {
-			gap: 0.9rem;
+			gap: 0.8rem;
 		}
 		.bar a {
 			font-size: 0.8125rem;
+		}
+		.bar :global(.thema-btn span) {
+			display: none;
+		}
+		.bar :global(.thema-btn) {
+			padding: 0;
+			width: 2.25rem;
+			justify-content: center;
 		}
 	}
 </style>

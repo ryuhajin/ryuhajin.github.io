@@ -43,7 +43,7 @@ const contacts = [
 				{
 					contacts.map((c) => (
 						<li>
-							<a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener" data-astro-reload={c.href.startsWith('/notes') ? true : undefined}>
+							<a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
 								<span class="mono">{c.label}</span>
 								<span>{c.value} ↗</span>
 							</a>
@@ -73,8 +73,9 @@ const contacts = [
 	h1 {
 		margin: 0;
 		font-size: clamp(3rem, 11vh, 7.5rem);
-		font-weight: 750;
-		letter-spacing: -0.055em;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
 		line-height: 0.95;
 	}
 	.accent {
