@@ -1,5 +1,6 @@
 ---
-// Four-point sparkle + handle. Shared by the landing page, the portfolio top bar and the Notes header.
+// Four-point sparkle + "ryuhajin_" (blinking caret). On hover/focus the name scrambles into "cd ~/home"
+// and back. Shared by the landing page, the portfolio top bar and the Notes header.
 import { site } from '../../site';
 
 interface Props {
@@ -7,14 +8,32 @@ interface Props {
 	class?: string;
 }
 const { href = '/', class: className } = Astro.props;
+const hoverText = 'cd ~/home';
 ---
 
-<a href={href} class:list={['brand', className]} style="view-transition-name: brand">
+<a href={href} class:list={['brand', className]} style="view-transition-name: brand" aria-label={`${site.handle} — home`}>
 	<svg class="spark" viewBox="0 0 24 24" aria-hidden="true">
 		<path d="M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.4 7.6 12.9 0 12C7.6 11.1 11.1 7.6 12 0Z"></path>
 	</svg>
-	<span>{site.handle}</span>
+	<span class="brand-text" aria-hidden="true"
+		><span class="name" data-name={site.handle} data-hover={hoverText}>{site.handle}</span><span class="caret">_</span></span
+	>
 </a>
+
+<script>
+	import { scrambleText } from '../../scripts/scramble';
+
+	document.querySelectorAll<HTMLAnchorElement>('a.brand').forEach((link) => {
+		const name = link.querySelector<HTMLElement>('.name');
+		if (!name) return;
+		const show = () => scrambleText(name, name.dataset.hover!, 280);
+		const hide = () => scrambleText(name, name.dataset.name!, 280);
+		link.addEventListener('pointerenter', show);
+		link.addEventListener('focus', show);
+		link.addEventListener('pointerleave', hide);
+		link.addEventListener('blur', hide);
+	});
+</script>
 
 <style>
 	.brand {
@@ -27,6 +46,18 @@ const { href = '/', class: className } = Astro.props;
 		color: var(--fg, var(--sl-color-white));
 		text-decoration: none;
 		white-space: nowrap;
+	}
+	.brand-text {
+		display: inline-flex;
+	}
+	.caret {
+		color: var(--accent, var(--sl-color-accent));
+		animation: caret-blink 1.05s steps(1, end) infinite;
+	}
+	@keyframes caret-blink {
+		50% {
+			opacity: 0;
+		}
 	}
 	.spark {
 		width: 1rem;
@@ -52,7 +83,8 @@ const { href = '/', class: className } = Astro.props;
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.spark {
+		.spark,
+		.caret {
 			animation: none;
 		}
 	}
