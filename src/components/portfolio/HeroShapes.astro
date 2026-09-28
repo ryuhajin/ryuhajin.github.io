@@ -1,10 +1,10 @@
 ---
 // Landing-page decoration on the right edge (partly off-screen). One shape set per theme (see themes.ts `shapes`):
-//   geo   — halftone sphere / lissajous / square spiral / moiré / wireframe globe (mono, paper, violet)
+//   geo   — halftone sphere / lissajous / square spiral / wireframe globe (mono, paper, violet)
 //   space — planet, tilted orbits with satellites, star field                         (space)
 //   candy — tilted checkerboard plane + separate ribbon bows                            (candy)
 //   pixel — pixel sprites with stepped motion                                         (gameboy)
-// Animation lives in src/scripts/portfolio/hero-shapes.ts (smooth drift + random glitch hits).
+// Animation lives in src/scripts/portfolio/hero-shapes.ts (rotate-and-settle + eased cross-fade between shapes).
 
 const C = 500;
 const round = (n: number) => Math.round(n * 10) / 10;
@@ -25,9 +25,6 @@ for (let y = -380; y <= 380; y += 26)
 
 // geo: nested squares, each turned 6° and 8% smaller (a square spiral)
 const squares = Array.from({ length: 22 }, (_, i) => ({ s: round(760 * Math.pow(0.92, i)), deg: i * 6 }));
-
-// geo: moiré — two families of concentric circles with offset centres
-const moire = Array.from({ length: 26 }, (_, i) => 16 + i * 16);
 
 // geo: wireframe globe — latitudes (flattened circles) + longitudes (narrowing ellipses)
 const lats = Array.from({ length: 9 }, (_, i) => {
@@ -68,12 +65,6 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 
 <div class="hero-shapes" aria-hidden="true" data-hero-shapes>
 	<svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
-		<defs>
-			<clipPath id="hs-band-a"><rect class="band" x="0" y="300" width="1000" height="40"></rect></clipPath>
-			<clipPath id="hs-band-b"><rect class="band" x="0" y="560" width="1000" height="70"></rect></clipPath>
-			<clipPath id="hs-band-c"><rect class="band" x="0" y="720" width="1000" height="24"></rect></clipPath>
-		</defs>
-
 		<!-- geo -->
 		<g class="set" data-set="geo">
 			<g class="spin" id="hs-spin-geo">
@@ -85,10 +76,6 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 				</g>
 				<g class="layer" data-layer="squares" fill="none">
 					{squares.map((q) => <rect x={C - q.s / 2} y={C - q.s / 2} width={q.s} height={q.s} transform={`rotate(${q.deg} ${C} ${C})`} />)}
-				</g>
-				<g class="layer" data-layer="moire" fill="none">
-					{moire.map((r) => <circle cx={C - 40} cy={C} r={r} />)}
-					{moire.map((r) => <circle cx={C + 40} cy={C + 18} r={r} />)}
 				</g>
 				<g class="layer" data-layer="globe" fill="none">
 					<circle cx={C} cy={C} r="380" />
@@ -129,9 +116,11 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 		<!-- candy -->
 		<g class="set" data-set="candy">
 			<g class="spin" id="hs-spin-candy">
-				<g class="layer on checker" transform="translate(260 240) rotate(-14 240 240)">
-					{cells.map((c) => <rect x={c.x} y={c.y} width="60" height="60" class:list={{ on: c.on }} />)}
-					<rect x="0" y="0" width="480" height="480" fill="none" class="frame" />
+				<g class="layer on">
+					<g class="checker" transform="translate(260 240) rotate(-14 240 240)">
+						{cells.map((c) => <rect x={c.x} y={c.y} width="60" height="60" class:list={{ on: c.on }} />)}
+						<rect x="0" y="0" width="480" height="480" fill="none" class="frame" />
+					</g>
 				</g>
 			</g>
 			<g class="bow bow-a" transform="translate(250 700) rotate(-12)">
@@ -153,8 +142,10 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 		<!-- pixel -->
 		<g class="set" data-set="pixel">
 			<g class="spin" id="hs-spin-pixel">
-				<g class="layer on" transform="translate(180 180) scale(40)">
-					{px.map((p) => <rect x={p.x} y={p.y} width="1" height="1" />)}
+				<g class="layer on">
+					<g transform="translate(180 180) scale(40)">
+						{px.map((p) => <rect x={p.x} y={p.y} width="1" height="1" />)}
+					</g>
 				</g>
 			</g>
 			<g class="pixel-grid">
@@ -162,8 +153,6 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 			</g>
 		</g>
 
-		<!-- glitch slices: <use> copies of the active spin group, clipped to thin bands (filled in by the script) -->
-		<g class="slices"></g>
 	</svg>
 </div>
 
@@ -187,12 +176,24 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 		stroke: var(--shape);
 		fill: var(--shape);
 	}
-	.set,
-	.layer {
+	.set {
 		display: none;
 	}
+	/* shapes cross-fade: the outgoing one shrinks away, the incoming one turns in and settles */
+	.layer {
+		opacity: 0;
+		transform-origin: 500px 500px;
+		transform: scale(0.9) rotate(-18deg);
+		transition:
+			opacity 700ms cubic-bezier(0.4, 0, 0.2, 1),
+			transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+	}
 	.layer:global(.on) {
-		display: inline;
+		opacity: 1;
+		transform: none;
+	}
+	.checker rect {
+		transition: fill 600ms cubic-bezier(0.4, 0, 0.2, 1);
 	}
 	:global(:root:not([data-ptheme])) .set[data-set='geo'],
 	:global(:root[data-ptheme='mono']) .set[data-set='geo'],
@@ -212,7 +213,6 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 		stroke-width: 1.4;
 	}
 	[data-layer='squares'],
-	[data-layer='moire'],
 	[data-layer='globe'] {
 		stroke-width: 1.5;
 	}
@@ -302,10 +302,6 @@ const spark = 'M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.
 		fill: var(--shape-fill);
 	}
 
-	/* glitch helpers toggled by the script */
-	.slices :global(use) {
-		pointer-events: none;
-	}
 
 	@media (max-width: 820px) {
 		.hero-shapes {

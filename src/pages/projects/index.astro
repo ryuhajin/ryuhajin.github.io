@@ -8,13 +8,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <PortfolioLayout title="Projects" current="projects">
-	{/* preview switch for the list-view thumbnail outline: /projects/?thumb=none | thick (default: 1px) */}
-	<script is:inline>
-		{
-			const t = new URLSearchParams(location.search).get('thumb');
-			if (t === 'none' || t === 'thick') document.documentElement.dataset.thumb = t;
-		}
-	</script>
 	<main class="projects" data-view="list">
 		<header class="head">
 			<h1>
@@ -322,13 +315,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
 			opacity var(--t-fast) var(--ease),
 			scale var(--t-fast) var(--ease-out);
 		box-shadow: 0 30px 60px -20px #000;
-		outline: 1px solid var(--accent, var(--line-2));
-	}
-	:global(html[data-thumb='none']) .follow {
-		outline: none;
-	}
-	:global(html[data-thumb='thick']) .follow {
-		outline-width: 3px;
 	}
 	.follow:global(.show) {
 		opacity: 1;
