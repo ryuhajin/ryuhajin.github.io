@@ -1,6 +1,7 @@
 ---
-// Four-point sparkle + "ryuhajin_" (blinking caret). On hover/focus the name scrambles into "cd ~/home"
-// and back. Shared by the landing page, the portfolio top bar and the Notes header.
+// Four-point sparkle + "ryuhajin_". The name is typed like a terminal: on the first page of a visit it types itself
+// in, and on hover/focus it backspaces and types "cd ~/home" (and back on leave). The caret "_" blinks while idle
+// and stays solid while typing. Shared by the landing page, the portfolio top bar and the Notes header.
 import { site } from '../../site';
 
 interface Props {
@@ -21,13 +22,25 @@ const hoverText = 'cd ~/home';
 </a>
 
 <script>
-	import { scrambleText } from '../../scripts/scramble';
+	import { typeTo } from '../../scripts/typewriter';
+
+	const INTRO_KEY = 'brand-typed';
+	let firstVisit = false;
+	try {
+		firstVisit = !sessionStorage.getItem(INTRO_KEY);
+		sessionStorage.setItem(INTRO_KEY, '1');
+	} catch {}
 
 	document.querySelectorAll<HTMLAnchorElement>('a.brand').forEach((link) => {
 		const name = link.querySelector<HTMLElement>('.name');
 		if (!name) return;
-		const show = () => scrambleText(name, name.dataset.hover!, 280);
-		const hide = () => scrambleText(name, name.dataset.name!, 280);
+		const opts = { busy: link };
+		if (firstVisit && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			name.textContent = '';
+			setTimeout(() => typeTo(name, name.dataset.name!, opts), 350);
+		}
+		const show = () => typeTo(name, name.dataset.hover!, opts);
+		const hide = () => typeTo(name, name.dataset.name!, opts);
 		link.addEventListener('pointerenter', show);
 		link.addEventListener('focus', show);
 		link.addEventListener('pointerleave', hide);
@@ -53,6 +66,11 @@ const hoverText = 'cd ~/home';
 	.caret {
 		color: var(--accent, var(--sl-color-accent));
 		animation: caret-blink 1.05s steps(1, end) infinite;
+	}
+	/* solid while characters are being typed / erased, blinking again once idle */
+	.brand:global(.typing) .caret {
+		animation: none;
+		opacity: 1;
 	}
 	@keyframes caret-blink {
 		50% {
