@@ -1,0 +1,77 @@
+---
+// Notes header, matching the Portfolio top bar: brand · Projects / Notes / About · GitHub · Thema.
+// Search lives at the top of the sidebar instead (see Sidebar.astro).
+import Brand from '../shared/Brand.astro';
+import NavTools from '../shared/NavTools.astro';
+import { nav } from '../../site';
+import { notesThema } from '../../notes/thema';
+---
+
+<div class="notes-header">
+	<Brand />
+	<div class="right">
+		<nav aria-label="Main">
+			<ul>
+				{
+					nav.map((item) => (
+						<li>
+							<a href={item.href} class:list={{ active: item.id === 'notes' }} aria-current={item.id === 'notes' ? 'true' : undefined}>
+								<span class="gl" style={`view-transition-name: nav-${item.id}`}>
+									<span class="glitch">{item.label}</span>
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+		<div class="tools" style="view-transition-name: nav-tools">
+			<NavTools thema={notesThema} />
+		</div>
+	</div>
+</div>
+
+<style>
+	.notes-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		height: 100%;
+	}
+	.right {
+		display: flex;
+		align-items: center;
+		gap: clamp(0.75rem, 2.5vw, 2rem);
+	}
+	ul {
+		list-style: none;
+		display: flex;
+		gap: clamp(0.75rem, 2.5vw, 2rem);
+		margin: 0;
+		padding: 0;
+	}
+	a {
+		position: relative;
+		display: inline-block;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+		padding-block: 0.25rem;
+		transition: color 140ms;
+	}
+	a:hover,
+	a.active {
+		color: var(--sl-color-white);
+	}
+	a.active :global(.gl::after) {
+		background: var(--sl-color-accent);
+	}
+	/* mobile: the hamburger menu (with search, GitHub and Thema) takes over */
+	@media (max-width: 50rem) {
+		.right {
+			display: none;
+		}
+	}
+</style>

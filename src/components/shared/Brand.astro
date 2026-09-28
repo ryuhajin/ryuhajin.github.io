@@ -1,0 +1,112 @@
+---
+// Four-point sparkle + "ryuhajin_". The name is typed like a terminal: on the first page of a visit it types itself
+// in, and on hover/focus it backspaces and types "cd ~/home" (and back on leave). The caret "_" blinks while idle
+// and stays solid while typing. Shared by the landing page, the portfolio top bar and the Notes header.
+import { site } from '../../site';
+
+interface Props {
+	href?: string;
+	class?: string;
+}
+const { href = '/', class: className } = Astro.props;
+const hoverText = 'cd ~/home';
+// reserve room for the longer text (+ caret) so the link's hover area doesn't shrink while characters are erased
+const reserve = Math.max(site.handle.length, hoverText.length) + 1;
+---
+
+<a href={href} class:list={['brand', className]} style="view-transition-name: brand" aria-label={`${site.handle} — home`}>
+	<svg class="spark" viewBox="0 0 24 24" aria-hidden="true">
+		<path d="M12 0C12.9 7.6 16.4 11.1 24 12C16.4 12.9 12.9 16.4 12 24C11.1 16.4 7.6 12.9 0 12C7.6 11.1 11.1 7.6 12 0Z"></path>
+	</svg>
+	<span class="brand-text" aria-hidden="true" style={`--reserve: ${reserve}ch`}
+		><span class="name" data-name={site.handle} data-hover={hoverText}>{site.handle}</span><span class="caret">_</span></span
+	>
+</a>
+
+<script>
+	import { typeTo } from '../../scripts/typewriter';
+
+	const INTRO_KEY = 'brand-typed';
+	let firstVisit = false;
+	try {
+		firstVisit = !sessionStorage.getItem(INTRO_KEY);
+		sessionStorage.setItem(INTRO_KEY, '1');
+	} catch {}
+
+	document.querySelectorAll<HTMLAnchorElement>('a.brand').forEach((link) => {
+		const name = link.querySelector<HTMLElement>('.name');
+		if (!name) return;
+		const opts = { busy: link };
+		if (firstVisit && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			name.textContent = '';
+			setTimeout(() => typeTo(name, name.dataset.name!, opts), 350);
+		}
+		const show = () => typeTo(name, name.dataset.hover!, opts);
+		const hide = () => typeTo(name, name.dataset.name!, opts);
+		link.addEventListener('pointerenter', show);
+		link.addEventListener('focus', show);
+		link.addEventListener('pointerleave', hide);
+		link.addEventListener('blur', hide);
+	});
+</script>
+
+<style>
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-family: var(--mono, var(--sl-font-mono));
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--fg, var(--sl-color-white));
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.brand-text {
+		display: inline-flex;
+		min-width: var(--reserve);
+	}
+	.caret {
+		color: var(--accent, var(--sl-color-accent));
+		animation: caret-blink 1.05s steps(1, end) infinite;
+	}
+	/* solid while characters are being typed / erased, blinking again once idle */
+	.brand:global(.typing) .caret {
+		animation: none;
+		opacity: 1;
+	}
+	@keyframes caret-blink {
+		50% {
+			opacity: 0;
+		}
+	}
+	.spark {
+		width: 1rem;
+		height: 1rem;
+		fill: var(--accent, var(--sl-color-accent));
+		transition: transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+		animation: twinkle 4.8s ease-in-out infinite;
+	}
+	.brand:hover .spark {
+		transform: rotate(90deg) scale(1.25);
+	}
+	@keyframes twinkle {
+		0%,
+		86%,
+		100% {
+			scale: 1;
+		}
+		90% {
+			scale: 0.55 1.2;
+		}
+		94% {
+			scale: 1.15;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.spark,
+		.caret {
+			animation: none;
+		}
+	}
+</style>

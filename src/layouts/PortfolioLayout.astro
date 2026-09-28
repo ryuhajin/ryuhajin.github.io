@@ -1,0 +1,50 @@
+---
+import '../styles/fonts.css';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/portfolio-themes.css';
+import '../styles/portfolio.css';
+import vtTypes from '../scripts/vt-types.js?raw';
+import SiteNav from '../components/portfolio/SiteNav.astro';
+import { site, type NavId } from '../site';
+import { themas, defaultThema, themaStorageKey } from '../portfolio/themes';
+
+interface Props {
+	title?: string;
+	description?: string;
+	current?: NavId;
+	/** false: no top bar (the landing page draws its own hero menu) */
+	bar?: boolean;
+}
+
+const { title, description = site.intro, current, bar = true } = Astro.props;
+const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.role}`;
+const themaIds = themas.map((t) => t.id);
+---
+
+<!doctype html>
+<html lang="ko" data-ptheme={defaultThema}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{fullTitle}</title>
+		<meta name="description" content={description} />
+		<link rel="icon" href="/images/cat_yellow_bg.ico" />
+		<link rel="preload" href="/fonts/pretendard-subset.woff2" as="font" type="font/woff2" crossorigin />
+		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+		<meta property="og:title" content={fullTitle} />
+		<meta property="og:description" content={description} />
+		{/* theme before first paint */}
+		<script is:inline define:vars={{ themaIds, themaStorageKey }}>
+			try {
+				const t = localStorage.getItem(themaStorageKey);
+				if (t && themaIds.includes(t)) document.documentElement.dataset.ptheme = t;
+			} catch {}
+		</script>
+		<script is:inline set:html={vtTypes} />
+	</head>
+	<body>
+		<div class="backdrop" aria-hidden="true"></div>
+		{bar && <SiteNav mode="bar" current={current} />}
+		<slot />
+	</body>
+</html>

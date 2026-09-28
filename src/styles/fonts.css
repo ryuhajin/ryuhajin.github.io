@@ -1,0 +1,14 @@
+/*
+ * Pretendard Variable as a single subset file (public/fonts/pretendard-subset.woff2, built by
+ * scripts/build-fonts.mjs on every `npm run build`). One file means one cached download for the whole
+ * site, so text doesn't re-render as unicode-range chunks arrive page after page.
+ */
+@font-face {
+	font-family: 'Pretendard Variable';
+	font-weight: 45 920;
+	font-style: normal;
+	font-display: swap;
+	src:
+		url('/fonts/pretendard-subset.woff2') format('woff2-variations'),
+		url('/fonts/pretendard-subset.woff2') format('woff2');
+}

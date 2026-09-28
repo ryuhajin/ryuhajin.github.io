@@ -1,0 +1,35 @@
+{
+  "name": "ryuhajin-github-io",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "fonts": "node scripts/build-fonts.mjs",
+    "prebuild": "node scripts/build-fonts.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.1",
+    "@astrojs/starlight": "^0.42.4",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
+    "@fontsource/press-start-2p": "^5.3.0",
+    "@fontsource/space-grotesk": "^5.3.0",
+    "@fontsource/space-mono": "^5.3.0",
+    "@fontsource/syne": "^5.3.0",
+    "@fontsource/unbounded": "^5.3.0",
+    "astro": "^7.3.5",
+    "galmuri": "^2.40.3",
+    "katex": "^0.18.9",
+    "pretendard": "^1.3.9",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "subset-font": "^2.9.0"
+  }
+}

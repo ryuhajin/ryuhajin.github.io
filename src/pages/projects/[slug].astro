@@ -1,0 +1,631 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import PortfolioLayout from '../../layouts/PortfolioLayout.astro';
+import ProjectMedia from '../../components/portfolio/ProjectMedia.astro';
+
+export async function getStaticPaths() {
+	const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+	return projects.map((project, i) => ({
+		params: { slug: project.id },
+		props: { project, index: i, next: projects[(i + 1) % projects.length] },
+	}));
+}
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+	index: number;
+	next: CollectionEntry<'projects'>;
+}
+
+const { project, index, next } = Astro.props;
+const d = project.data;
+const pad = (n: number) => String(n).padStart(2, '0');
+const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decisions', 'Next'];
+---
+
+<PortfolioLayout title={d.title} description={d.tagline} current="projects">
+	<main class="snap" data-snap style={`--accent-p: ${d.accent}`}>
+		<!-- 1. hero -->
+		<section class="s hero" data-snap-section>
+			<ProjectMedia class="hero-media" poster={d.cover.poster} video={d.cover.video} alt={d.cover.alt} autoplay eager vtName={`media-${project.id}`} />
+			<div class="hero-shade" aria-hidden="true"></div>
+			<div class="hero-copy">
+				<p class="mono eyebrow">
+					P/{pad(index + 1)} · {d.year}
+					{d.sample && <span class="sample-badge">sample content</span>}
+				</p>
+				<h1 style={`view-transition-name: title-${project.id}`}>{d.title}</h1>
+				<p class="tagline">{d.tagline}</p>
+			</div>
+			<p class="mono scroll-hint">scroll · ↑↓ keys</p>
+		</section>
+
+		<!-- 2. overview -->
+		<section class="s overview" data-snap-section>
+			<div class="wrap two">
+				<div>
+					<p class="mono label">01 — Overview</p>
+					<p class="lead">{d.overview}</p>
+					{
+						d.highlights.length > 0 && (
+							<ul class="highlights">
+								{d.highlights.map((h) => (
+									<li>{h}</li>
+								))}
+							</ul>
+						)
+					}
+				</div>
+				<dl class="facts">
+					<div><dt class="mono">Year</dt><dd>{d.year}</dd></div>
+					<div><dt class="mono">Role</dt><dd>{d.role}</dd></div>
+					{d.team && <div><dt class="mono">Team</dt><dd>{d.team}</dd></div>}
+					<div>
+						<dt class="mono">Stack</dt>
+						<dd class="chips">{d.stack.map((s) => <span class="chip">{s}</span>)}</dd>
+					</div>
+				</dl>
+			</div>
+		</section>
+
+		<!-- 3. architecture -->
+		<section class="s arch" data-snap-section>
+			<div class="wrap">
+				<p class="mono label">02 — Architecture</p>
+				<h2>{d.architecture.caption ?? 'Architecture'}</h2>
+				{d.architecture.image && <img class="arch-img" src={d.architecture.image} alt={d.architecture.caption ?? ''} loading="lazy" />}
+				<ol class="flow">
+					{
+						d.architecture.points.map((pt, i) => {
+							const [head, ...rest] = pt.split(' — ');
+							return (
+								<li style={`--i: ${i}`}>
+									<span class="mono step">{pad(i + 1)}</span>
+									<strong>{rest.length ? head : `Step ${i + 1}`}</strong>
+									<p>{rest.length ? rest.join(' — ') : head}</p>
+								</li>
+							);
+						})
+					}
+				</ol>
+			</div>
+		</section>
+
+		<!-- 4. problem solving -->
+		<section class="s problems" data-snap-section>
+			<div class="wrap">
+				<p class="mono label">03 — Problem solving</p>
+				<h2>문제와 해결</h2>
+				<div class="cards" style={`--n: ${Math.min(d.problems.length, 3)}`}>
+					{
+						d.problems.map((pb, i) => (
+							<article style={`--i: ${i}`}>
+								<h3>{pb.title}</h3>
+								<dl>
+									<dt class="mono">Problem</dt>
+									<dd>{pb.problem}</dd>
+									<dt class="mono">Approach</dt>
+									<dd>{pb.approach}</dd>
+									<dt class="mono ok">Result</dt>
+									<dd>{pb.result}</dd>
+								</dl>
+							</article>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- 5. decisions -->
+		<section class="s decisions" data-snap-section>
+			<div class="wrap">
+				<p class="mono label">04 — Technical decisions</p>
+				<h2>기술적 의사결정</h2>
+				<ol class="adr">
+					{
+						d.decisions.map((dc, i) => (
+							<li style={`--i: ${i}`}>
+								<span class="mono step">D{pad(i + 1)}</span>
+								<div>
+									<h3>{dc.choice}</h3>
+									<p>
+										<span class="mono">why</span> {dc.why}
+									</p>
+									{dc.tradeoff && (
+										<p class="trade">
+											<span class="mono">trade-off</span> {dc.tradeoff}
+										</p>
+									)}
+								</div>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</section>
+
+		<!-- 6. links + next -->
+		<section class="s next" data-snap-section>
+			<div class="wrap two">
+				<div>
+					<p class="mono label">05 — Links</p>
+					<ul class="links">
+						{
+							d.links.map((l) => (
+								<li>
+									<a href={l.href}>
+										{l.label} <span aria-hidden="true">↗</span>
+									</a>
+								</li>
+							))
+						}
+						<li><a href="/projects/">All projects <span aria-hidden="true">←</span></a></li>
+					</ul>
+				</div>
+				<a href={`/projects/${next.id}/`} class="next-card" data-hover-card style={`--accent-n: ${next.data.accent}`}>
+					<span class="mono">Next project →</span>
+					<ProjectMedia class="next-media" poster={next.data.cover.poster} video={next.data.cover.video} alt={next.data.cover.alt} />
+					<strong>{next.data.title}</strong>
+				</a>
+			</div>
+		</section>
+	</main>
+
+	<nav class="dots" data-snap-nav aria-label="Sections" style={`--accent-p: ${d.accent}`}>
+		{
+			sections.map((s, i) => (
+				<button type="button" data-go={i} aria-label={s}>
+					<span class="dot-label mono">{s}</span>
+				</button>
+			))
+		}
+	</nav>
+	<p class="counter mono" data-snap-counter aria-live="polite"></p>
+</PortfolioLayout>
+
+<script>
+	import { initSnapSections } from '../../scripts/portfolio/snap-sections';
+	import { initHoverMedia } from '../../scripts/portfolio/hover-media';
+	initSnapSections();
+	initHoverMedia();
+</script>
+
+<style>
+	.snap {
+		height: 100dvh;
+		overflow-y: auto;
+		scroll-snap-type: y mandatory;
+		scrollbar-width: none;
+		overscroll-behavior: contain;
+	}
+	.snap::-webkit-scrollbar {
+		display: none;
+	}
+	.s {
+		position: relative;
+		height: 100dvh;
+		scroll-snap-align: start;
+		scroll-snap-stop: always;
+		display: grid;
+		align-items: center;
+		padding: calc(var(--nav-h) + 1rem) calc(var(--pad) + 3rem) var(--pad) var(--pad);
+		overflow: hidden;
+	}
+	.wrap {
+		width: min(100%, 72rem);
+		margin-inline: auto;
+	}
+	.two {
+		display: grid;
+		grid-template-columns: 1.4fr 1fr;
+		gap: clamp(2rem, 6vw, 6rem);
+		align-items: start;
+	}
+	.label {
+		color: var(--accent-p);
+		margin: 0 0 1rem;
+	}
+	h2 {
+		margin: 0 0 clamp(1.25rem, 4vh, 2.5rem);
+		font-size: clamp(1.75rem, 4.5vh, 3rem);
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+		line-height: 1.1;
+	}
+	h3 {
+		margin: 0;
+		font-size: 1.05rem;
+		letter-spacing: -0.01em;
+	}
+
+	/* reveal on entering a screen */
+	.s .wrap > *,
+	.flow li,
+	.cards article,
+	.adr li {
+		transition:
+			opacity 420ms var(--ease),
+			transform 520ms var(--ease-out);
+		transition-delay: calc(var(--i, 0) * 60ms);
+	}
+	.s:not(.is-active) .wrap > *,
+	.s:not(.is-active) .flow li,
+	.s:not(.is-active) .cards article,
+	.s:not(.is-active) .adr li {
+		opacity: 0;
+		transform: translateY(24px);
+		transition-delay: 0ms;
+	}
+
+	/* ---------- hero ---------- */
+	.hero {
+		padding: 0;
+		align-items: end;
+	}
+	.hero :global(.hero-media) {
+		position: absolute;
+		inset: 0;
+	}
+	.hero-shade {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(to top, var(--bg) 0%, color-mix(in srgb, var(--bg) 60%, transparent) 30%, transparent 60%),
+			linear-gradient(to bottom, color-mix(in srgb, var(--bg) 60%, transparent), transparent 20%);
+	}
+	.hero-copy {
+		position: relative;
+		padding: 0 var(--pad) calc(var(--pad) + 2.5rem);
+		max-width: 60rem;
+	}
+	.eyebrow {
+		display: flex;
+		gap: 0.75rem;
+		align-items: center;
+		color: var(--fg-2);
+		margin: 0 0 0.75rem;
+	}
+	.hero h1 {
+		margin: 0;
+		font-size: clamp(2.5rem, 9vh, 6.5rem);
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+		line-height: 0.95;
+		width: fit-content;
+	}
+	.tagline {
+		margin: 1rem 0 0;
+		max-width: 40rem;
+		color: var(--fg-2);
+		font-size: clamp(0.95rem, 1.9vh, 1.15rem);
+		line-height: 1.6;
+	}
+	.scroll-hint {
+		position: absolute;
+		right: calc(var(--pad) + 3rem);
+		bottom: var(--pad);
+		margin: 0;
+		animation: bob 2.4s var(--ease-in-out) infinite;
+	}
+	@keyframes bob {
+		50% {
+			transform: translateY(4px);
+		}
+	}
+
+	/* ---------- overview ---------- */
+	.lead {
+		margin: 0;
+		font-size: clamp(1.1rem, 2.6vh, 1.6rem);
+		line-height: 1.6;
+		letter-spacing: -0.015em;
+		color: var(--fg);
+	}
+	.highlights {
+		margin: 2rem 0 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 0.6rem;
+		color: var(--fg-2);
+	}
+	.highlights li::before {
+		content: '▸';
+		color: var(--accent-p);
+		margin-right: 0.6rem;
+	}
+	.facts {
+		margin: 0;
+		display: grid;
+		gap: 0;
+		border-top: 1px solid var(--line-2);
+	}
+	.facts div {
+		display: grid;
+		grid-template-columns: 5rem 1fr;
+		gap: 1rem;
+		padding: 0.9rem 0;
+		border-bottom: 1px solid var(--line-2);
+	}
+	.facts dd {
+		margin: 0;
+	}
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+	}
+
+	/* ---------- architecture ---------- */
+	.arch-img {
+		max-height: 38vh;
+		width: auto;
+		margin-bottom: 2rem;
+		border-radius: 10px;
+		border: 1px solid var(--line-2);
+	}
+	.flow {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: 1fr;
+		gap: 0;
+		counter-reset: step;
+	}
+	.flow li {
+		position: relative;
+		padding: 1.25rem 1.25rem 1.5rem;
+		border: 1px solid var(--line-2);
+		background: var(--bg-2);
+		display: grid;
+		align-content: start;
+		gap: 0.6rem;
+	}
+	.flow li + li {
+		border-left: 0;
+	}
+	.flow li:first-child {
+		border-radius: 12px 0 0 12px;
+	}
+	.flow li:last-child {
+		border-radius: 0 12px 12px 0;
+	}
+	.flow li:not(:last-child)::after {
+		content: '→';
+		position: absolute;
+		right: -0.65rem;
+		top: 1.2rem;
+		z-index: 1;
+		background: var(--bg);
+		color: var(--accent-p);
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		line-height: 1;
+		padding: 0.15rem;
+	}
+	.step {
+		color: var(--accent-p);
+	}
+	.flow p,
+	.cards dd,
+	.adr p {
+		margin: 0;
+		color: var(--fg-2);
+		font-size: 0.875rem;
+		line-height: 1.65;
+	}
+
+	/* ---------- problems ---------- */
+	.cards {
+		display: grid;
+		grid-template-columns: repeat(var(--n), 1fr);
+		gap: 1rem;
+	}
+	.cards article {
+		border: 1px solid var(--line-2);
+		border-radius: 12px;
+		background: var(--bg-2);
+		padding: 1.25rem;
+		display: grid;
+		align-content: start;
+		gap: 1rem;
+	}
+	.cards dl {
+		margin: 0;
+		display: grid;
+		gap: 0.3rem;
+	}
+	.cards dt {
+		margin-top: 0.6rem;
+	}
+	.cards dt:first-child {
+		margin-top: 0;
+	}
+	.cards dt.ok {
+		color: #4ade80;
+	}
+	.cards dd {
+		margin: 0;
+	}
+
+	/* ---------- decisions ---------- */
+	.adr {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--line-2);
+	}
+	.adr li {
+		display: grid;
+		grid-template-columns: 4rem 1fr;
+		gap: 1rem;
+		padding: clamp(1rem, 2.5vh, 1.5rem) 0;
+		border-bottom: 1px solid var(--line-2);
+	}
+	.adr h3 {
+		margin-bottom: 0.5rem;
+	}
+	.adr p .mono {
+		display: inline-block;
+		width: 5.5rem;
+		color: var(--fg-3);
+	}
+	.adr .trade {
+		margin-top: 0.25rem;
+	}
+
+	/* ---------- next ---------- */
+	.links {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		gap: 0.25rem;
+	}
+	.links a {
+		display: inline-block;
+		font-size: clamp(1.25rem, 3vh, 1.75rem);
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		padding: 0.35rem 0;
+		background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+		transition: background-size var(--t-fast) var(--ease-out);
+	}
+	.links a:hover {
+		background-size: 100% 1px;
+	}
+	.next-card {
+		display: grid;
+		gap: 0.75rem;
+		cursor: none;
+	}
+	.next-card :global(.next-media) {
+		aspect-ratio: 16 / 10;
+		border-radius: 12px;
+		border: 1px solid var(--line-2);
+		transition:
+			border-color var(--t-fast),
+			transform var(--t-fast) var(--ease-out);
+	}
+	.next-card:hover :global(.next-media) {
+		border-color: var(--accent-n);
+		transform: translateY(-4px);
+	}
+	.next-card strong {
+		font-size: 1.5rem;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+	}
+
+	/* ---------- side indicator ---------- */
+	.dots {
+		position: fixed;
+		right: calc(var(--pad) * 0.6);
+		top: 50%;
+		translate: 0 -50%;
+		z-index: 30;
+		display: grid;
+		gap: 0.35rem;
+	}
+	.dots button {
+		all: unset;
+		position: relative;
+		cursor: pointer;
+		width: 1.25rem;
+		height: 1.25rem;
+		display: grid;
+		place-items: center;
+	}
+	.dots button::before {
+		content: '';
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: var(--fg-3);
+		transition:
+			background-color var(--t-micro),
+			scale var(--t-fast) var(--ease-out);
+	}
+	.dots button[aria-current]::before {
+		background: var(--accent-p, var(--accent));
+		scale: 1.6;
+	}
+	.dots button:focus-visible {
+		outline: 2px solid var(--accent);
+		border-radius: 50%;
+	}
+	.dot-label {
+		position: absolute;
+		right: 1.75rem;
+		white-space: nowrap;
+		color: var(--fg-2);
+		opacity: 0;
+		translate: 0.4rem 0;
+		transition:
+			opacity var(--t-micro),
+			translate var(--t-fast) var(--ease-out);
+		pointer-events: none;
+	}
+	.dots button:hover .dot-label,
+	.dots button:focus-visible .dot-label {
+		opacity: 1;
+		translate: 0 0;
+	}
+	.counter {
+		position: fixed;
+		left: var(--pad);
+		bottom: calc(var(--pad) * 0.6);
+		z-index: 30;
+		margin: 0;
+		color: var(--fg-2);
+		font-variant-numeric: tabular-nums;
+	}
+	:global(html[data-snap-index='0']) .counter {
+		opacity: 0;
+	}
+
+	/* ---------- responsive: let long screens grow instead of clipping ---------- */
+	@media (max-width: 900px), (max-height: 620px) {
+		.snap {
+			scroll-snap-type: y proximity;
+		}
+		.s {
+			height: auto;
+			min-height: 100dvh;
+			overflow: visible;
+			padding-right: var(--pad);
+		}
+		.two,
+		.cards {
+			grid-template-columns: 1fr;
+		}
+		.flow {
+			grid-auto-flow: row;
+		}
+		.flow li + li {
+			border-left: 1px solid var(--line-2);
+			border-top: 0;
+		}
+		.flow li:first-child {
+			border-radius: 12px 12px 0 0;
+		}
+		.flow li:last-child {
+			border-radius: 0 0 12px 12px;
+		}
+		.flow li:not(:last-child)::after {
+			content: '↓';
+			right: auto;
+			left: 1.25rem;
+			top: auto;
+			bottom: -0.6rem;
+		}
+		.dots {
+			display: none;
+		}
+	}
+</style>

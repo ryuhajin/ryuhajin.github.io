@@ -1,0 +1,182 @@
+---
+import { nav, type NavId } from '../../site';
+import type { HoverItem } from '../../portfolio/hover-sets';
+import { themas, themaStorageKey } from '../../portfolio/themes';
+import Brand from '../shared/Brand.astro';
+import NavTools from '../shared/NavTools.astro';
+
+interface Props {
+	/** hero: big vertical menu on the landing page. bar: compact top bar on inner pages. */
+	mode: 'hero' | 'bar';
+	current?: NavId;
+	/** Per-item hover image compositions (hero mode). */
+	hoverSets?: Partial<Record<NavId, HoverItem[]>>;
+}
+
+const { mode, current, hoverSets = {} } = Astro.props;
+const thema = { items: themas, storageKey: themaStorageKey, attr: 'ptheme' };
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+{
+	mode === 'hero' ? (
+		<nav class="hero-nav" aria-label="Main">
+			<ol>
+				{nav.map((item, i) => (
+					<li>
+						<a href={item.href} data-hover-set={JSON.stringify(hoverSets[item.id] ?? [])} data-hint={`${item.hint} →`}>
+							<span class="idx mono">{pad(i)}</span>
+							<span class="label display gl" style={`view-transition-name: nav-${item.id}`}>
+								<span class="glitch">{item.label}</span>
+							</span>
+						</a>
+					</li>
+				))}
+			</ol>
+			<div class="hero-tools" style="view-transition-name: nav-tools">
+				<NavTools thema={thema} align="left" />
+			</div>
+		</nav>
+	) : (
+		<header class="bar">
+			<Brand />
+			<div class="bar-right">
+				<nav aria-label="Main">
+					<ul>
+						{nav.map((item) => (
+							<li>
+								<a href={item.href} class:list={{ active: item.id === current }} aria-current={item.id === current ? 'page' : undefined}>
+									<span class="label gl" style={`view-transition-name: nav-${item.id}`}>
+										<span class="glitch">{item.label}</span>
+									</span>
+								</a>
+							</li>
+						))}
+					</ul>
+				</nav>
+				<div style="view-transition-name: nav-tools">
+					<NavTools thema={thema} />
+				</div>
+			</div>
+		</header>
+	)
+}
+
+<style>
+	/* ---------------- hero (landing) ---------------- */
+	.hero-nav ol {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: clamp(0rem, 0.6vh, 0.5rem);
+	}
+	.hero-nav a {
+		position: relative;
+		display: grid;
+		grid-template-columns: 2.5rem auto;
+		align-items: baseline;
+		gap: 0.75rem;
+		padding-block: 0.15rem;
+		transition: opacity var(--t-fast) var(--ease);
+	}
+	.hero-nav .label {
+		font-size: clamp(2.5rem, min(10vh, 15vw), 7rem);
+		line-height: 1.02;
+		width: fit-content;
+		transition:
+			transform var(--t-fast) var(--ease-out),
+			color var(--t-fast) var(--ease);
+	}
+	:global(:root[data-ptheme='gameboy']) .hero-nav .label {
+		font-size: clamp(1.5rem, min(7vh, 9vw), 4.5rem);
+		line-height: 1.3;
+	}
+	.hero-nav .idx {
+		transition: color var(--t-fast);
+	}
+	.hero-nav ol:has(a:hover) a:not(:hover) {
+		opacity: 0.22;
+	}
+	.hero-nav a:hover .label,
+	.hero-nav a:focus-visible .label {
+		transform: translateX(0.6rem);
+	}
+	.hero-nav a:hover .idx {
+		color: var(--accent);
+	}
+	.hero-tools {
+		margin: clamp(1rem, 3vh, 1.75rem) 0 0 3.25rem;
+		width: fit-content;
+	}
+
+	/* ---------------- bar (inner pages) ---------------- */
+	.bar {
+		position: fixed;
+		inset: 0 0 auto 0;
+		z-index: 50;
+		height: var(--nav-h);
+		padding-inline: var(--pad);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 88%, transparent), transparent);
+	}
+	.bar-right {
+		display: flex;
+		align-items: center;
+		gap: clamp(0.75rem, 2.5vw, 2rem);
+	}
+	.bar ul {
+		list-style: none;
+		display: flex;
+		gap: clamp(0.75rem, 2.5vw, 2rem);
+		margin: 0;
+		padding: 0;
+	}
+	/* nav links only (the brand is a link too and keeps its own layout) */
+	.bar nav a {
+		position: relative;
+		display: inline-block;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		color: var(--fg-2);
+		padding-block: 0.25rem;
+		transition: color var(--t-micro) var(--ease);
+	}
+	.bar nav a:hover {
+		color: var(--fg);
+	}
+	.bar nav a.active {
+		color: var(--fg);
+	}
+	.bar nav a.active :global(.gl::after) {
+		background: var(--accent);
+	}
+
+	@media (max-width: 640px) {
+		.hero-nav a {
+			grid-template-columns: 2rem auto;
+		}
+		.hero-tools {
+			margin-left: 2.75rem;
+		}
+		.bar :global(.brand span) {
+			display: none;
+		}
+		.bar ul {
+			gap: 0.8rem;
+		}
+		.bar nav a {
+			font-size: 0.8125rem;
+		}
+		.bar :global(.thema-btn span) {
+			display: none;
+		}
+		.bar :global(.thema-btn) {
+			padding: 0;
+			width: 2.25rem;
+			justify-content: center;
+		}
+	}
+</style>

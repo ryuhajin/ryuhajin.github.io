@@ -1,0 +1,196 @@
+---
+import { getCollection } from 'astro:content';
+import PortfolioLayout from '../layouts/PortfolioLayout.astro';
+import SiteNav from '../components/portfolio/SiteNav.astro';
+import HeroShapes from '../components/portfolio/HeroShapes.astro';
+import Brand from '../components/shared/Brand.astro';
+import { site } from '../site';
+import { hoverSets } from '../portfolio/hover-sets';
+
+// counted at build time: add a project .md / a note .md and the numbers update on the next build
+const projects = await getCollection('projects');
+const notes = (await getCollection('docs')).filter((d) => d.id.startsWith('notes/'));
+const pad = (n: number) => String(n).padStart(2, '0');
+
+---
+
+<PortfolioLayout bar={false}>
+	<main class="home">
+		<!-- decoration stage: everything above the bottom bar, clipped so nothing runs into it -->
+		<div class="stage" aria-hidden="true">
+			<HeroShapes />
+		</div>
+
+		<header class="top">
+			<Brand />
+		</header>
+
+		<section class="menu">
+			<p class="kicker mono" data-kicker>{site.role} — {site.focus}</p>
+			<SiteNav mode="hero" hoverSets={hoverSets} />
+		</section>
+
+		<footer class="bottom">
+			<p class="intro">{site.intro}</p>
+			<dl class="meta mono">
+				<div><dt>Date</dt><dd data-date>----.--.--</dd></div>
+				<div><dt>Time</dt><dd data-clock>--:--:--</dd></div>
+				<div><dt>Projects</dt><dd>{pad(projects.length)}</dd></div>
+				<div><dt>Notes</dt><dd>{pad(notes.length)}</dd></div>
+			</dl>
+		</footer>
+	</main>
+	<div id="trail-layer" aria-hidden="true"></div>
+</PortfolioLayout>
+
+<script>
+	import { initCursorTrail } from '../scripts/portfolio/cursor-trail';
+	import { initHeroShapes } from '../scripts/portfolio/hero-shapes';
+	import { initKickerHint } from '../scripts/portfolio/kicker-hint';
+
+	initCursorTrail();
+	initHeroShapes();
+	initKickerHint();
+
+	// date + time in Seoul (the site owner's time zone), regardless of where the visitor is
+	const clock = document.querySelector<HTMLElement>('[data-clock]');
+	const date = document.querySelector<HTMLElement>('[data-date]');
+	if (clock && date) {
+		const tz = { timeZone: 'Asia/Seoul' } as const;
+		const time = new Intl.DateTimeFormat('en-GB', { ...tz, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+		const day = new Intl.DateTimeFormat('en-CA', { ...tz, year: 'numeric', month: '2-digit', day: '2-digit' });
+		const tick = () => {
+			const now = new Date();
+			clock.textContent = `${time.format(now)} KST`;
+			date.textContent = day.format(now).replaceAll('-', '.');
+		};
+		tick();
+		setInterval(tick, 1000);
+	}
+</script>
+
+<style>
+	.home {
+		position: relative;
+		height: 100dvh;
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+		padding: calc(var(--pad) * 0.75) var(--pad) var(--pad);
+		overflow: hidden;
+	}
+	.top,
+	.menu,
+	.bottom {
+		position: relative;
+		z-index: 1;
+	}
+	.top {
+		grid-row: 1;
+		grid-column: 1;
+	}
+	.menu {
+		grid-row: 2;
+		grid-column: 1;
+	}
+	.stage {
+		grid-row: 1 / 3;
+		grid-column: 1;
+		position: relative;
+		z-index: 0;
+		overflow: hidden;
+		pointer-events: none;
+		/* bleed to the top and right edges of the screen, stop at the bottom bar */
+		margin: calc(var(--pad) * -0.75) calc(var(--pad) * -1) 0.75rem;
+	}
+	.top {
+		display: flex;
+		align-items: center;
+		height: calc(var(--nav-h) - var(--pad) * 0.75);
+	}
+
+	.menu {
+		align-self: center;
+		display: grid;
+		gap: clamp(1rem, 3vh, 2rem);
+		width: fit-content;
+		max-width: 100%;
+	}
+	.kicker {
+		margin: 0;
+		color: var(--fg-2);
+		text-transform: none;
+	}
+
+	.bottom {
+		display: flex;
+		justify-content: space-between;
+		align-items: end;
+		gap: 2rem;
+		border-top: 1px solid var(--line);
+		padding-top: 1.25rem;
+		background: linear-gradient(to top, var(--bg) 40%, transparent);
+	}
+	.intro {
+		margin: 0;
+		max-width: 34rem;
+		color: var(--fg-2);
+		font-size: 0.9375rem;
+		line-height: 1.7;
+	}
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.9rem clamp(1rem, 3vw, 2.5rem);
+		margin: 0;
+	}
+	.meta dt {
+		color: var(--fg-3);
+		margin-bottom: 0.3rem;
+	}
+	.meta dd {
+		margin: 0;
+		color: var(--fg);
+		font-variant-numeric: tabular-nums;
+	}
+
+	@media (max-width: 720px) {
+		.bottom {
+			flex-direction: column;
+			align-items: start;
+		}
+		.intro {
+			font-size: 0.875rem;
+		}
+	}
+
+	/* hover image compositions (layer below the menu text) */
+	#trail-layer {
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+		z-index: 0;
+		overflow: hidden;
+	}
+	:global(.hover-cluster img) {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: var(--w);
+		height: auto;
+		transform: translate(-50%, -50%) rotate(var(--r)) scale(0.9);
+		opacity: 0;
+		filter: blur(8px) drop-shadow(0 18px 22px rgb(0 0 0 / 0.35));
+		transition:
+			opacity 700ms cubic-bezier(0.4, 0, 0.2, 1),
+			filter 700ms cubic-bezier(0.4, 0, 0.2, 1),
+			transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+		will-change: translate, opacity;
+	}
+	:global(.hover-cluster.show img) {
+		opacity: 1;
+		filter: blur(0) drop-shadow(0 18px 22px rgb(0 0 0 / 0.35));
+		transform: translate(-50%, -50%) rotate(var(--r)) scale(1);
+		transition-duration: 520ms, 520ms, 620ms;
+		transition-delay: calc(var(--i) * 60ms);
+	}
+</style>

@@ -1,0 +1,176 @@
+/*
+ * Portfolio themes — <html data-ptheme="...">. List + picker previews: src/portfolio/themes.ts
+ * Tokens: --bg/-2/-3 surfaces · --line/-2 borders · --fg/-2/-3 text · --accent · --accent-2
+ *         --shape (decoration strokes) · --shape-fill · --foam (wave foam) · --font-display · --font-ui
+ *         --curtain-a / --curtain-b (page-transition panels)
+ */
+
+@import '@fontsource/instrument-serif/400.css';
+@import '@fontsource/instrument-serif/400-italic.css';
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/space-mono/400.css';
+@import '@fontsource/press-start-2p/400.css';
+@import '@fontsource/syne/600.css';
+@import '@fontsource/syne/800.css';
+@import '@fontsource/unbounded/500.css';
+@import '@fontsource/unbounded/700.css';
+@import 'galmuri/dist/galmuri.css';
+
+:root,
+:root[data-ptheme='mono'] {
+	--bg: #09090b;
+	--bg-2: #111114;
+	--bg-3: #18181c;
+	--line: #1d1d22;
+	--line-2: #2a2a31;
+	--fg: #ededef;
+	--fg-2: #a3a3ad;
+	--fg-3: #66666f;
+	--accent: #d4ff5a;
+	--accent-2: #7cc4ff;
+	--on-accent: #09090b;
+	--shape: #d9d9de;
+	--shape-fill: #1a1a1f;
+	--foam: #ffffff;
+	--grid-dot: #1c1c21;
+	--font-display: var(--sans);
+	--font-ui: var(--sans);
+	--display-weight: 700;
+	--display-tracking: -0.045em;
+	--curtain-a: #000000;
+	--curtain-b: #2a2a31;
+	color-scheme: dark;
+}
+
+:root[data-ptheme='paper'] {
+	--bg: #f3efe6;
+	--bg-2: #ebe5d8;
+	--bg-3: #e2dac9;
+	--line: #d9d1c0;
+	--line-2: #c7bda9;
+	--fg: #161412;
+	--fg-2: #4d4740;
+	--fg-3: #8a8277;
+	--accent: #e8341c;
+	--accent-2: #161412;
+	--on-accent: #f3efe6;
+	--shape: #161412;
+	--shape-fill: #e8341c;
+	--foam: #ffffff;
+	--grid-dot: #ddd5c4;
+	--font-display: 'Instrument Serif', 'Pretendard Variable', serif;
+	--display-weight: 400;
+	--display-tracking: -0.02em;
+	--curtain-a: #161412;
+	--curtain-b: #c7bda9;
+	color-scheme: light;
+}
+
+:root[data-ptheme='space'] {
+	--bg: #070b1f;
+	--bg-2: #0c1331;
+	--bg-3: #121b42;
+	--line: #16204a;
+	--line-2: #22306a;
+	--fg: #eef2ff;
+	--fg-2: #a9b6de;
+	--fg-3: #6475a8;
+	--accent: #fc3d21;
+	--accent-2: #0b3d91;
+	--on-accent: #ffffff;
+	--shape: #c9d4ff;
+	--shape-fill: #0b3d91;
+	--foam: #ffffff;
+	--grid-dot: #1a2350;
+	--font-display: 'Space Grotesk', 'Pretendard Variable', sans-serif;
+	--font-ui: 'Space Mono', 'Pretendard Variable', monospace;
+	--mono: 'Space Mono', 'JetBrains Mono Variable', monospace;
+	--display-weight: 700;
+	--display-tracking: -0.04em;
+	--curtain-a: #030615;
+	--curtain-b: #0b3d91;
+	color-scheme: dark;
+}
+
+:root[data-ptheme='gameboy'] {
+	--bg: #9bbc0f;
+	--bg-2: #8bac0f;
+	--bg-3: #8bac0f;
+	--line: #7a9a0c;
+	--line-2: #306230;
+	--fg: #0f380f;
+	--fg-2: #214d21;
+	--fg-3: #306230;
+	--accent: #0f380f;
+	--accent-2: #306230;
+	--on-accent: #9bbc0f;
+	--shape: #0f380f;
+	--shape-fill: #306230;
+	--foam: #e0f8d0;
+	--grid-dot: #8bac0f;
+	--font-display: 'Press Start 2P', 'Galmuri11', monospace;
+	--font-ui: 'Galmuri11', monospace;
+	--sans: 'Galmuri11', 'Pretendard Variable', monospace;
+	--mono: 'Galmuri11', monospace;
+	--display-weight: 400;
+	--display-tracking: -0.02em;
+	--curtain-a: #0f380f;
+	--curtain-b: #306230;
+	color-scheme: light;
+}
+
+:root[data-ptheme='violet'] {
+	--bg: #16132e;
+	--bg-2: #1d1940;
+	--bg-3: #252052;
+	--line: #262157;
+	--line-2: #36307a;
+	--fg: #ecebff;
+	--fg-2: #b4aee8;
+	--fg-3: #7a72bf;
+	--accent: #8f82ff;
+	--accent-2: #c3bbff;
+	--on-accent: #16132e;
+	--shape: #bdb5ff;
+	--shape-fill: #2c2660;
+	--foam: #ffffff;
+	--grid-dot: #231e4c;
+	--font-display: 'Syne', 'Pretendard Variable', sans-serif;
+	--display-weight: 800;
+	--display-tracking: -0.03em;
+	--curtain-a: #0c0a1f;
+	--curtain-b: #3a3380;
+	color-scheme: dark;
+}
+
+:root[data-ptheme='candy'] {
+	--bg: #fdeef4;
+	--bg-2: #fbe1eb;
+	--bg-3: #f8d3e1;
+	--line: #f4c9da;
+	--line-2: #eeb0c8;
+	--fg: #1b1f4a;
+	--fg-2: #4a4f82;
+	--fg-3: #8a7fa6;
+	--accent: #ff5fa2;
+	--accent-2: #1b1f4a;
+	--on-accent: #ffffff;
+	--shape: #1b1f4a;
+	--shape-fill: #f7b8cf;
+	--foam: #ffffff;
+	--grid-dot: #f6cfdf;
+	--font-display: 'Unbounded', 'Pretendard Variable', sans-serif;
+	--display-weight: 700;
+	--display-tracking: -0.04em;
+	--curtain-a: #1b1f4a;
+	--curtain-b: #f7b8cf;
+	color-scheme: light;
+}
+
+/* 8-bit: crisp pixels everywhere */
+:root[data-ptheme='gameboy'] img,
+:root[data-ptheme='gameboy'] svg {
+	image-rendering: pixelated;
+	shape-rendering: crispEdges;
+}

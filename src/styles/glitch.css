@@ -1,0 +1,187 @@
+/*
+ * Menu glitch, after the Grafio header nav: on hover the label itself is flipped and pushed aside, and only a
+ * thin band of it shows — the band jumps up and down — then it snaps back whole (0.4s). At the same time a
+ * 1px underline hops around in two-step jumps and lands under the label.
+ *
+ * Markup: <a …><span class="gl"><span class="glitch">Label</span></span></a>
+ *   .gl      — wrapper that owns the underline (so it doesn't flip with the text)
+ *   .glitch  — the label that glitches
+ * The current page (aria-current / .active) keeps its underline. Shared by the Portfolio and the Notes header.
+ */
+
+.gl {
+	position: relative;
+	display: inline-block;
+}
+.gl::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 100%;
+	height: max(1px, 0.025em);
+	background: currentColor;
+	opacity: 0;
+	pointer-events: none;
+}
+.glitch {
+	display: inline-block;
+}
+
+:is(a, button):is(:hover, :focus-visible) .gl > .glitch {
+	animation: glitch-text 400ms linear 1;
+}
+@media (hover: hover) and (pointer: fine) {
+	:is(a, button):hover .gl::after {
+		opacity: 1;
+		animation: glitch-line 400ms steps(2, start) 1 forwards;
+	}
+}
+:is(a, button):focus-visible .gl::after {
+	opacity: 1;
+	animation: glitch-line 400ms steps(2, start) 1 forwards;
+}
+:is([aria-current], .active) .gl::after {
+	opacity: 1;
+}
+
+/* the label: flipped + shifted, visible only through a moving hairline band, then whole again */
+@keyframes glitch-text {
+	0% {
+		clip-path: polygon(0 18%, 100% 18%, 100% 20%, 0 20%);
+		transform: translateX(min(-10px, -0.08em)) scale(-1);
+	}
+	12% {
+		clip-path: polygon(0 35%, 100% 35%, 100% 36%, 0 36%);
+	}
+	24% {
+		clip-path: polygon(0 47%, 100% 47%, 100% 47%, 0 47%);
+	}
+	36% {
+		clip-path: polygon(0 54%, 100% 54%, 100% 22%, 0 22%);
+	}
+	50% {
+		clip-path: polygon(0 71%, 100% 71%, 100% 72%, 0 72%);
+	}
+	62% {
+		clip-path: polygon(0 83%, 100% 83%, 100% 83%, 0 83%);
+	}
+	74% {
+		clip-path: polygon(0 51%, 100% 51%, 100% 57%, 0 57%);
+	}
+	86% {
+		clip-path: polygon(0 66%, 100% 66%, 100% 79%, 0 79%);
+		transform: translateX(min(-10px, -0.08em)) scale(-1);
+	}
+	100% {
+		clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+		transform: none;
+	}
+}
+
+/* the underline: two-step hops (squash, fling, drop back) before it settles */
+@keyframes glitch-line {
+	0% {
+		transform: none;
+	}
+	10% {
+		transform: translateX(12px);
+	}
+	20% {
+		transform: translateY(5px);
+	}
+	30% {
+		transform-origin: 100% 0;
+		transform: scale(0.15, 1.5) translateY(-22px);
+	}
+	40% {
+		transform: scaleY(0.4) translateY(20px);
+	}
+	50% {
+		transform: scale(0.55, 0.4) translate(-90px, -70px);
+	}
+	60% {
+		transform: scaleY(1.3) translate(12px, -6px);
+	}
+	70% {
+		transform: scale(0.45) translateY(18px);
+	}
+	90% {
+		transform-origin: 0 50%;
+		transform: scaleY(0.5) translateY(-12px);
+	}
+	100% {
+		transform: none;
+		opacity: 1;
+	}
+}
+
+/* decorations (landing shapes, triangle): TV-static tear — hairline bands drop out while the whole thing slips a few px */
+.shape-static {
+	animation: shape-static 380ms steps(1, end) 1;
+}
+@keyframes shape-static {
+	0% {
+		clip-path: polygon(0 0%, 100% 0%, 100% 4%, 0 4%, 0 6%, 100% 6%, 100% 54%, 0 54%, 0 56%, 100% 56%, 100% 100%, 0 100%);
+		translate: 1.4px 0;
+		filter: brightness(0.86);
+	}
+	10% {
+		clip-path: polygon(0 0%, 100% 0%, 100% 13%, 0 13%, 0 16%, 100% 16%, 100% 24%, 0 24%, 0 25%, 100% 25%, 100% 43%, 0 43%, 0 44%, 100% 44%, 100% 79%, 0 79%, 0 82%, 100% 82%, 100% 100%, 0 100%);
+		translate: 3.8px 0;
+		filter: brightness(0.83);
+	}
+	20% {
+		clip-path: polygon(0 0%, 100% 0%, 100% 6%, 0 6%, 0 8%, 100% 8%, 100% 13%, 0 13%, 0 14%, 100% 14%, 100% 40%, 0 40%, 0 42%, 100% 42%, 100% 77%, 0 77%, 0 79%, 100% 79%, 100% 100%, 0 100%);
+		translate: -4.5px 0;
+		filter: brightness(0.93);
+	}
+	30% {
+		clip-path: polygon(0 0%, 100% 0%, 100% 5%, 0 5%, 0 6%, 100% 6%, 100% 54%, 0 54%, 0 56%, 100% 56%, 100% 77%, 0 77%, 0 79%, 100% 79%, 100% 89%, 0 89%, 0 91%, 100% 91%, 100% 100%, 0 100%);
+		translate: 2.2px 0;
+		filter: brightness(0.85);
+	}
+	40% {
+		clip-path: polygon(0 0%, 100% 0%, 100% 6%, 0 6%, 0 8%, 100% 8%, 100% 33%, 0 33%, 0 37%, 100% 37%, 100% 65%, 0 65%, 0 67%, 100% 67%, 100% 100%, 0 100%);
+		translate: 5.9px 0;
+		filter: brightness(0.82);
+	}
+	50% {
+		clip-path: polygon(0 0%, 100% 0%, 100% 20%, 0 20%, 0 22%, 100% 22%, 100% 27%, 0 27%, 0 30%, 100% 30%, 100% 88%, 0 88%, 0 90%, 100% 90%, 100% 100%, 0 100%);
+		translate: 3.7px 0;
+		filter: brightness(0.85);
+	}
+	60% {
+		clip-path: polygon(0 0%, 100% 0%, 100% 10%, 0 10%, 0 13%, 100% 13%, 100% 34%, 0 34%, 0 37%, 100% 37%, 100% 67%, 0 67%, 0 69%, 100% 69%, 100% 81%, 0 81%, 0 83%, 100% 83%, 100% 100%, 0 100%);
+		translate: -5.8px 0;
+		filter: brightness(0.75);
+	}
+	70% {
+		clip-path: polygon(0 0%, 100% 0%, 100% 6%, 0 6%, 0 9%, 100% 9%, 100% 36%, 0 36%, 0 39%, 100% 39%, 100% 50%, 0 50%, 0 52%, 100% 52%, 100% 62%, 0 62%, 0 63%, 100% 63%, 100% 93%, 0 93%, 0 95%, 100% 95%, 100% 100%, 0 100%);
+		translate: 5.2px 0;
+		filter: brightness(0.87);
+	}
+	80% {
+		clip-path: polygon(0 0%, 100% 0%, 100% 6%, 0 6%, 0 7%, 100% 7%, 100% 35%, 0 35%, 0 36%, 100% 36%, 100% 43%, 0 43%, 0 47%, 100% 47%, 100% 78%, 0 78%, 0 80%, 100% 80%, 100% 100%, 0 100%);
+		translate: 0.6px 0;
+		filter: brightness(0.79);
+	}
+	90% {
+		clip-path: polygon(0 0%, 100% 0%, 100% 29%, 0 29%, 0 31%, 100% 31%, 100% 45%, 0 45%, 0 48%, 100% 48%, 100% 52%, 0 52%, 0 53%, 100% 53%, 100% 59%, 0 59%, 0 60%, 100% 60%, 100% 93%, 0 93%, 0 94%, 100% 94%, 100% 100%, 0 100%);
+		translate: 3.1px 0;
+		filter: brightness(0.82);
+	}
+	100% {
+		clip-path: none;
+		translate: none;
+		filter: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.shape-static,
+	.glitch,
+	.gl::after {
+		animation: none !important;
+	}
+}

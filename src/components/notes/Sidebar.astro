@@ -1,0 +1,16 @@
+---
+// Search sits at the top of the sidebar, above the tree.
+import Search from '@astrojs/starlight/components/Search.astro';
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+---
+
+<div class="sidebar-search">
+	<Search />
+</div>
+<Default />
+
+<style>
+	.sidebar-search {
+		margin: 0.25rem 0 1rem;
+	}
+</style>

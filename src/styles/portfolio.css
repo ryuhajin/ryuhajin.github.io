@@ -1,0 +1,140 @@
+/* Portfolio shared styles. Colors + fonts per theme: portfolio-themes.css. Notes has its own design (src/styles/notes). */
+
+@import './page-transitions.css';
+@import './glitch.css';
+
+:root {
+	--sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+	--mono: 'JetBrains Mono Variable', 'Cascadia Code', ui-monospace, monospace;
+
+	/* motion — tune transition feel here */
+	--t-micro: 140ms;
+	--t-fast: 220ms;
+	--t-page: 380ms;
+	--ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+
+	--nav-h: 4rem;
+	--pad: clamp(1rem, 3vw, 2.5rem);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	height: 100%;
+	background: var(--bg);
+	color: var(--fg);
+	font-family: var(--font-ui, var(--sans));
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	word-break: keep-all;
+}
+
+body {
+	overflow: hidden; /* screen-based layout: no long page scroll */
+	transition:
+		background-color var(--t-fast) var(--ease),
+		color var(--t-fast) var(--ease);
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+button {
+	font: inherit;
+	color: inherit;
+}
+
+img,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+::selection {
+	background: var(--accent);
+	color: var(--on-accent);
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+	border-radius: 2px;
+}
+
+.display {
+	font-family: var(--font-display);
+	font-weight: var(--display-weight);
+	letter-spacing: var(--display-tracking);
+}
+
+.mono {
+	font-family: var(--mono);
+	font-size: 0.75rem;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	color: var(--fg-3);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* subtle dot grid backdrop */
+.backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	background-image: radial-gradient(circle at 1px 1px, var(--grid-dot) 1px, transparent 0);
+	background-size: 28px 28px;
+	mask-image: radial-gradient(ellipse at 30% 40%, #000 30%, transparent 75%);
+	pointer-events: none;
+}
+
+.chip {
+	display: inline-flex;
+	align-items: center;
+	font-family: var(--mono);
+	font-size: 0.6875rem;
+	padding: 0.2rem 0.5rem;
+	border: 1px solid var(--line-2);
+	border-radius: 999px;
+	color: var(--fg-2);
+	white-space: nowrap;
+}
+
+.sample-badge {
+	display: inline-flex;
+	font-family: var(--mono);
+	font-size: 0.625rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	padding: 0.15rem 0.45rem;
+	border-radius: 4px;
+	background: #ffb45422;
+	color: #d08a1e;
+	border: 1px dashed #ffb45499;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0ms !important;
+		animation-duration: 0ms !important;
+	}
+}
