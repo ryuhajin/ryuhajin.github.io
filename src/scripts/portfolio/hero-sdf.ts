@@ -2,8 +2,9 @@
 //   1. the scene     — alternates between three kinds of composition:
 //                        · one large line figure (wireframe globe, rotating 4D hypercube, square spiral, spinning
 //                          dot sphere, pentagram web), cut off by the lower-right edges
-//                        · "overlap": translucent planes, a circle, long lines and an arc passing through each other
-//                        · "scatter": a dozen small figures placed at random, drifting
+//                        · "overlap": translucent planes, a circle, long lines and an arc passing through each other,
+//                          placed and sized differently every time
+//                        · "scatter": small figures and dots sprinkled over the whole area right of the menu
 //                      one scene morphs into the next by blending their distance fields; the lines are repeated as
 //                      a stack of offset, fading echoes that unfold during the morph and fold back when it settles
 //                                                                                              (after Tobias Ahlin)
@@ -63,7 +64,8 @@ uniform float uB;
 uniform float uMix;       // 0 → A, 1 → B
 uniform float uSeedA;     // per-appearance seed (scatter layout, overlap mirroring)
 uniform float uSeedB;
-uniform vec2 uCompC;      // px, centre of the overlap / scatter compositions
+uniform vec2 uCompC;      // px, centre of the compositions (stretch pivot)
+uniform vec4 uRegion;     // px (x0, y0, x1, y1): the free area right of the menu, where compositions may go
 uniform float uU;         // px per composition unit
 uniform vec2 uVel;        // px, stretch
 uniform float uPx;        // buffer px per CSS px
@@ -189,45 +191,58 @@ float inside(float d, float soft) { return 1.0 - smoothstep(-soft, soft, d); }
 float compOverlap(vec2 p, float seed, float soft, out float fill) {
 	float t = uTime;
 	float h = hash(vec2(seed, 7.0));
+	vec4 k = vec4(hash(vec2(seed, 21.0)), hash(vec2(seed, 22.0)), hash(vec2(seed, 23.0)), hash(vec2(seed, 24.0)));
 	p.y *= h > 0.5 ? -1.0 : 1.0;                     // flipped vertically on some appearances (never sideways,
 	p = rot((h - 0.5) * 0.24) * p;                   // so the left end stays clear of the menu)
-	vec2 c1 = vec2(-0.38 + 0.07 * sin(t * 0.37), 0.18);
-	float r1 = sdBox(rot(0.1 + 0.05 * sin(t * 0.29)) * (p - c1), vec2(0.64, 0.38));
-	vec2 c2 = vec2(0.3, -0.06 + 0.07 * cos(t * 0.33));
-	float r2 = sdBox(rot(-0.24) * (p - c2), vec2(0.4, 0.62));
+	// the planes change size and place every appearance
+	vec2 c1 = vec2(-0.38 + 0.2 * (k.x - 0.5) + 0.07 * sin(t * 0.37), 0.18 + 0.25 * (k.y - 0.5));
+	float r1 = sdBox(rot(0.1 + 0.3 * (k.z - 0.5) + 0.05 * sin(t * 0.29)) * (p - c1), vec2(0.64, 0.38) * mix(0.75, 1.15, k.w));
+	vec2 c2 = vec2(0.3 + 0.2 * (k.z - 0.5), -0.06 + 0.25 * (k.x - 0.5) + 0.07 * cos(t * 0.33));
+	float r2 = sdBox(rot(-0.24 + 0.3 * (k.y - 0.5)) * (p - c2), vec2(0.4, 0.62) * mix(0.8, 1.2, k.x));
 	fill = 0.5 * inside(r1, soft) + 0.5 * inside(r2, soft); // overlap = two layers
 	float d = min(abs(r1), abs(r2));
-	vec2 cc = vec2(0.04 + 0.09 * sin(t * 0.5), 0.3);
-	d = min(d, abs(length(p - cc) - 0.2));
-	d = min(d, sdSeg(p, cc + vec2(0.2, 0.0), vec2(1.05, 0.3)));
-	d = min(d, sdSeg(p, vec2(1.05, 0.3), vec2(1.55, -0.28)));
-	d = min(d, sdSeg(p, vec2(-1.0, -0.52), vec2(1.6, -0.74 + 0.06 * sin(t * 0.6))));
-	d = min(d, sdSeg(p, vec2(-0.25, -0.95), vec2(0.45, 1.05)));
-	float arc = abs(length(p - vec2(0.25, -0.35)) - 1.12);
+	vec2 cc = vec2(0.04 + 0.4 * (k.w - 0.5) + 0.09 * sin(t * 0.5), 0.3 + 0.2 * (k.y - 0.5));
+	float cr = mix(0.14, 0.26, k.z);
+	d = min(d, abs(length(p - cc) - cr));
+	d = min(d, sdSeg(p, cc + vec2(cr, 0.0), vec2(1.05, cc.y)));
+	d = min(d, sdSeg(p, vec2(1.05, cc.y), vec2(1.55, -0.28)));
+	d = min(d, sdSeg(p, vec2(-1.0, -0.52 + 0.3 * (k.x - 0.5)), vec2(1.6, -0.74 + 0.3 * (k.w - 0.5) + 0.06 * sin(t * 0.6))));
+	d = min(d, sdSeg(p, vec2(-0.25 + 0.3 * (k.z - 0.5), -0.95), vec2(0.45 + 0.3 * (k.y - 0.5), 1.05)));
+	float arc = abs(length(p - vec2(0.25, -0.35)) - mix(1.0, 1.25, k.w));
 	d = min(d, p.y > 0.5 ? arc : 1e3);                // only the upper stretch of the arc
 	return d;
 }
 
-// a dozen small figures at random places, drifting and turning
-float compScatter(vec2 p, float seed, float soft, out float fill) {
+// small figures and dots sprinkled over the whole area right of the menu: one candidate per cell of a 7×4 split
+// (jittered, some cells left empty), so they spread top to bottom without lining up; p and the result in px
+float compScatter(vec2 p, float seed, out float fill) {
 	float t = uTime;
-	float d = 1e3;
+	float d = 1e5;
 	fill = 0.0;
-	for (int i = 0; i < 12; i++) {
+	vec2 size = uRegion.zw - uRegion.xy;
+	for (int i = 0; i < 28; i++) {
 		float fi = float(i);
+		float h0 = hash(vec2(fi * 3.1 + 1.0, seed));
+		if (h0 < 0.18) continue; // leave some cells empty
 		vec2 h = vec2(hash(vec2(fi, seed)), hash(vec2(fi * 1.7 + 3.0, seed)));
 		float h2 = hash(vec2(fi * 2.3 + 9.0, seed));
-		vec2 pos = vec2(mix(-1.15, 1.25, h.x), mix(-0.85, 0.85, h.y)) + 0.035 * vec2(sin(t * 0.7 + fi), cos(t * 0.6 + fi * 1.3));
-		float sz = 0.07 + 0.09 * h2;
-		vec2 q = rot(t * (h.x - 0.5) * 0.6 + fi) * (p - pos) / sz;
-		float kind = floor(hash(vec2(fi * 3.1 + 1.0, seed)) * 6.0);
+		vec2 cell = vec2(mod(fi, 7.0), floor(fi / 7.0));
+		vec2 pos = uRegion.xy + (cell + 0.1 + 0.8 * h) / vec2(7.0, 4.0) * size
+			+ 6.0 * uPx * vec2(sin(t * 0.7 + fi), cos(t * 0.6 + fi * 1.3));
+		vec2 q = p - pos;
+		float kind = floor(hash(vec2(fi * 5.3 + 2.0, seed)) * 10.0);
+		if (kind < 3.5) { // a plain dot
+			d = min(d, length(q) - (2.0 + 4.0 * h2) * uPx);
+			continue;
+		}
+		float sz = (9.0 + 20.0 * h2) * uPx;
+		vec2 u = rot(t * (h.x - 0.5) * 0.8 + fi) * q / sz;
 		float k;
-		if (kind < 0.5) k = abs(length(q) - 1.0);                                           // circle
-		else if (kind < 1.5) k = abs(sdBox(q, vec2(0.85)));                                 // square
-		else if (kind < 2.5) k = abs(max(abs(q.x) * 0.866 + q.y * 0.5, -q.y) - 0.5);        // triangle
-		else if (kind < 3.5) k = min(sdBox(q, vec2(1.0, 0.08)), sdBox(q, vec2(0.08, 1.0))); // plus
-		else if (kind < 4.5) k = min(abs(length(q) - 1.0), abs(length(q) - 0.55));          // double ring
-		else { float b = sdBox(q, vec2(0.8)); k = abs(b); fill = max(fill, inside(b * sz, soft)); } // translucent square
+		if (kind < 5.5) k = abs(length(u) - 1.0);                                            // circle
+		else if (kind < 6.5) k = abs(sdBox(u, vec2(0.85)));                                  // square
+		else if (kind < 7.5) k = abs(max(abs(u.x) * 0.866 + u.y * 0.5, -u.y) - 0.5);         // triangle
+		else if (kind < 8.5) k = min(sdBox(u, vec2(1.0, 0.08)), sdBox(u, vec2(0.08, 1.0)));  // plus
+		else { float b = sdBox(u, vec2(0.8)); k = abs(b); fill = max(fill, inside(b * sz, 1.0)); } // translucent square
 		d = min(d, k * sz);
 	}
 	return d;
@@ -236,14 +251,18 @@ float compScatter(vec2 p, float seed, float soft, out float fill) {
 // one scene: distance to the ink in px, plus a translucent fill (0..1)
 float scene(float id, float seed, vec2 fc, out float fill) {
 	fill = 0.0;
-	float soft = 1.0 / uU;
 	if (id < 4.5) {
 		vec2 q = rot(uRot) * stretch(fc - uCenter) / uR;
 		return figure(q, id) * uR;
 	}
-	vec2 pc = stretch(fc - uCompC) / uU;
-	if (id < 5.5) return compOverlap(pc, seed, soft, fill) * uU;
-	return compScatter(pc, seed, soft, fill) * uU;
+	if (id < 5.5) {
+		// overlap: a different centre and size every appearance, within the area right of the menu
+		vec2 h = vec2(hash(vec2(seed, 31.0)), hash(vec2(seed, 32.0)));
+		vec2 c = mix(uRegion.xy, uRegion.zw, vec2(mix(0.42, 0.62, h.x), mix(0.35, 0.65, h.y)));
+		float u = uU * mix(0.75, 1.1, hash(vec2(seed, 33.0)));
+		return compOverlap(stretch(fc - c) / u, seed, 1.0 / u, fill) * u;
+	}
+	return compScatter(uCompC + stretch(fc - uCompC), seed, fill);
 }
 
 // pass 1: r = ink, g = translucent fill
@@ -417,7 +436,7 @@ export function initHeroSdf() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, tri);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
-	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uSeedA', 'uSeedB', 'uCompC', 'uU', 'uVel', 'uPx', 'uPixel', 'uMenuX', 'uEdges'] as const;
+	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uSeedA', 'uSeedB', 'uCompC', 'uRegion', 'uU', 'uVel', 'uPx', 'uPixel', 'uMenuX', 'uEdges'] as const;
 	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uMenuX', 'uLine', 'uFill'] as const;
 	let uf: Uniforms<(typeof figNames)[number]>;
 	let uc: Uniforms<(typeof compNames)[number]>;
@@ -535,6 +554,7 @@ export function initHeroSdf() {
 		gl.uniform1f(uf.uSeedB, (k + 1) % 97);
 		// compositions sit further in than the big figure: right of the menu, clear of the bottom bar
 		gl.uniform2f(uf.uCompC, W * 0.68, H * 0.5);
+		gl.uniform4f(uf.uRegion, menuX + 70 * dpr, 30 * dpr, W - 20 * dpr, H - 40 * dpr);
 		gl.uniform1f(uf.uU, Math.min(W * 0.24, H * 0.42));
 		gl.uniform1f(uf.uMenuX, menuX);
 		gl.uniform4fv(uf.uEdges, hypercube(t));
