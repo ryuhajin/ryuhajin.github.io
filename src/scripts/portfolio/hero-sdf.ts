@@ -1,10 +1,14 @@
 // Landing-page decoration: line figures drawn as distance fields, in two passes.
-//   1. glyph grid    — a fine lattice of tiny marks ( | ▌ ▯ [ : ) in blocks; columns and rows light up as drifting
-//                      bands that cross like a tartan, and the marks flicker in and out   (after Stefan Vitasović)
-//   2. the figure    — a line figure (square spiral, wireframe globe, halftone sphere, roses, orbits, ray burst,
-//                      hexagon spiral, ripples) that morphs into the next one by blending their distance fields; the
-//                      whole figure is repeated as a stack of offset, fading echoes that unfold during the morph and
-//                      fold back when it settles                                               (after Tobias Ahlin)
+//   1. glyph grid    — a fine lattice of tiny marks ( | ▌ ▯ [ : ) in blocks, seen only through soft noise blots
+//                      that drift across the right side; the marks flicker in and out    (after Stefan Vitasović)
+//   2. the scene     — alternates between three kinds of composition:
+//                        · one large line figure (square spiral, wireframe globe, halftone sphere, roses, orbits,
+//                          ray burst, hexagon spiral, ripples), cut off by the lower-right edges
+//                        · "overlap": translucent planes, a circle, long lines and an arc passing through each other
+//                        · "scatter": a dozen small figures placed at random, drifting
+//                      one scene morphs into the next by blending their distance fields; the lines are repeated as
+//                      a stack of offset, fading echoes that unfold during the morph and fold back when it settles
+//                                                                                              (after Tobias Ahlin)
 //   3. velocity      — the figure stretches along its velocity and R/G/B split apart; velocity comes from the morph
 //                      impulse and a spring toward the pointer                                (after Roman Jean-Elie)
 // Colours come from the Thema tokens; the 8-bit theme renders on a coarse pixel grid. No libraries.
@@ -17,14 +21,14 @@
 
 import { themas, type ShapeSet } from '../../portfolio/themes';
 
-const FIGURES = { squares: 0, globe: 1, halftone: 2, rose: 3, orbits: 4, burst: 5, hexes: 6, ripple: 7 } as const;
+const FIGURES = { squares: 0, globe: 1, halftone: 2, rose: 3, orbits: 4, burst: 5, hexes: 6, ripple: 7, overlap: 8, scatter: 9 } as const;
 type FigureName = keyof typeof FIGURES;
 
 const PLAYLISTS: Record<ShapeSet, FigureName[]> = {
-	geo: ['squares', 'globe', 'halftone', 'rose', 'hexes', 'burst', 'ripple'],
-	space: ['orbits', 'globe', 'burst', 'halftone', 'ripple'],
-	candy: ['rose', 'ripple', 'halftone', 'hexes', 'orbits'],
-	pixel: ['squares', 'burst', 'globe', 'halftone', 'hexes'],
+	geo: ['squares', 'overlap', 'globe', 'scatter', 'halftone', 'overlap', 'rose', 'scatter', 'hexes', 'burst', 'overlap', 'ripple', 'scatter'],
+	space: ['orbits', 'scatter', 'globe', 'overlap', 'burst', 'scatter', 'halftone', 'overlap', 'ripple'],
+	candy: ['rose', 'scatter', 'ripple', 'overlap', 'halftone', 'scatter', 'hexes', 'overlap', 'orbits'],
+	pixel: ['squares', 'scatter', 'burst', 'overlap', 'globe', 'scatter', 'halftone', 'overlap', 'hexes'],
 };
 
 const HOLD = 3.2; // s a figure rests
@@ -57,6 +61,10 @@ uniform float uRot;
 uniform float uA;         // figures
 uniform float uB;
 uniform float uMix;       // 0 → A, 1 → B
+uniform float uSeedA;     // per-appearance seed (scatter layout, overlap mirroring)
+uniform float uSeedB;
+uniform vec2 uCompC;      // px, centre of the overlap / scatter compositions
+uniform float uU;         // px per composition unit
 uniform vec2 uVel;        // px, stretch
 uniform float uPx;        // buffer px per CSS px
 uniform float uPixel;     // >1: pixelated (8-bit)
@@ -174,17 +182,89 @@ vec2 stretch(vec2 p) {
 	return p - n * dot(p, n) * (s / (1.0 + s));
 }
 
-// pass 1: r = ink of the figure
+float sdSeg(vec2 p, vec2 a, vec2 b) {
+	vec2 pa = p - a, ba = b - a;
+	return length(pa - ba * clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0));
+}
+float inside(float d, float soft) { return 1.0 - smoothstep(-soft, soft, d); }
+
+// translucent planes, a circle with a line running out of it, long lines and an arc, all passing through each other
+float compOverlap(vec2 p, float seed, float soft, out float fill) {
+	float t = uTime;
+	float h = hash(vec2(seed, 7.0));
+	p.x *= h > 0.5 ? -1.0 : 1.0;                     // mirrored on every other appearance
+	p = rot((h - 0.5) * 0.5) * p;
+	vec2 c1 = vec2(-0.38 + 0.07 * sin(t * 0.37), 0.18);
+	float r1 = sdBox(rot(0.1 + 0.05 * sin(t * 0.29)) * (p - c1), vec2(0.64, 0.38));
+	vec2 c2 = vec2(0.3, -0.06 + 0.07 * cos(t * 0.33));
+	float r2 = sdBox(rot(-0.24) * (p - c2), vec2(0.4, 0.62));
+	fill = 0.5 * inside(r1, soft) + 0.5 * inside(r2, soft); // overlap = two layers
+	float d = min(abs(r1), abs(r2));
+	vec2 cc = vec2(0.04 + 0.09 * sin(t * 0.5), 0.3);
+	d = min(d, abs(length(p - cc) - 0.2));
+	d = min(d, sdSeg(p, cc + vec2(0.2, 0.0), vec2(1.05, 0.3)));
+	d = min(d, sdSeg(p, vec2(1.05, 0.3), vec2(1.55, -0.28)));
+	d = min(d, sdSeg(p, vec2(-1.35, -0.52), vec2(1.55, -0.74 + 0.06 * sin(t * 0.6))));
+	d = min(d, sdSeg(p, vec2(-0.25, -0.95), vec2(0.45, 1.05)));
+	float arc = abs(length(p - vec2(0.25, -0.35)) - 1.12);
+	d = min(d, p.y > 0.5 ? arc : 1e3);                // only the upper stretch of the arc
+	return d;
+}
+
+// a dozen small figures at random places, drifting and turning
+float compScatter(vec2 p, float seed, float soft, out float fill) {
+	float t = uTime;
+	float d = 1e3;
+	fill = 0.0;
+	for (int i = 0; i < 12; i++) {
+		float fi = float(i);
+		vec2 h = vec2(hash(vec2(fi, seed)), hash(vec2(fi * 1.7 + 3.0, seed)));
+		float h2 = hash(vec2(fi * 2.3 + 9.0, seed));
+		vec2 pos = vec2(mix(-1.15, 1.25, h.x), mix(-0.85, 0.85, h.y)) + 0.035 * vec2(sin(t * 0.7 + fi), cos(t * 0.6 + fi * 1.3));
+		float sz = 0.07 + 0.09 * h2;
+		vec2 q = rot(t * (h.x - 0.5) * 0.6 + fi) * (p - pos) / sz;
+		float kind = floor(hash(vec2(fi * 3.1 + 1.0, seed)) * 6.0);
+		float k;
+		if (kind < 0.5) k = abs(length(q) - 1.0);                                           // circle
+		else if (kind < 1.5) k = abs(sdBox(q, vec2(0.85)));                                 // square
+		else if (kind < 2.5) k = abs(max(abs(q.x) * 0.866 + q.y * 0.5, -q.y) - 0.5);        // triangle
+		else if (kind < 3.5) k = min(sdBox(q, vec2(1.0, 0.08)), sdBox(q, vec2(0.08, 1.0))); // plus
+		else if (kind < 4.5) k = min(abs(length(q) - 1.0), abs(length(q) - 0.55));          // double ring
+		else { float b = sdBox(q, vec2(0.8)); k = abs(b); fill = max(fill, inside(b * sz, soft)); } // translucent square
+		d = min(d, k * sz);
+	}
+	return d;
+}
+
+// one scene: distance to the ink in px, plus a translucent fill (0..1)
+float scene(float id, float seed, vec2 fc, out float fill) {
+	fill = 0.0;
+	float soft = 1.0 / uU;
+	if (id < 7.5) {
+		vec2 q = rot(uRot) * stretch(fc - uCenter) / uR;
+		return figure(q, id) * uR;
+	}
+	vec2 pc = stretch(fc - uCompC) / uU;
+	if (id < 8.5) return compOverlap(pc, seed, soft, fill) * uU;
+	return compScatter(pc, seed, soft, fill) * uU;
+}
+
+// pass 1: r = ink, g = translucent fill
 void main() {
 	vec2 fc = gl_FragCoord.xy;
 	bool pixel = uPixel > 1.5;
 	if (pixel) fc = (floor(fc / uPixel) + 0.5) * uPixel;
 	float hw = 0.6 * uPx;
 	float aa = pixel ? 0.2 : 1.0;
-	vec2 q = rot(uRot) * stretch(fc - uCenter) / uR;
-	float d = figure(q, uA);
-	if (uMix > 0.001) d = mix(d, figure(q, uB), uMix); // blending the two fields is the morph
-	gl_FragColor = vec4(lineAt(max(d * uR, 0.0), hw, aa), 0.0, 0.0, 1.0);
+	float fill;
+	float d = scene(uA, uSeedA, fc, fill);
+	if (uMix > 0.001) { // blending the two fields is the morph
+		float fillB;
+		float dB = scene(uB, uSeedB, fc, fillB);
+		d = mix(d, dB, uMix);
+		fill = mix(fill, fillB, uMix);
+	}
+	gl_FragColor = vec4(lineAt(max(d, 0.0), hw, aa), fill, 0.0, 1.0);
 }
 `;
 
@@ -200,6 +280,7 @@ uniform float uPx;
 uniform float uPixel;
 uniform float uGridFrom;  // x where the glyph grid starts, keeps the menu side quiet
 uniform vec3 uLine;       // figure + echoes
+uniform vec3 uFill;       // translucent planes
 uniform vec3 uGrid;       // glyph grid
 
 #define ECHOES ${ECHOES}
@@ -242,26 +323,30 @@ void main() {
 	vec3 lineA = vec3(g);
 	if (dot(uSplit, uSplit) > 0.25) lineA = vec3(stack(fc + uSplit), g, stack(fc - uSplit));
 
-	// glyph grid: blocks of fine cells; columns and rows light up as drifting bands (a tartan), marks flicker
+	// glyph grid: blocks of fine cells, visible only through soft noise blots that drift; marks flicker
 	float t = uTime;
 	vec2 cs = pixel ? vec2(uPixel * 2.0) : vec2(6.0, 9.0) * uPx;
 	vec2 cell = floor(fc / cs);
 	vec2 f = fract(fc / cs);
 	vec2 inBlock = mod(cell, vec2(22.0, 9.0));
 	float open = step(inBlock.x, 19.5) * step(inBlock.y, 7.5);          // gutters between blocks
-	float colBand = vnoise(vec2(cell.x * 0.11 + t * 0.35, 1.7));
-	float rowBand = vnoise(vec2(3.1, cell.y * 0.19 - t * 0.45));
-	float band = pow(colBand, 4.0) + pow(rowBand, 4.0);                   // strong only where a column or row peaks
-	float breathe = 0.75 + 0.25 * sin(t * 1.1);
-	float level = clamp(band * 1.1 * breathe - 0.02, 0.0, 1.0);
-	float flick = hash(cell + floor(t * 9.0 + hash(cell) * 9.0));
-	float on = step(flick, level) * open;
+	vec2 cc = (cell + 0.5) * cs / uPx;                                    // cell centre in CSS px
+	float n = vnoise(cc / 190.0 + vec2(t * 0.035, -t * 0.02)) * 0.7 + vnoise(cc / 70.0 - vec2(t * 0.05, 0.0)) * 0.3;
+	float blot = smoothstep(0.54, 0.7, n);                                // the mask: soft blobs of grid
+	float flick = hash(cell + floor(t * 7.0 + hash(cell) * 9.0));
+	float on = step(flick, 0.25 + 0.55 * blot) * open * step(0.02, blot);
 	float mark = pixel ? 1.0 : glyph(f, hash(cell * 1.37 + 5.1));
 	float fieldFade = smoothstep(uGridFrom, uGridFrom + uRes.x * 0.22, fc.x);
-	float gridA = on * mark * mix(0.14, 0.5, level) * fieldFade;
+	float gridA = on * mark * blot * 0.5 * fieldFade;
+
+	// translucent planes under the lines
+	vec2 uv = fc / uRes;
+	float fillA = texture2D(uFig, uv).g * 0.14;
 
 	float alpha = max(max(lineA.r, lineA.g), lineA.b);
-	vec3 col = uLine * lineA + uGrid * gridA * (1.0 - alpha);
+	vec3 col = uLine * lineA + uFill * fillA * (1.0 - alpha);
+	alpha = alpha + fillA * (1.0 - alpha);
+	col += uGrid * gridA * (1.0 - alpha);
 	alpha = alpha + gridA * (1.0 - alpha);
 	gl_FragColor = vec4(col, alpha);
 }
@@ -269,6 +354,7 @@ void main() {
 
 interface Palette {
 	line: number[];
+	fill: number[];
 	grid: number[];
 	set: ShapeSet;
 }
@@ -288,6 +374,7 @@ function readPalette(probe: CanvasRenderingContext2D): Palette {
 	const id = document.documentElement.dataset.ptheme;
 	return {
 		line: v('--shape'),
+		fill: v('--shape'),
 		grid: v('--fg-2'),
 		set: themas.find((t) => t.id === id)?.shapes ?? 'geo',
 	};
@@ -337,8 +424,8 @@ export function initHeroSdf() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, tri);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
-	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uVel', 'uPx', 'uPixel'] as const;
-	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uGridFrom', 'uLine', 'uGrid'] as const;
+	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uSeedA', 'uSeedB', 'uCompC', 'uU', 'uVel', 'uPx', 'uPixel'] as const;
+	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uGridFrom', 'uLine', 'uFill', 'uGrid'] as const;
 	let uf: Uniforms<(typeof figNames)[number]>;
 	let uc: Uniforms<(typeof compNames)[number]>;
 	const locate = <T extends string>(prog: WebGLProgram, names: readonly T[]) =>
@@ -440,6 +527,11 @@ export function initHeroSdf() {
 		gl.uniform1f(uf.uA, FIGURES[A]);
 		gl.uniform1f(uf.uB, FIGURES[B]);
 		gl.uniform1f(uf.uMix, mixT);
+		gl.uniform1f(uf.uSeedA, k % 97);
+		gl.uniform1f(uf.uSeedB, (k + 1) % 97);
+		// compositions sit further in than the big figure: right of the menu, clear of the bottom bar
+		gl.uniform2f(uf.uCompC, W * 0.68, H * 0.5);
+		gl.uniform1f(uf.uU, Math.min(W * 0.24, H * 0.42));
 		gl.uniform2f(uf.uVel, vel[0], vel[1]);
 		gl.uniform1f(uf.uPx, dpr);
 		gl.uniform1f(uf.uPixel, pixelSize);
@@ -464,6 +556,7 @@ export function initHeroSdf() {
 		gl.uniform1f(uc.uPixel, pixelSize);
 		gl.uniform1f(uc.uGridFrom, W * 0.34);
 		gl.uniform3fv(uc.uLine, palette.line);
+		gl.uniform3fv(uc.uFill, palette.fill);
 		gl.uniform3fv(uc.uGrid, palette.grid);
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
