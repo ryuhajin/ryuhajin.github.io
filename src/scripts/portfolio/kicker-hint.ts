@@ -1,4 +1,4 @@
-// The line above the landing menu ("Software Developer — …") turns into the hovered item's hint
+// The line above the landing menu ("Technical Artist — …") turns into the hovered item's hint
 // (data-hint) with a quick text-scramble, and scrambles back when the pointer leaves.
 
 import { scrambleText } from '../scramble';

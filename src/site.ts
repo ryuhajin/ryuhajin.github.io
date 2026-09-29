@@ -2,8 +2,8 @@
 export const site = {
 	name: 'Ryu HaJin',
 	handle: 'ryuhajin',
-	role: 'Software Developer',
-	focus: 'Graphics · Real-time Rendering · Engine Tools',
+	role: 'Technical Artist',
+	focus: 'Shaders · Real-time Rendering · Tools',
 	intro: '실시간 렌더링과 엔진 툴을 만드는 개발자입니다. 화면 뒤에서 무슨 일이 일어나는지 이해하고, 그걸 도구로 만드는 일을 좋아합니다.',
 	location: 'Seoul, KR',
 	github: 'https://github.com/ryuhajin',
