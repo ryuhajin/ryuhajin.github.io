@@ -11,8 +11,7 @@
 @import '@fontsource/space-grotesk/700.css';
 @import '@fontsource/space-mono/400.css';
 @import '@fontsource/press-start-2p/400.css';
-@import '@fontsource/syne/600.css';
-@import '@fontsource/syne/800.css';
+@import '@fontsource/bricolage-grotesque/600.css';
 @import '@fontsource/unbounded/500.css';
 @import '@fontsource/unbounded/700.css';
 @import 'galmuri/dist/galmuri.css';
@@ -136,8 +135,8 @@
 	--shape-fill: #2c2660;
 	--foam: #ffffff;
 	--grid-dot: #231e4c;
-	--font-display: 'Syne', 'Pretendard Variable', sans-serif;
-	--display-weight: 800;
+	--font-display: 'Bricolage Grotesque', 'Pretendard Variable', sans-serif;
+	--display-weight: 600;
 	--display-tracking: -0.03em;
 	--curtain-a: #0c0a1f;
 	--curtain-b: #3a3380;

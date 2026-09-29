@@ -58,7 +58,7 @@ export const themas: Thema[] = [
 		label: 'Violet',
 		bg: '#16132e',
 		fg: '#ecebff',
-		font: "'Syne', sans-serif",
+		font: "'Bricolage Grotesque', sans-serif",
 		swatches: ['#16132e', '#2c2660', '#7b6cff', '#a99cff', '#ecebff'],
 		shapes: 'geo',
 	},
