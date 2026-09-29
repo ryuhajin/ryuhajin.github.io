@@ -254,7 +254,8 @@ float smallFigure(vec2 q, float kind, float sz, inout float fill) {
 }
 
 // "paint spilled from the top": a fan of small figures hanging from the top edge (densest near the top, some cut
-// off by it), three drips of shrinking figures running down from it, and 3–5 "+" / sparkle marks around the rim.
+// off by it), three drips of shrinking figures running down from it, 3–5 "+" / sparkle marks around the rim and
+// ~10 more spattered below it.
 // Everything in px; the fan's anchor sits just above the top edge, right of the menu.
 float compScatter(vec2 p, float seed, out float fill) {
 	float t = uTime;
@@ -309,6 +310,27 @@ float compScatter(vec2 p, float seed, out float fill) {
 			+ 0.02 * unit * vec2(sin(t * 0.8 + fi), cos(t * 0.7 + fi));
 		pos.x = clamp(pos.x, x0 + unit * 0.1, x1 - unit * 0.1);
 		float sz = unit * mix(0.03, 0.05, hash(vec2(fi * 2.9, seed)));
+		vec2 q = (p - pos) / sz;
+		float k;
+		if (hash(vec2(fi * 4.1, seed)) < 0.5) k = min(sdBox(q, vec2(1.0, 0.2)), sdBox(q, vec2(0.2, 1.0))); // +
+		else { float tw = 0.75 + 0.35 * sin(t * 2.2 + fi * 1.9); k = sdSparkle(q / tw) * tw; }              // sparkle
+		d = min(d, k * sz);
+	}
+	// ~10 more marks spattered below the fan, down to the lower part of the screen: one per cell of a jittered 5×2
+	// split (a few cells left empty), widening and thinning out as they fall
+	float yHi = top - Rb * 1.05;
+	float yLo = max(uRegion.y + unit * 0.15, top - Rb * 1.8);
+	for (int i = 0; i < 10; i++) {
+		float fi = float(i) + 60.0;
+		if (hash(vec2(fi * 3.7, seed)) < 0.12) continue;
+		vec2 h = vec2(hash(vec2(fi, seed)), hash(vec2(fi * 1.3 + 5.0, seed)));
+		vec2 cell = vec2(mod(float(i), 5.0), floor(float(i) / 5.0));
+		float v = (cell.y + 0.1 + 0.8 * h.y) / 2.0;                        // 0 = just below the fan, 1 = lowest
+		float spread = Rb * 1.25 * mix(0.9, 1.3, v);
+		vec2 pos = vec2(anchor.x + ((cell.x + 0.1 + 0.8 * h.x) / 5.0 - 0.5) * 2.0 * spread, mix(yHi, yLo, v))
+			+ 0.02 * unit * vec2(sin(t * 0.8 + fi), cos(t * 0.7 + fi));
+		pos.x = clamp(pos.x, x0 + unit * 0.1, x1 - unit * 0.1);
+		float sz = unit * mix(0.025, 0.045, hash(vec2(fi * 2.9, seed))) * mix(1.0, 0.75, v);
 		vec2 q = (p - pos) / sz;
 		float k;
 		if (hash(vec2(fi * 4.1, seed)) < 0.5) k = min(sdBox(q, vec2(1.0, 0.2)), sdBox(q, vec2(0.2, 1.0))); // +
