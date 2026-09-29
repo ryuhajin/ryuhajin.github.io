@@ -85,8 +85,8 @@ problems:
     approach: t_texture와 t_raycast를 실행 데이터 구조체 안의 스택 값으로 옮기고, 누수 검사 스크립트와 sanitizer로 확인했습니다.
     result: 텍스처·레이 상태를 따로 할당하고 해제할 필요가 없어져 종료·오류 경로가 단순해졌습니다.
 links:
-  - label: GitHub — 42seoul/cub3d
-    href: https://github.com/ryuhajin/42seoul/tree/master/cub3d
+  - label: GitHub — 42-cub3d
+    href: https://github.com/ryuhajin/42-cub3d
   - label: GitHub — 팀 저장소 (jhdgo1225/cub3d)
     href: https://github.com/jhdgo1225/cub3d
 ---

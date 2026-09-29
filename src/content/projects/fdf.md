@@ -80,6 +80,6 @@ problems:
     approach: 투영 후 크기로 창에 맞는 배율을 구하고, 원점 기준으로 옮긴 뒤 다시 창 가운데로 이동시켰습니다.
     result: 어떤 지도든 창 안 가운데에 적당한 크기로 그려집니다.
 links:
-  - label: GitHub — 42seoul/fdf
-    href: https://github.com/ryuhajin/42seoul/tree/master/fdf
+  - label: GitHub — 42-fdf
+    href: https://github.com/ryuhajin/42-fdf
 ---
