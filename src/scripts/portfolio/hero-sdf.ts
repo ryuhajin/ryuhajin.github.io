@@ -1,7 +1,7 @@
 // Landing-page decoration: line figures drawn as distance fields, in two passes.
 //   1. the scene     — alternates between three kinds of composition:
-//                        · one large line figure (square / triangle / hexagon spirals, pentagram web, a rotating
-//                          4D hypercube, wireframe globe, spinning dot sphere, orbits), cut off by the lower-right edges
+//                        · one large line figure (wireframe globe, rotating 4D hypercube, square spiral, spinning
+//                          dot sphere, pentagram web), cut off by the lower-right edges
 //                        · "overlap": translucent planes, a circle, long lines and an arc passing through each other
 //                        · "scatter": a dozen small figures placed at random, drifting
 //                      one scene morphs into the next by blending their distance fields; the lines are repeated as
@@ -20,14 +20,15 @@
 
 import { themas, type ShapeSet } from '../../portfolio/themes';
 
-const FIGURES = { squares: 0, globe: 1, dotsphere: 2, tris: 3, orbits: 4, pentagram: 5, hexes: 6, hypercube: 7, overlap: 8, scatter: 9 } as const;
+const FIGURES = { squares: 0, globe: 1, dotsphere: 2, pentagram: 3, hypercube: 4, overlap: 5, scatter: 6 } as const;
 type FigureName = keyof typeof FIGURES;
 
 const PLAYLISTS: Record<ShapeSet, FigureName[]> = {
-	geo: ['squares', 'overlap', 'globe', 'scatter', 'dotsphere', 'overlap', 'tris', 'scatter', 'hexes', 'pentagram', 'overlap', 'hypercube', 'scatter'],
-	space: ['orbits', 'scatter', 'globe', 'overlap', 'hypercube', 'scatter', 'dotsphere', 'overlap', 'pentagram'],
-	candy: ['tris', 'scatter', 'pentagram', 'overlap', 'dotsphere', 'scatter', 'hexes', 'overlap', 'orbits'],
-	pixel: ['squares', 'scatter', 'tris', 'overlap', 'globe', 'scatter', 'dotsphere', 'overlap', 'hexes'],
+	// the big figures in a fixed order, with the two compositions in between
+	geo: ['globe', 'overlap', 'hypercube', 'scatter', 'squares', 'overlap', 'dotsphere', 'scatter', 'pentagram', 'overlap'],
+	space: ['globe', 'overlap', 'hypercube', 'scatter', 'squares', 'overlap', 'dotsphere', 'scatter', 'pentagram', 'overlap'],
+	candy: ['globe', 'overlap', 'hypercube', 'scatter', 'squares', 'overlap', 'dotsphere', 'scatter', 'pentagram', 'overlap'],
+	pixel: ['globe', 'overlap', 'hypercube', 'scatter', 'squares', 'overlap', 'dotsphere', 'scatter', 'pentagram', 'overlap'],
 };
 
 const HOLD = 3.2; // s a figure rests
@@ -72,58 +73,12 @@ uniform vec4 uEdges[32];  // hypercube edges, projected on the CPU (figure units
 
 // ---- line figures: distance to the ink in figure units (radius ≈ 1), <= 0 on the ink ----
 float sdBox(vec2 p, vec2 b) { vec2 q = abs(p) - b; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0); }
-float sdHex(vec2 p, float r) {
-	const vec3 k = vec3(-0.866025404, 0.5, 0.577350269);
-	p = abs(p);
-	p -= 2.0 * min(dot(k.xy, p), 0.0) * k.xy;
-	p -= vec2(clamp(p.x, -k.z * r, k.z * r), r);
-	return length(p) * sign(p.y);
-}
 // distance to an ellipse outline (first-order: |f| / |grad f|), good enough for hairlines
 float ellipse(vec2 p, vec2 ab) {
 	ab = max(ab, vec2(0.002));
 	float k0 = length(p / ab);
 	float k1 = length(p / (ab * ab));
 	return abs(k0 * (k0 - 1.0) / max(k1, 0.0001));
-}
-float figSquares(vec2 p) { // nested squares, each turned 6° and 8.5% smaller
-	float d = 1e3;
-	float s = 0.8;
-	for (int i = 0; i < 18; i++) {
-		d = min(d, abs(sdBox(rot(float(i) * 0.105) * p, vec2(s))));
-		s *= 0.915;
-	}
-	return d;
-}
-float figHexes(vec2 p) { // hexagon spiral
-	float d = 1e3;
-	float s = 0.9;
-	for (int i = 0; i < 14; i++) {
-		d = min(d, abs(sdHex(rot(float(i) * -0.13) * p, s)));
-		s *= 0.89;
-	}
-	return d;
-}
-float figGlobe(vec2 p) { // wireframe globe: outline, 7 latitudes, 6 turning longitudes
-	float d = abs(length(p) - 0.95);
-	for (int i = 1; i < 8; i++) {
-		float phi = float(i) / 8.0 * 3.14159265 - 1.5707963;
-		float c = cos(phi);
-		d = min(d, ellipse(p - vec2(0.0, sin(phi) * 0.95), vec2(c * 0.95, c * 0.15)));
-	}
-	for (int i = 0; i < 6; i++) {
-		float th = float(i) / 6.0 * 3.14159265 + uTime * 0.25;
-		d = min(d, ellipse(p, vec2(abs(cos(th)) * 0.95, 0.95)));
-	}
-	return d;
-}
-float sdTri(vec2 p, float r) {
-	const float k = 1.7320508;
-	p.x = abs(p.x) - r;
-	p.y = p.y + r / k;
-	if (p.x + k * p.y > 0.0) p = vec2(p.x - k * p.y, -k * p.x - p.y) / 2.0;
-	p.x -= clamp(p.x, -2.0 * r, 0.0);
-	return -length(p) * sign(p.y);
 }
 float sdPentagon(vec2 p, float r) {
 	const vec3 k = vec3(0.809016994, 0.587785252, 0.726542528);
@@ -138,20 +93,43 @@ float seg(vec2 p, vec2 a, vec2 b) {
 	return length(pa - ba * clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0));
 }
 
-float figTris(vec2 p) { // nested triangles, each turned 7° and 10% smaller
+float figSquares(vec2 p) { // nested squares, each turned 8° and 8.5% smaller; the outer one starts turned ~20°
 	float d = 1e3;
-	float s = 0.98;
-	for (int i = 0; i < 16; i++) {
-		d = min(d, abs(sdTri(rot(float(i) * 0.12) * p, s)));
-		s *= 0.9;
+	float s = 0.8;
+	for (int i = 0; i < 18; i++) {
+		d = min(d, abs(sdBox(rot(0.35 + float(i) * 0.14) * p, vec2(s))));
+		s *= 0.915;
 	}
 	return d;
 }
-float figPentagram(vec2 p) { // pentagon + star, the inner (inverted) pentagon holds the next star — three levels
+float figGlobe(vec2 p) { // wireframe globe: outline, 7 latitudes, 6 turning longitudes
+	float d = abs(length(p) - 0.95);
+	for (int i = 1; i < 8; i++) {
+		float phi = float(i) / 8.0 * 3.14159265 - 1.5707963;
+		float c = cos(phi);
+		d = min(d, ellipse(p - vec2(0.0, sin(phi) * 0.95), vec2(c * 0.95, c * 0.15)));
+	}
+	for (int i = 0; i < 6; i++) {
+		float c = abs(cos(float(i) / 6.0 * 3.14159265 + uTime * 0.25));
+		// a meridian seen edge-on collapses into a straight line through the middle: fade it out on the way there
+		float away = (1.0 - smoothstep(0.06, 0.24, c)) * 0.08;
+		d = min(d, ellipse(p, vec2(c * 0.95, 0.95)) + away);
+	}
+	return d;
+}
+float figPentagram(vec2 p) { // a {10/3} star around four nested pentagon + pentagram levels that turn against each other
 	float d = 1e3;
 	float R = 0.98;
-	for (int l = 0; l < 3; l++) {
-		vec2 q = rot(float(l) * 3.14159265) * p;
+	for (int j = 0; j < 10; j++) {
+		float a0 = float(j) * 0.62831853;
+		float a1 = float(j + 3) * 0.62831853;
+		d = min(d, seg(p, R * vec2(sin(a0), cos(a0)), R * vec2(sin(a1), cos(a1))));
+	}
+	R *= 0.82;
+	for (int l = 0; l < 4; l++) {
+		float fl = float(l);
+		float turn = (mod(fl, 2.0) * 2.0 - 1.0) * uTime * 0.1 * (1.0 + fl * 0.35);
+		vec2 q = rot(fl * 3.14159265 + turn) * p;
 		d = min(d, abs(sdPentagon(q, R * 0.809016994)));
 		for (int j = 0; j < 5; j++) {
 			float a0 = float(j) * 1.25663706;
@@ -185,24 +163,11 @@ float figDotSphere(vec2 p) { // dots on a tilted, spinning sphere: foreshortenin
 	float ang = acos(clamp(dot(n, c), -1.0, 1.0));
 	return min((ang - 0.055) * R, rim);
 }
-float figOrbits(vec2 p) { // planet + three tilted orbits with satellites
-	float d = abs(length(p) - 0.3);
-	for (int i = 0; i < 3; i++) {
-		vec2 q = rot(float(i) * 1.0472 + 0.35) * p;
-		d = min(d, ellipse(q, vec2(0.95, 0.27)));
-		float s = uTime * (0.45 + 0.15 * float(i)) + float(i) * 2.1;
-		d = min(d, length(q - vec2(cos(s) * 0.95, sin(s) * 0.27)) - 0.035);
-	}
-	return d;
-}
 float figure(vec2 p, float id) {
 	if (id < 0.5) return figSquares(p);
 	if (id < 1.5) return figGlobe(p);
 	if (id < 2.5) return figDotSphere(p);
-	if (id < 3.5) return figTris(p);
-	if (id < 4.5) return figOrbits(p);
-	if (id < 5.5) return figPentagram(p);
-	if (id < 6.5) return figHexes(p);
+	if (id < 3.5) return figPentagram(p);
 	return figHypercube(p);
 }
 
@@ -272,12 +237,12 @@ float compScatter(vec2 p, float seed, float soft, out float fill) {
 float scene(float id, float seed, vec2 fc, out float fill) {
 	fill = 0.0;
 	float soft = 1.0 / uU;
-	if (id < 7.5) {
+	if (id < 4.5) {
 		vec2 q = rot(uRot) * stretch(fc - uCenter) / uR;
 		return figure(q, id) * uR;
 	}
 	vec2 pc = stretch(fc - uCompC) / uU;
-	if (id < 8.5) return compOverlap(pc, seed, soft, fill) * uU;
+	if (id < 5.5) return compOverlap(pc, seed, soft, fill) * uU;
 	return compScatter(pc, seed, soft, fill) * uU;
 }
 
