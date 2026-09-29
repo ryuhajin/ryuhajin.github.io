@@ -8,7 +8,7 @@ const finePointer = () => matchMedia('(hover: hover) and (pointer: fine)').match
 
 let cleanups: (() => void)[] = [];
 
-/** Moves el toward the pointer every frame. lerp 1 = glued to the pointer (no lag, no tilt). */
+/** Eases el toward the pointer every frame (used by the list preview). */
 function follower(el: HTMLElement, lerp = LERP) {
 	let raf = 0;
 	const pos = { x: innerWidth / 2, y: innerHeight / 2 };
@@ -117,8 +117,10 @@ export function initHoverMedia() {
 	// cursor badge over project cards (data-hover-card → "view") and screenshot tiles (data-cursor="zoom")
 	const label = document.querySelector<HTMLElement>('[data-cursor-label]');
 	if (label) {
-		const f = follower(label, 1);
-		cleanups.push(() => f.stop());
+		// positioned straight from the pointer event — no animation loop, so it never trails or catches up
+		const place = (e: PointerEvent) => {
+			label.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+		};
 		const ringText = label.querySelector<SVGTextPathElement>('[data-cursor-text]');
 		const ringPath = label.querySelector<SVGPathElement>('path[id]');
 		// spread the ring text so it closes the circle exactly, whatever the label
@@ -131,25 +133,19 @@ export function initHoverMedia() {
 			text.style.letterSpacing = `${(ringPath.getTotalLength() - 3 - text.getComputedTextLength()) / chars}px`;
 		};
 		fitRing();
-		let idle = 0;
-		const hide = () => {
-			label.classList.remove('show');
-			idle = window.setTimeout(() => f.stop(), 300);
-		};
+		const hide = () => label.classList.remove('show');
 		document.querySelectorAll<HTMLElement>('[data-hover-card], [data-cursor]').forEach((card) => {
 			const enter = (e: PointerEvent) => {
-				clearTimeout(idle);
 				const mode = card.dataset.cursor ?? 'view';
 				if (label.dataset.mode !== mode) {
 					label.dataset.mode = mode;
 					if (ringText) ringText.textContent = label.dataset[`text${mode[0].toUpperCase()}${mode.slice(1)}`] ?? '';
 					fitRing();
 				}
-				f.move(e.clientX, e.clientY, !label.classList.contains('show'));
+				place(e);
 				label.classList.add('show');
-				f.start();
 			};
-			const move = (e: PointerEvent) => f.move(e.clientX, e.clientY);
+			const move = place;
 			card.addEventListener('pointerenter', enter);
 			card.addEventListener('pointermove', move);
 			card.addEventListener('pointerleave', hide);

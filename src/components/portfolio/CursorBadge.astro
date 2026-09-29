@@ -37,14 +37,10 @@ const texts = {
 		box-shadow: 0 18px 40px -18px #000a;
 		pointer-events: none;
 		opacity: 0;
-		scale: 0.9;
-		transition:
-			opacity var(--t-micro) var(--ease),
-			scale var(--t-fast) var(--ease);
+		transition: opacity var(--t-micro) var(--ease);
 	}
 	.cursor-badge:global(.show) {
 		opacity: 1;
-		scale: 1;
 	}
 	.ring {
 		position: absolute;

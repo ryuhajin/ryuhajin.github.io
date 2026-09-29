@@ -241,8 +241,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
 		overflow: hidden;
 		background: var(--bg-2);
 		cursor: none;
+		/* hover outline = 1px border + 2px ring → 3px, the same as the screenshot tiles */
+		box-shadow: 0 0 0 0 var(--accent-p);
 		transition:
 			border-color var(--t-fast) var(--ease),
+			box-shadow var(--t-fast) var(--ease),
 			transform var(--t-fast) var(--ease-out),
 			opacity var(--t-fast) var(--ease);
 	}
@@ -252,6 +255,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 	.card:hover,
 	.card:focus-visible {
 		border-color: var(--accent-p);
+		box-shadow: 0 0 0 2px var(--accent-p);
 		transform: translateY(-4px);
 	}
 	.card :global(.media) {
@@ -306,16 +310,28 @@ const pad = (n: number) => String(n).padStart(2, '0');
 		align-items: baseline;
 		gap: 1rem;
 		padding: clamp(0.6rem, 2vh, 1.25rem) 0.25rem;
-		border-top: 1px solid var(--line-2);
+		border-top: 2px solid var(--line-2);
 		transition:
-			opacity var(--t-fast) var(--ease),
+			border-color var(--t-fast) var(--ease),
 			padding var(--t-fast) var(--ease-out);
 	}
 	.list li:last-child .row {
-		border-bottom: 1px solid var(--line-2);
+		border-bottom: 2px solid var(--line-2);
 	}
-	.list:has(.row:hover) .row:not(:hover) {
+	.row > * {
+		transition: opacity var(--t-fast) var(--ease);
+	}
+	/* dim the other rows' text only — the rules stay, so the hovered row keeps both of its lines */
+	.list:has(.row:hover) .row:not(:hover) > * {
 		opacity: 0.3;
+	}
+	/* hovered row: its own top rule and the next row's top rule (= its bottom edge) light up */
+	.row:hover,
+	.list li:has(.row:hover) + li .row {
+		border-top-color: var(--fg);
+	}
+	.list li:last-child .row:hover {
+		border-bottom-color: var(--fg);
 	}
 	.row:hover {
 		padding-inline: 1.25rem 0.25rem;
