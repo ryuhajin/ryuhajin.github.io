@@ -221,11 +221,11 @@ float compOverlap(vec2 p, float seed, float soft, out float fill) {
 	d = min(d, abs(dot0));
 	fill = min(1.0, fill + 0.5 * inside(tri, soft) + 0.5 * inside(dot0, soft));
 	d = min(d, abs(sdBox(rot(-t * 0.25 + e.x * 2.0) * (p - vec2(1.0 + 0.2 * e.y, -1.0)), vec2(0.11)))); // turning square
-	vec2 l0 = vec2(-0.78 + 0.15 * e.x, -1.02);
-	d = min(d, sdSeg(p, l0, l0 + vec2(0.8, -0.08)));                                    // a short double line
-	d = min(d, sdSeg(p, l0 + vec2(0.04, -0.06), l0 + vec2(0.84, -0.14)));
-	vec2 pq = p - vec2(1.48 + 0.1 * e.x, 1.02 + 0.08 * e.y);
-	d = min(d, min(sdBox(pq, vec2(0.065, 0.013)), sdBox(pq, vec2(0.013, 0.065))));      // a small solid +
+	// a short double line: its angle and place change every appearance, and it keeps drifting and turning
+	vec2 lc = vec2(-0.38 + 0.35 * e.x + 0.08 * sin(t * 0.45 + e.y * 6.0), -1.0 + 0.05 * cos(t * 0.38 + e.x * 5.0));
+	mat2 lr = rot((e.y - 0.5) * 0.6 + 0.15 * sin(t * 0.3 + e.x * 4.0));
+	d = min(d, sdSeg(p, lc + lr * vec2(-0.4, 0.03), lc + lr * vec2(0.4, 0.03)));
+	d = min(d, sdSeg(p, lc + lr * vec2(-0.36, -0.03), lc + lr * vec2(0.44, -0.03)));
 	return d;
 }
 
@@ -256,7 +256,7 @@ float compScatter(vec2 p, float seed, float soft, out float fill) {
 		if (kind < 0.5) k = abs(length(q) - 1.0);                                           // circle
 		else if (kind < 1.5) k = abs(sdBox(q, vec2(0.85)));                                 // square
 		else if (kind < 2.5) k = abs(max(abs(q.x) * 0.866 + q.y * 0.5, -q.y) - 0.5);        // triangle
-		else if (kind < 3.5) k = min(sdBox(q, vec2(1.0, 0.08)), sdBox(q, vec2(0.08, 1.0))); // plus
+		else if (kind < 3.5) k = abs(min(sdBox(q, vec2(1.0, 0.32)), sdBox(q, vec2(0.32, 1.0)))); // plus, outline only
 		else if (kind < 4.5) k = min(abs(length(q) - 1.0), abs(length(q) - 0.55));          // double ring
 		else { float b = sdBox(q, vec2(0.8)); k = abs(b); fill = max(fill, inside(b * sz, soft)); } // translucent square
 		d = min(d, k * sz);
@@ -267,7 +267,7 @@ float compScatter(vec2 p, float seed, float soft, out float fill) {
 		if (i > 2 && hash(vec2(fi * 3.7, seed)) < 0.5) continue; // the last two show up half the time
 		vec2 h = vec2(hash(vec2(fi, seed)), hash(vec2(fi * 1.3 + 5.0, seed)));
 		float a = (float(i) + 0.2 + 0.6 * h.x) / 5.0 * 6.28318531 + hash(vec2(seed, 51.0)) * 6.28318531;
-		vec2 pos = vec2(0.05, 0.0) + vec2(1.4, 1.02) * mix(0.95, 1.15, h.y) * vec2(cos(a), sin(a))
+		vec2 pos = vec2(0.05, 0.0) + vec2(1.3, 0.95) * mix(0.95, 1.08, h.y) * vec2(cos(a), sin(a))
 			+ 0.02 * vec2(sin(t * 0.8 + fi), cos(t * 0.7 + fi));
 		float sz = mix(0.03, 0.05, hash(vec2(fi * 2.9, seed)));
 		vec2 q = (p - pos) / sz;
@@ -277,6 +277,16 @@ float compScatter(vec2 p, float seed, float soft, out float fill) {
 		d = min(d, k * sz);
 	}
 	return d;
+}
+
+// fit a composition into the free region: ext = its reach from the centre in units (left, right, down, up);
+// shrinks the scale if it cannot fit and pulls the centre in so nothing is cut off. Returns (centre, scale).
+vec3 fitRegion(vec2 want, float u, vec4 ext) {
+	vec2 lo = uRegion.xy;
+	vec2 hi = uRegion.zw;
+	u = min(u, min((hi.x - lo.x) / (ext.x + ext.y), (hi.y - lo.y) / (ext.z + ext.w)));
+	vec2 c = clamp(want, lo + vec2(ext.x, ext.z) * u, hi - vec2(ext.y, ext.w) * u);
+	return vec3(c, u);
 }
 
 // one scene: distance to the ink in px, plus a translucent fill (0..1)
@@ -289,11 +299,12 @@ float scene(float id, float seed, vec2 fc, out float fill) {
 	if (id < 5.5) {
 		// overlap: a different centre and size every appearance, within the area right of the menu
 		vec2 h = vec2(hash(vec2(seed, 31.0)), hash(vec2(seed, 32.0)));
-		vec2 c = mix(uRegion.xy, uRegion.zw, vec2(mix(0.42, 0.62, h.x), mix(0.35, 0.65, h.y)));
-		float u = uU * mix(0.75, 1.1, hash(vec2(seed, 33.0)));
-		return compOverlap(stretch(fc - c) / u, seed, 1.0 / u, fill) * u;
+		vec2 want = mix(uRegion.xy, uRegion.zw, vec2(mix(0.42, 0.62, h.x), mix(0.35, 0.65, h.y)));
+		vec3 f = fitRegion(want, uU * mix(0.75, 1.1, hash(vec2(seed, 33.0))), vec4(1.15, 1.72, 1.3, 1.3));
+		return compOverlap(stretch(fc - f.xy) / f.z, seed, 1.0 / f.z, fill) * f.z;
 	}
-	return compScatter(stretch(fc - uCompC) / uU, seed, 1.0 / uU, fill) * uU;
+	vec3 f = fitRegion(uCompC, uU, vec4(1.5, 1.6, 1.15, 1.15));
+	return compScatter(stretch(fc - f.xy) / f.z, seed, 1.0 / f.z, fill) * f.z;
 }
 
 // pass 1: r = ink, g = translucent fill
@@ -585,7 +596,9 @@ export function initHeroSdf() {
 		gl.uniform1f(uf.uSeedB, (k + 1) % 97);
 		// compositions sit further in than the big figure: right of the menu, clear of the bottom bar
 		gl.uniform2f(uf.uCompC, W * 0.68, H * 0.5);
-		gl.uniform4f(uf.uRegion, menuX + 70 * dpr, 30 * dpr, W - 20 * dpr, H - 40 * dpr);
+		// free area right of the menu (on narrow screens the menu spans the width: fall back to the right 70%)
+		const x0 = W - (menuX + 70 * dpr) < W * 0.35 ? W * 0.3 : menuX + 70 * dpr;
+		gl.uniform4f(uf.uRegion, x0, 30 * dpr, W - 20 * dpr, H - 40 * dpr);
 		gl.uniform1f(uf.uU, Math.min(W * 0.24, H * 0.42));
 		gl.uniform1f(uf.uMenuX, menuX);
 		gl.uniform4fv(uf.uEdges, hypercube(t));
