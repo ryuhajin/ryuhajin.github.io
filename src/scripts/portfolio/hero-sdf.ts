@@ -1,29 +1,62 @@
-// Landing-page decoration: one fragment shader that draws signed-distance-field shapes in three layers.
-//   1. segment grid  — a field of tiny glyphs (dash / colon / box / tick) that flicker on pseudo-noise and light up
-//                      inside the shape, so the grid "renders" it like a dot-matrix display   (after Stefan Vitasović)
-//   2. echo outlines — the outline repeated N times, offset and fading; the stack unfolds while the shape morphs and
-//                      folds back onto itself when it settles                                   (after Tobias Ahlin)
-//   3. velocity      — the shape is stretched along its velocity and the R/G/B channels are pulled apart by it;
-//                      velocity comes from the morph impulse and from a spring that leans toward the pointer
-//                                                                                                (after Roman Jean-Elie)
-// Shapes morph by mixing two SDFs. Colours come from the theme tokens (--shape, --accent, --fg-3); the 8-bit theme
-// renders on a coarse pixel grid. No libraries — a single full-screen triangle.
+// Landing-page decoration: one fragment shader that draws signed-distance-field line figures in three layers.
+//   1. field grid    — tiny tick segments in columns whose visibility drifts with smooth value noise, so patches of
+//                      the grid fade in and out like a slow scan                                (after Stefan Vitasović)
+//   2. the figure    — an SDF silhouette that morphs between shapes; its outline is repeated as a stack of offset,
+//                      fading echoes that unfold during the morph and fold back when it settles   (after Tobias Ahlin)
+//                      and its inside is drawn with line patterns (twisted contours, halftone, circular grids, hatching)
+//   3. velocity      — the figure stretches along its velocity and R/G/B split apart; velocity comes from the morph
+//                      impulse and a spring toward the pointer                                   (after Roman Jean-Elie)
+// Colours come from the Thema tokens; the 8-bit theme renders on a coarse pixel grid. No libraries.
 
 import { themas, type ShapeSet } from '../../portfolio/themes';
 
-const SHAPES = { circle: 0, rbox: 1, triangle: 2, star: 3, ring: 4, cross: 5, hexagon: 6, heart: 7, blob: 8 } as const;
-type ShapeName = keyof typeof SHAPES;
+const BASE = { circle: 0, rbox: 1, triangle: 2, star: 3, ring: 4, cross: 5, hexagon: 6, heart: 7, blob: 8 } as const;
+const PATTERN = { contours: 0, halftone: 1, polarGrid: 2, polarDots: 3, hatch: 4, moire: 5 } as const;
 
-const PLAYLISTS: Record<ShapeSet, ShapeName[]> = {
-	geo: ['circle', 'triangle', 'blob', 'rbox', 'star', 'ring', 'hexagon', 'cross'],
-	space: ['circle', 'ring', 'star', 'blob', 'hexagon'],
-	candy: ['heart', 'star', 'circle', 'rbox', 'blob'],
-	pixel: ['cross', 'star', 'rbox', 'triangle', 'heart'],
+interface Figure {
+	base: keyof typeof BASE;
+	pattern: keyof typeof PATTERN;
+	/** rotation added toward the centre (rad) — turns contour rings into a spiral of nested shapes */
+	twist: number;
+}
+
+const PLAYLISTS: Record<ShapeSet, Figure[]> = {
+	geo: [
+		{ base: 'rbox', pattern: 'contours', twist: 2.4 }, // nested square spiral
+		{ base: 'circle', pattern: 'halftone', twist: 0 }, // halftone sphere
+		{ base: 'star', pattern: 'contours', twist: -1.2 },
+		{ base: 'circle', pattern: 'polarGrid', twist: 0 }, // radar / globe
+		{ base: 'hexagon', pattern: 'moire', twist: 1.6 },
+		{ base: 'blob', pattern: 'polarDots', twist: 0 },
+		{ base: 'triangle', pattern: 'contours', twist: 2.0 },
+		{ base: 'cross', pattern: 'hatch', twist: 0.6 },
+	],
+	space: [
+		{ base: 'circle', pattern: 'polarGrid', twist: 0 },
+		{ base: 'ring', pattern: 'polarDots', twist: 0 },
+		{ base: 'star', pattern: 'contours', twist: -1.4 },
+		{ base: 'circle', pattern: 'halftone', twist: 0 },
+		{ base: 'hexagon', pattern: 'contours', twist: 1.8 },
+	],
+	candy: [
+		{ base: 'heart', pattern: 'contours', twist: 0.8 },
+		{ base: 'circle', pattern: 'polarDots', twist: 0 },
+		{ base: 'star', pattern: 'hatch', twist: 0 },
+		{ base: 'rbox', pattern: 'halftone', twist: 0.4 },
+		{ base: 'blob', pattern: 'moire', twist: 0 },
+	],
+	pixel: [
+		{ base: 'rbox', pattern: 'contours', twist: 2.0 },
+		{ base: 'cross', pattern: 'hatch', twist: 0 },
+		{ base: 'star', pattern: 'contours', twist: -1.0 },
+		{ base: 'circle', pattern: 'polarDots', twist: 0 },
+		{ base: 'heart', pattern: 'halftone', twist: 0 },
+	],
 };
 
-const HOLD = 3.0; // s a shape rests
-const MORPH = 1.6; // s the unfold → morph → fold takes
-const ECHOES = 16;
+const HOLD = 3.2; // s a figure rests
+const MORPH = 1.7; // s the unfold → morph → fold takes
+const ECHOES = 12;
 
 const VERT = `
 attribute vec2 aPos;
@@ -33,38 +66,47 @@ void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
 const FRAG = `
 precision highp float;
 uniform vec2 uRes;
-uniform float uTime;      // seconds (grid flicker, blob orbit)
+uniform float uTime;
 uniform vec2 uCenter;     // px, GL coords (y up)
-uniform float uR;         // shape radius, px
-uniform float uRot;       // radians
-uniform float uA;         // shape ids
+uniform float uR;         // figure radius, px
+uniform float uRot;
+uniform float uA;         // base shapes
 uniform float uB;
 uniform float uMix;       // 0 → A, 1 → B
+uniform float uTwist;     // rad, eased between figures
+uniform float uPatA;      // inner patterns (cross-faded with uMix)
+uniform float uPatB;
+uniform float uGap;       // px between pattern lines
 uniform float uSpacing;   // px between echo copies
-uniform vec2 uDir;        // echo direction (unit)
-uniform vec2 uVel;        // px, drives stretch + channel split
-uniform float uPx;        // device px per logical px
-uniform float uPixel;     // >1: pixelated rendering (8-bit theme)
-uniform float uGridFrom;  // x (px) where the grid starts fading in, keeps the menu side clean
-uniform vec3 uLine;       // echo colour
-uniform vec3 uFront;      // front outline colour
-uniform vec3 uGrid;       // grid glyph colour (outside)
-uniform vec3 uGridIn;     // grid glyph colour (inside the shape)
+uniform vec2 uDir;        // echo direction
+uniform vec2 uVel;        // px, stretch + channel split
+uniform float uPx;        // device px per CSS px
+uniform float uPixel;     // >1: pixelated (8-bit)
+uniform float uGridFrom;  // x where the field grid starts, keeps the menu side quiet
+uniform vec3 uLine;       // echoes + inner pattern
+uniform vec3 uFront;      // front outline
+uniform vec3 uGrid;       // field grid
 
 #define ECHOES ${ECHOES}
+#define TAU 6.28318530718
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float vnoise(vec2 p) {
+	vec2 i = floor(p), f = fract(p);
+	vec2 u = f * f * (3.0 - 2.0 * f);
+	return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
 mat2 rot(float a) { float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
 float dot2(vec2 v) { return dot(v, v); }
 float smin(float a, float b, float k) { float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0); return mix(b, a, h) - k * h * (1.0 - h); }
 
-// shape library — unit size (about radius 1), y up
+// ---- base silhouettes (about radius 1, y up) ----
 float sdCircle(vec2 p) { return length(p) - 0.95; }
-float sdRBox(vec2 p) { vec2 q = abs(p) - vec2(0.78) + 0.22; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - 0.22; }
+float sdRBox(vec2 p) { vec2 q = abs(p) - vec2(0.8) + 0.12; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - 0.12; }
 float sdTriangle(vec2 p) {
 	const float k = 1.7320508;
-	float r = 0.9;
-	p.y += 0.22;
+	float r = 0.95;
+	p.y += 0.24;
 	p.x = abs(p.x) - r;
 	p.y = p.y + r / k;
 	if (p.x + k * p.y > 0.0) p = vec2(p.x - k * p.y, -k * p.x - p.y) / 2.0;
@@ -74,7 +116,7 @@ float sdTriangle(vec2 p) {
 float sdStar(vec2 p) {
 	const vec2 k1 = vec2(0.809016994, -0.587785252);
 	const vec2 k2 = vec2(-0.809016994, -0.587785252);
-	float r = 1.08; float rf = 0.48;
+	float r = 1.05; float rf = 0.5;
 	p.x = abs(p.x);
 	p -= 2.0 * max(dot(k1, p), 0.0) * k1;
 	p -= 2.0 * max(dot(k2, p), 0.0) * k2;
@@ -84,9 +126,9 @@ float sdStar(vec2 p) {
 	float h = clamp(dot(p, ba) / dot(ba, ba), 0.0, r);
 	return length(p - ba * h) * sign(p.y * ba.x - p.x * ba.y);
 }
-float sdRing(vec2 p) { return abs(length(p) - 0.74) - 0.2; }
+float sdRing(vec2 p) { return abs(length(p) - 0.7) - 0.25; }
 float sdCross(vec2 p) {
-	vec2 b = vec2(0.98, 0.3);
+	vec2 b = vec2(0.95, 0.34);
 	p = abs(p); p = (p.y > p.x) ? p.yx : p.xy;
 	vec2 q = p - b;
 	float k = max(q.y, q.x);
@@ -110,13 +152,13 @@ float sdHeart(vec2 p) {
 	return d / 0.62;
 }
 float sdBlob(vec2 p) {
-	float t = uTime * 0.7;
-	float d = length(p - 0.42 * vec2(cos(t), sin(t))) - 0.5;
-	d = smin(d, length(p - 0.42 * vec2(cos(t + 2.094), sin(t + 2.094))) - 0.46, 0.42);
-	d = smin(d, length(p - 0.42 * vec2(cos(t + 4.189), sin(t + 4.189))) - 0.42, 0.42);
+	float t = uTime * 0.6;
+	float d = length(p - 0.4 * vec2(cos(t), sin(t))) - 0.52;
+	d = smin(d, length(p - 0.4 * vec2(cos(t + 2.094), sin(t + 2.094))) - 0.48, 0.4);
+	d = smin(d, length(p - 0.4 * vec2(cos(t + 4.189), sin(t + 4.189))) - 0.44, 0.4);
 	return d;
 }
-float shape(vec2 p, float id) {
+float base(vec2 p, float id) {
 	if (id < 0.5) return sdCircle(p);
 	if (id < 1.5) return sdRBox(p);
 	if (id < 2.5) return sdTriangle(p);
@@ -128,13 +170,16 @@ float shape(vec2 p, float id) {
 	return sdBlob(p);
 }
 
-// p: px from the shape centre, already in the stretched frame
-float scene(vec2 p) {
-	vec2 q = rot(uRot) * p / uR;
-	return mix(shape(q, uA), shape(q, uB), uMix) * uR;
+// figure frame (rotation only) — the silhouette, its echoes and the inside test use this
+vec2 frame(vec2 p) { return rot(uRot) * p; }
+float sdf(vec2 q) { return mix(base(q / uR, uA), base(q / uR, uB), uMix) * uR; }
+float scene(vec2 p) { return sdf(frame(p)); }
+// the same field with a twist that grows toward the centre: its iso-lines become a spiral of nested shapes
+float sceneTwist(vec2 q) {
+	float r = clamp(length(q) / uR, 0.0, 1.0);
+	return sdf(rot(uTwist * (1.0 - r) * (1.0 - r)) * q);
 }
 
-// velocity stretch: squash coordinates along the motion so the shape elongates that way
 vec2 stretch(vec2 p) {
 	float v = length(uVel);
 	if (v < 0.001) return p;
@@ -143,68 +188,115 @@ vec2 stretch(vec2 p) {
 	return p - n * dot(p, n) * (s / (1.0 + s));
 }
 
-// echo stack at one sample point → (front outline, echoes)
-vec2 echoes(vec2 p) {
-	float hw = 0.65 * uPx;
-	float aa = uPixel > 1.5 ? 0.25 : 1.0;
+float lineAt(float dist, float hw, float aa) { return 1.0 - smoothstep(hw, hw + aa, dist); }
+
+// ---- inner line patterns: p in figure frame (px), d = SDF (px, < 0 inside) ----
+float pattern(float id, vec2 p, float d, float hw, float aa) {
+	float g = uGap;
+	float t = uTime;
+	if (id < 0.5) { // contours: iso-lines of the twisted SDF, drifting inward
+		float v = abs(fract(sceneTwist(p) / g + t * 0.12) - 0.5) * g;
+		return lineAt(v, hw, aa);
+	}
+	if (id < 1.5) { // halftone: dots on a square grid, size from depth + a light from the upper left
+		float cs = g * 1.15;
+		vec2 c = (floor(p / cs) + 0.5) * cs;
+		float depth = clamp(-sdf(c) / (uR * 0.75), 0.0, 1.0);
+		vec2 n = c / uR;
+		float light = clamp(0.55 + 0.6 * dot(normalize(n + 1e-4), vec2(-0.6, 0.55)) * length(n), 0.0, 1.0);
+		float r = cs * 0.48 * sqrt(depth) * mix(0.25, 1.0, light) * (0.9 + 0.1 * sin(t * 1.4 + c.x * 0.02));
+		return lineAt(length(p - c) - r, 0.0, aa);
+	}
+	float r = length(p);
+	float a = atan(p.y, p.x);
+	if (id < 2.5) { // polar grid: rings + 24 spokes, rings drift outward
+		float ring = abs(fract(r / g - t * 0.1) - 0.5) * g;
+		float spoke = abs(fract((a + t * 0.05) / TAU * 24.0) - 0.5) * (TAU / 24.0) * r;
+		return max(lineAt(ring, hw, aa), lineAt(spoke, hw * 0.8, aa) * step(g, r));
+	}
+	if (id < 3.5) { // circular dot grid: dots on rings, alternate rings turn opposite ways
+		float k = floor(r / g);
+		float rc = (k + 0.5) * g;
+		float n = max(6.0, floor(TAU * rc / g));
+		float dirK = mod(k, 2.0) * 2.0 - 1.0;
+		float ang = a + dirK * t * 0.12;
+		float cell = floor(ang / TAU * n);
+		float ca = (cell + 0.5) / n * TAU - dirK * t * 0.12;
+		vec2 c = rc * vec2(cos(ca), sin(ca));
+		return lineAt(length(p - c) - g * 0.2, 0.0, aa);
+	}
+	if (id < 4.5) { // cross hatching, slowly sliding
+		float h1 = abs(fract(dot(p, vec2(0.7071, 0.7071)) / g + t * 0.08) - 0.5) * g;
+		float h2 = abs(fract(dot(p, vec2(0.7071, -0.7071)) / (g * 1.6) - t * 0.05) - 0.5) * g * 1.6;
+		return max(lineAt(h1, hw, aa), lineAt(h2, hw * 0.7, aa) * 0.6);
+	}
+	// moire: contours of the figure against rings from a wandering centre
+	vec2 o = uR * 0.18 * vec2(cos(t * 0.3), sin(t * 0.37));
+	float v1 = abs(fract(sceneTwist(p) / g) - 0.5) * g;
+	float v2 = abs(fract(length(p - o) / (g * 0.92)) - 0.5) * g * 0.92;
+	return max(lineAt(v1, hw, aa), lineAt(v2, hw, aa) * 0.8);
+}
+
+// one colour channel of the figure: (front outline, echoes + inner pattern)
+vec2 figure(vec2 p, float hw, float aa) {
 	float reach = float(ECHOES) * uSpacing + hw + aa + 2.0;
 	float d0 = scene(p);
-	if (abs(d0) > reach) return vec2(0.0); // Lipschitz bound: no copy can be close
-	float front = 1.0 - smoothstep(hw, hw + aa, abs(d0));
+	float front = lineAt(abs(d0), hw * 1.4, aa);
 	float rest = 0.0;
-	for (int i = 1; i < ECHOES; i++) {
-		float fi = float(i);
-		float d = scene(p - uDir * fi * uSpacing);
-		float l = 1.0 - smoothstep(hw, hw + aa, abs(d));
-		rest = max(rest, l * pow(1.0 - fi / float(ECHOES), 1.7));
+	if (abs(d0) < reach) { // Lipschitz bound: no echo can be near otherwise
+		for (int i = 1; i < ECHOES; i++) {
+			float fi = float(i);
+			float d = scene(p - uDir * fi * uSpacing);
+			rest = max(rest, lineAt(abs(d), hw, aa) * pow(1.0 - fi / float(ECHOES), 1.6));
+		}
+	}
+	if (d0 < 0.0) {
+		vec2 q = frame(p);
+		float inner = 1.0 - smoothstep(-uGap * 1.2, -uGap * 0.3, d0); // keep a clear margin inside the outline
+		float pa = pattern(uPatA, q, d0, hw, aa);
+		float pb = pattern(uPatB, q, d0, hw, aa);
+		rest = max(rest, mix(pa, pb, uMix) * inner * 0.85);
 	}
 	return vec2(front, rest);
 }
 
 void main() {
 	vec2 fc = gl_FragCoord.xy;
-	if (uPixel > 1.5) fc = (floor(fc / uPixel) + 0.5) * uPixel;
+	bool pixel = uPixel > 1.5;
+	if (pixel) fc = (floor(fc / uPixel) + 0.5) * uPixel;
+	float hw = 0.55 * uPx;
+	float aa = pixel ? 0.2 : 1.0;
 	vec2 p = stretch(fc - uCenter);
 
-	// ---- 1. segment grid ----
-	float cellSize = (uPixel > 1.5 ? uPixel * 2.0 : 11.0 * uPx);
-	vec2 cell = floor(fc / cellSize);
-	vec2 f = fract(fc / cellSize);
-	float dc = scene(stretch((cell + 0.5) * cellSize - uCenter));
-	float inside = 1.0 - smoothstep(-cellSize, cellSize * 1.5, dc);
-	float gridFade = smoothstep(uGridFrom, uGridFrom + uRes.x * 0.25, fc.x);
-	float h = hash(cell);
-	float tick = floor(uTime * (1.5 + h * 5.0) + h * 13.0);
-	float r = hash(cell + tick * 0.1373);
-	float major = (mod(cell.x, 8.0) < 0.5 || mod(cell.y, 8.0) < 0.5) ? 0.22 : 0.0;
-	float prob = (mix(0.05, 0.55, inside) + major * (1.0 - inside)) * gridFade;
-	float glyph = 0.0;
-	if (r < prob) {
-		float g = floor(hash(cell * 1.71 + 3.1) * 4.0);
-		vec2 c = f - 0.5;
-		if (g < 0.5) glyph = step(abs(c.x), 0.07) * step(abs(c.y), 0.34);                       // |
-		else if (g < 1.5) glyph = step(length(vec2(c.x, abs(c.y) - 0.2)), 0.1);                // :
-		else if (g < 2.5) glyph = step(max(abs(c.x), abs(c.y)), 0.26) * (1.0 - step(max(abs(c.x), abs(c.y)), 0.14)); // ▯
-		else glyph = step(abs(c.y), 0.07) * step(abs(c.x), 0.28);                               // –
-		if (uPixel > 1.5) glyph = 1.0;
-	}
-	float gridA = glyph * mix(0.3, 0.75, inside);
-	vec3 gridC = mix(uGrid, uGridIn, inside);
-
-	// ---- 2 + 3. echo outlines, channel-split by velocity ----
+	// ---- figure, channel-split by velocity ----
 	vec2 split = clamp(uVel * 0.35, vec2(-14.0 * uPx), vec2(14.0 * uPx));
-	vec2 eR = echoes(p + split);
-	vec2 eG = echoes(p);
-	vec2 eB = echoes(p - split);
+	vec2 eR = figure(p + split, hw, aa);
+	vec2 eG = figure(p, hw, aa);
+	vec2 eB = figure(p - split, hw, aa);
 	vec3 front = vec3(eR.x, eG.x, eB.x);
 	vec3 rest = vec3(eR.y, eG.y, eB.y);
 	vec3 lineA = front + rest * (1.0 - front);
-	vec3 lineC = uFront * front + uLine * rest * (1.0 - front);  // premultiplied, per channel
+	vec3 lineC = uFront * front + uLine * rest * (1.0 - front);
 
-	float a = max(max(lineA.r, lineA.g), lineA.b);
-	vec3 col = lineC + gridC * gridA * (1.0 - lineA);
-	a = a + gridA * (1.0 - a);
-	gl_FragColor = vec4(col, a);
+	// ---- field grid (outside the figure): ticks whose visibility drifts with value noise ----
+	vec2 cs = (pixel ? vec2(uPixel * 3.0) : vec2(9.0, 13.0) * uPx);
+	vec2 cell = floor(fc / cs);
+	vec2 f = fract(fc / cs) - 0.5;
+	float n = vnoise(cell * vec2(0.11, 0.07) + vec2(uTime * 0.05, -uTime * 0.18));
+	float jitter = hash(cell + floor(uTime * 0.7 + hash(cell) * 5.0)) * 0.12;
+	float on = smoothstep(0.62, 0.78, n + jitter);
+	float major = (mod(cell.x, 8.0) < 0.5 || mod(cell.y, 6.0) < 0.5) ? 1.0 : 0.0;
+	// 8-bit: one pixel per cell (the centre one), otherwise a short vertical tick
+	float tick = pixel ? step(max(abs(f.x), abs(f.y)), 0.2) : step(abs(f.x + 0.3), 0.06) * step(abs(f.y), 0.3);
+	float dot0 = pixel ? 0.0 : step(length(f * cs), 0.75 * uPx);
+	float fieldFade = smoothstep(uGridFrom, uGridFrom + uRes.x * 0.25, fc.x);
+	float outside = smoothstep(0.0, 24.0 * uPx, scene(p));
+	float gridA = max(tick * on * 0.5, dot0 * major * 0.28) * fieldFade * outside;
+
+	float alpha = max(max(lineA.r, lineA.g), lineA.b);
+	vec3 col = lineC + uGrid * gridA * (1.0 - alpha);
+	alpha = alpha + gridA * (1.0 - alpha);
+	gl_FragColor = vec4(col, alpha);
 }
 `;
 
@@ -212,7 +304,6 @@ interface Palette {
 	line: number[];
 	front: number[];
 	grid: number[];
-	gridIn: number[];
 	set: ShapeSet;
 }
 
@@ -232,13 +323,13 @@ function readPalette(probe: CanvasRenderingContext2D): Palette {
 	return {
 		line: v('--shape'),
 		front: v('--accent'),
-		grid: v('--fg-3'),
-		gridIn: v('--shape'),
+		grid: v('--fg-2'),
 		set: themas.find((t) => t.id === id)?.shapes ?? 'geo',
 	};
 }
 
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
 export function initHeroSdf() {
 	const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-sdf]');
@@ -267,18 +358,13 @@ export function initHeroSdf() {
 	const aPos = gl.getAttribLocation(prog, 'aPos');
 	gl.enableVertexAttribArray(aPos);
 	gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-	const U = (n: string) => gl.getUniformLocation(prog, n);
-	const u = {
-		res: U('uRes'), time: U('uTime'), center: U('uCenter'), r: U('uR'), rot: U('uRot'), a: U('uA'), b: U('uB'),
-		mix: U('uMix'), spacing: U('uSpacing'), dir: U('uDir'), vel: U('uVel'), px: U('uPx'), pixel: U('uPixel'),
-		gridFrom: U('uGridFrom'), line: U('uLine'), front: U('uFront'), grid: U('uGrid'), gridIn: U('uGridIn'),
-	};
+	const names = ['uRes', 'uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uTwist', 'uPatA', 'uPatB', 'uGap', 'uSpacing', 'uDir', 'uVel', 'uPx', 'uPixel', 'uGridFrom', 'uLine', 'uFront', 'uGrid'] as const;
+	const u = Object.fromEntries(names.map((n) => [n, gl.getUniformLocation(prog, n)])) as Record<(typeof names)[number], WebGLUniformLocation | null>;
 
 	const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 	const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!;
 	let palette = readPalette(probe);
-	let playlist = PLAYLISTS[palette.set].map((n) => SHAPES[n]);
-	let index = 0;
+	let playlist = PLAYLISTS[palette.set];
 
 	// size: buffer follows the element, capped so large/hi-dpi screens stay cheap
 	let dpr = 1;
@@ -299,7 +385,7 @@ export function initHeroSdf() {
 		if (still) draw(0, 0);
 	}).observe(canvas);
 
-	// pointer spring: the shape leans toward the pointer; its velocity feeds stretch + channel split
+	// pointer spring: the figure leans toward the pointer; its velocity feeds stretch + channel split
 	const pointer = { x: 0, y: 0, active: false };
 	window.addEventListener('pointermove', (e) => {
 		const rect = canvas.getBoundingClientRect();
@@ -310,61 +396,62 @@ export function initHeroSdf() {
 	const lean = { x: 0, y: 0, vx: 0, vy: 0 };
 
 	const start = performance.now() / 1000;
-	// echo direction per morph: around "downward" (Ahlin), turning only while the stack is unfolded
-	const angleFor = (k: number) => -Math.PI / 2 + Math.sin(k * 1.7) * 1.1;
+	// echo direction per morph: toward the upper left (the figure sits in the lower-right corner), turning only
+	// while the stack is unfolded
+	const angleFor = (k: number) => Math.PI * 0.8 + Math.sin(k * 1.7) * 0.55;
 
 	// t: seconds since start, dt: seconds since the previous frame
 	const draw = (t: number, dt: number) => {
-
-		// timeline: hold, then unfold → morph → fold
 		const cycle = HOLD + MORPH;
-		const k = Math.floor(t / cycle);
-		const local = t - k * cycle;
-		const m = still ? 0 : Math.max(0, (local - HOLD) / MORPH); // 0..1 during the morph
-		index = still ? 0 : k;
-		const from = playlist[index % playlist.length];
-		const to = playlist[(index + 1) % playlist.length];
-		const bump = Math.sin(Math.PI * m); // 0 → 1 → 0
-		const mixT = ease(Math.min(1, Math.max(0, (m - 0.18) / 0.64)));
-		const angle = angleFor(index) + (angleFor(index + 1) - angleFor(index)) * ease(m);
+		const k = still ? 0 : Math.floor(t / cycle);
+		const m = still ? 0 : clamp01((t - k * cycle - HOLD) / MORPH); // 0..1 during the morph
+		const A = playlist[k % playlist.length];
+		const B = playlist[(k + 1) % playlist.length];
+		const bump = Math.sin(Math.PI * m);
+		const mixT = ease(clamp01((m - 0.18) / 0.64));
+		const angle = angleFor(k) + (angleFor(k + 1) - angleFor(k)) * ease(m);
 		const dir = [Math.cos(angle), Math.sin(angle)];
 
-		// centre: lower right, part of it off-screen; a slow drift + the pointer lean
-		const R = Math.min(H * 0.34, W * 0.28);
-		const cx = W * 0.73 + Math.sin(t * 0.23) * 14 * dpr;
-		const cy = H * 0.45 + Math.cos(t * 0.31) * 10 * dpr;
+		// the same footprint as the old SVG decoration: clamp(320px, min(70vh, 44vw), 640px),
+		// pushed 30% past the right and bottom edges of the stage
+		const vh = window.innerHeight;
+		const vw = window.innerWidth;
+		const hs = Math.min(640, Math.max(320, Math.min(vh * 0.7, vw * 0.44))) * dpr;
+		const R = hs * 0.5;
+		const cx = W - hs * 0.2 + Math.sin(t * 0.23) * 10 * dpr;
+		const cy = hs * 0.2 + Math.cos(t * 0.31) * 8 * dpr;
 		if (!still) {
-			const tx = pointer.active ? Math.max(-1, Math.min(1, (pointer.x - cx) / (W * 0.5))) * 46 * dpr : 0;
-			const ty = pointer.active ? Math.max(-1, Math.min(1, (pointer.y - cy) / (H * 0.5))) * 30 * dpr : 0;
-			const kS = 90;
-			const dS = 11;
-			lean.vx += ((tx - lean.x) * kS - lean.vx * dS) * dt;
-			lean.vy += ((ty - lean.y) * kS - lean.vy * dS) * dt;
+			const tx = pointer.active ? Math.max(-1, Math.min(1, (pointer.x - cx) / (W * 0.5))) * 40 * dpr : 0;
+			const ty = pointer.active ? Math.max(-1, Math.min(1, (pointer.y - cy) / (H * 0.5))) * 28 * dpr : 0;
+			lean.vx += ((tx - lean.x) * 90 - lean.vx * 11) * dt;
+			lean.vy += ((ty - lean.y) * 90 - lean.vy * 11) * dt;
 			lean.x += lean.vx * dt;
 			lean.y += lean.vy * dt;
 		}
-		// velocity in px/frame-ish units: pointer spring + the morph impulse along the unfold direction
-		const morphV = Math.cos(Math.PI * m) * (m > 0 && m < 1 ? 1 : 0) * 26 * dpr;
+		const morphV = m > 0 && m < 1 ? Math.cos(Math.PI * m) * 24 * dpr : 0;
 		const vel = [lean.vx * 0.05 + dir[0] * morphV, lean.vy * 0.05 + dir[1] * morphV];
 
-		gl.uniform2f(u.res, W, H);
-		gl.uniform1f(u.time, still ? 0 : t);
-		gl.uniform2f(u.center, cx + lean.x, cy + lean.y);
-		gl.uniform1f(u.r, R);
-		gl.uniform1f(u.rot, still ? 0 : t * 0.06 + ease(m) * 0.5 + index * 0.5);
-		gl.uniform1f(u.a, from);
-		gl.uniform1f(u.b, to);
-		gl.uniform1f(u.mix, mixT);
-		gl.uniform1f(u.spacing, (3 + bump * 9) * dpr);
-		gl.uniform2f(u.dir, dir[0], dir[1]);
-		gl.uniform2f(u.vel, vel[0], vel[1]);
-		gl.uniform1f(u.px, dpr);
-		gl.uniform1f(u.pixel, palette.set === 'pixel' ? Math.round(4 * dpr) : 1);
-		gl.uniform1f(u.gridFrom, W * 0.34);
-		gl.uniform3fv(u.line, palette.line);
-		gl.uniform3fv(u.front, palette.front);
-		gl.uniform3fv(u.grid, palette.grid);
-		gl.uniform3fv(u.gridIn, palette.gridIn);
+		gl.uniform2f(u.uRes, W, H);
+		gl.uniform1f(u.uTime, still ? 0 : t);
+		gl.uniform2f(u.uCenter, cx + lean.x, cy + lean.y);
+		gl.uniform1f(u.uR, R);
+		gl.uniform1f(u.uRot, still ? 0 : t * 0.05 + ease(m) * 0.6 + k * 0.6);
+		gl.uniform1f(u.uA, BASE[A.base]);
+		gl.uniform1f(u.uB, BASE[B.base]);
+		gl.uniform1f(u.uMix, mixT);
+		gl.uniform1f(u.uTwist, A.twist + (B.twist - A.twist) * mixT);
+		gl.uniform1f(u.uPatA, PATTERN[A.pattern]);
+		gl.uniform1f(u.uPatB, PATTERN[B.pattern]);
+		gl.uniform1f(u.uGap, (palette.set === 'pixel' ? 16 : 13) * dpr);
+		gl.uniform1f(u.uSpacing, (3 + bump * 10) * dpr);
+		gl.uniform2f(u.uDir, dir[0], dir[1]);
+		gl.uniform2f(u.uVel, vel[0], vel[1]);
+		gl.uniform1f(u.uPx, dpr);
+		gl.uniform1f(u.uPixel, palette.set === 'pixel' ? Math.round(4 * dpr) : 1);
+		gl.uniform1f(u.uGridFrom, W * 0.34);
+		gl.uniform3fv(u.uLine, palette.line);
+		gl.uniform3fv(u.uFront, palette.front);
+		gl.uniform3fv(u.uGrid, palette.grid);
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 		gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -372,12 +459,15 @@ export function initHeroSdf() {
 
 	document.addEventListener('thema-change', () => {
 		palette = readPalette(probe);
-		playlist = PLAYLISTS[palette.set].map((n) => SHAPES[n]);
+		playlist = PLAYLISTS[palette.set];
 		if (still) draw(0, 0);
 	});
 
 	// test hook: render a given moment without the animation loop (hidden tabs pause rAF)
-	(canvas as HTMLCanvasElement & { renderAt?: (t: number) => void }).renderAt = (t: number) => draw(t, 1 / 60);
+	(canvas as HTMLCanvasElement & { renderAt?: (t: number) => string }).renderAt = (t: number) => {
+		draw(t, 1 / 60);
+		return canvas.toDataURL();
+	};
 
 	if (still) {
 		draw(0, 0);
