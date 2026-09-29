@@ -372,8 +372,9 @@ void main() {
 	vec2 fc = gl_FragCoord.xy;
 	bool pixel = uPixel > 1.5;
 	if (pixel) fc = (floor(fc / uPixel) + 0.5) * uPixel;
-	float hw = 0.6 * uPx;
-	float aa = pixel ? 0.2 : 1.0;
+	// 8-bit: every block the line passes through lights up, so lines stay one block thick and unbroken
+	float hw = pixel ? 0.55 * uPixel : 0.6 * uPx;
+	float aa = pixel ? 0.0 : 1.0;
 	float fill;
 	float d = scene(uA, uSeedA, fc, fill);
 	if (uMix > 0.001) { // blending the two fields is the morph
@@ -411,11 +412,22 @@ float ink(vec2 fc) {
 // the figure plus its echo stack, seen from one sample point
 float stack(vec2 fc) {
 	float a = ink(fc);
+	bool pixel = uPixel > 1.5;
 	for (int i = 1; i < ECHOES; i++) {
 		float fi = float(i);
-		a = max(a, ink(fc - uDir * fi * uSpacing) * 0.8 * pow(1.0 - fi / float(ECHOES), 1.6));
+		vec2 off = uDir * fi * uSpacing;
+		if (pixel) off = floor(off / uPixel + 0.5) * uPixel; // whole blocks, so echoes stay on the grid
+		a = max(a, ink(fc - off) * 0.8 * pow(1.0 - fi / float(ECHOES), 1.6));
 	}
 	return a;
+}
+// 4×4 ordered-dither threshold (0..1) for a block
+float bayer4(vec2 c) {
+	c = mod(c, 4.0);
+	float b2 = mod(c.x, 2.0) * 2.0 + mod(c.y, 2.0) * 3.0 - 4.0 * mod(c.x, 2.0) * mod(c.y, 2.0);   // 0 2 3 1
+	vec2 h = floor(c / 2.0);
+	float b1 = h.x * 2.0 + h.y * 3.0 - 4.0 * h.x * h.y;
+	return (b2 * 4.0 + b1 + 0.5) / 16.0;
 }
 
 void main() {
@@ -426,11 +438,17 @@ void main() {
 	// figure + echoes, channel-split by velocity (only paid for while something moves)
 	float g = stack(fc);
 	vec3 lineA = vec3(g);
-	if (dot(uSplit, uSplit) > 0.25) lineA = vec3(stack(fc + uSplit), g, stack(fc - uSplit));
+	if (!pixel && dot(uSplit, uSplit) > 0.25) lineA = vec3(stack(fc + uSplit), g, stack(fc - uSplit));
 
 	// translucent planes under the lines
 	vec2 uv = fc / uRes;
 	float fillA = texture2D(uFig, uv).g * 0.14;
+	if (pixel) {
+		// 8-bit: no partial alpha — fading echoes and planes become an ordered dither in the line colour
+		float th = bayer4(floor(gl_FragCoord.xy / uPixel));
+		lineA = vec3(step(th, g * g));
+		fillA = step(th, fillA * 2.5) * 0.6;
+	}
 
 	// echoes can reach back past the menu edge: fade them there too
 	lineA *= smoothstep(uMenuX, uMenuX + 80.0 * uPx, fc.x);
@@ -680,7 +698,7 @@ export function initHeroSdf() {
 		gl.uniform1i(uc.uFig, 0);
 		gl.uniform2f(uc.uRes, W, H);
 		gl.uniform1f(uc.uTime, still ? 0 : t);
-		gl.uniform1f(uc.uSpacing, (3 + bump * 10) * dpr);
+		gl.uniform1f(uc.uSpacing, Math.max(pixelSize, (3 + bump * 10) * dpr));
 		gl.uniform2f(uc.uDir, dir[0], dir[1]);
 		gl.uniform2f(uc.uSplit, split[0], split[1]);
 		gl.uniform1f(uc.uPx, dpr);
