@@ -1,17 +1,16 @@
 // Landing-page decoration: line figures drawn as distance fields, in two passes.
-//   1. glyph grid    — a fine lattice of tiny marks ( | ▌ ▯ [ : ) in blocks, seen only through soft noise blots
-//                      that drift across the right side; the marks flicker in and out    (after Stefan Vitasović)
-//   2. the scene     — alternates between three kinds of composition:
-//                        · one large line figure (square spiral, wireframe globe, halftone sphere, roses, orbits,
-//                          ray burst, hexagon spiral, ripples), cut off by the lower-right edges
+//   1. the scene     — alternates between three kinds of composition:
+//                        · one large line figure (square / triangle / hexagon spirals, pentagram web, a rotating
+//                          4D hypercube, wireframe globe, spinning dot sphere, orbits), cut off by the lower-right edges
 //                        · "overlap": translucent planes, a circle, long lines and an arc passing through each other
 //                        · "scatter": a dozen small figures placed at random, drifting
 //                      one scene morphs into the next by blending their distance fields; the lines are repeated as
 //                      a stack of offset, fading echoes that unfold during the morph and fold back when it settles
 //                                                                                              (after Tobias Ahlin)
-//   3. velocity      — the figure stretches along its velocity and R/G/B split apart; velocity comes from the morph
+//   2. velocity      — the figure stretches along its velocity and R/G/B split apart; velocity comes from the morph
 //                      impulse and a spring toward the pointer                                (after Roman Jean-Elie)
-// Colours come from the Thema tokens; the 8-bit theme renders on a coarse pixel grid. No libraries.
+// Nothing is drawn left of the menu. Colours come from the Thema tokens; the 8-bit theme renders on a coarse pixel
+// grid. No libraries.
 //
 // Performance: the distance field is evaluated once per pixel (pass 1 → texture). Echoes are translated copies and the
 // channel split is an offset, so pass 2 builds both from texture reads instead of re-evaluating the field — this keeps
@@ -21,14 +20,14 @@
 
 import { themas, type ShapeSet } from '../../portfolio/themes';
 
-const FIGURES = { squares: 0, globe: 1, halftone: 2, rose: 3, orbits: 4, burst: 5, hexes: 6, ripple: 7, overlap: 8, scatter: 9 } as const;
+const FIGURES = { squares: 0, globe: 1, dotsphere: 2, tris: 3, orbits: 4, pentagram: 5, hexes: 6, hypercube: 7, overlap: 8, scatter: 9 } as const;
 type FigureName = keyof typeof FIGURES;
 
 const PLAYLISTS: Record<ShapeSet, FigureName[]> = {
-	geo: ['squares', 'overlap', 'globe', 'scatter', 'halftone', 'overlap', 'rose', 'scatter', 'hexes', 'burst', 'overlap', 'ripple', 'scatter'],
-	space: ['orbits', 'scatter', 'globe', 'overlap', 'burst', 'scatter', 'halftone', 'overlap', 'ripple'],
-	candy: ['rose', 'scatter', 'ripple', 'overlap', 'halftone', 'scatter', 'hexes', 'overlap', 'orbits'],
-	pixel: ['squares', 'scatter', 'burst', 'overlap', 'globe', 'scatter', 'halftone', 'overlap', 'hexes'],
+	geo: ['squares', 'overlap', 'globe', 'scatter', 'dotsphere', 'overlap', 'tris', 'scatter', 'hexes', 'pentagram', 'overlap', 'hypercube', 'scatter'],
+	space: ['orbits', 'scatter', 'globe', 'overlap', 'hypercube', 'scatter', 'dotsphere', 'overlap', 'pentagram'],
+	candy: ['tris', 'scatter', 'pentagram', 'overlap', 'dotsphere', 'scatter', 'hexes', 'overlap', 'orbits'],
+	pixel: ['squares', 'scatter', 'tris', 'overlap', 'globe', 'scatter', 'dotsphere', 'overlap', 'hexes'],
 };
 
 const HOLD = 3.2; // s a figure rests
@@ -68,6 +67,8 @@ uniform float uU;         // px per composition unit
 uniform vec2 uVel;        // px, stretch
 uniform float uPx;        // buffer px per CSS px
 uniform float uPixel;     // >1: pixelated (8-bit)
+uniform float uMenuX;     // px: nothing is drawn left of this (the menu)
+uniform vec4 uEdges[32];  // hypercube edges, projected on the CPU (figure units)
 
 // ---- line figures: distance to the ink in figure units (radius ≈ 1), <= 0 on the ink ----
 float sdBox(vec2 p, vec2 b) { vec2 q = abs(p) - b; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0); }
@@ -85,15 +86,6 @@ float ellipse(vec2 p, vec2 ab) {
 	float k1 = length(p / (ab * ab));
 	return abs(k0 * (k0 - 1.0) / max(k1, 0.0001));
 }
-// rhodonea r = R|cos(k a)|, same first-order distance
-float rose(vec2 p, float k, float R, float ph) {
-	float r = max(length(p), 0.001);
-	float a = atan(p.y, p.x) + ph;
-	float c = cos(k * a);
-	float g = R * k * sin(k * a) * sign(c) / r;
-	return abs(r - R * abs(c)) / sqrt(1.0 + g * g);
-}
-
 float figSquares(vec2 p) { // nested squares, each turned 6° and 8.5% smaller
 	float d = 1e3;
 	float s = 0.8;
@@ -125,17 +117,73 @@ float figGlobe(vec2 p) { // wireframe globe: outline, 7 latitudes, 6 turning lon
 	}
 	return d;
 }
-float figHalftone(vec2 p) { // dots whose size follows lambert shading, light from the upper left
-	float g = 0.072;
-	vec2 c = (floor(p / g) + 0.5) * g;
-	float r2 = dot(c, c) / 0.9025;
-	if (r2 > 1.0) return 1.0;
-	vec3 n = vec3(c / 0.95, sqrt(1.0 - r2));
-	float lam = clamp(dot(n, normalize(vec3(-0.5, 0.55, 0.65))), 0.0, 1.0);
-	return length(p - c) - g * 0.5 * (0.1 + 0.9 * pow(lam, 1.2));
+float sdTri(vec2 p, float r) {
+	const float k = 1.7320508;
+	p.x = abs(p.x) - r;
+	p.y = p.y + r / k;
+	if (p.x + k * p.y > 0.0) p = vec2(p.x - k * p.y, -k * p.x - p.y) / 2.0;
+	p.x -= clamp(p.x, -2.0 * r, 0.0);
+	return -length(p) * sign(p.y);
 }
-float figRose(vec2 p) {
-	return min(rose(p, 3.0, 0.95, uTime * 0.08), min(rose(p, 5.0, 0.6, -uTime * 0.12), abs(length(p) - 0.95)));
+float sdPentagon(vec2 p, float r) {
+	const vec3 k = vec3(0.809016994, 0.587785252, 0.726542528);
+	p.x = abs(p.x);
+	p -= 2.0 * min(dot(vec2(-k.x, k.y), p), 0.0) * vec2(-k.x, k.y);
+	p -= 2.0 * min(dot(vec2(k.x, k.y), p), 0.0) * vec2(k.x, k.y);
+	p -= vec2(clamp(p.x, -r * k.z, r * k.z), r);
+	return length(p) * sign(p.y);
+}
+float seg(vec2 p, vec2 a, vec2 b) {
+	vec2 pa = p - a, ba = b - a;
+	return length(pa - ba * clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0));
+}
+
+float figTris(vec2 p) { // nested triangles, each turned 7° and 10% smaller
+	float d = 1e3;
+	float s = 0.98;
+	for (int i = 0; i < 16; i++) {
+		d = min(d, abs(sdTri(rot(float(i) * 0.12) * p, s)));
+		s *= 0.9;
+	}
+	return d;
+}
+float figPentagram(vec2 p) { // pentagon + star, the inner (inverted) pentagon holds the next star — three levels
+	float d = 1e3;
+	float R = 0.98;
+	for (int l = 0; l < 3; l++) {
+		vec2 q = rot(float(l) * 3.14159265) * p;
+		d = min(d, abs(sdPentagon(q, R * 0.809016994)));
+		for (int j = 0; j < 5; j++) {
+			float a0 = float(j) * 1.25663706;
+			float a1 = float(j + 2) * 1.25663706;
+			d = min(d, seg(q, R * vec2(sin(a0), cos(a0)), R * vec2(sin(a1), cos(a1))));
+		}
+		R *= 0.381966;
+	}
+	return d;
+}
+float figHypercube(vec2 p) { // 32 edges of a rotating 4D cube, projected on the CPU
+	float d = 1e3;
+	for (int i = 0; i < 32; i++) d = min(d, seg(p, uEdges[i].xy, uEdges[i].zw));
+	return d;
+}
+float figDotSphere(vec2 p) { // dots on a tilted, spinning sphere: foreshortening near the rim sells the depth
+	float R = 0.95;
+	float r2 = dot(p, p) / (R * R);
+	float rim = abs(length(p) - R);
+	if (r2 >= 1.0) return rim;
+	vec3 n = vec3(p / R, sqrt(1.0 - r2));
+	n.yz = rot(-0.4) * n.yz;          // tilt the axis toward the viewer
+	n.xz = rot(uTime * 0.35) * n.xz;  // spin
+	float lat = asin(clamp(n.y, -1.0, 1.0));
+	float lon = atan(n.x, n.z);
+	float rows = 14.0;
+	float latc = (floor((lat / 3.14159265 + 0.5) * rows) + 0.5) / rows * 3.14159265 - 1.5707963;
+	float cols = max(1.0, floor(30.0 * cos(latc)));
+	float lonc = (floor((lon / 6.28318531 + 0.5) * cols) + 0.5) / cols * 6.28318531 - 3.14159265;
+	vec3 c = vec3(cos(latc) * sin(lonc), sin(latc), cos(latc) * cos(lonc));
+	float ang = acos(clamp(dot(n, c), -1.0, 1.0));
+	return min((ang - 0.055) * R, rim);
 }
 float figOrbits(vec2 p) { // planet + three tilted orbits with satellites
 	float d = abs(length(p) - 0.3);
@@ -147,31 +195,15 @@ float figOrbits(vec2 p) { // planet + three tilted orbits with satellites
 	}
 	return d;
 }
-float figBurst(vec2 p) { // 48 rays of varying length around a small ring
-	float a = atan(p.y, p.x);
-	float cell = floor(a / TAU * 48.0 + 0.5);
-	float ca = cell / 48.0 * TAU;
-	vec2 dir = vec2(cos(ca), sin(ca));
-	float len = 0.45 + 0.5 * hash(vec2(cell, 3.0));
-	float d = length(p - dir * clamp(dot(p, dir), 0.2, len));
-	return min(d, abs(length(p) - 0.14));
-}
-float figRipple(vec2 p) { // two interfering sets of rings inside a disc
-	float r = length(p);
-	vec2 o = vec2(0.2 * cos(uTime * 0.3), 0.14 * sin(uTime * 0.37));
-	float g = 0.085;
-	float d = min(abs(fract(r / g - uTime * 0.05) - 0.5) * g, abs(fract(length(p - o) / (g * 0.93)) - 0.5) * g * 0.93);
-	return min(max(d, r - 0.95), abs(r - 0.95));
-}
 float figure(vec2 p, float id) {
 	if (id < 0.5) return figSquares(p);
 	if (id < 1.5) return figGlobe(p);
-	if (id < 2.5) return figHalftone(p);
-	if (id < 3.5) return figRose(p);
+	if (id < 2.5) return figDotSphere(p);
+	if (id < 3.5) return figTris(p);
 	if (id < 4.5) return figOrbits(p);
-	if (id < 5.5) return figBurst(p);
+	if (id < 5.5) return figPentagram(p);
 	if (id < 6.5) return figHexes(p);
-	return figRipple(p);
+	return figHypercube(p);
 }
 
 vec2 stretch(vec2 p) {
@@ -192,8 +224,8 @@ float inside(float d, float soft) { return 1.0 - smoothstep(-soft, soft, d); }
 float compOverlap(vec2 p, float seed, float soft, out float fill) {
 	float t = uTime;
 	float h = hash(vec2(seed, 7.0));
-	p.x *= h > 0.5 ? -1.0 : 1.0;                     // mirrored on every other appearance
-	p = rot((h - 0.5) * 0.5) * p;
+	p.y *= h > 0.5 ? -1.0 : 1.0;                     // flipped vertically on some appearances (never sideways,
+	p = rot((h - 0.5) * 0.24) * p;                   // so the left end stays clear of the menu)
 	vec2 c1 = vec2(-0.38 + 0.07 * sin(t * 0.37), 0.18);
 	float r1 = sdBox(rot(0.1 + 0.05 * sin(t * 0.29)) * (p - c1), vec2(0.64, 0.38));
 	vec2 c2 = vec2(0.3, -0.06 + 0.07 * cos(t * 0.33));
@@ -204,7 +236,7 @@ float compOverlap(vec2 p, float seed, float soft, out float fill) {
 	d = min(d, abs(length(p - cc) - 0.2));
 	d = min(d, sdSeg(p, cc + vec2(0.2, 0.0), vec2(1.05, 0.3)));
 	d = min(d, sdSeg(p, vec2(1.05, 0.3), vec2(1.55, -0.28)));
-	d = min(d, sdSeg(p, vec2(-1.35, -0.52), vec2(1.55, -0.74 + 0.06 * sin(t * 0.6))));
+	d = min(d, sdSeg(p, vec2(-1.0, -0.52), vec2(1.6, -0.74 + 0.06 * sin(t * 0.6))));
 	d = min(d, sdSeg(p, vec2(-0.25, -0.95), vec2(0.45, 1.05)));
 	float arc = abs(length(p - vec2(0.25, -0.35)) - 1.12);
 	d = min(d, p.y > 0.5 ? arc : 1e3);                // only the upper stretch of the arc
@@ -264,7 +296,8 @@ void main() {
 		d = mix(d, dB, uMix);
 		fill = mix(fill, fillB, uMix);
 	}
-	gl_FragColor = vec4(lineAt(max(d, 0.0), hw, aa), fill, 0.0, 1.0);
+	float keep = smoothstep(uMenuX, uMenuX + 80.0 * uPx, fc.x);
+	gl_FragColor = vec4(lineAt(max(d, 0.0), hw, aa) * keep, fill * keep, 0.0, 1.0);
 }
 `;
 
@@ -278,11 +311,9 @@ uniform vec2 uDir;        // echo direction
 uniform vec2 uSplit;      // px, R/B channel offset
 uniform float uPx;
 uniform float uPixel;
-uniform float uGridFrom;  // x where the glyph grid starts, keeps the menu side quiet
+uniform float uMenuX;     // px: nothing is drawn left of this (the menu)
 uniform vec3 uLine;       // figure + echoes
 uniform vec3 uFill;       // translucent planes
-uniform vec3 uGrid;       // glyph grid
-uniform float uGridOn;    // 0 hides the grid (preview: ?grid=0)
 
 #define ECHOES ${ECHOES}
 
@@ -301,19 +332,6 @@ float stack(vec2 fc) {
 	return a;
 }
 
-// one glyph in a cell (f in 0..1): thin bar, thick bar, box, bracket or colon
-float glyph(vec2 f, float g) {
-	float bar = step(abs(f.y - 0.5), 0.36);
-	if (g < 0.3) return step(abs(f.x - 0.5), 0.1) * bar;
-	if (g < 0.5) return step(abs(f.x - 0.5), 0.26) * bar;
-	if (g < 0.7) {
-		vec2 c = abs(f - 0.5);
-		return step(max(c.x / 0.34, c.y / 0.4), 1.0) * (1.0 - step(max(c.x / 0.16, c.y / 0.26), 1.0));
-	}
-	if (g < 0.85) return max(step(abs(f.x - 0.3), 0.09) * bar, step(abs(f.y - 0.5), 0.36) * step(abs(abs(f.y - 0.5) - 0.32), 0.05) * step(f.x, 0.62) * step(0.22, f.x));
-	return step(abs(f.x - 0.5), 0.12) * step(abs(abs(f.y - 0.5) - 0.2), 0.1);
-}
-
 void main() {
 	vec2 fc = gl_FragCoord.xy;
 	bool pixel = uPixel > 1.5;
@@ -324,31 +342,15 @@ void main() {
 	vec3 lineA = vec3(g);
 	if (dot(uSplit, uSplit) > 0.25) lineA = vec3(stack(fc + uSplit), g, stack(fc - uSplit));
 
-	// glyph grid: blocks of fine cells, visible only through soft noise blots that drift; marks flicker
-	float t = uTime;
-	vec2 cs = pixel ? vec2(uPixel * 2.0) : vec2(6.0, 9.0) * uPx;
-	vec2 cell = floor(fc / cs);
-	vec2 f = fract(fc / cs);
-	vec2 inBlock = mod(cell, vec2(22.0, 9.0));
-	float open = step(inBlock.x, 19.5) * step(inBlock.y, 7.5);          // gutters between blocks
-	vec2 cc = (cell + 0.5) * cs / uPx;                                    // cell centre in CSS px
-	float n = vnoise(cc / 190.0 + vec2(t * 0.035, -t * 0.02)) * 0.7 + vnoise(cc / 70.0 - vec2(t * 0.05, 0.0)) * 0.3;
-	float blot = smoothstep(0.54, 0.7, n);                                // the mask: soft blobs of grid
-	float flick = hash(cell + floor(t * 7.0 + hash(cell) * 9.0));
-	float on = step(flick, 0.25 + 0.55 * blot) * open * step(0.02, blot);
-	float mark = pixel ? 1.0 : glyph(f, hash(cell * 1.37 + 5.1));
-	float fieldFade = smoothstep(uGridFrom, uGridFrom + uRes.x * 0.22, fc.x);
-	float gridA = on * mark * blot * 0.5 * fieldFade * uGridOn;
-
 	// translucent planes under the lines
 	vec2 uv = fc / uRes;
 	float fillA = texture2D(uFig, uv).g * 0.14;
 
+	// echoes can reach back past the menu edge: fade them there too
+	lineA *= smoothstep(uMenuX, uMenuX + 80.0 * uPx, fc.x);
 	float alpha = max(max(lineA.r, lineA.g), lineA.b);
 	vec3 col = uLine * lineA + uFill * fillA * (1.0 - alpha);
 	alpha = alpha + fillA * (1.0 - alpha);
-	col += uGrid * gridA * (1.0 - alpha);
-	alpha = alpha + gridA * (1.0 - alpha);
 	gl_FragColor = vec4(col, alpha);
 }
 `;
@@ -356,7 +358,6 @@ void main() {
 interface Palette {
 	line: number[];
 	fill: number[];
-	grid: number[];
 	set: ShapeSet;
 }
 
@@ -376,7 +377,6 @@ function readPalette(probe: CanvasRenderingContext2D): Palette {
 	return {
 		line: v('--shape'),
 		fill: v('--shape'),
-		grid: v('--fg-2'),
 		set: themas.find((t) => t.id === id)?.shapes ?? 'geo',
 	};
 }
@@ -386,6 +386,33 @@ const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
 
 type Uniforms<T extends string> = Record<T, WebGLUniformLocation | null>;
+
+/** The 32 edges of a 4D cube, turned in the XW and YZ planes and projected 4D → 3D → 2D (figure units). */
+const edgeBuf = new Float32Array(32 * 4);
+function hypercube(t: number) {
+	const a = t * 0.45;
+	const b = t * 0.3;
+	const pts: number[][] = [];
+	for (let i = 0; i < 16; i++) {
+		let [x, y, z, w] = [i & 1, i & 2, i & 4, i & 8].map((v) => (v ? 1 : -1));
+		[x, w] = [x * Math.cos(a) - w * Math.sin(a), x * Math.sin(a) + w * Math.cos(a)];
+		[y, z] = [y * Math.cos(b) - z * Math.sin(b), y * Math.sin(b) + z * Math.cos(b)];
+		const s4 = 1 / (2.6 - w);
+		[x, y, z] = [x * s4, y * s4, z * s4];
+		[x, z] = [x * Math.cos(0.6) - z * Math.sin(0.6), x * Math.sin(0.6) + z * Math.cos(0.6)];
+		const s3 = 2.5 / (2.4 - z);
+		pts.push([x * s3, y * s3]);
+	}
+	let e = 0;
+	for (let i = 0; i < 16; i++)
+		for (let bit = 1; bit < 16; bit <<= 1)
+			if (!(i & bit)) {
+				const j = i | bit;
+				edgeBuf.set([pts[i][0], pts[i][1], pts[j][0], pts[j][1]], e * 4);
+				e++;
+			}
+	return edgeBuf;
+}
 
 export function initHeroSdf() {
 	const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-sdf]');
@@ -425,8 +452,8 @@ export function initHeroSdf() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, tri);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
-	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uSeedA', 'uSeedB', 'uCompC', 'uU', 'uVel', 'uPx', 'uPixel'] as const;
-	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uGridFrom', 'uLine', 'uFill', 'uGrid', 'uGridOn'] as const;
+	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uSeedA', 'uSeedB', 'uCompC', 'uU', 'uVel', 'uPx', 'uPixel', 'uMenuX', 'uEdges'] as const;
+	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uMenuX', 'uLine', 'uFill'] as const;
 	let uf: Uniforms<(typeof figNames)[number]>;
 	let uc: Uniforms<(typeof compNames)[number]>;
 	const locate = <T extends string>(prog: WebGLProgram, names: readonly T[]) =>
@@ -437,8 +464,16 @@ export function initHeroSdf() {
 	const fbo = gl.createFramebuffer();
 
 	const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-	// preview switch while deciding on the background: /?grid=0 hides the glyph grid
-	const gridOn = new URLSearchParams(location.search).get('grid') !== '0';
+	// the menu's right edge (buffer px): figures fade out before reaching it
+	const menu = document.querySelector<HTMLElement>('.menu');
+	let menuX = 0;
+	const measureMenu = () => {
+		if (!menu) return;
+		const c = canvas.getBoundingClientRect();
+		const labels = [...menu.querySelectorAll<HTMLElement>('.label')];
+		const right = Math.max(...(labels.length ? labels : [menu]).map((el) => el.getBoundingClientRect().right));
+		menuX = Math.max(0, (right - c.left + 24) * dpr);
+	};
 	const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!;
 	let palette = readPalette(probe);
 	let playlist = PLAYLISTS[palette.set];
@@ -465,6 +500,7 @@ export function initHeroSdf() {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
 		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		measureMenu();
 	};
 	resize();
 
@@ -535,6 +571,8 @@ export function initHeroSdf() {
 		// compositions sit further in than the big figure: right of the menu, clear of the bottom bar
 		gl.uniform2f(uf.uCompC, W * 0.68, H * 0.5);
 		gl.uniform1f(uf.uU, Math.min(W * 0.24, H * 0.42));
+		gl.uniform1f(uf.uMenuX, menuX);
+		gl.uniform4fv(uf.uEdges, hypercube(t));
 		gl.uniform2f(uf.uVel, vel[0], vel[1]);
 		gl.uniform1f(uf.uPx, dpr);
 		gl.uniform1f(uf.uPixel, pixelSize);
@@ -557,11 +595,9 @@ export function initHeroSdf() {
 		gl.uniform2f(uc.uSplit, split[0], split[1]);
 		gl.uniform1f(uc.uPx, dpr);
 		gl.uniform1f(uc.uPixel, pixelSize);
-		gl.uniform1f(uc.uGridFrom, W * 0.34);
+		gl.uniform1f(uc.uMenuX, menuX);
 		gl.uniform3fv(uc.uLine, palette.line);
 		gl.uniform3fv(uc.uFill, palette.fill);
-		gl.uniform3fv(uc.uGrid, palette.grid);
-		gl.uniform1f(uc.uGridOn, gridOn ? 1 : 0);
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 		gl.drawArrays(gl.TRIANGLES, 0, 3);
