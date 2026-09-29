@@ -1,5 +1,5 @@
 // Portfolio "Thema" list. Colors/fonts for each id live in src/styles/portfolio-themes.css ([data-ptheme='<id>']).
-// `shapes` selects the landing-page decoration set (see HeroShapes.astro).
+// `shapes` picks the landing-page shape playlist (and pixel rendering for 'pixel') — see scripts/portfolio/hero-sdf.ts.
 // To add a theme: add an entry here + a matching block in portfolio-themes.css.
 
 export type ShapeSet = 'geo' | 'space' | 'candy' | 'pixel';
@@ -54,12 +54,12 @@ export const themas: Thema[] = [
 		shapes: 'pixel',
 	},
 	{
-		id: 'violet',
-		label: 'Violet',
-		bg: '#16132e',
-		fg: '#ecebff',
-		font: "'Syne', sans-serif",
-		swatches: ['#16132e', '#2c2660', '#7b6cff', '#a99cff', '#ecebff'],
+		id: 'sky',
+		label: 'Sky',
+		bg: '#d4ebff',
+		fg: '#14204a',
+		font: "'Bricolage Grotesque', sans-serif",
+		swatches: ['#d4ebff', '#84b8e6', '#1d2d7a', '#2ee8b6', '#ffffff'],
 		shapes: 'geo',
 	},
 	{
@@ -67,7 +67,7 @@ export const themas: Thema[] = [
 		label: 'Candy',
 		bg: '#fdeef4',
 		fg: '#1b1f4a',
-		font: "'Unbounded', sans-serif",
+		font: "'Grandstander', sans-serif",
 		swatches: ['#fdeef4', '#f7b8cf', '#ff5fa2', '#1b1f4a', '#ffffff'],
 		shapes: 'candy',
 	},

@@ -2,6 +2,11 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import PortfolioLayout from '../../layouts/PortfolioLayout.astro';
 import ProjectMedia from '../../components/portfolio/ProjectMedia.astro';
+import YouTubeEmbed from '../../components/portfolio/YouTubeEmbed.astro';
+import Gallery from '../../components/portfolio/Gallery.astro';
+import CompareView from '../../components/portfolio/CompareView.astro';
+import Flipbook from '../../components/portfolio/Flipbook.astro';
+import CursorBadge from '../../components/portfolio/CursorBadge.astro';
 
 export async function getStaticPaths() {
 	const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -20,174 +25,334 @@ interface Props {
 const { project, index, next } = Astro.props;
 const d = project.data;
 const pad = (n: number) => String(n).padStart(2, '0');
-const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decisions', 'Next'];
+
+// One snap screen per entry; sections without data are left out, and the side dots follow this list.
+type Section =
+	| { kind: 'hero' | 'overview' | 'video' | 'techniques' | 'motion' | 'compare' | 'architecture' | 'problems' | 'decisions' | 'next'; label: string }
+	| { kind: 'gallery'; label: string; gallery: (typeof d.galleries)[number] };
+const sections: Section[] = [
+	{ kind: 'hero', label: 'Intro' },
+	{ kind: 'overview', label: 'Overview' },
+	...(d.video ? [{ kind: 'video', label: 'Video' } as const] : []),
+	...(d.techniques.length ? [{ kind: 'techniques', label: 'Techniques' } as const] : []),
+	...d.galleries.map((g) => ({ kind: 'gallery', label: g.title, gallery: g }) as const),
+	...(d.motion.length ? [{ kind: 'motion', label: 'In motion' } as const] : []),
+	...(d.compare ? [{ kind: 'compare', label: d.compare.title } as const] : []),
+	...(d.architecture ? [{ kind: 'architecture', label: 'Architecture' } as const] : []),
+	...(d.problems.length ? [{ kind: 'problems', label: 'Problem solving' } as const] : []),
+	...(d.decisions.length || d.limitations.length ? [{ kind: 'decisions', label: d.decisions.length ? 'Decisions' : 'Next' } as const] : []),
+	{ kind: 'next', label: 'Links' },
+];
+// "01 — Overview" style numbering for every screen after the hero
+const num = (s: Section) => pad(sections.indexOf(s));
+const videoPoster = d.video?.poster ?? d.cover.poster;
 ---
 
 <PortfolioLayout title={d.title} description={d.tagline} current="projects">
 	<main class="snap" data-snap style={`--accent-p: ${d.accent}`}>
-		<!-- 1. hero -->
-		<section class="s hero" data-snap-section>
-			<ProjectMedia class="hero-media" poster={d.cover.poster} video={d.cover.video} alt={d.cover.alt} autoplay eager vtName={`media-${project.id}`} />
-			<div class="hero-shade" aria-hidden="true"></div>
-			<div class="hero-copy">
-				<p class="mono eyebrow">
-					P/{pad(index + 1)} · {d.year}
-					{d.sample && <span class="sample-badge">sample content</span>}
-				</p>
-				<h1 style={`view-transition-name: title-${project.id}`}>{d.title}</h1>
-				<p class="tagline">{d.tagline}</p>
-			</div>
-			<p class="mono scroll-hint">scroll · ↑↓ keys</p>
-		</section>
-
-		<!-- 2. overview -->
-		<section class="s overview" data-snap-section>
-			<div class="wrap two">
-				<div>
-					<p class="mono label">01 — Overview</p>
-					<p class="lead">{d.overview}</p>
-					{
-						d.highlights.length > 0 && (
-							<ul class="highlights">
-								{d.highlights.map((h) => (
-									<li>{h}</li>
-								))}
-							</ul>
-						)
-					}
-				</div>
-				<dl class="facts">
-					<div><dt class="mono">Year</dt><dd>{d.year}</dd></div>
-					<div><dt class="mono">Role</dt><dd>{d.role}</dd></div>
-					{d.team && <div><dt class="mono">Team</dt><dd>{d.team}</dd></div>}
-					<div>
-						<dt class="mono">Stack</dt>
-						<dd class="chips">{d.stack.map((s) => <span class="chip">{s}</span>)}</dd>
-					</div>
-				</dl>
-			</div>
-		</section>
-
-		<!-- 3. architecture -->
-		<section class="s arch" data-snap-section>
-			<div class="wrap">
-				<p class="mono label">02 — Architecture</p>
-				<h2>{d.architecture.caption ?? 'Architecture'}</h2>
-				{d.architecture.image && <img class="arch-img" src={d.architecture.image} alt={d.architecture.caption ?? ''} loading="lazy" />}
-				<ol class="flow">
-					{
-						d.architecture.points.map((pt, i) => {
-							const [head, ...rest] = pt.split(' — ');
-							return (
-								<li style={`--i: ${i}`}>
-									<span class="mono step">{pad(i + 1)}</span>
-									<strong>{rest.length ? head : `Step ${i + 1}`}</strong>
-									<p>{rest.length ? rest.join(' — ') : head}</p>
-								</li>
-							);
-						})
-					}
-				</ol>
-			</div>
-		</section>
-
-		<!-- 4. problem solving -->
-		<section class="s problems" data-snap-section>
-			<div class="wrap">
-				<p class="mono label">03 — Problem solving</p>
-				<h2>문제와 해결</h2>
-				<div class="cards" style={`--n: ${Math.min(d.problems.length, 3)}`}>
-					{
-						d.problems.map((pb, i) => (
-							<article style={`--i: ${i}`}>
-								<h3>{pb.title}</h3>
-								<dl>
-									<dt class="mono">Problem</dt>
-									<dd>{pb.problem}</dd>
-									<dt class="mono">Approach</dt>
-									<dd>{pb.approach}</dd>
-									<dt class="mono ok">Result</dt>
-									<dd>{pb.result}</dd>
-								</dl>
-							</article>
-						))
-					}
-				</div>
-			</div>
-		</section>
-
-		<!-- 5. decisions -->
-		<section class="s decisions" data-snap-section>
-			<div class="wrap">
-				<p class="mono label">04 — Technical decisions</p>
-				<h2>기술적 의사결정</h2>
-				<ol class="adr">
-					{
-						d.decisions.map((dc, i) => (
-							<li style={`--i: ${i}`}>
-								<span class="mono step">D{pad(i + 1)}</span>
-								<div>
-									<h3>{dc.choice}</h3>
-									<p>
-										<span class="mono">why</span> {dc.why}
+		{
+			sections.map((s) => {
+				switch (s.kind) {
+					case 'hero':
+						return (
+							<section class="s hero" data-snap-section>
+								<ProjectMedia class="hero-media" poster={d.cover.poster} video={d.cover.video} alt={d.cover.alt} autoplay eager vtName={`media-${project.id}`} />
+								<div class="hero-shade" aria-hidden="true" />
+								<div class="hero-copy">
+									<p class="mono eyebrow">
+										<span>P/{pad(index + 1)} · {d.group} · {d.year}</span>
+										{d.status && <span class="status">{d.status}</span>}
+										{d.sample && <span class="sample-badge">sample content</span>}
 									</p>
-									{dc.tradeoff && (
-										<p class="trade">
-											<span class="mono">trade-off</span> {dc.tradeoff}
-										</p>
+									<h1 style={`view-transition-name: title-${project.id}`}>{d.title}</h1>
+									<p class="tagline">{d.tagline}</p>
+								</div>
+								<p class="mono scroll-hint">scroll · ↑↓ keys</p>
+							</section>
+						);
+					case 'overview':
+						return (
+							<section class="s overview" data-snap-section>
+								<div class="wrap two">
+									<div>
+										<p class="mono label">{num(s)} — Project goal</p>
+										<p class="lead">{d.overview}</p>
+										{d.highlights.length > 0 && (
+											<>
+												<p class="mono label sub">Key features</p>
+												<ul class="highlights">
+													{d.highlights.map((h) => (
+														<li>{h}</li>
+													))}
+												</ul>
+											</>
+										)}
+									</div>
+									<dl class="facts">
+										<div>
+											<dt class="mono">Year</dt>
+											<dd>{d.year}</dd>
+										</div>
+										<div>
+											<dt class="mono">Role</dt>
+											<dd>{d.role}</dd>
+										</div>
+										{d.team && (
+											<div>
+												<dt class="mono">Team</dt>
+												<dd>{d.team}</dd>
+											</div>
+										)}
+										<div>
+											<dt class="mono">Stack</dt>
+											<dd class="chips">
+												{d.stack.map((st) => (
+													<span class="chip">{st}</span>
+												))}
+											</dd>
+										</div>
+										{d.specs.map((sp) => (
+											<div>
+												<dt class="mono">{sp.label}</dt>
+												<dd>{sp.value}</dd>
+											</div>
+										))}
+									</dl>
+								</div>
+							</section>
+						);
+					case 'video':
+						return (
+							<section class="s video" data-snap-section>
+								<div class="wrap">
+									<p class="mono label">{num(s)} — Video</p>
+									<div class="video-box">
+										<YouTubeEmbed id={d.video!.youtube} poster={videoPoster} title={d.video!.title ?? `${d.title} 시연 영상`} />
+									</div>
+								</div>
+							</section>
+						);
+					case 'techniques':
+						return (
+							<section class="s techniques" data-snap-section>
+								<div class="wrap">
+									<p class="mono label">{num(s)} — Techniques</p>
+									<h2>핵심 기법</h2>
+									<div class="tech" style={`--n: ${d.techniques.length > 4 ? 3 : Math.min(d.techniques.length, 2)}`}>
+										{d.techniques.map((t, i) => (
+											<article style={`--i: ${i}`}>
+												<h3>
+													{t.title}
+													{t.sub && <span class="tsub">{t.sub}</span>}
+												</h3>
+												<p>{t.body}</p>
+												{t.formula && <pre class="formula"><code>{t.formula}</code></pre>}
+											</article>
+										))}
+									</div>
+								</div>
+							</section>
+						);
+					case 'gallery':
+						return (
+							<section class="s gallery-s" data-snap-section>
+								<div class="wrap">
+									<p class="mono label">
+										{num(s)} — {s.gallery.kicker ?? 'Gallery'}
+									</p>
+									<h2>{s.gallery.title}</h2>
+									<Gallery items={s.gallery.items} cols={s.gallery.cols} ratio={s.gallery.ratio} />
+									{s.gallery.caption && <p class="caption">{s.gallery.caption}</p>}
+								</div>
+							</section>
+						);
+					case 'motion':
+						return (
+							<section class="s motion" data-snap-section>
+								<div class="wrap">
+									<p class="mono label">{num(s)} — In motion</p>
+									<h2>움직임으로 보기</h2>
+									<div class="flips" style={`--n: ${d.motion.length}`}>
+										{d.motion.map((m, i) => (
+											<article style={`--i: ${i}`}>
+												<Flipbook sprite={m.sprite} frames={m.frames} label={m.title} />
+												<h3>{m.title}</h3>
+												<p>{m.body}</p>
+												{m.formula && <pre class="formula"><code>{m.formula}</code></pre>}
+											</article>
+										))}
+									</div>
+								</div>
+							</section>
+						);
+					case 'compare':
+						return (
+							<section class="s compare" data-snap-section>
+								<div class="wrap">
+									<p class="mono label">
+										{num(s)} — {d.compare!.kicker ?? 'Before / After'}
+									</p>
+									<h2>{d.compare!.title}</h2>
+									<CompareView steps={d.compare!.steps} slider={d.compare!.slider} />
+									{d.compare!.caption && <p class="caption">{d.compare!.caption}</p>}
+								</div>
+							</section>
+						);
+					case 'architecture':
+						return (
+							<section class="s arch" data-snap-section>
+								<div class="wrap">
+									<p class="mono label">{num(s)} — Architecture</p>
+									<h2>{d.architecture!.caption ?? 'Architecture'}</h2>
+									{d.architecture!.image && <img class="arch-img" src={d.architecture!.image} alt={d.architecture!.caption ?? ''} loading="lazy" />}
+									<ol class="flow">
+										{d.architecture!.points.map((pt, i) => {
+											const [head, ...rest] = pt.split(' — ');
+											return (
+												<li style={`--i: ${i}`}>
+													<span class="mono step">{pad(i + 1)}</span>
+													<strong>{rest.length ? head : `Step ${i + 1}`}</strong>
+													<p>{rest.length ? rest.join(' — ') : head}</p>
+												</li>
+											);
+										})}
+									</ol>
+								</div>
+							</section>
+						);
+					case 'problems':
+						return (
+							<section class="s problems" data-snap-section>
+								<div class="wrap">
+									<p class="mono label">{num(s)} — Problem solving</p>
+									<h2>문제와 해결</h2>
+									<div class="cards" style={`--n: ${Math.min(d.problems.length, 3)}`}>
+										{d.problems.map((pb, i) => (
+											<article style={`--i: ${i}`}>
+												<h3>{pb.title}</h3>
+												<dl>
+													<dt class="mono">Problem</dt>
+													<dd>{pb.problem}</dd>
+													<dt class="mono">Approach</dt>
+													<dd>{pb.approach}</dd>
+													<dt class="mono ok">Result</dt>
+													<dd>{pb.result}</dd>
+												</dl>
+											</article>
+										))}
+									</div>
+								</div>
+							</section>
+						);
+					case 'decisions':
+						return (
+							<section class="s decisions" data-snap-section>
+								<div class="wrap">
+									{d.decisions.length > 0 && (
+										<>
+											<p class="mono label">{num(s)} — Technical decisions</p>
+											<h2>기술적 의사결정</h2>
+											<ol class="adr">
+												{d.decisions.map((dc, i) => (
+													<li style={`--i: ${i}`}>
+														<span class="mono step">D{pad(i + 1)}</span>
+														<div>
+															<h3>{dc.choice}</h3>
+															<p>
+																<span class="mono">why</span> {dc.why}
+															</p>
+															{dc.tradeoff && (
+																<p class="trade">
+																	<span class="mono">trade-off</span> {dc.tradeoff}
+																</p>
+															)}
+														</div>
+													</li>
+												))}
+											</ol>
+										</>
+									)}
+									{d.limitations.length > 0 && (
+										<div class="limits">
+											<p class="mono label">{d.decisions.length ? 'Limitations & next' : `${num(s)} — Limitations & next`}</p>
+											{!d.decisions.length && <h2>한계와 다음 단계</h2>}
+											<ul class="highlights">
+												{d.limitations.map((l) => (
+													<li>{l}</li>
+												))}
+											</ul>
+										</div>
 									)}
 								</div>
-							</li>
-						))
-					}
-				</ol>
-			</div>
-		</section>
-
-		<!-- 6. links + next -->
-		<section class="s next" data-snap-section>
-			<div class="wrap two">
-				<div>
-					<p class="mono label">05 — Links</p>
-					<ul class="links">
-						{
-							d.links.map((l) => (
-								<li>
-									<a href={l.href}>
-										{l.label} <span aria-hidden="true">↗</span>
+							</section>
+						);
+					case 'next':
+						return (
+							<section class="s next" data-snap-section>
+								<div class="wrap two">
+									<div>
+										<p class="mono label">{num(s)} — Links</p>
+										<ul class="links">
+											{d.links.map((l) => (
+												<li>
+													<a href={l.href} {...(/^https?:/.test(l.href) ? { target: '_blank', rel: 'noopener' } : {})}>
+														{l.label} <span aria-hidden="true">↗</span>
+													</a>
+												</li>
+											))}
+											<li>
+												<a href="/projects/">
+													All projects <span aria-hidden="true">←</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+									<a href={`/projects/${next.id}/`} class="next-card" data-hover-card style={`--accent-n: ${next.data.accent}`}>
+										<span class="mono">Next project →</span>
+										<ProjectMedia class="next-media" poster={next.data.cover.poster} video={next.data.cover.video} alt={next.data.cover.alt} />
+										<strong>{next.data.title}</strong>
 									</a>
-								</li>
-							))
-						}
-						<li><a href="/projects/">All projects <span aria-hidden="true">←</span></a></li>
-					</ul>
-				</div>
-				<a href={`/projects/${next.id}/`} class="next-card" data-hover-card style={`--accent-n: ${next.data.accent}`}>
-					<span class="mono">Next project →</span>
-					<ProjectMedia class="next-media" poster={next.data.cover.poster} video={next.data.cover.video} alt={next.data.cover.alt} />
-					<strong>{next.data.title}</strong>
-				</a>
-			</div>
-		</section>
+								</div>
+							</section>
+						);
+				}
+			})
+		}
 	</main>
 
 	<nav class="dots" data-snap-nav aria-label="Sections" style={`--accent-p: ${d.accent}`}>
 		{
 			sections.map((s, i) => (
-				<button type="button" data-go={i} aria-label={s}>
-					<span class="dot-label mono">{s}</span>
+				<button type="button" data-go={i} aria-label={s.label}>
+					<span class="dot-label mono">{s.label}</span>
 				</button>
 			))
 		}
 	</nav>
 	<p class="counter mono" data-snap-counter aria-live="polite"></p>
+	<CursorBadge />
+
+	<dialog class="lightbox" data-lightbox-dialog aria-label="이미지 크게 보기">
+		<figure>
+			<img alt="" />
+			<figcaption>
+				<span data-lightbox-caption></span>
+				<span class="mono" data-lightbox-count></span>
+			</figcaption>
+		</figure>
+		<button type="button" class="lb-btn lb-prev" data-lightbox-prev aria-label="이전 이미지">←</button>
+		<button type="button" class="lb-btn lb-next" data-lightbox-next aria-label="다음 이미지">→</button>
+		<button type="button" class="lb-btn lb-close" data-lightbox-close aria-label="닫기">✕</button>
+	</dialog>
 </PortfolioLayout>
 
 <script>
 	import { initSnapSections } from '../../scripts/portfolio/snap-sections';
 	import { initHoverMedia } from '../../scripts/portfolio/hover-media';
+	import { initLightbox } from '../../scripts/portfolio/lightbox';
 	initSnapSections();
 	initHoverMedia();
+	initLightbox();
 </script>
 
 <style>
@@ -203,7 +368,8 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 	}
 	.s {
 		position: relative;
-		height: 100dvh;
+		/* one screen per section; a screen whose content is taller (short windows) grows instead of clipping */
+		min-height: 100dvh;
 		scroll-snap-align: start;
 		scroll-snap-stop: always;
 		display: grid;
@@ -478,6 +644,207 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 		margin-top: 0.25rem;
 	}
 
+	/* ---------- hero status / overview extras ---------- */
+	.status {
+		padding: 0.15rem 0.5rem;
+		border: 1px solid var(--accent-p);
+		border-radius: 999px;
+		color: var(--accent-p);
+		font-size: 0.7rem;
+	}
+	.label.sub {
+		margin-top: clamp(1.25rem, 3.5vh, 2.25rem);
+		margin-bottom: 0;
+	}
+	.overview .highlights {
+		margin-top: 0.75rem;
+		font-size: 0.925rem;
+		line-height: 1.6;
+	}
+	.facts dt {
+		color: var(--fg-3);
+	}
+	.facts dd {
+		font-size: 0.875rem;
+		line-height: 1.55;
+	}
+	.facts div {
+		grid-template-columns: 6.5rem 1fr;
+		padding: 0.7rem 0;
+	}
+
+	/* ---------- video ---------- */
+	.video-box {
+		/* the whole 16:9 player fits under the top bar */
+		width: min(100%, calc((100dvh - var(--nav-h) - 9rem) * 16 / 9));
+		margin-inline: auto;
+	}
+
+	/* ---------- techniques / motion ---------- */
+	.tech,
+	.flips {
+		display: grid;
+		grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+		gap: 1rem;
+	}
+	.tech article,
+	.flips article {
+		display: grid;
+		align-content: start;
+		gap: 0.6rem;
+		border: 1px solid var(--line-2);
+		border-radius: 12px;
+		background: var(--bg-2);
+		padding: 1.1rem 1.2rem;
+	}
+	.flips article {
+		padding: 0.75rem;
+	}
+	.flips {
+		max-width: 60rem;
+	}
+	.tsub {
+		display: block;
+		margin-top: 0.2rem;
+		color: var(--accent-p);
+		font-size: 0.8rem;
+		font-weight: 500;
+	}
+	.tech p,
+	.flips p {
+		margin: 0;
+		color: var(--fg-2);
+		font-size: 0.85rem;
+		line-height: 1.65;
+	}
+	.formula {
+		margin: 0.2rem 0 0;
+		padding: 0.6rem 0.75rem;
+		border-radius: 8px;
+		background: var(--bg);
+		border: 1px solid var(--line);
+		overflow-x: auto;
+		white-space: pre-wrap;
+		font-family: var(--mono);
+		font-size: 0.78rem;
+		line-height: 1.6;
+		color: var(--fg);
+	}
+	.tech article,
+	.flips article {
+		transition:
+			opacity 420ms var(--ease),
+			transform 520ms var(--ease-out);
+		transition-delay: calc(var(--i, 0) * 60ms);
+	}
+	.s:not(.is-active) .tech article,
+	.s:not(.is-active) .flips article {
+		opacity: 0;
+		transform: translateY(24px);
+		transition-delay: 0ms;
+	}
+
+	/* ---------- gallery / compare ---------- */
+	.caption {
+		margin: 1rem 0 0;
+		max-width: 60rem;
+		color: var(--fg-2);
+		font-size: 0.85rem;
+		line-height: 1.65;
+	}
+	.compare .wrap {
+		width: min(100%, calc((100dvh - var(--nav-h) - 22rem) * 16 / 9), 72rem);
+	}
+	.limits {
+		margin-top: clamp(1.5rem, 4vh, 2.5rem);
+	}
+	.decisions .limits .highlights {
+		margin-top: 0.5rem;
+	}
+
+	/* ---------- lightbox ---------- */
+	.lightbox {
+		width: 100vw;
+		height: 100dvh;
+		max-width: none;
+		max-height: none;
+		margin: 0;
+		padding: clamp(1rem, 4vw, 3rem);
+		border: 0;
+		background: transparent;
+		color: #fff;
+	}
+	.lightbox::backdrop {
+		background: #000d;
+		backdrop-filter: blur(6px);
+	}
+	.lightbox[open] {
+		display: grid;
+		place-items: center;
+		animation: lb-in var(--t-fast) var(--ease-out);
+	}
+	@keyframes lb-in {
+		from {
+			opacity: 0;
+			scale: 0.98;
+		}
+	}
+	.lightbox figure {
+		margin: 0;
+		display: grid;
+		gap: 0.75rem;
+		justify-items: center;
+		max-width: 100%;
+		max-height: 100%;
+		pointer-events: none;
+	}
+	.lightbox img {
+		max-width: min(100%, 1600px);
+		max-height: calc(100dvh - 8rem);
+		object-fit: contain;
+		border-radius: 6px;
+		pointer-events: auto;
+	}
+	.lightbox figcaption {
+		display: flex;
+		gap: 1.5rem;
+		font-size: 0.85rem;
+		color: #ddd;
+	}
+	.lb-btn {
+		all: unset;
+		position: fixed;
+		cursor: pointer;
+		display: grid;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: 50%;
+		background: #fff2;
+		color: #fff;
+		font-size: 1.1rem;
+		transition: background-color var(--t-micro);
+	}
+	.lb-btn:hover,
+	.lb-btn:focus-visible {
+		background: #fff4;
+	}
+	.lb-btn:focus-visible {
+		outline: 2px solid #fff;
+	}
+	.lb-prev {
+		left: 1rem;
+		top: 50%;
+	}
+	.lb-next {
+		right: 1rem;
+		top: 50%;
+	}
+	.lb-close {
+		right: 1rem;
+		top: 1rem;
+	}
+
 	/* ---------- next ---------- */
 	.links {
 		list-style: none;
@@ -507,12 +874,16 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 		aspect-ratio: 16 / 10;
 		border-radius: 12px;
 		border: 1px solid var(--line-2);
+		/* hover outline = 1px border + 1px ring → 2px, without shifting the layout */
+		box-shadow: 0 0 0 0 var(--accent-n);
 		transition:
 			border-color var(--t-fast),
+			box-shadow var(--t-fast),
 			transform var(--t-fast) var(--ease-out);
 	}
 	.next-card:hover :global(.next-media) {
 		border-color: var(--accent-n);
+		box-shadow: 0 0 0 1px var(--accent-n);
 		transform: translateY(-4px);
 	}
 	.next-card strong {
@@ -601,8 +972,18 @@ const sections = ['Intro', 'Overview', 'Architecture', 'Problem solving', 'Decis
 			padding-right: var(--pad);
 		}
 		.two,
-		.cards {
+		.cards,
+		.tech,
+		.flips {
 			grid-template-columns: 1fr;
+		}
+		.compare .wrap,
+		.video-box {
+			width: 100%;
+		}
+		.hero h1 {
+			font-size: clamp(2.25rem, 11vw, 4rem);
+			overflow-wrap: anywhere;
 		}
 		.flow {
 			grid-auto-flow: row;

@@ -1,19 +1,19 @@
 ---
 import PortfolioLayout from '../layouts/PortfolioLayout.astro';
-import { site } from '../site';
+import { site, mailData } from '../site';
 
-// Based on topics in Notes — edit to match your actual experience.
 const skills: [string, string[]][] = [
-	['Languages', ['C++', 'HLSL']],
-	['Graphics', ['DirectX 11', 'Rendering pipeline', 'Shading', 'Linear algebra']],
-	['Engine', ['Unreal Engine 5', 'Material graph', 'Niagara', 'Slate / Editor tools']],
-	['Tools', ['RenderDoc', 'Blender', 'Git']],
+	['Shading', ['HLSL', 'DirectX 11']],
+	['Programming', ['C', 'C++']],
+	['Engine & DCC', ['Unreal Engine', 'Blender', '3ds Max', 'Photoshop']],
+	['Tools', ['RenderDoc', 'ImGui', 'Git']],
 ];
 
+// GitHub, Email (copies the address), Notes
 const contacts = [
 	{ label: 'GitHub', value: `@${site.handle}`, href: site.github },
+	...(site.email ? [{ label: 'Email', value: '', href: '' }] : []),
 	{ label: 'Notes', value: '공부 기록', href: '/notes/' },
-	...(site.email ? [{ label: 'Email', value: site.email, href: `mailto:${site.email}` }] : []),
 ];
 ---
 
@@ -43,10 +43,22 @@ const contacts = [
 				{
 					contacts.map((c) => (
 						<li>
-							<a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
-								<span class="mono">{c.label}</span>
-								<span>{c.value} ↗</span>
-							</a>
+							{c.label === 'Email' ? (
+								<button class="copy" type="button" data-mail={mailData} aria-label="이메일 주소 복사">
+									<span class="mono">Email</span>
+									<span class="value">
+										<span class="idle">
+											<span data-mail-text>…</span> ⧉
+										</span>
+										<span class="done">복사됨 ✓</span>
+									</span>
+								</button>
+							) : (
+								<a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
+									<span class="mono">{c.label}</span>
+									<span>{c.value} ↗</span>
+								</a>
+							)}
 						</li>
 					))
 				}
@@ -54,6 +66,11 @@ const contacts = [
 		</section>
 	</main>
 </PortfolioLayout>
+
+<script>
+	import { initCopyEmail } from '../scripts/copy-email';
+	initCopyEmail();
+</script>
 
 <style>
 	.about {
@@ -90,6 +107,7 @@ const contacts = [
 	.intro {
 		margin: 1.5rem 0 0;
 		max-width: 34rem;
+		white-space: pre-line;
 		font-size: clamp(1rem, 2.2vh, 1.25rem);
 		line-height: 1.7;
 		color: var(--fg);
@@ -125,7 +143,8 @@ const contacts = [
 		display: grid;
 		gap: 0.5rem;
 	}
-	.contacts a {
+	.contacts a,
+	.contacts .copy {
 		display: flex;
 		justify-content: space-between;
 		padding: 0.9rem 1rem;
@@ -136,10 +155,30 @@ const contacts = [
 			background-color var(--t-micro),
 			padding var(--t-fast) var(--ease-out);
 	}
-	.contacts a:hover {
+	.contacts a:hover,
+	.contacts .copy:hover {
 		border-color: var(--accent);
 		background: var(--bg-2);
 		padding-inline: 1.25rem 1rem;
+	}
+	.contacts .copy {
+		width: 100%;
+		background: none;
+		color: inherit;
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+	}
+	.copy .done,
+	.copy.copied .idle {
+		display: none;
+	}
+	.copy.copied .done {
+		display: inline;
+		color: var(--accent);
+	}
+	.copy.copied {
+		border-color: var(--accent);
 	}
 	@media (max-width: 820px) {
 		:global(body) {

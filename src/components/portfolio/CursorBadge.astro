@@ -1,0 +1,104 @@
+---
+// Floating cursor badge shared by project cards ("view") and screenshot tiles ("zoom"):
+// a frosted disc with slowly turning ring text and an accent core icon. Positioned and toggled by
+// scripts/portfolio/hover-media.ts; hovered elements pick the mode with data-cursor="view|zoom".
+const texts = {
+	view: 'View project · View project · ',
+	zoom: 'Zoom in · Zoom in · Zoom in · ',
+};
+---
+
+<div class="cursor-badge" data-cursor-label data-mode="view" data-text-view={texts.view} data-text-zoom={texts.zoom} aria-hidden="true">
+	<svg class="ring" viewBox="0 0 100 100">
+		<path id="cursor-ring-path" d="M50 50m-38 0a38 38 0 1 1 76 0a38 38 0 1 1-76 0" fill="none"></path>
+		<text><textPath href="#cursor-ring-path" data-cursor-text>{texts.view}</textPath></text>
+	</svg>
+	<span class="core">
+		<svg class="i-view" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"></path></svg>
+		<svg class="i-zoom" viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"></path></svg>
+	</span>
+</div>
+
+<style>
+	.cursor-badge {
+		position: fixed;
+		left: 0;
+		top: 0;
+		z-index: 45;
+		width: 5.4rem;
+		height: 5.4rem;
+		display: grid;
+		place-items: center;
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--bg) 45%, transparent);
+		border: 1px solid color-mix(in srgb, var(--fg) 16%, transparent);
+		backdrop-filter: blur(10px) saturate(1.2);
+		-webkit-backdrop-filter: blur(10px) saturate(1.2);
+		box-shadow: 0 18px 40px -18px #000a;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity var(--t-micro) var(--ease);
+	}
+	.cursor-badge:global(.show) {
+		opacity: 1;
+	}
+	.ring {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+		animation: ring-turn 12s linear infinite;
+	}
+	.ring text {
+		fill: var(--fg);
+		font-family: var(--mono);
+		/* the ring is drawn in a 100-unit box, so this scales with the badge (~8px at 5.4rem) */
+		font-size: 9.4px;
+		font-weight: 600;
+		text-transform: uppercase;
+	}
+	@keyframes ring-turn {
+		to {
+			rotate: 360deg;
+		}
+	}
+	.core {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 2.1rem;
+		height: 2.1rem;
+		border-radius: 50%;
+		background: var(--accent);
+		color: var(--on-accent);
+	}
+	.core svg {
+		position: absolute;
+		width: 0.95rem;
+		height: 0.95rem;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2.2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		transition:
+			opacity var(--t-micro),
+			rotate var(--t-fast) var(--ease-out);
+	}
+	.cursor-badge[data-mode='view'] .i-zoom,
+	.cursor-badge[data-mode='zoom'] .i-view {
+		opacity: 0;
+		rotate: -45deg;
+	}
+	@media (hover: none), (pointer: coarse) {
+		.cursor-badge {
+			display: none;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ring {
+			animation: none;
+		}
+	}
+</style>

@@ -1,6 +1,6 @@
 // Dennis Snellenberg–style hover media:
 //  - [data-follow]      : a floating preview that trails the cursor (lerp) while hovering [data-media-src] rows
-//  - [data-cursor-label]: a small label ("View") that follows the cursor inside cards
+//  - [data-cursor-label]: the cursor badge, pinned to the pointer (no easing) over cards and screenshot tiles
 //  - video[data-hover-play] inside cards: loaded lazily and played only while hovered
 
 const LERP = 0.2;
@@ -8,15 +8,16 @@ const finePointer = () => matchMedia('(hover: hover) and (pointer: fine)').match
 
 let cleanups: (() => void)[] = [];
 
-function follower(el: HTMLElement) {
+/** Eases el toward the pointer every frame (used by the list preview). */
+function follower(el: HTMLElement, lerp = LERP) {
 	let raf = 0;
 	const pos = { x: innerWidth / 2, y: innerHeight / 2 };
 	const target = { ...pos };
 	const loop = () => {
 		const dx = target.x - pos.x;
-		pos.x += dx * LERP;
-		pos.y += (target.y - pos.y) * LERP;
-		const tilt = Math.max(-8, Math.min(8, dx * 0.05));
+		pos.x += dx * lerp;
+		pos.y += (target.y - pos.y) * lerp;
+		const tilt = lerp < 1 ? Math.max(-8, Math.min(8, dx * 0.05)) : 0;
 		el.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, -50%) rotate(${tilt}deg)`;
 		raf = requestAnimationFrame(loop);
 	};
@@ -83,7 +84,9 @@ export function initHoverMedia() {
 					video.play().catch(() => {});
 				} else {
 					video.hidden = true;
+					video.pause();
 					video.removeAttribute('src');
+					video.load(); // drop the previous clip's last frame
 				}
 				preview.style.setProperty('--accent', row.dataset.accent ?? '');
 				f.move(e.clientX, e.clientY, !active);
@@ -111,31 +114,48 @@ export function initHoverMedia() {
 		});
 	}
 
-	// cursor label inside cards
+	// cursor badge over project cards (data-hover-card → "view") and screenshot tiles (data-cursor="zoom")
 	const label = document.querySelector<HTMLElement>('[data-cursor-label]');
 	if (label) {
-		const f = follower(label);
-		cleanups.push(() => f.stop());
-		let idle = 0;
-		document.querySelectorAll<HTMLElement>('[data-hover-card]').forEach((card) => {
+		// positioned straight from the pointer event — no animation loop, so it never trails or catches up
+		const place = (e: PointerEvent) => {
+			label.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+		};
+		const ringText = label.querySelector<SVGTextPathElement>('[data-cursor-text]');
+		const ringPath = label.querySelector<SVGPathElement>('path[id]');
+		// spread the ring text so it closes the circle exactly, whatever the label
+		const fitRing = () => {
+			const text = ringText?.parentElement as SVGTextElement | null;
+			if (!text || !ringPath) return;
+			text.style.letterSpacing = '0px';
+			const chars = text.textContent?.length ?? 1;
+			// a small gap keeps the last glyph from touching the first
+			text.style.letterSpacing = `${(ringPath.getTotalLength() - 3 - text.getComputedTextLength()) / chars}px`;
+		};
+		fitRing();
+		const hide = () => label.classList.remove('show');
+		document.querySelectorAll<HTMLElement>('[data-hover-card], [data-cursor]').forEach((card) => {
 			const enter = (e: PointerEvent) => {
-				clearTimeout(idle);
-				f.move(e.clientX, e.clientY, !label.classList.contains('show'));
+				const mode = card.dataset.cursor ?? 'view';
+				if (label.dataset.mode !== mode) {
+					label.dataset.mode = mode;
+					if (ringText) ringText.textContent = label.dataset[`text${mode[0].toUpperCase()}${mode.slice(1)}`] ?? '';
+					fitRing();
+				}
+				place(e);
 				label.classList.add('show');
-				f.start();
 			};
-			const move = (e: PointerEvent) => f.move(e.clientX, e.clientY);
-			const leave = () => {
-				label.classList.remove('show');
-				idle = window.setTimeout(() => f.stop(), 300);
-			};
+			const move = place;
 			card.addEventListener('pointerenter', enter);
 			card.addEventListener('pointermove', move);
-			card.addEventListener('pointerleave', leave);
+			card.addEventListener('pointerleave', hide);
+			// a click may open the lightbox on top without a pointerleave
+			card.addEventListener('click', hide);
 			cleanups.push(() => {
 				card.removeEventListener('pointerenter', enter);
 				card.removeEventListener('pointermove', move);
-				card.removeEventListener('pointerleave', leave);
+				card.removeEventListener('pointerleave', hide);
+				card.removeEventListener('click', hide);
 			});
 		});
 	}

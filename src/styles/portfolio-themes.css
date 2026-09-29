@@ -1,7 +1,7 @@
 /*
  * Portfolio themes — <html data-ptheme="...">. List + picker previews: src/portfolio/themes.ts
  * Tokens: --bg/-2/-3 surfaces · --line/-2 borders · --fg/-2/-3 text · --accent · --accent-2
- *         --shape (decoration strokes) · --shape-fill · --foam (wave foam) · --font-display · --font-ui
+ *         --shape (decoration strokes) · --shape-2 (the few decoration pieces drawn in the theme colour) · --shape-fill · --foam (wave foam) · --font-display · --font-ui
  *         --curtain-a / --curtain-b (page-transition panels)
  */
 
@@ -11,10 +11,8 @@
 @import '@fontsource/space-grotesk/700.css';
 @import '@fontsource/space-mono/400.css';
 @import '@fontsource/press-start-2p/400.css';
-@import '@fontsource/syne/600.css';
-@import '@fontsource/syne/800.css';
-@import '@fontsource/unbounded/500.css';
-@import '@fontsource/unbounded/700.css';
+@import '@fontsource/bricolage-grotesque/600.css';
+@import '@fontsource/grandstander/700.css';
 @import 'galmuri/dist/galmuri.css';
 
 :root,
@@ -31,6 +29,7 @@
 	--accent-2: #7cc4ff;
 	--on-accent: #09090b;
 	--shape: #d9d9de;
+	--shape-2: #d4ff5a;
 	--shape-fill: #1a1a1f;
 	--foam: #ffffff;
 	--grid-dot: #1c1c21;
@@ -55,7 +54,8 @@
 	--accent: #e8341c;
 	--accent-2: #161412;
 	--on-accent: #f3efe6;
-	--shape: #161412;
+	--shape: #ee6a1c;
+	--shape-2: #161412;
 	--shape-fill: #e8341c;
 	--foam: #ffffff;
 	--grid-dot: #ddd5c4;
@@ -80,6 +80,7 @@
 	--accent-2: #0b3d91;
 	--on-accent: #ffffff;
 	--shape: #c9d4ff;
+	--shape-2: #fc3d21;
 	--shape-fill: #0b3d91;
 	--foam: #ffffff;
 	--grid-dot: #1a2350;
@@ -106,6 +107,7 @@
 	--accent-2: #306230;
 	--on-accent: #9bbc0f;
 	--shape: #0f380f;
+	--shape-2: #306230;
 	--shape-fill: #306230;
 	--foam: #e0f8d0;
 	--grid-dot: #8bac0f;
@@ -120,28 +122,29 @@
 	color-scheme: light;
 }
 
-:root[data-ptheme='violet'] {
-	--bg: #16132e;
-	--bg-2: #1d1940;
-	--bg-3: #252052;
-	--line: #262157;
-	--line-2: #36307a;
-	--fg: #ecebff;
-	--fg-2: #b4aee8;
-	--fg-3: #7a72bf;
-	--accent: #8f82ff;
-	--accent-2: #c3bbff;
-	--on-accent: #16132e;
-	--shape: #bdb5ff;
-	--shape-fill: #2c2660;
+:root[data-ptheme='sky'] {
+	--bg: #d4ebff;
+	--bg-2: #c4e2fc;
+	--bg-3: #b3d8f8;
+	--line: #a9cff2;
+	--line-2: #84b8e6;
+	--fg: #14204a;
+	--fg-2: #34467a;
+	--fg-3: #5b77a3;
+	--accent: #12d6a2;
+	--accent-2: #14204a;
+	--on-accent: #ffffff;
+	--shape: #1d2d7a;
+	--shape-2: #2ee8b6;
+	--shape-fill: #84b8e6;
 	--foam: #ffffff;
-	--grid-dot: #231e4c;
-	--font-display: 'Syne', 'Pretendard Variable', sans-serif;
-	--display-weight: 800;
+	--grid-dot: #bcdcf8;
+	--font-display: 'Bricolage Grotesque', 'Pretendard Variable', sans-serif;
+	--display-weight: 600;
 	--display-tracking: -0.03em;
-	--curtain-a: #0c0a1f;
-	--curtain-b: #3a3380;
-	color-scheme: dark;
+	--curtain-a: #14204a;
+	--curtain-b: #84b8e6;
+	color-scheme: light;
 }
 
 :root[data-ptheme='candy'] {
@@ -156,13 +159,14 @@
 	--accent: #ff5fa2;
 	--accent-2: #1b1f4a;
 	--on-accent: #ffffff;
-	--shape: #1b1f4a;
+	--shape: #f2478f;
+	--shape-2: #4f9dff;
 	--shape-fill: #f7b8cf;
 	--foam: #ffffff;
 	--grid-dot: #f6cfdf;
-	--font-display: 'Unbounded', 'Pretendard Variable', sans-serif;
+	--font-display: 'Grandstander', 'Pretendard Variable', sans-serif;
 	--display-weight: 700;
-	--display-tracking: -0.04em;
+	--display-tracking: -0.02em;
 	--curtain-a: #1b1f4a;
 	--curtain-b: #f7b8cf;
 	color-scheme: light;

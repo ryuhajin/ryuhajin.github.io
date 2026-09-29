@@ -1,0 +1,59 @@
+---
+// Plays a horizontal sprite of consecutive captures (equal square frames) as a stepped loop.
+// Runs only while its section is on screen (.s.is-active) and never under prefers-reduced-motion.
+interface Props {
+	sprite: string;
+	frames: number;
+	label: string;
+}
+const { sprite, frames, label } = Astro.props;
+---
+
+<div class="flip" role="img" aria-label={label} style={`--sprite: url('${sprite}'); --frames: ${frames}`}>
+	<div class="reel"></div>
+	<ol class="ticks" aria-hidden="true">{Array.from({ length: frames }, () => <li />)}</ol>
+</div>
+
+<style>
+	.flip {
+		display: grid;
+		gap: 0.5rem;
+	}
+	.reel {
+		aspect-ratio: 1;
+		width: 100%;
+		border-radius: 10px;
+		border: 1px solid var(--line-2);
+		background: var(--sprite) 0 0 / calc(var(--frames) * 100%) 100% no-repeat #000;
+		animation: flip calc(var(--frames) * 180ms) steps(var(--frames)) infinite;
+		animation-play-state: paused;
+	}
+	:global(.s.is-active) .reel {
+		animation-play-state: running;
+	}
+	.flip:hover .reel {
+		animation-duration: calc(var(--frames) * 360ms);
+	}
+	@keyframes flip {
+		to {
+			background-position-x: calc(var(--frames) / (var(--frames) - 1) * 100%);
+		}
+	}
+	.ticks {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(var(--frames), 1fr);
+		gap: 3px;
+	}
+	.ticks li {
+		height: 2px;
+		background: var(--line-2);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.reel {
+			animation: none;
+		}
+	}
+</style>
