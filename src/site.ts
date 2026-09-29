@@ -8,7 +8,7 @@ export const site = {
 	intro: '궁금한 장면이 생기면 직접 만들어 보고, 그 과정을 글로 남깁니다.\n이 사이트는 그 기록의 전시장입니다.',
 	location: 'Seoul, KR',
 	github: 'https://github.com/ryuhajin',
-	email: '',
+	email: 'edmbuffer@gmail.com',
 };
 
 export type NavId = 'projects' | 'notes' | 'about';

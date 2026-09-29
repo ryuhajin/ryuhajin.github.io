@@ -1,5 +1,5 @@
 ---
-// GitHub icon link + Thema picker.
+// GitHub icon link (+ optional email copy button) + Thema picker.
 import ThemaPicker, { type ThemaItem } from './ThemaPicker.astro';
 import { site } from '../../site';
 
@@ -12,8 +12,10 @@ interface Props {
 	};
 	align?: 'left' | 'right';
 	placement?: 'down' | 'up';
+	/** show the email button (copies the address on click) */
+	email?: boolean;
 }
-const { thema, align = 'right', placement = 'down' } = Astro.props;
+const { thema, align = 'right', placement = 'down', email = false } = Astro.props;
 ---
 
 <div class="nav-tools">
@@ -24,8 +26,27 @@ const { thema, align = 'right', placement = 'down' } = Astro.props;
 			></path>
 		</svg>
 	</a>
+	{
+		email && site.email && (
+			<button class="gh mail" type="button" data-copy-email={site.email} aria-label={`이메일 주소 복사: ${site.email}`}>
+				<svg viewBox="0 0 16 16" aria-hidden="true">
+					<rect x="1.5" y="3" width="13" height="10" rx="1.5"></rect>
+					<path d="M2 4l6 4.75L14 4"></path>
+				</svg>
+				<span class="tip" aria-hidden="true">
+					<span class="idle">{site.email}</span>
+					<span class="done">Copied ✓</span>
+				</span>
+			</button>
+		)
+	}
 	<ThemaPicker {...thema} align={align} placement={placement} />
 </div>
+
+<script>
+	import { initCopyEmail } from '../../scripts/copy-email';
+	initCopyEmail();
+</script>
 
 <style>
 	.nav-tools {
@@ -55,5 +76,68 @@ const { thema, align = 'right', placement = 'down' } = Astro.props;
 		width: 1rem;
 		height: 1rem;
 		fill: currentColor;
+	}
+	.mail {
+		position: relative;
+		padding: 0;
+		background: none;
+		font: inherit;
+		cursor: pointer;
+	}
+	/* only the icon tilts, so the tooltip below stays level */
+	.mail:hover {
+		transform: none;
+	}
+	.mail svg {
+		transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	.mail:hover svg {
+		transform: rotate(-8deg);
+	}
+	.mail svg {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.4;
+		stroke-linejoin: round;
+	}
+	/* the address on hover / focus, "Copied" after a click */
+	.tip {
+		position: absolute;
+		top: calc(100% + 0.5rem);
+		left: 50%;
+		translate: -50% 0;
+		padding: 0.35rem 0.6rem;
+		border: 1px solid var(--line-2, var(--sl-color-hairline-light));
+		border-radius: 6px;
+		background: var(--bg-2, var(--sl-color-bg-nav));
+		color: var(--fg, var(--sl-color-white));
+		font-family: var(--mono, var(--sl-font-mono));
+		font-size: 0.6875rem;
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+		pointer-events: none;
+		opacity: 0;
+		transform: translateY(-4px);
+		transition:
+			opacity 140ms,
+			transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	.mail:hover .tip,
+	.mail:focus-visible .tip,
+	.mail.copied .tip {
+		opacity: 1;
+		transform: none;
+	}
+	.tip .done,
+	.mail.copied .tip .idle {
+		display: none;
+	}
+	.mail.copied .tip .done {
+		display: inline;
+		color: var(--accent, var(--sl-color-accent));
+	}
+	.mail.copied {
+		border-color: var(--accent, var(--sl-color-accent));
+		transform: none;
 	}
 </style>

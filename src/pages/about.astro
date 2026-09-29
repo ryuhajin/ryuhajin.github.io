@@ -12,7 +12,6 @@ const skills: [string, string[]][] = [
 const contacts = [
 	{ label: 'GitHub', value: `@${site.handle}`, href: site.github },
 	{ label: 'Notes', value: '공부 기록', href: '/notes/' },
-	...(site.email ? [{ label: 'Email', value: site.email, href: `mailto:${site.email}` }] : []),
 ];
 ---
 
@@ -49,10 +48,28 @@ const contacts = [
 						</li>
 					))
 				}
+				{
+					site.email && (
+						<li>
+							<button class="copy" type="button" data-copy-email={site.email}>
+								<span class="mono">Email</span>
+								<span class="value">
+									<span class="idle">{site.email} ⧉</span>
+									<span class="done">복사됨 ✓</span>
+								</span>
+							</button>
+						</li>
+					)
+				}
 			</ul>
 		</section>
 	</main>
 </PortfolioLayout>
+
+<script>
+	import { initCopyEmail } from '../scripts/copy-email';
+	initCopyEmail();
+</script>
 
 <style>
 	.about {
@@ -125,7 +142,8 @@ const contacts = [
 		display: grid;
 		gap: 0.5rem;
 	}
-	.contacts a {
+	.contacts a,
+	.contacts .copy {
 		display: flex;
 		justify-content: space-between;
 		padding: 0.9rem 1rem;
@@ -136,10 +154,30 @@ const contacts = [
 			background-color var(--t-micro),
 			padding var(--t-fast) var(--ease-out);
 	}
-	.contacts a:hover {
+	.contacts a:hover,
+	.contacts .copy:hover {
 		border-color: var(--accent);
 		background: var(--bg-2);
 		padding-inline: 1.25rem 1rem;
+	}
+	.contacts .copy {
+		width: 100%;
+		background: none;
+		color: inherit;
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+	}
+	.copy .done,
+	.copy.copied .idle {
+		display: none;
+	}
+	.copy.copied .done {
+		display: inline;
+		color: var(--accent);
+	}
+	.copy.copied {
+		border-color: var(--accent);
 	}
 	@media (max-width: 820px) {
 		:global(body) {
