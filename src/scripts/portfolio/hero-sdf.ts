@@ -282,6 +282,7 @@ uniform float uGridFrom;  // x where the glyph grid starts, keeps the menu side 
 uniform vec3 uLine;       // figure + echoes
 uniform vec3 uFill;       // translucent planes
 uniform vec3 uGrid;       // glyph grid
+uniform float uGridOn;    // 0 hides the grid (preview: ?grid=0)
 
 #define ECHOES ${ECHOES}
 
@@ -337,7 +338,7 @@ void main() {
 	float on = step(flick, 0.25 + 0.55 * blot) * open * step(0.02, blot);
 	float mark = pixel ? 1.0 : glyph(f, hash(cell * 1.37 + 5.1));
 	float fieldFade = smoothstep(uGridFrom, uGridFrom + uRes.x * 0.22, fc.x);
-	float gridA = on * mark * blot * 0.5 * fieldFade;
+	float gridA = on * mark * blot * 0.5 * fieldFade * uGridOn;
 
 	// translucent planes under the lines
 	vec2 uv = fc / uRes;
@@ -425,7 +426,7 @@ export function initHeroSdf() {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
 	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uSeedA', 'uSeedB', 'uCompC', 'uU', 'uVel', 'uPx', 'uPixel'] as const;
-	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uGridFrom', 'uLine', 'uFill', 'uGrid'] as const;
+	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uGridFrom', 'uLine', 'uFill', 'uGrid', 'uGridOn'] as const;
 	let uf: Uniforms<(typeof figNames)[number]>;
 	let uc: Uniforms<(typeof compNames)[number]>;
 	const locate = <T extends string>(prog: WebGLProgram, names: readonly T[]) =>
@@ -436,6 +437,8 @@ export function initHeroSdf() {
 	const fbo = gl.createFramebuffer();
 
 	const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	// preview switch while deciding on the background: /?grid=0 hides the glyph grid
+	const gridOn = new URLSearchParams(location.search).get('grid') !== '0';
 	const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!;
 	let palette = readPalette(probe);
 	let playlist = PLAYLISTS[palette.set];
@@ -558,6 +561,7 @@ export function initHeroSdf() {
 		gl.uniform3fv(uc.uLine, palette.line);
 		gl.uniform3fv(uc.uFill, palette.fill);
 		gl.uniform3fv(uc.uGrid, palette.grid);
+		gl.uniform1f(uc.uGridOn, gridOn ? 1 : 0);
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 		gl.drawArrays(gl.TRIANGLES, 0, 3);
