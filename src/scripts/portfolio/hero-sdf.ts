@@ -75,6 +75,10 @@ uniform float uPixel;     // >1: pixelated (8-bit)
 uniform float uMenuX;     // px: nothing is drawn left of this (the menu)
 uniform vec4 uEdges[32];  // hypercube edges, projected on the CPU (figure units)
 
+// distance to the pieces drawn in the accent colour (a few lines / figures per scene); each figure / composition
+// writes it in its own units and scene() scales it like the ink distance
+float gAcc;
+
 // ---- line figures: distance to the ink in figure units (radius ≈ 1), <= 0 on the ink ----
 float sdBox(vec2 p, vec2 b) { vec2 q = abs(p) - b; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0); }
 // distance to an ellipse outline (first-order: |f| / |grad f|), good enough for hairlines
@@ -101,7 +105,9 @@ float figSquares(vec2 p) { // nested squares, each turned 8° and 8.5% smaller; 
 	float d = 1e3;
 	float s = 0.8;
 	for (int i = 0; i < 18; i++) {
-		d = min(d, abs(sdBox(rot(0.35 + float(i) * 0.14) * p, vec2(s))));
+		float k = abs(sdBox(rot(0.35 + float(i) * 0.14) * p, vec2(s)));
+		d = min(d, k);
+		if (mod(float(i), 6.0) == 3.0) gAcc = min(gAcc, k);
 		s *= 0.915;
 	}
 	return d;
@@ -111,13 +117,17 @@ float figGlobe(vec2 p) { // wireframe globe: outline, 7 latitudes, 6 turning lon
 	for (int i = 1; i < 8; i++) {
 		float phi = float(i) / 8.0 * 3.14159265 - 1.5707963;
 		float c = cos(phi);
-		d = min(d, ellipse(p - vec2(0.0, sin(phi) * 0.95), vec2(c * 0.95, c * 0.15)));
+		float k = ellipse(p - vec2(0.0, sin(phi) * 0.95), vec2(c * 0.95, c * 0.15));
+		d = min(d, k);
+		if (i == 4) gAcc = min(gAcc, k);
 	}
 	for (int i = 0; i < 6; i++) {
 		float c = abs(cos(float(i) / 6.0 * 3.14159265 + uTime * 0.25));
 		// a meridian seen edge-on collapses into a straight line through the middle: fade it out on the way there
 		float away = (1.0 - smoothstep(0.06, 0.24, c)) * 0.08;
-		d = min(d, ellipse(p, vec2(c * 0.95, 0.95)) + away);
+		float k = ellipse(p, vec2(c * 0.95, 0.95)) + away;
+		d = min(d, k);
+		if (i == 2) gAcc = min(gAcc, k);
 	}
 	return d;
 }
@@ -134,19 +144,25 @@ float figPentagram(vec2 p) { // a {10/3} star around four nested pentagon + pent
 		float fl = float(l);
 		float turn = (mod(fl, 2.0) * 2.0 - 1.0) * uTime * 0.1 * (1.0 + fl * 0.35);
 		vec2 q = rot(fl * 3.14159265 + turn) * p;
-		d = min(d, abs(sdPentagon(q, R * 0.809016994)));
+		float lv = abs(sdPentagon(q, R * 0.809016994));
 		for (int j = 0; j < 5; j++) {
 			float a0 = float(j) * 1.25663706;
 			float a1 = float(j + 2) * 1.25663706;
-			d = min(d, seg(q, R * vec2(sin(a0), cos(a0)), R * vec2(sin(a1), cos(a1))));
+			lv = min(lv, seg(q, R * vec2(sin(a0), cos(a0)), R * vec2(sin(a1), cos(a1))));
 		}
+		d = min(d, lv);
+		if (l == 1) gAcc = min(gAcc, lv);
 		R *= 0.381966;
 	}
 	return d;
 }
 float figHypercube(vec2 p) { // 32 edges of a rotating 4D cube, projected on the CPU
 	float d = 1e3;
-	for (int i = 0; i < 32; i++) d = min(d, seg(p, uEdges[i].xy, uEdges[i].zw));
+	for (int i = 0; i < 32; i++) {
+		float k = seg(p, uEdges[i].xy, uEdges[i].zw);
+		d = min(d, k);
+		if (mod(float(i), 8.0) == 3.0) gAcc = min(gAcc, k);
+	}
 	return d;
 }
 float figDotSphere(vec2 p) { // dots on a tilted, spinning sphere: foreshortening near the rim sells the depth
@@ -160,12 +176,15 @@ float figDotSphere(vec2 p) { // dots on a tilted, spinning sphere: foreshortenin
 	float lat = asin(clamp(n.y, -1.0, 1.0));
 	float lon = atan(n.x, n.z);
 	float rows = 14.0;
-	float latc = (floor((lat / 3.14159265 + 0.5) * rows) + 0.5) / rows * 3.14159265 - 1.5707963;
+	float row = floor((lat / 3.14159265 + 0.5) * rows);
+	float latc = (row + 0.5) / rows * 3.14159265 - 1.5707963;
 	float cols = max(1.0, floor(30.0 * cos(latc)));
 	float lonc = (floor((lon / 6.28318531 + 0.5) * cols) + 0.5) / cols * 6.28318531 - 3.14159265;
 	vec3 c = vec3(cos(latc) * sin(lonc), sin(latc), cos(latc) * cos(lonc));
 	float ang = acos(clamp(dot(n, c), -1.0, 1.0));
-	return min((ang - 0.055) * R, rim);
+	float dd = (ang - 0.055) * R;
+	if (row == 8.0) gAcc = min(gAcc, dd);
+	return min(dd, rim);
 }
 float figure(vec2 p, float id) {
 	if (id < 0.5) return figSquares(p);
@@ -205,7 +224,9 @@ float compOverlap(vec2 p, float seed, float soft, out float fill) {
 	float d = min(abs(r1), abs(r2));
 	vec2 cc = vec2(0.04 + 0.4 * (k.w - 0.5) + 0.09 * sin(t * 0.5), 0.3 + 0.2 * (k.y - 0.5));
 	float cr = mix(0.14, 0.26, k.z);
-	d = min(d, abs(length(p - cc) - cr));
+	float ring = abs(length(p - cc) - cr);
+	d = min(d, ring);
+	gAcc = min(gAcc, ring);
 	d = min(d, sdSeg(p, cc + vec2(cr, 0.0), vec2(1.05, cc.y)));
 	d = min(d, sdSeg(p, vec2(1.05, cc.y), vec2(1.55, -0.28)));
 	d = min(d, sdSeg(p, vec2(-1.0, -0.52 + 0.3 * (k.x - 0.5)), vec2(1.6, -0.74 + 0.3 * (k.w - 0.5) + 0.06 * sin(t * 0.6))));
@@ -218,11 +239,14 @@ float compOverlap(vec2 p, float seed, float soft, out float fill) {
 	vec2 tq = rot(t * 0.2 + e.x * 3.0) * (p - vec2(1.3 + 0.15 * e.x, 0.74 + 0.15 * e.y));
 	float tri = max(abs(tq.x) * 0.866 + tq.y * 0.5, -tq.y) - 0.13;                   // translucent triangle
 	d = min(d, abs(tri));
+	if (e.x > 0.0) gAcc = min(gAcc, abs(tri));
 	vec2 dc = vec2(-0.72 + 0.2 * e.y, 0.8 + 0.1 * e.x);
 	float dot0 = length(p - dc) - 0.075;                                               // translucent disc
 	d = min(d, abs(dot0));
 	fill = min(1.0, fill + 0.5 * inside(tri, soft) + 0.5 * inside(dot0, soft));
-	d = min(d, abs(sdBox(rot(-t * 0.25 + e.x * 2.0) * (p - vec2(1.0 + 0.2 * e.y, -1.0)), vec2(0.11)))); // turning square
+	float tsq = abs(sdBox(rot(-t * 0.25 + e.x * 2.0) * (p - vec2(1.0 + 0.2 * e.y, -1.0)), vec2(0.11))); // turning square
+	d = min(d, tsq);
+	if (e.x <= 0.0) gAcc = min(gAcc, tsq);
 	// a short double line: its angle and place change every appearance, and it keeps drifting and turning
 	vec2 lc = vec2(-0.38 + 0.35 * e.x + 0.08 * sin(t * 0.45 + e.y * 6.0), -1.0 + 0.05 * cos(t * 0.38 + e.x * 5.0));
 	mat2 lr = rot((e.y - 0.5) * 0.6 + 0.15 * sin(t * 0.3 + e.x * 4.0));
@@ -281,7 +305,9 @@ float compScatter(vec2 p, float seed, out float fill) {
 		float sz = unit * (0.06 + 0.08 * h2);
 		vec2 q = rot(t * (h.x - 0.5) * 0.6 + fi) * (p - pos) / sz;
 		float kind = floor(hash(vec2(fi * 3.1 + 1.0, seed)) * 6.0);
-		d = min(d, smallFigure(q, kind, sz, fill) * sz);
+		float k = smallFigure(q, kind, sz, fill) * sz;
+		d = min(d, k);
+		if (hash(vec2(fi * 5.9 + 2.0, seed)) < 0.25) gAcc = min(gAcc, k);
 	}
 	// drips: three streams of figures that get smaller as they run down
 	for (int j = 0; j < 3; j++) {
@@ -315,6 +341,7 @@ float compScatter(vec2 p, float seed, out float fill) {
 		if (hash(vec2(fi * 4.1, seed)) < 0.5) k = min(sdBox(q, vec2(1.0, 0.2)), sdBox(q, vec2(0.2, 1.0))); // +
 		else { float tw = 0.75 + 0.35 * sin(t * 2.2 + fi * 1.9); k = sdSparkle(q / tw) * tw; }              // sparkle
 		d = min(d, k * sz);
+		if (hash(vec2(fi * 6.7 + 4.0, seed)) < 0.35) gAcc = min(gAcc, k * sz);
 	}
 	// ~10 more marks spattered below the fan, down to the lower part of the screen: one per cell of a jittered 5×2
 	// split (a few cells left empty), widening and thinning out as they fall
@@ -336,6 +363,7 @@ float compScatter(vec2 p, float seed, out float fill) {
 		if (hash(vec2(fi * 4.1, seed)) < 0.5) k = min(sdBox(q, vec2(1.0, 0.2)), sdBox(q, vec2(0.2, 1.0))); // +
 		else { float tw = 0.75 + 0.35 * sin(t * 2.2 + fi * 1.9); k = sdSparkle(q / tw) * tw; }              // sparkle
 		d = min(d, k * sz);
+		if (hash(vec2(fi * 6.7 + 4.0, seed)) < 0.35) gAcc = min(gAcc, k * sz);
 	}
 	return d;
 }
@@ -351,23 +379,30 @@ vec3 fitRegion(vec2 want, float u, vec4 ext) {
 }
 
 // one scene: distance to the ink in px, plus a translucent fill (0..1)
-float scene(float id, float seed, vec2 fc, out float fill) {
+float scene(float id, float seed, vec2 fc, out float fill, out float acc) {
 	fill = 0.0;
+	gAcc = 1e5;
 	if (id < 4.5) {
 		vec2 q = rot(uRot) * stretch(fc - uCenter) / uR;
-		return figure(q, id) * uR;
+		float d = figure(q, id) * uR;
+		acc = gAcc * uR;
+		return d;
 	}
 	if (id < 5.5) {
 		// overlap: a different centre and size every appearance, within the area right of the menu
 		vec2 h = vec2(hash(vec2(seed, 31.0)), hash(vec2(seed, 32.0)));
 		vec2 want = mix(uRegion.xy, uRegion.zw, vec2(mix(0.42, 0.62, h.x), mix(0.35, 0.65, h.y)));
 		vec3 f = fitRegion(want, uU * mix(0.75, 1.1, hash(vec2(seed, 33.0))), vec4(1.15, 1.72, 1.3, 1.3));
-		return compOverlap(stretch(fc - f.xy) / f.z, seed, 1.0 / f.z, fill) * f.z;
+		float d = compOverlap(stretch(fc - f.xy) / f.z, seed, 1.0 / f.z, fill) * f.z;
+		acc = gAcc * f.z;
+		return d;
 	}
-	return compScatter(uCompC + stretch(fc - uCompC), seed, fill);
+	float d = compScatter(uCompC + stretch(fc - uCompC), seed, fill);
+	acc = gAcc;
+	return d;
 }
 
-// pass 1: r = ink, g = translucent fill
+// pass 1: r = ink, g = translucent fill, b = the part of the ink drawn in the accent colour
 void main() {
 	vec2 fc = gl_FragCoord.xy;
 	bool pixel = uPixel > 1.5;
@@ -375,16 +410,19 @@ void main() {
 	// 8-bit: every block the line passes through lights up, so lines stay one block thick and unbroken
 	float hw = pixel ? 0.55 * uPixel : 0.6 * uPx;
 	float aa = pixel ? 0.0 : 1.0;
-	float fill;
-	float d = scene(uA, uSeedA, fc, fill);
+	float fill, acc;
+	float d = scene(uA, uSeedA, fc, fill, acc);
 	if (uMix > 0.001) { // blending the two fields is the morph
-		float fillB;
-		float dB = scene(uB, uSeedB, fc, fillB);
+		float fillB, accB;
+		float dB = scene(uB, uSeedB, fc, fillB, accB);
 		d = mix(d, dB, uMix);
 		fill = mix(fill, fillB, uMix);
+		float cap = 30.0 * uPx; // accent pieces without a partner fade out mid-morph instead of jumping
+		acc = mix(min(acc, cap), min(accB, cap), uMix);
 	}
 	float keep = smoothstep(uMenuX, uMenuX + 80.0 * uPx, fc.x);
-	gl_FragColor = vec4(lineAt(max(d, 0.0), hw, aa) * keep, fill * keep, 0.0, 1.0);
+	float ink = lineAt(max(d, 0.0), hw, aa) * keep;
+	gl_FragColor = vec4(ink, fill * keep, min(ink, lineAt(max(acc, 0.0), hw, aa) * keep), 1.0);
 }
 `;
 
@@ -401,17 +439,20 @@ uniform float uPixel;
 uniform float uMenuX;     // px: nothing is drawn left of this (the menu)
 uniform vec3 uLine;       // figure + echoes
 uniform vec3 uFill;       // translucent planes
+uniform vec3 uAcc;        // the accent pieces
+uniform vec3 uBg;         // page background under the canvas
 
 #define ECHOES ${ECHOES}
 
-float ink(vec2 fc) {
+// (ink, accent ink)
+vec2 ink(vec2 fc) {
 	vec2 uv = fc / uRes;
-	if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) return 0.0;
-	return texture2D(uFig, uv).r;
+	if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) return vec2(0.0);
+	return texture2D(uFig, uv).rb;
 }
 // the figure plus its echo stack, seen from one sample point
-float stack(vec2 fc) {
-	float a = ink(fc);
+vec2 stack(vec2 fc) {
+	vec2 a = ink(fc);
 	bool pixel = uPixel > 1.5;
 	for (int i = 1; i < ECHOES; i++) {
 		float fi = float(i);
@@ -435,10 +476,16 @@ void main() {
 	bool pixel = uPixel > 1.5;
 	if (pixel) fc = (floor(fc / uPixel) + 0.5) * uPixel;
 
-	// figure + echoes, channel-split by velocity (only paid for while something moves)
-	float g = stack(fc);
-	vec3 lineA = vec3(g);
-	if (!pixel && dot(uSplit, uSplit) > 0.25) lineA = vec3(stack(fc + uSplit), g, stack(fc - uSplit));
+	// figure + echoes, channel-split by velocity (only paid for while something moves); per channel: (ink, accent)
+	vec2 sG = stack(fc);
+	vec2 sR = sG;
+	vec2 sB = sG;
+	if (!pixel && dot(uSplit, uSplit) > 0.25) {
+		sR = stack(fc + uSplit);
+		sB = stack(fc - uSplit);
+	}
+	vec3 lineA = vec3(sR.x, sG.x, sB.x);
+	vec3 accA = vec3(sR.y, sG.y, sB.y);
 
 	// translucent planes under the lines
 	vec2 uv = fc / uRes;
@@ -446,21 +493,32 @@ void main() {
 	if (pixel) {
 		// 8-bit: no partial alpha — fading echoes and planes become an ordered dither in the line colour
 		float th = bayer4(floor(gl_FragCoord.xy / uPixel));
-		lineA = vec3(step(th, g * g));
+		lineA = vec3(step(th, sG.x * sG.x));
+		accA = min(lineA, vec3(step(th, sG.y * sG.y)));
 		fillA = step(th, fillA * 2.5) * 0.6;
 	}
 
 	// echoes can reach back past the menu edge: fade them there too
-	lineA *= smoothstep(uMenuX, uMenuX + 80.0 * uPx, fc.x);
-	float alpha = max(max(lineA.r, lineA.g), lineA.b);
-	vec3 col = uLine * lineA + uFill * fillA * (1.0 - alpha);
-	alpha = alpha + fillA * (1.0 - alpha);
-	gl_FragColor = vec4(col, alpha);
+	float fade = smoothstep(uMenuX, uMenuX + 80.0 * uPx, fc.x);
+	lineA *= fade;
+	accA *= fade;
+
+	// the colour each channel should end up with over the page background — planes, then lines, then accent pieces.
+	// Mixing per channel keeps the split right on any background: on dark ones the channels add up (R/G/B fringes),
+	// on light ones they subtract (C/M/Y fringes, like misregistered print) instead of turning into dark smears.
+	vec3 target = mix(uBg, uFill, fillA);
+	target = mix(target, uLine, lineA);
+	target = mix(target, uAcc, accA);
+	float alpha = max(fillA, max(max(lineA.r, lineA.g), lineA.b));
+	// premultiplied output that lands on target once blended over uBg
+	gl_FragColor = vec4(clamp(target - uBg * (1.0 - alpha), 0.0, alpha), alpha);
 }
 `;
 
 interface Palette {
 	line: number[];
+	accent: number[];
+	bg: number[];
 	fill: number[];
 	set: ShapeSet;
 }
@@ -480,6 +538,8 @@ function readPalette(probe: CanvasRenderingContext2D): Palette {
 	const id = document.documentElement.dataset.ptheme;
 	return {
 		line: v('--shape'),
+		accent: v('--shape-2'),
+		bg: v('--bg'),
 		fill: v('--shape'),
 		set: themas.find((t) => t.id === id)?.shapes ?? 'geo',
 	};
@@ -557,7 +617,7 @@ export function initHeroSdf() {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
 	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uSeedA', 'uSeedB', 'uCompC', 'uRegion', 'uStage', 'uU', 'uVel', 'uPx', 'uPixel', 'uMenuX', 'uEdges'] as const;
-	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uMenuX', 'uLine', 'uFill'] as const;
+	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uMenuX', 'uLine', 'uFill', 'uAcc', 'uBg'] as const;
 	let uf: Uniforms<(typeof figNames)[number]>;
 	let uc: Uniforms<(typeof compNames)[number]>;
 	const locate = <T extends string>(prog: WebGLProgram, names: readonly T[]) =>
@@ -706,6 +766,8 @@ export function initHeroSdf() {
 		gl.uniform1f(uc.uMenuX, menuX);
 		gl.uniform3fv(uc.uLine, palette.line);
 		gl.uniform3fv(uc.uFill, palette.fill);
+		gl.uniform3fv(uc.uAcc, palette.accent);
+		gl.uniform3fv(uc.uBg, palette.bg);
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 		gl.drawArrays(gl.TRIANGLES, 0, 3);

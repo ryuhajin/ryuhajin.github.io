@@ -54,12 +54,12 @@ export const themas: Thema[] = [
 		shapes: 'pixel',
 	},
 	{
-		id: 'violet',
-		label: 'Violet',
-		bg: '#16132e',
-		fg: '#ecebff',
+		id: 'sky',
+		label: 'Sky',
+		bg: '#d4ebff',
+		fg: '#14204a',
 		font: "'Bricolage Grotesque', sans-serif",
-		swatches: ['#16132e', '#2c2660', '#7b6cff', '#a99cff', '#ecebff'],
+		swatches: ['#d4ebff', '#84b8e6', '#1d2d7a', '#7a3cff', '#ffffff'],
 		shapes: 'geo',
 	},
 	{
