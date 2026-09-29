@@ -1,12 +1,13 @@
 // One-shot: convert project screenshots / clips from their working folders into web-sized files under
 // public/projects/<slug>/. Only the outputs are committed; re-run when the source captures change.
 //   node scripts/import-project-media.mjs [slug ...]
-// Needs sharp (dependency) and ffmpeg on PATH (for the loop clips).
+// Needs sharp (dependency) and ffmpeg on PATH (for the loop clips and slideshows).
 
 import sharp from 'sharp';
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, existsSync, statSync } from 'node:fs';
+import { mkdirSync, existsSync, statSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 
 const SHOTS = 'C:/Users/da171/OneDrive/Desktop/figma-bridge/shots';
 const VIDEO = 'C:/Users/da171/OneDrive/Desktop/figma-bridge/video';
@@ -16,12 +17,15 @@ const FIG = process.env.FIG_EXPORT ?? 'C:/Users/da171/AppData/Local/Temp/claude/
 const CAP = process.env.CAPTURES ?? 'C:/Users/da171/AppData/Local/Temp/claude/mlx-captures';
 
 const W = { hero: 1920, wide: 1600, gallery: 1200, tile: 640, thumb: 480 };
+// FDF test maps whose wireframe still reads with thick lines (the 500×500 ones turn into solid white)
+const FDF_MAPS = ['t2', '50-4', '20-60', 'elem2', 'pyramide', '42'];
 
-/** @typedef {{ out: string, src: string, width?: number, crop?: [number, number, number, number], q?: number }} Img */
+/** @typedef {{ out: string, src: string, width?: number, crop?: [number, number, number, number], q?: number, frame?: boolean }} Img */
 /** @typedef {{ out: string, src: string, frames: string[], size: number }} Sprite */
-/** @typedef {{ out: string, src: string, cuts: [number, number][], crop?: string, crf?: number, height?: number }} Clip */
+/** @typedef {{ out: string, src: string, cuts: [number, number][], crop?: string, crf?: number, height?: number, speed?: number, xfade?: number }} Clip */
+/** @typedef {{ out: string, frames: string[], hold: number, fade: number, bg: string, frame?: boolean }} Slides */
 
-/** @type {Record<string, { images?: Img[], sprites?: Sprite[], clips?: Clip[] }>} */
+/** @type {Record<string, { images?: Img[], sprites?: Sprite[], clips?: Clip[], slides?: Slides[] }>} */
 const manifest = {
 	'volumetric-cloud': {
 		images: [
@@ -53,10 +57,14 @@ const manifest = {
 			{
 				out: 'cover.mp4',
 				src: `${VIDEO}/Volumetric_Cloud.mp4`,
+				// noon F6 → lavender F6, both continuous shots, joined by a cross-fade
 				cuts: [
-					[36.2, 38.9],
-					[41.1, 43.9],
+					[36.3, 38.6],
+					[41.3, 43.6],
 				],
+				xfade: 0.8,
+				// clouds read better slightly slowed down, and the loop gets long enough to settle
+				speed: 0.75,
 				// trims the small section label in the top-right corner
 				crop: 'crop=1728:972:96:108',
 			},
@@ -94,7 +102,8 @@ const manifest = {
 			{
 				out: 'cover.mp4',
 				src: `${VIDEO}/SDFs_Deck.mp4`,
-				cuts: [[27, 35]],
+				cuts: [[9, 45]],
+				speed: 3,
 			},
 		],
 	},
@@ -109,13 +118,31 @@ const manifest = {
 			{ out: 'step-5.webp', src: `${SHOTS}/toon/toon_s5_final.png` },
 			...[1, 2, 3, 4, 5].map((n) => ({ out: `exp-${n}.webp`, src: `${FIG}/toon-exp${n}.png` })),
 		],
+		// hover preview: the pass-by-pass build-up, then the colour experiments
+		slides: [
+			{
+				out: 'cover.mp4',
+				frames: [
+					...['s1_outline', 's2_lambert', 's3_cel', 's6_spec_norim', 's5_final'].map((f) => `${SHOTS}/toon/toon_${f}.png`),
+					`${SHOTS}/toon/toon-final-norim-wide.png`,
+					...[1, 2, 3, 4, 5].map((n) => `${FIG}/toon-exp${n}.png`),
+				],
+				hold: 0.9,
+				fade: 0.35,
+				bg: '#7f7f7f',
+				// trim the grey around each sphere so every slide shows it at the same size
+				frame: true,
+			},
+		],
 	},
 	fdf: {
-		images: ['t1', '42', 'pyra', 'mars', 'julia', 'elem-fract'].map((m, i) => ({
+		images: FDF_MAPS.map((m, i) => ({
 			out: i === 0 ? 'cover.webp' : `map-${m}.webp`,
-			src: `${CAP}/fdf/${m}.png`,
+			src: `${CAP}/fdf-final/${m}.png`,
 			width: W.hero,
+			frame: true,
 		})),
+		slides: [{ out: 'cover.mp4', frames: FDF_MAPS.map((m) => `${CAP}/fdf-final/${m}.png`), hold: 1.1, fade: 0.4, bg: '#000', frame: true }],
 	},
 	cub3d: {
 		images: [
@@ -134,8 +161,23 @@ function range(prefix, n) {
 
 const kb = (f) => `${Math.round(statSync(f).size / 1024)} KB`;
 
-async function image(dir, { out, src, width, crop, q = 80 }) {
-	let img = sharp(src);
+/** Trim the flat background around a drawing, then pad it back out to 16:9 with some breathing room. */
+async function framed(src, bg) {
+	// flatten first: sharp trims before it composites, so transparent corners would stop the trim
+	const flat = await sharp(src).flatten({ background: bg }).png().toBuffer();
+	const { data, info } = await sharp(flat).trim({ background: bg, threshold: 12 }).toBuffer({ resolveWithObject: true });
+	const pad = 1.25;
+	let w = Math.round(info.width * pad);
+	let h = Math.round(info.height * pad);
+	if (w / h > 16 / 9) h = Math.round((w * 9) / 16);
+	else w = Math.round((h * 16) / 9);
+	const left = Math.floor((w - info.width) / 2);
+	const top = Math.floor((h - info.height) / 2);
+	return sharp(data).extend({ left, top, right: w - info.width - left, bottom: h - info.height - top, background: bg });
+}
+
+async function image(dir, { out, src, width, crop, q = 80, frame = false }) {
+	let img = frame ? await framed(src, '#000') : sharp(src);
 	if (crop) img = img.extract({ left: crop[0], top: crop[1], width: crop[2], height: crop[3] });
 	if (width) img = img.resize({ width, withoutEnlargement: true });
 	const dest = join(dir, out);
@@ -155,18 +197,64 @@ async function sprite(dir, { out, src, frames, size }) {
 	console.log('  ', out.padEnd(28), kb(dest), `(${frames.length} frames)`);
 }
 
-function clip(dir, { out, src, cuts, crop, crf = 26, height = 720 }) {
+const encode = (crf) => ['-an', '-pix_fmt', 'yuv420p', '-c:v', 'libx264', '-preset', 'slow', '-crf', String(crf), '-profile:v', 'high', '-movflags', '+faststart'];
+
+/** Chain [v0][v1]… with cross-fades into [out]; input i lasts lens[i] seconds. */
+function xfadeChain(lens, fade) {
+	const steps = [];
+	let acc = lens[0];
+	let prev = 'v0';
+	for (let i = 1; i < lens.length; i++) {
+		const next = i === lens.length - 1 ? 'out' : `x${i}`;
+		steps.push(`[${prev}][v${i}]xfade=transition=fade:duration=${fade}:offset=${(acc - fade).toFixed(3)}[${next}]`);
+		acc += lens[i] - fade;
+		prev = next;
+	}
+	return steps;
+}
+
+function clip(dir, { out, src, cuts, crop, crf = 26, height = 720, speed = 1, xfade = 0 }) {
 	const dest = join(dir, out);
 	const scale = `${crop ? crop + ',' : ''}scale=-2:${height}:flags=lanczos,fps=30,format=yuv420p`;
-	const parts = cuts.map(([a, b], i) => `[0:v]trim=${a}:${b},setpts=PTS-STARTPTS,${scale}[v${i}]`);
-	const concat = `${cuts.map((_, i) => `[v${i}]`).join('')}concat=n=${cuts.length}:v=1:a=0[out]`;
-	execFileSync(
-		'ffmpeg',
-		['-v', 'error', '-y', '-i', src, '-filter_complex', [...parts, concat].join(';'), '-map', '[out]', '-an',
-			'-c:v', 'libx264', '-preset', 'slow', '-crf', String(crf), '-profile:v', 'high', '-movflags', '+faststart', dest],
-		{ stdio: 'inherit' }
-	);
+	const parts = cuts.map(([a, b], i) => `[0:v]trim=${a}:${b},setpts=(PTS-STARTPTS)/${speed},${scale}[v${i}]`);
+	const joined =
+		cuts.length === 1
+			? ['[v0]null[out]']
+			: xfade
+				? xfadeChain(cuts.map(([a, b]) => (b - a) / speed), xfade)
+				: [`${cuts.map((_, i) => `[v${i}]`).join('')}concat=n=${cuts.length}:v=1:a=0[out]`];
+	execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', src, '-filter_complex', [...parts, ...joined].join(';'), '-map', '[out]', ...encode(crf), dest], {
+		stdio: 'inherit',
+	});
 	console.log('  ', out.padEnd(28), kb(dest));
+}
+
+/** Still images → a cross-fading 1280×720 loop, for projects without footage. */
+async function slides(dir, { out, frames, hold, fade, bg, frame = false }) {
+	const tmp = mkdtempSync(join(tmpdir(), 'slides-'));
+	try {
+		const pngs = [];
+		for (const [i, f] of frames.entries()) {
+			const base = frame ? await framed(f, bg) : sharp(f).flatten({ background: bg });
+			const png = join(tmp, `${i}.png`);
+			await sharp(await base.png().toBuffer())
+				.resize(1280, 720, { fit: 'contain', background: bg, kernel: 'lanczos3' })
+				.flatten({ background: bg })
+				.png()
+				.toFile(png);
+			pngs.push(png);
+		}
+		const len = hold + fade;
+		const inputs = pngs.flatMap((p) => ['-loop', '1', '-t', String(len), '-framerate', '30', '-i', p]);
+		const parts = pngs.map((_, i) => `[${i}:v]format=yuv420p,setsar=1[v${i}]`);
+		const dest = join(dir, out);
+		execFileSync('ffmpeg', ['-v', 'error', '-y', ...inputs, '-filter_complex', [...parts, ...xfadeChain(pngs.map(() => len), fade)].join(';'), '-map', '[out]', ...encode(28), dest], {
+			stdio: 'inherit',
+		});
+		console.log('  ', out.padEnd(28), kb(dest), `(${frames.length} slides)`);
+	} finally {
+		rmSync(tmp, { recursive: true, force: true });
+	}
 }
 
 const only = process.argv.slice(2);
@@ -175,7 +263,9 @@ for (const [slug, m] of Object.entries(manifest)) {
 	const dir = join('public/projects', slug);
 	mkdirSync(dir, { recursive: true });
 	console.log(slug);
-	const missing = [...(m.images ?? []).map((i) => i.src), ...(m.clips ?? []).map((c) => c.src)].filter((s) => !existsSync(s));
+	const missing = [...(m.images ?? []).map((i) => i.src), ...(m.clips ?? []).map((c) => c.src), ...(m.slides ?? []).flatMap((sl) => sl.frames)].filter(
+		(f) => !existsSync(f)
+	);
 	if (missing.length) {
 		console.warn('   skipped — missing sources:\n    ' + missing.join('\n    '));
 		continue;
@@ -183,4 +273,5 @@ for (const [slug, m] of Object.entries(manifest)) {
 	for (const i of m.images ?? []) await image(dir, i);
 	for (const s of m.sprites ?? []) await sprite(dir, s);
 	for (const c of m.clips ?? []) clip(dir, c);
+	for (const sl of m.slides ?? []) await slides(dir, sl);
 }

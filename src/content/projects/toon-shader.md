@@ -9,6 +9,7 @@ stack: [C++, DirectX 11, HLSL, Win32]
 accent: '#fb923c'
 cover:
   poster: /projects/toon-shader/cover.webp
+  video: /projects/toon-shader/cover.mp4
   alt: 회색 배경 위에 어두운 외곽선과 밝은 살구색, 주황색 두 단계 명암으로 칠해진 구
 overview: >-
   3D 모델에 애니메이션처럼 손으로 그린 듯한 외곽선과 단계적인 명암을 입히는 툰 셰이더입니다.
