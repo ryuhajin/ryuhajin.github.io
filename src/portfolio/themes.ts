@@ -1,5 +1,5 @@
 // Portfolio "Thema" list. Colors/fonts for each id live in src/styles/portfolio-themes.css ([data-ptheme='<id>']).
-// `shapes` selects the landing-page decoration set (see HeroShapes.astro).
+// `shapes` picks the landing-page shape playlist (and pixel rendering for 'pixel') — see scripts/portfolio/hero-sdf.ts.
 // To add a theme: add an entry here + a matching block in portfolio-themes.css.
 
 export type ShapeSet = 'geo' | 'space' | 'candy' | 'pixel';

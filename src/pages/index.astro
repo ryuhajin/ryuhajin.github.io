@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import PortfolioLayout from '../layouts/PortfolioLayout.astro';
 import SiteNav from '../components/portfolio/SiteNav.astro';
-import HeroShapes from '../components/portfolio/HeroShapes.astro';
+import HeroSdf from '../components/portfolio/HeroSdf.astro';
 import Brand from '../components/shared/Brand.astro';
 import { site } from '../site';
 import { hoverSets } from '../portfolio/hover-sets';
@@ -18,7 +18,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 	<main class="home">
 		<!-- decoration stage: everything above the bottom bar, clipped so nothing runs into it -->
 		<div class="stage" aria-hidden="true">
-			<HeroShapes />
+			<HeroSdf />
 		</div>
 
 		<header class="top">
@@ -45,11 +45,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 <script>
 	import { initCursorTrail } from '../scripts/portfolio/cursor-trail';
-	import { initHeroShapes } from '../scripts/portfolio/hero-shapes';
+	import { initHeroSdf } from '../scripts/portfolio/hero-sdf';
 	import { initKickerHint } from '../scripts/portfolio/kicker-hint';
 
 	initCursorTrail();
-	initHeroShapes();
+	initHeroSdf();
 	initKickerHint();
 
 	// date + time in Seoul (the site owner's time zone), regardless of where the visitor is
