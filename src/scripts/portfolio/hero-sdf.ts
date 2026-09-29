@@ -78,6 +78,8 @@ uniform vec4 uEdges[32];  // hypercube edges, projected on the CPU (figure units
 // distance to the pieces drawn in the accent colour (a few lines / figures per scene); each figure / composition
 // writes it in its own units and scene() scales it like the ink distance
 float gAcc;
+float gSlot; // 0 while evaluating scene A, 1 for scene B (B is the next appearance)
+#define CYCLE ${(HOLD + MORPH).toFixed(3)}
 
 // ---- line figures: distance to the ink in figure units (radius ≈ 1), <= 0 on the ink ----
 float sdBox(vec2 p, vec2 b) { vec2 q = abs(p) - b; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0); }
@@ -107,7 +109,7 @@ float figSquares(vec2 p) { // nested squares, each turned 8° and 8.5% smaller; 
 	for (int i = 0; i < 18; i++) {
 		float k = abs(sdBox(rot(0.35 + float(i) * 0.14) * p, vec2(s)));
 		d = min(d, k);
-		if (mod(float(i), 6.0) == 3.0) gAcc = min(gAcc, k);
+		if (mod(float(i), 12.0) == 3.0) gAcc = min(gAcc, k);
 		s *= 0.915;
 	}
 	return d;
@@ -117,9 +119,7 @@ float figGlobe(vec2 p) { // wireframe globe: outline, 7 latitudes, 6 turning lon
 	for (int i = 1; i < 8; i++) {
 		float phi = float(i) / 8.0 * 3.14159265 - 1.5707963;
 		float c = cos(phi);
-		float k = ellipse(p - vec2(0.0, sin(phi) * 0.95), vec2(c * 0.95, c * 0.15));
-		d = min(d, k);
-		if (i == 4) gAcc = min(gAcc, k);
+		d = min(d, ellipse(p - vec2(0.0, sin(phi) * 0.95), vec2(c * 0.95, c * 0.15)));
 	}
 	for (int i = 0; i < 6; i++) {
 		float c = abs(cos(float(i) / 6.0 * 3.14159265 + uTime * 0.25));
@@ -161,7 +161,7 @@ float figHypercube(vec2 p) { // 32 edges of a rotating 4D cube, projected on the
 	for (int i = 0; i < 32; i++) {
 		float k = seg(p, uEdges[i].xy, uEdges[i].zw);
 		d = min(d, k);
-		if (mod(float(i), 8.0) == 3.0) gAcc = min(gAcc, k);
+		if (mod(float(i), 16.0) == 3.0) gAcc = min(gAcc, k);
 	}
 	return d;
 }
@@ -179,11 +179,23 @@ float figDotSphere(vec2 p) { // dots on a tilted, spinning sphere: foreshortenin
 	float row = floor((lat / 3.14159265 + 0.5) * rows);
 	float latc = (row + 0.5) / rows * 3.14159265 - 1.5707963;
 	float cols = max(1.0, floor(30.0 * cos(latc)));
-	float lonc = (floor((lon / 6.28318531 + 0.5) * cols) + 0.5) / cols * 6.28318531 - 3.14159265;
+	float col = floor((lon / 6.28318531 + 0.5) * cols);
+	// the accent dot: the one under a fixed view point (upper right of the visible face) when this appearance began,
+	// carried round by the spin from there — so it always starts in view and travels across it
+	float j = floor(uTime / CYCLE) + gSlot;
+	float t0 = j * CYCLE;
+	vec2 s0 = rot(t0 * 0.05 + j * 0.6) * vec2(-0.35, 0.45) / R; // the figure's own turn (uRot) when it settled
+	vec3 v0 = vec3(s0, sqrt(1.0 - dot(s0, s0)));
+	v0.yz = rot(-0.4) * v0.yz;
+	v0.xz = rot(t0 * 0.35) * v0.xz;
+	float row0 = floor((asin(clamp(v0.y, -1.0, 1.0)) / 3.14159265 + 0.5) * rows);
+	float cols0 = max(1.0, floor(30.0 * cos((row0 + 0.5) / rows * 3.14159265 - 1.5707963)));
+	float col0 = floor((atan(v0.x, v0.z) / 6.28318531 + 0.5) * cols0);
+	float lonc = (col + 0.5) / cols * 6.28318531 - 3.14159265;
 	vec3 c = vec3(cos(latc) * sin(lonc), sin(latc), cos(latc) * cos(lonc));
 	float ang = acos(clamp(dot(n, c), -1.0, 1.0));
 	float dd = (ang - 0.055) * R;
-	if (row == 8.0) gAcc = min(gAcc, dd);
+	if (row == row0 && col == col0) gAcc = min(gAcc, dd);
 	return min(dd, rim);
 }
 float figure(vec2 p, float id) {
@@ -341,7 +353,7 @@ float compScatter(vec2 p, float seed, out float fill) {
 		if (hash(vec2(fi * 4.1, seed)) < 0.5) k = min(sdBox(q, vec2(1.0, 0.2)), sdBox(q, vec2(0.2, 1.0))); // +
 		else { float tw = 0.75 + 0.35 * sin(t * 2.2 + fi * 1.9); k = sdSparkle(q / tw) * tw; }              // sparkle
 		d = min(d, k * sz);
-		if (hash(vec2(fi * 6.7 + 4.0, seed)) < 0.35) gAcc = min(gAcc, k * sz);
+		if (hash(vec2(fi * 6.7 + 4.0, seed)) < 0.2) gAcc = min(gAcc, k * sz);
 	}
 	// ~10 more marks spattered below the fan, down to the lower part of the screen: one per cell of a jittered 5×2
 	// split (a few cells left empty), widening and thinning out as they fall
@@ -363,7 +375,7 @@ float compScatter(vec2 p, float seed, out float fill) {
 		if (hash(vec2(fi * 4.1, seed)) < 0.5) k = min(sdBox(q, vec2(1.0, 0.2)), sdBox(q, vec2(0.2, 1.0))); // +
 		else { float tw = 0.75 + 0.35 * sin(t * 2.2 + fi * 1.9); k = sdSparkle(q / tw) * tw; }              // sparkle
 		d = min(d, k * sz);
-		if (hash(vec2(fi * 6.7 + 4.0, seed)) < 0.35) gAcc = min(gAcc, k * sz);
+		if (hash(vec2(fi * 6.7 + 4.0, seed)) < 0.2) gAcc = min(gAcc, k * sz);
 	}
 	return d;
 }
@@ -411,9 +423,11 @@ void main() {
 	float hw = pixel ? 0.55 * uPixel : 0.6 * uPx;
 	float aa = pixel ? 0.0 : 1.0;
 	float fill, acc;
+	gSlot = 0.0;
 	float d = scene(uA, uSeedA, fc, fill, acc);
 	if (uMix > 0.001) { // blending the two fields is the morph
 		float fillB, accB;
+		gSlot = 1.0;
 		float dB = scene(uB, uSeedB, fc, fillB, accB);
 		d = mix(d, dB, uMix);
 		fill = mix(fill, fillB, uMix);
@@ -779,6 +793,9 @@ export function initHeroSdf() {
 		uf = locate(figureProg, figNames);
 		uc = locate(compositeProg, compNames);
 		started = true;
+		// the theme may have changed while the shaders compiled
+		palette = readPalette(probe);
+		playlist = PLAYLISTS[palette.set];
 		new ResizeObserver(() => {
 			resize();
 			if (still) draw(0, 0);

@@ -59,7 +59,7 @@ export const themas: Thema[] = [
 		bg: '#d4ebff',
 		fg: '#14204a',
 		font: "'Bricolage Grotesque', sans-serif",
-		swatches: ['#d4ebff', '#84b8e6', '#1d2d7a', '#7a3cff', '#ffffff'],
+		swatches: ['#d4ebff', '#84b8e6', '#1d2d7a', '#10c49a', '#ffffff'],
 		shapes: 'geo',
 	},
 	{
