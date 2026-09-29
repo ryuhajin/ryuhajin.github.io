@@ -10,7 +10,7 @@ accent: '#38bdf8'
 cover:
   poster: /projects/fdf/cover.webp
   video: /projects/fdf/cover.mp4
-  alt: 검은 배경 위에 흰 선으로 그려진, 한쪽으로 솟은 산맥 모양의 등각 투영 와이어프레임 지형 (t2.fdf)
+  alt: 검은 배경 위에 흰 선으로 그려진, 한쪽으로 산맥이 솟은 등각 투영 와이어프레임 지형 (t1.fdf)
 overview: >-
   FdF 프로젝트의 목표는 입력된 텍스트 데이터를 3차원 공간상의 좌표로 인식하고,
   이 점들을 선으로 연결하여 와이어프레임 형태의 3D 지도를 그리는 것입니다.
@@ -26,7 +26,7 @@ specs:
   - label: Input
     value: .fdf 텍스트 지도 (공백으로 구분한 정수 높이 값)
   - label: Capture
-    value: minilibx-linux 포팅 빌드(WSL2) · 3840×2160 버퍼를 저장해 1920으로 축소
+    value: minilibx-linux 포팅 빌드(WSL2) · 3840×2160 버퍼를 저장해 1920으로 축소, 높이 3배
 techniques:
   - title: Isometric Projection
     sub: 등각 투영
@@ -56,20 +56,20 @@ galleries:
   - title: Maps
     kicker: Output
     cols: 3
-    caption: 과제 테스트 지도들을 같은 프로그램으로 렌더링한 결과입니다. macOS 전용 MiniLibX(Swift · Metal)로 만든 과제라, 코드는 그대로 두고 minilibx-linux로 포팅해 WSL2에서 이미지 버퍼를 저장했습니다. 웹에서 선이 뭉개지지 않도록 촬영 빌드에서만 4K 해상도와 3px 선으로 그린 뒤 축소했습니다.
+    caption: 과제 테스트 지도들을 같은 프로그램으로 렌더링한 결과입니다. macOS 전용 MiniLibX(Swift · Metal)로 만든 과제라, 코드는 그대로 두고 minilibx-linux로 포팅해 WSL2에서 이미지 버퍼를 저장했습니다. 촬영 빌드에서만 높이를 3배로 키우고 4K로 그린 뒤 축소했습니다 (성긴 42·pyra는 3px 선).
     items:
       - src: /projects/fdf/cover.webp
-        label: t2.fdf
-      - src: /projects/fdf/map-50-4.webp
-        label: 50-4.fdf
-      - src: /projects/fdf/map-20-60.webp
-        label: 20-60.fdf
-      - src: /projects/fdf/map-elem2.webp
-        label: elem2.fdf
-      - src: /projects/fdf/map-pyramide.webp
-        label: pyramide.fdf
+        label: t1.fdf
       - src: /projects/fdf/map-42.webp
         label: 42.fdf
+      - src: /projects/fdf/map-pyra.webp
+        label: pyra.fdf
+      - src: /projects/fdf/map-mars.webp
+        label: mars.fdf
+      - src: /projects/fdf/map-julia.webp
+        label: julia.fdf
+      - src: /projects/fdf/map-elem-fract.webp
+        label: elem-fract.fdf
 problems:
   - title: 정수 좌표의 누적 오차
     problem: 처음에는 좌표를 int로 계산해, 투영과 스케일을 거치면서 선이 어긋나고 도형이 찌그러졌습니다.

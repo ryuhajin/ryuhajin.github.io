@@ -17,8 +17,9 @@ const FIG = process.env.FIG_EXPORT ?? 'C:/Users/da171/AppData/Local/Temp/claude/
 const CAP = process.env.CAPTURES ?? 'C:/Users/da171/AppData/Local/Temp/claude/mlx-captures';
 
 const W = { hero: 1920, wide: 1600, gallery: 1200, tile: 640, thumb: 480 };
-// FDF test maps whose wireframe still reads with thick lines (the 500×500 ones turn into solid white)
-const FDF_MAPS = ['t2', '50-4', '20-60', 'elem2', 'pyramide', '42'];
+// FDF test maps. Captured at 3840×2160 with heights ×3 (capture build only); dense maps (t1, mars, julia,
+// elem-fract) with 1px lines, the sparse ones (42, pyra) with 3px lines so they survive the downscale.
+const FDF_MAPS = ['t1', '42', 'pyra', 'mars', 'julia', 'elem-fract'];
 
 /** @typedef {{ out: string, src: string, width?: number, crop?: [number, number, number, number], q?: number, frame?: boolean }} Img */
 /** @typedef {{ out: string, src: string, frames: string[], size: number }} Sprite */
@@ -103,7 +104,7 @@ const manifest = {
 				out: 'cover.mp4',
 				src: `${VIDEO}/SDFs_Deck.mp4`,
 				cuts: [[9, 45]],
-				speed: 3,
+				speed: 2.25,
 			},
 		],
 	},
@@ -118,16 +119,18 @@ const manifest = {
 			{ out: 'step-5.webp', src: `${SHOTS}/toon/toon_s5_final.png` },
 			...[1, 2, 3, 4, 5].map((n) => ({ out: `exp-${n}.webp`, src: `${FIG}/toon-exp${n}.png` })),
 		],
-		// hover preview: the pass-by-pass build-up, then the colour experiments
+		// hover preview: final look, then Lambert → cel bands → two colour experiments
 		slides: [
 			{
 				out: 'cover.mp4',
 				frames: [
-					...['s1_outline', 's2_lambert', 's3_cel', 's6_spec_norim', 's5_final'].map((f) => `${SHOTS}/toon/toon_${f}.png`),
 					`${SHOTS}/toon/toon-final-norim-wide.png`,
-					...[1, 2, 3, 4, 5].map((n) => `${FIG}/toon-exp${n}.png`),
+					`${SHOTS}/toon/toon_s2_lambert.png`,
+					`${SHOTS}/toon/toon_s3_cel.png`,
+					`${FIG}/toon-exp3.png`,
+					`${FIG}/toon-exp4.png`,
 				],
-				hold: 0.9,
+				hold: 1.1,
 				fade: 0.35,
 				bg: '#7f7f7f',
 				// trim the grey around each sphere so every slide shows it at the same size
