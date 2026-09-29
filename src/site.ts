@@ -11,6 +11,10 @@ export const site = {
 	email: 'edmbuffer@gmail.com',
 };
 
+// The address never appears whole in the HTML (address harvesters): pages carry it reversed + base64 in data-mail and
+// src/scripts/copy-email.ts puts it back together in the browser.
+export const mailData = btoa([...site.email].reverse().join(''));
+
 export type NavId = 'projects' | 'notes' | 'about';
 
 export const nav: { id: NavId; label: string; href: string; hint: string }[] = [

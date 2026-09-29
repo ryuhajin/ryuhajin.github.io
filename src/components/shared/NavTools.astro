@@ -1,7 +1,7 @@
 ---
-// GitHub icon link (+ optional email copy button) + Thema picker.
+// GitHub icon link + email copy button + Thema picker.
 import ThemaPicker, { type ThemaItem } from './ThemaPicker.astro';
-import { site } from '../../site';
+import { site, mailData } from '../../site';
 
 interface Props {
 	thema: {
@@ -12,10 +12,8 @@ interface Props {
 	};
 	align?: 'left' | 'right';
 	placement?: 'down' | 'up';
-	/** show the email button (copies the address on click) */
-	email?: boolean;
 }
-const { thema, align = 'right', placement = 'down', email = false } = Astro.props;
+const { thema, align = 'right', placement = 'down' } = Astro.props;
 ---
 
 <div class="nav-tools">
@@ -27,14 +25,14 @@ const { thema, align = 'right', placement = 'down', email = false } = Astro.prop
 		</svg>
 	</a>
 	{
-		email && site.email && (
-			<button class="gh mail" type="button" data-copy-email={site.email} aria-label={`이메일 주소 복사: ${site.email}`}>
+		site.email && (
+			<button class="gh mail" type="button" data-mail={mailData} aria-label="이메일 주소 복사">
 				<svg viewBox="0 0 16 16" aria-hidden="true">
 					<rect x="1.5" y="3" width="13" height="10" rx="1.5"></rect>
 					<path d="M2 4l6 4.75L14 4"></path>
 				</svg>
-				<span class="tip" aria-hidden="true">
-					<span class="idle">{site.email}</span>
+				<span class:list={['tip', { up: placement === 'up' }]} aria-hidden="true">
+					<span class="idle" data-mail-text>Email</span>
 					<span class="done">Copied ✓</span>
 				</span>
 			</button>
@@ -121,6 +119,12 @@ const { thema, align = 'right', placement = 'down', email = false } = Astro.prop
 		transition:
 			opacity 140ms,
 			transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	/* menus pinned to the bottom of the screen open upward */
+	.tip.up {
+		top: auto;
+		bottom: calc(100% + 0.5rem);
+		transform: translateY(4px);
 	}
 	.mail:hover .tip,
 	.mail:focus-visible .tip,

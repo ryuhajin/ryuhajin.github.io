@@ -1,12 +1,16 @@
-// Email buttons ([data-copy-email="address"]): a click copies the address and flags the button with .copied for a
-// moment (the button's own CSS shows the confirmation). If nothing can be copied it opens a mailto: instead.
+// Email buttons ([data-mail]): the address arrives reversed + base64 (see mailData in src/site.ts) so it never sits
+// whole in the HTML. Here it is decoded into the button's [data-mail-text] and aria-label; a click copies it and flags
+// the button with .copied for a moment (the button's own CSS shows the confirmation). If nothing can be copied it
+// opens a mailto: instead.
 export function initCopyEmail() {
-	document.querySelectorAll<HTMLElement>('[data-copy-email]').forEach((el) => {
-		if (el.dataset.copyBound) return;
-		el.dataset.copyBound = '1';
+	document.querySelectorAll<HTMLElement>('[data-mail]').forEach((el) => {
+		if (el.dataset.mailBound) return;
+		el.dataset.mailBound = '1';
+		const address = [...atob(el.dataset.mail!)].reverse().join('');
+		el.querySelectorAll('[data-mail-text]').forEach((t) => (t.textContent = address));
+		el.setAttribute('aria-label', `이메일 주소 복사: ${address}`);
 		let timer = 0;
 		el.addEventListener('click', async () => {
-			const address = el.dataset.copyEmail!;
 			if (!(await copy(address))) {
 				location.href = `mailto:${address}`;
 				return;

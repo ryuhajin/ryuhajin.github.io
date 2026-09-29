@@ -1,6 +1,6 @@
 ---
 import PortfolioLayout from '../layouts/PortfolioLayout.astro';
-import { site } from '../site';
+import { site, mailData } from '../site';
 
 const skills: [string, string[]][] = [
 	['Shading', ['HLSL', 'DirectX 11']],
@@ -9,8 +9,10 @@ const skills: [string, string[]][] = [
 	['Tools', ['RenderDoc', 'ImGui', 'Git']],
 ];
 
+// GitHub, Email (copies the address), Notes
 const contacts = [
 	{ label: 'GitHub', value: `@${site.handle}`, href: site.github },
+	...(site.email ? [{ label: 'Email', value: '', href: '' }] : []),
 	{ label: 'Notes', value: '공부 기록', href: '/notes/' },
 ];
 ---
@@ -41,25 +43,24 @@ const contacts = [
 				{
 					contacts.map((c) => (
 						<li>
-							<a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
-								<span class="mono">{c.label}</span>
-								<span>{c.value} ↗</span>
-							</a>
+							{c.label === 'Email' ? (
+								<button class="copy" type="button" data-mail={mailData} aria-label="이메일 주소 복사">
+									<span class="mono">Email</span>
+									<span class="value">
+										<span class="idle">
+											<span data-mail-text>…</span> ⧉
+										</span>
+										<span class="done">복사됨 ✓</span>
+									</span>
+								</button>
+							) : (
+								<a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
+									<span class="mono">{c.label}</span>
+									<span>{c.value} ↗</span>
+								</a>
+							)}
 						</li>
 					))
-				}
-				{
-					site.email && (
-						<li>
-							<button class="copy" type="button" data-copy-email={site.email}>
-								<span class="mono">Email</span>
-								<span class="value">
-									<span class="idle">{site.email} ⧉</span>
-									<span class="done">복사됨 ✓</span>
-								</span>
-							</button>
-						</li>
-					)
 				}
 			</ul>
 		</section>
