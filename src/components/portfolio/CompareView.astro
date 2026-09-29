@@ -1,0 +1,212 @@
+---
+// Progress viewer.
+//   slider=false: step tabs that cross-fade between captures (different framings are fine).
+//   slider=true : the last step is "after"; the tab picks the "before" layer, and a draggable divider
+//                 (a range input, so arrows / Home / End work) reveals one over the other. Needs aligned captures.
+interface Step {
+	src: string;
+	label?: string;
+	note?: string;
+}
+interface Props {
+	steps: Step[];
+	slider?: boolean;
+}
+const { steps, slider = false } = Astro.props;
+const after = steps[steps.length - 1];
+const befores = slider ? steps.slice(0, -1) : steps;
+---
+
+<div class:list={['cmp', { 'is-slider': slider }]} data-compare style="--pos: 50%">
+	<div class="stage">
+		{slider && <img class="after" src={after.src} alt={after.label ?? ''} loading="lazy" decoding="async" />}
+		{
+			befores.map((s, i) => (
+				<img class:list={['layer', { on: i === 0 }]} src={s.src} alt={s.label ?? ''} loading="lazy" decoding="async" data-step={i} data-note={s.note} />
+			))
+		}
+		{
+			slider && (
+				<>
+					<span class="tag mono tag-b" data-before-label>{befores[0].label}</span>
+					<span class="tag mono tag-a">{after.label}</span>
+					<span class="divider" aria-hidden="true" />
+					<input class="range" type="range" min="0" max="100" value="50" aria-label="비교 위치 (왼쪽: 이전, 오른쪽: 이후)" />
+				</>
+			)
+		}
+	</div>
+	<div class="steps" role="tablist" aria-label={slider ? '비교할 이전 단계' : '단계'}>
+		{
+			befores.map((s, i) => (
+				<button type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-go={i}>
+					<span class="mono n">{String(i + 1).padStart(2, '0')}</span>
+					<span class="l">{s.label}</span>
+				</button>
+			))
+		}
+	</div>
+	<p class="step-note" data-step-note aria-live="polite">{befores[0].note}</p>
+</div>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-compare]').forEach((root) => {
+		const layers = [...root.querySelectorAll<HTMLImageElement>('.layer')];
+		const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-go]')];
+		const note = root.querySelector<HTMLElement>('[data-step-note]');
+		const beforeLabel = root.querySelector<HTMLElement>('[data-before-label]');
+		const select = (i: number) => {
+			layers.forEach((l, j) => l.classList.toggle('on', j === i));
+			tabs.forEach((t, j) => t.setAttribute('aria-selected', String(j === i)));
+			const label = tabs[i].querySelector('.l')?.textContent ?? '';
+			if (beforeLabel) beforeLabel.textContent = label;
+			if (note) note.textContent = layers[i].dataset.note ?? '';
+		};
+		tabs.forEach((t, i) => {
+			t.addEventListener('click', () => select(i));
+			t.addEventListener('keydown', (e) => {
+				const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+				if (!d) return;
+				e.preventDefault();
+				const n = (i + d + tabs.length) % tabs.length;
+				tabs[n].focus();
+				select(n);
+			});
+		});
+		const range = root.querySelector<HTMLInputElement>('.range');
+		range?.addEventListener('input', () => root.style.setProperty('--pos', `${range.value}%`));
+	});
+</script>
+
+<style>
+	.cmp {
+		display: grid;
+		gap: 0.9rem;
+	}
+	.stage {
+		position: relative;
+		aspect-ratio: 16 / 9;
+		max-height: 58vh;
+		border-radius: 12px;
+		overflow: hidden;
+		border: 1px solid var(--line-2);
+		background: var(--bg-3);
+	}
+	.stage img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.layer {
+		opacity: 0;
+		transition: opacity 420ms var(--ease);
+	}
+	.layer.on {
+		opacity: 1;
+	}
+	.is-slider .layer {
+		clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+	}
+	.divider {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: var(--pos);
+		width: 2px;
+		translate: -1px 0;
+		background: #fff;
+		box-shadow: 0 0 12px #0008;
+		pointer-events: none;
+	}
+	.divider::after {
+		content: '⟷';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		translate: -50% -50%;
+		display: grid;
+		place-items: center;
+		width: 2.4rem;
+		height: 2.4rem;
+		border-radius: 50%;
+		background: #fff;
+		color: #111;
+		font-size: 1rem;
+	}
+	.range {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		opacity: 0;
+		cursor: ew-resize;
+	}
+	.range:focus-visible ~ .divider,
+	.stage:has(.range:focus-visible) .divider {
+		background: var(--accent);
+	}
+	.tag {
+		position: absolute;
+		top: 0.75rem;
+		padding: 0.2rem 0.5rem;
+		border-radius: 4px;
+		background: #000a;
+		color: #fff;
+		font-size: 0.7rem;
+		z-index: 1;
+		pointer-events: none;
+	}
+	.tag-b {
+		left: 0.75rem;
+	}
+	.tag-a {
+		right: 0.75rem;
+	}
+	.steps {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.steps button {
+		all: unset;
+		cursor: pointer;
+		display: inline-flex;
+		gap: 0.5rem;
+		align-items: baseline;
+		padding: 0.4rem 0.75rem;
+		border: 1px solid var(--line-2);
+		border-radius: 999px;
+		font-size: 0.8rem;
+		color: var(--fg-2);
+		transition:
+			color var(--t-micro),
+			background-color var(--t-micro),
+			border-color var(--t-micro);
+	}
+	.steps button:hover {
+		color: var(--fg);
+		border-color: var(--fg-3);
+	}
+	.steps button[aria-selected='true'] {
+		background: var(--fg);
+		border-color: var(--fg);
+		color: var(--bg);
+	}
+	.steps button:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	.n {
+		opacity: 0.6;
+	}
+	.step-note {
+		margin: 0;
+		min-height: 1.5em;
+		color: var(--fg-2);
+		font-size: 0.875rem;
+		line-height: 1.6;
+	}
+</style>

@@ -39,7 +39,8 @@ export function initSnapSections() {
 
 	const onKey = (e: KeyboardEvent) => {
 		if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-		if ((e.target as HTMLElement)?.closest('input, textarea, select')) return;
+		if ((e.target as HTMLElement)?.closest('input, textarea, select, [role="tab"], dialog')) return;
+		if (document.querySelector('dialog[open]')) return;
 		const next = ['ArrowDown', 'PageDown', ' '].includes(e.key);
 		const prev = ['ArrowUp', 'PageUp'].includes(e.key) || (e.key === ' ' && e.shiftKey);
 		if (e.key === 'Home') go(0);

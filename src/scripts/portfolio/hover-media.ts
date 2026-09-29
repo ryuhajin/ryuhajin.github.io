@@ -83,7 +83,9 @@ export function initHoverMedia() {
 					video.play().catch(() => {});
 				} else {
 					video.hidden = true;
+					video.pause();
 					video.removeAttribute('src');
+					video.load(); // drop the previous clip's last frame
 				}
 				preview.style.setProperty('--accent', row.dataset.accent ?? '');
 				f.move(e.clientX, e.clientY, !active);
