@@ -1,4 +1,4 @@
-// Landing-page decoration: one fragment shader that draws signed-distance-field line figures in three layers.
+// Landing-page decoration: signed-distance-field line figures in three layers, drawn in two passes.
 //   1. field grid    — tiny tick segments in columns whose visibility drifts with smooth value noise, so patches of
 //                      the grid fade in and out like a slow scan                                (after Stefan Vitasović)
 //   2. the figure    — an SDF silhouette that morphs between shapes; its outline is repeated as a stack of offset,
@@ -7,6 +7,12 @@
 //   3. velocity      — the figure stretches along its velocity and R/G/B split apart; velocity comes from the morph
 //                      impulse and a spring toward the pointer                                   (after Roman Jean-Elie)
 // Colours come from the Thema tokens; the 8-bit theme renders on a coarse pixel grid. No libraries.
+//
+// Performance: the SDF is evaluated once per pixel (pass 1 → an RGBA texture: outline, inner pattern, outside).
+// Echoes are translated copies of the outline and the channel split is an offset, so pass 2 builds both from
+// texture reads instead of re-evaluating the SDF — this keeps the shaders small (Windows compiles WebGL through
+// Direct3D, which unrolls every loop and inlines every call) and the per-pixel cost flat. Shaders compile in the
+// background where KHR_parallel_shader_compile exists, and the buffer scale drops if frames run slow.
 
 import { themas, type ShapeSet } from '../../portfolio/themes';
 
@@ -63,33 +69,10 @@ attribute vec2 aPos;
 void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
 `;
 
-const FRAG = `
+
+const FIGURE_FRAG = `
 precision highp float;
-uniform vec2 uRes;
-uniform float uTime;
-uniform vec2 uCenter;     // px, GL coords (y up)
-uniform float uR;         // figure radius, px
-uniform float uRot;
-uniform float uA;         // base shapes
-uniform float uB;
-uniform float uMix;       // 0 → A, 1 → B
-uniform float uTwist;     // rad, eased between figures
-uniform float uPatA;      // inner patterns (cross-faded with uMix)
-uniform float uPatB;
-uniform float uGap;       // px between pattern lines
-uniform float uSpacing;   // px between echo copies
-uniform vec2 uDir;        // echo direction
-uniform vec2 uVel;        // px, stretch + channel split
-uniform float uPx;        // device px per CSS px
-uniform float uPixel;     // >1: pixelated (8-bit)
-uniform float uGridFrom;  // x where the field grid starts, keeps the menu side quiet
-uniform vec3 uLine;       // echoes + inner pattern
-uniform vec3 uFront;      // front outline
-uniform vec3 uGrid;       // field grid
-
-#define ECHOES ${ECHOES}
 #define TAU 6.28318530718
-
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float vnoise(vec2 p) {
 	vec2 i = floor(p), f = fract(p);
@@ -99,6 +82,22 @@ float vnoise(vec2 p) {
 mat2 rot(float a) { float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
 float dot2(vec2 v) { return dot(v, v); }
 float smin(float a, float b, float k) { float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0); return mix(b, a, h) - k * h * (1.0 - h); }
+float lineAt(float dist, float hw, float aa) { return 1.0 - smoothstep(hw, hw + aa, dist); }
+
+uniform float uTime;
+uniform vec2 uCenter;     // px, GL coords (y up)
+uniform float uR;         // figure radius, px
+uniform float uRot;
+uniform float uA;         // base silhouettes
+uniform float uB;
+uniform float uMix;       // 0 → A, 1 → B
+uniform float uTwist;     // rad, eased between figures
+uniform float uPatA;      // inner patterns (cross-faded with uMix)
+uniform float uPatB;
+uniform float uGap;       // px between pattern lines
+uniform vec2 uVel;        // px, stretch
+uniform float uPx;        // buffer px per CSS px
+uniform float uPixel;     // >1: pixelated (8-bit)
 
 // ---- base silhouettes (about radius 1, y up) ----
 float sdCircle(vec2 p) { return length(p) - 0.95; }
@@ -172,7 +171,12 @@ float base(vec2 p, float id) {
 
 // figure frame (rotation only) — the silhouette, its echoes and the inside test use this
 vec2 frame(vec2 p) { return rot(uRot) * p; }
-float sdf(vec2 q) { return mix(base(q / uR, uA), base(q / uR, uB), uMix) * uR; }
+float sdf(vec2 q) {
+	q /= uR;
+	float a = base(q, uA);
+	if (uMix < 0.001) return a * uR;
+	return mix(a, base(q, uB), uMix) * uR;
+}
 float scene(vec2 p) { return sdf(frame(p)); }
 // the same field with a twist that grows toward the centre: its iso-lines become a spiral of nested shapes
 float sceneTwist(vec2 q) {
@@ -188,20 +192,20 @@ vec2 stretch(vec2 p) {
 	return p - n * dot(p, n) * (s / (1.0 + s));
 }
 
-float lineAt(float dist, float hw, float aa) { return 1.0 - smoothstep(hw, hw + aa, dist); }
 
-// ---- inner line patterns: p in figure frame (px), d = SDF (px, < 0 inside) ----
-float pattern(float id, vec2 p, float d, float hw, float aa) {
+// ---- inner line patterns: p in figure frame (px), d = SDF, dt = twisted SDF (px, < 0 inside) ----
+// (no SDF calls in here: every call inlines all nine silhouettes when the shader is compiled)
+float pattern(float id, vec2 p, float d, float dt, float hw, float aa) {
 	float g = uGap;
 	float t = uTime;
 	if (id < 0.5) { // contours: iso-lines of the twisted SDF, drifting inward
-		float v = abs(fract(sceneTwist(p) / g + t * 0.12) - 0.5) * g;
+		float v = abs(fract(dt / g + t * 0.12) - 0.5) * g;
 		return lineAt(v, hw, aa);
 	}
 	if (id < 1.5) { // halftone: dots on a square grid, size from depth + a light from the upper left
 		float cs = g * 1.15;
 		vec2 c = (floor(p / cs) + 0.5) * cs;
-		float depth = clamp(-sdf(c) / (uR * 0.75), 0.0, 1.0);
+		float depth = clamp(-d / (uR * 0.75), 0.0, 1.0);
 		vec2 n = c / uR;
 		float light = clamp(0.55 + 0.6 * dot(normalize(n + 1e-4), vec2(-0.6, 0.55)) * length(n), 0.0, 1.0);
 		float r = cs * 0.48 * sqrt(depth) * mix(0.25, 1.0, light) * (0.9 + 0.1 * sin(t * 1.4 + c.x * 0.02));
@@ -232,34 +236,12 @@ float pattern(float id, vec2 p, float d, float hw, float aa) {
 	}
 	// moire: contours of the figure against rings from a wandering centre
 	vec2 o = uR * 0.18 * vec2(cos(t * 0.3), sin(t * 0.37));
-	float v1 = abs(fract(sceneTwist(p) / g) - 0.5) * g;
+	float v1 = abs(fract(dt / g) - 0.5) * g;
 	float v2 = abs(fract(length(p - o) / (g * 0.92)) - 0.5) * g * 0.92;
 	return max(lineAt(v1, hw, aa), lineAt(v2, hw, aa) * 0.8);
 }
 
-// one colour channel of the figure: (front outline, echoes + inner pattern)
-vec2 figure(vec2 p, float hw, float aa) {
-	float reach = float(ECHOES) * uSpacing + hw + aa + 2.0;
-	float d0 = scene(p);
-	float front = lineAt(abs(d0), hw * 1.4, aa);
-	float rest = 0.0;
-	if (abs(d0) < reach) { // Lipschitz bound: no echo can be near otherwise
-		for (int i = 1; i < ECHOES; i++) {
-			float fi = float(i);
-			float d = scene(p - uDir * fi * uSpacing);
-			rest = max(rest, lineAt(abs(d), hw, aa) * pow(1.0 - fi / float(ECHOES), 1.6));
-		}
-	}
-	if (d0 < 0.0) {
-		vec2 q = frame(p);
-		float inner = 1.0 - smoothstep(-uGap * 1.2, -uGap * 0.3, d0); // keep a clear margin inside the outline
-		float pa = pattern(uPatA, q, d0, hw, aa);
-		float pb = pattern(uPatB, q, d0, hw, aa);
-		rest = max(rest, mix(pa, pb, uMix) * inner * 0.85);
-	}
-	return vec2(front, rest);
-}
-
+// pass 1: r = front outline, g = inner pattern, b = outside (0 inside → 1 beyond 24px)
 void main() {
 	vec2 fc = gl_FragCoord.xy;
 	bool pixel = uPixel > 1.5;
@@ -267,18 +249,84 @@ void main() {
 	float hw = 0.55 * uPx;
 	float aa = pixel ? 0.2 : 1.0;
 	vec2 p = stretch(fc - uCenter);
+	float d0 = scene(p);
+	float front = lineAt(abs(d0), hw * 1.4, aa);
+	float inner = 0.0;
+	if (d0 < 0.0) {
+		vec2 q = frame(p);
+		float margin = 1.0 - smoothstep(-uGap * 1.2, -uGap * 0.3, d0); // clear band inside the outline
+		float dt = sceneTwist(q);
+		float pat = pattern(uPatA, q, d0, dt, hw, aa);
+		if (uMix > 0.001) pat = mix(pat, pattern(uPatB, q, d0, dt, hw, aa), uMix);
+		inner = pat * margin * 0.85;
+	}
+	gl_FragColor = vec4(front, inner, smoothstep(0.0, 24.0 * uPx, d0), 1.0);
+}
+`;
 
-	// ---- figure, channel-split by velocity ----
-	vec2 split = clamp(uVel * 0.35, vec2(-14.0 * uPx), vec2(14.0 * uPx));
-	vec2 eR = figure(p + split, hw, aa);
-	vec2 eG = figure(p, hw, aa);
-	vec2 eB = figure(p - split, hw, aa);
+const COMPOSITE_FRAG = `
+precision highp float;
+#define TAU 6.28318530718
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float vnoise(vec2 p) {
+	vec2 i = floor(p), f = fract(p);
+	vec2 u = f * f * (3.0 - 2.0 * f);
+	return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+mat2 rot(float a) { float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
+float dot2(vec2 v) { return dot(v, v); }
+float smin(float a, float b, float k) { float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0); return mix(b, a, h) - k * h * (1.0 - h); }
+float lineAt(float dist, float hw, float aa) { return 1.0 - smoothstep(hw, hw + aa, dist); }
+
+uniform sampler2D uFig;
+uniform vec2 uRes;
+uniform float uTime;
+uniform float uSpacing;   // px between echo copies
+uniform vec2 uDir;        // echo direction
+uniform vec2 uSplit;      // px, R/B channel offset
+uniform float uPx;
+uniform float uPixel;
+uniform float uGridFrom;  // x where the field grid starts, keeps the menu side quiet
+uniform vec3 uLine;       // echoes + inner pattern
+uniform vec3 uFront;      // front outline
+uniform vec3 uGrid;       // field grid
+
+#define ECHOES ${ECHOES}
+
+vec4 fig(vec2 fc) {
+	vec2 uv = fc / uRes;
+	if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) return vec4(0.0, 0.0, 1.0, 0.0);
+	return texture2D(uFig, uv);
+}
+// (front outline, echoes + inner pattern) seen from one sample point
+vec2 channel(vec2 fc) {
+	vec4 f0 = fig(fc);
+	float rest = f0.g;
+	for (int i = 1; i < ECHOES; i++) {
+		float fi = float(i);
+		rest = max(rest, fig(fc - uDir * fi * uSpacing).r * 0.8 * pow(1.0 - fi / float(ECHOES), 1.6));
+	}
+	return vec2(f0.r, rest);
+}
+
+void main() {
+	vec2 fc = gl_FragCoord.xy;
+	bool pixel = uPixel > 1.5;
+	if (pixel) fc = (floor(fc / uPixel) + 0.5) * uPixel;
+
+	vec2 eG = channel(fc);
+	vec2 eR = eG;
+	vec2 eB = eG;
+	if (dot(uSplit, uSplit) > 0.25) { // only pay for the split while something is moving
+		eR = channel(fc + uSplit);
+		eB = channel(fc - uSplit);
+	}
 	vec3 front = vec3(eR.x, eG.x, eB.x);
 	vec3 rest = vec3(eR.y, eG.y, eB.y);
 	vec3 lineA = front + rest * (1.0 - front);
 	vec3 lineC = uFront * front + uLine * rest * (1.0 - front);
 
-	// ---- field grid (outside the figure): ticks whose visibility drifts with value noise ----
+	// field grid (outside the figure): ticks whose visibility drifts with value noise
 	vec2 cs = (pixel ? vec2(uPixel * 3.0) : vec2(9.0, 13.0) * uPx);
 	vec2 cell = floor(fc / cs);
 	vec2 f = fract(fc / cs) - 0.5;
@@ -290,8 +338,7 @@ void main() {
 	float tick = pixel ? step(max(abs(f.x), abs(f.y)), 0.2) : step(abs(f.x + 0.3), 0.06) * step(abs(f.y), 0.3);
 	float dot0 = pixel ? 0.0 : step(length(f * cs), 0.75 * uPx);
 	float fieldFade = smoothstep(uGridFrom, uGridFrom + uRes.x * 0.25, fc.x);
-	float outside = smoothstep(0.0, 24.0 * uPx, scene(p));
-	float gridA = max(tick * on * 0.5, dot0 * major * 0.28) * fieldFade * outside;
+	float gridA = max(tick * on * 0.5, dot0 * major * 0.28) * fieldFade * fig(fc).b;
 
 	float alpha = max(max(lineA.r, lineA.g), lineA.b);
 	vec3 col = lineC + uGrid * gridA * (1.0 - alpha);
@@ -331,59 +378,87 @@ function readPalette(probe: CanvasRenderingContext2D): Palette {
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
+
+type Uniforms<T extends string> = Record<T, WebGLUniformLocation | null>;
+
 export function initHeroSdf() {
 	const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-sdf]');
 	if (!canvas) return;
-	const gl = canvas.getContext('webgl', { premultipliedAlpha: true, antialias: false, alpha: true });
+	const gl = canvas.getContext('webgl', { premultipliedAlpha: true, antialias: false, alpha: true, powerPreference: 'low-power' });
 	if (!gl) return; // decoration only — without WebGL the stage simply stays empty
 
-	const compile = (type: number, src: string) => {
-		const s = gl.createShader(type)!;
-		gl.shaderSource(s, src);
-		gl.compileShader(s);
-		if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.warn('[hero-sdf]', gl.getShaderInfoLog(s));
-		return s;
+	// compile both programs; with KHR_parallel_shader_compile the driver works in the background and we poll
+	const parallel = gl.getExtension('KHR_parallel_shader_compile');
+	const build = (fs: string) => {
+		const prog = gl.createProgram()!;
+		for (const [type, text] of [
+			[gl.VERTEX_SHADER, VERT],
+			[gl.FRAGMENT_SHADER, fs],
+		] as const) {
+			const s = gl.createShader(type)!;
+			gl.shaderSource(s, text);
+			gl.compileShader(s);
+			gl.attachShader(prog, s);
+		}
+		gl.linkProgram(prog);
+		return prog;
 	};
-	const prog = gl.createProgram()!;
-	gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
-	gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
-	gl.linkProgram(prog);
-	if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-		console.warn('[hero-sdf]', gl.getProgramInfoLog(prog));
-		return;
-	}
-	gl.useProgram(prog);
-	gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+	const figureProg = build(FIGURE_FRAG);
+	const compositeProg = build(COMPOSITE_FRAG);
+	const ready = () => !parallel || [figureProg, compositeProg].every((pr) => gl.getProgramParameter(pr, parallel.COMPLETION_STATUS_KHR));
+	const linked = () => {
+		for (const pr of [figureProg, compositeProg]) {
+			if (gl.getProgramParameter(pr, gl.LINK_STATUS)) continue;
+			console.warn('[hero-sdf]', gl.getProgramInfoLog(pr), ...gl.getAttachedShaders(pr)!.map((s) => gl.getShaderInfoLog(s)));
+			return false;
+		}
+		return true;
+	};
+
+	const tri = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, tri);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-	const aPos = gl.getAttribLocation(prog, 'aPos');
-	gl.enableVertexAttribArray(aPos);
-	gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-	const names = ['uRes', 'uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uTwist', 'uPatA', 'uPatB', 'uGap', 'uSpacing', 'uDir', 'uVel', 'uPx', 'uPixel', 'uGridFrom', 'uLine', 'uFront', 'uGrid'] as const;
-	const u = Object.fromEntries(names.map((n) => [n, gl.getUniformLocation(prog, n)])) as Record<(typeof names)[number], WebGLUniformLocation | null>;
+
+	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uTwist', 'uPatA', 'uPatB', 'uGap', 'uVel', 'uPx', 'uPixel'] as const;
+	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uGridFrom', 'uLine', 'uFront', 'uGrid'] as const;
+	let uf: Uniforms<(typeof figNames)[number]>;
+	let uc: Uniforms<(typeof compNames)[number]>;
+	const locate = <T extends string>(prog: WebGLProgram, names: readonly T[]) =>
+		Object.fromEntries(names.map((n) => [n, gl.getUniformLocation(prog, n)])) as Uniforms<T>;
+
+	// offscreen target for pass 1
+	const tex = gl.createTexture();
+	const fbo = gl.createFramebuffer();
 
 	const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 	const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!;
 	let palette = readPalette(probe);
 	let playlist = PLAYLISTS[palette.set];
 
-	// size: buffer follows the element, capped so large/hi-dpi screens stay cheap
+	// size: buffer follows the element; device-pixel ratio capped, and scaled down further if frames run slow
 	let dpr = 1;
+	let quality = 1;
 	let W = 1;
 	let H = 1;
 	const resize = () => {
 		const rect = canvas.getBoundingClientRect();
-		dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+		dpr = Math.min(window.devicePixelRatio || 1, 1.25) * quality;
 		W = Math.max(1, Math.round(rect.width * dpr));
 		H = Math.max(1, Math.round(rect.height * dpr));
 		canvas.width = W;
 		canvas.height = H;
-		gl.viewport(0, 0, W, H);
+		const filter = palette.set === 'pixel' ? gl.NEAREST : gl.LINEAR;
+		gl.bindTexture(gl.TEXTURE_2D, tex);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, W, H, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	};
 	resize();
-	new ResizeObserver(() => {
-		resize();
-		if (still) draw(0, 0);
-	}).observe(canvas);
 
 	// pointer spring: the figure leans toward the pointer; its velocity feeds stretch + channel split
 	const pointer = { x: 0, y: 0, active: false };
@@ -395,7 +470,6 @@ export function initHeroSdf() {
 	});
 	const lean = { x: 0, y: 0, vx: 0, vy: 0 };
 
-	const start = performance.now() / 1000;
 	// echo direction per morph: toward the upper left (the figure sits in the lower-right corner), turning only
 	// while the stack is unfolded
 	const angleFor = (k: number) => Math.PI * 0.8 + Math.sin(k * 1.7) * 0.55;
@@ -414,9 +488,7 @@ export function initHeroSdf() {
 
 		// the same footprint as the old SVG decoration: clamp(320px, min(70vh, 44vw), 640px),
 		// pushed 30% past the right and bottom edges of the stage
-		const vh = window.innerHeight;
-		const vw = window.innerWidth;
-		const hs = Math.min(640, Math.max(320, Math.min(vh * 0.7, vw * 0.44))) * dpr;
+		const hs = Math.min(640, Math.max(320, Math.min(window.innerHeight * 0.7, window.innerWidth * 0.44))) * dpr;
 		const R = hs * 0.5;
 		const cx = W - hs * 0.2 + Math.sin(t * 0.23) * 10 * dpr;
 		const cy = hs * 0.2 + Math.cos(t * 0.31) * 8 * dpr;
@@ -430,63 +502,126 @@ export function initHeroSdf() {
 		}
 		const morphV = m > 0 && m < 1 ? Math.cos(Math.PI * m) * 24 * dpr : 0;
 		const vel = [lean.vx * 0.05 + dir[0] * morphV, lean.vy * 0.05 + dir[1] * morphV];
+		const lim = 14 * dpr;
+		const split = vel.map((v) => Math.max(-lim, Math.min(lim, v * 0.35)));
+		const pixelSize = palette.set === 'pixel' ? Math.max(2, Math.round(4 * dpr)) : 1;
 
-		gl.uniform2f(u.uRes, W, H);
-		gl.uniform1f(u.uTime, still ? 0 : t);
-		gl.uniform2f(u.uCenter, cx + lean.x, cy + lean.y);
-		gl.uniform1f(u.uR, R);
-		gl.uniform1f(u.uRot, still ? 0 : t * 0.05 + ease(m) * 0.6 + k * 0.6);
-		gl.uniform1f(u.uA, BASE[A.base]);
-		gl.uniform1f(u.uB, BASE[B.base]);
-		gl.uniform1f(u.uMix, mixT);
-		gl.uniform1f(u.uTwist, A.twist + (B.twist - A.twist) * mixT);
-		gl.uniform1f(u.uPatA, PATTERN[A.pattern]);
-		gl.uniform1f(u.uPatB, PATTERN[B.pattern]);
-		gl.uniform1f(u.uGap, (palette.set === 'pixel' ? 16 : 13) * dpr);
-		gl.uniform1f(u.uSpacing, (3 + bump * 10) * dpr);
-		gl.uniform2f(u.uDir, dir[0], dir[1]);
-		gl.uniform2f(u.uVel, vel[0], vel[1]);
-		gl.uniform1f(u.uPx, dpr);
-		gl.uniform1f(u.uPixel, palette.set === 'pixel' ? Math.round(4 * dpr) : 1);
-		gl.uniform1f(u.uGridFrom, W * 0.34);
-		gl.uniform3fv(u.uLine, palette.line);
-		gl.uniform3fv(u.uFront, palette.front);
-		gl.uniform3fv(u.uGrid, palette.grid);
+		gl.bindBuffer(gl.ARRAY_BUFFER, tri);
+
+		// pass 1: the figure → texture
+		gl.useProgram(figureProg);
+		const a1 = gl.getAttribLocation(figureProg, 'aPos');
+		gl.enableVertexAttribArray(a1);
+		gl.vertexAttribPointer(a1, 2, gl.FLOAT, false, 0, 0);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+		gl.viewport(0, 0, W, H);
+		gl.uniform1f(uf.uTime, still ? 0 : t);
+		gl.uniform2f(uf.uCenter, cx + lean.x, cy + lean.y);
+		gl.uniform1f(uf.uR, R);
+		gl.uniform1f(uf.uRot, still ? 0 : t * 0.05 + ease(m) * 0.6 + k * 0.6);
+		gl.uniform1f(uf.uA, BASE[A.base]);
+		gl.uniform1f(uf.uB, BASE[B.base]);
+		gl.uniform1f(uf.uMix, mixT);
+		gl.uniform1f(uf.uTwist, A.twist + (B.twist - A.twist) * mixT);
+		gl.uniform1f(uf.uPatA, PATTERN[A.pattern]);
+		gl.uniform1f(uf.uPatB, PATTERN[B.pattern]);
+		gl.uniform1f(uf.uGap, (palette.set === 'pixel' ? 16 : 13) * dpr);
+		gl.uniform2f(uf.uVel, vel[0], vel[1]);
+		gl.uniform1f(uf.uPx, dpr);
+		gl.uniform1f(uf.uPixel, pixelSize);
+		gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+		// pass 2: echoes, channel split, field grid → screen
+		gl.useProgram(compositeProg);
+		const a2 = gl.getAttribLocation(compositeProg, 'aPos');
+		gl.enableVertexAttribArray(a2);
+		gl.vertexAttribPointer(a2, 2, gl.FLOAT, false, 0, 0);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		gl.viewport(0, 0, W, H);
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, tex);
+		gl.uniform1i(uc.uFig, 0);
+		gl.uniform2f(uc.uRes, W, H);
+		gl.uniform1f(uc.uTime, still ? 0 : t);
+		gl.uniform1f(uc.uSpacing, (3 + bump * 10) * dpr);
+		gl.uniform2f(uc.uDir, dir[0], dir[1]);
+		gl.uniform2f(uc.uSplit, split[0], split[1]);
+		gl.uniform1f(uc.uPx, dpr);
+		gl.uniform1f(uc.uPixel, pixelSize);
+		gl.uniform1f(uc.uGridFrom, W * 0.34);
+		gl.uniform3fv(uc.uLine, palette.line);
+		gl.uniform3fv(uc.uFront, palette.front);
+		gl.uniform3fv(uc.uGrid, palette.grid);
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 		gl.drawArrays(gl.TRIANGLES, 0, 3);
 	};
 
-	document.addEventListener('thema-change', () => {
-		palette = readPalette(probe);
-		playlist = PLAYLISTS[palette.set];
-		if (still) draw(0, 0);
-	});
-
-	// test hook: render a given moment without the animation loop (hidden tabs pause rAF)
-	(canvas as HTMLCanvasElement & { renderAt?: (t: number) => string }).renderAt = (t: number) => {
-		draw(t, 1 / 60);
-		return canvas.toDataURL();
-	};
-
-	if (still) {
-		draw(0, 0);
-		return;
-	}
-	let raf = 0;
-	let last = start;
-	const loop = () => {
-		const now = performance.now() / 1000;
-		draw(now - start, Math.min(0.05, Math.max(0.001, now - last)));
-		last = now;
+	let started = false;
+	const begin = () => {
+		if (!linked()) return;
+		uf = locate(figureProg, figNames);
+		uc = locate(compositeProg, compNames);
+		started = true;
+		new ResizeObserver(() => {
+			resize();
+			if (still) draw(0, 0);
+		}).observe(canvas);
+		document.addEventListener('thema-change', () => {
+			palette = readPalette(probe);
+			playlist = PLAYLISTS[palette.set];
+			resize(); // texture filtering differs for the 8-bit theme
+			if (still) draw(0, 0);
+		});
+		// test hook: render a given moment without the animation loop (hidden tabs pause rAF)
+		(canvas as HTMLCanvasElement & { renderAt?: (t: number) => string }).renderAt = (t: number) => {
+			draw(t, 1 / 60);
+			return canvas.toDataURL();
+		};
+		if (still) {
+			draw(0, 0);
+			return;
+		}
+		const start = performance.now() / 1000;
+		let last = start;
+		let raf = 0;
+		// frame-time watchdog: if the average frame is slow, render fewer pixels (down to 60% per axis)
+		let acc = 0;
+		let frames = 0;
+		const loop = () => {
+			const now = performance.now() / 1000;
+			const dt = Math.min(0.05, Math.max(0.001, now - last));
+			last = now;
+			draw(now - start, dt);
+			acc += dt;
+			if (++frames === 90) {
+				if (acc / frames > 0.024 && quality > 0.6) {
+					quality = Math.max(0.6, quality * 0.8);
+					resize();
+				}
+				acc = 0;
+				frames = 0;
+			}
+			raf = requestAnimationFrame(loop);
+		};
+		document.addEventListener('visibilitychange', () => {
+			cancelAnimationFrame(raf);
+			if (!document.hidden) {
+				last = performance.now() / 1000;
+				acc = 0;
+				frames = 0;
+				raf = requestAnimationFrame(loop);
+			}
+		});
 		raf = requestAnimationFrame(loop);
 	};
-	document.addEventListener('visibilitychange', () => {
-		cancelAnimationFrame(raf);
-		if (!document.hidden) {
-			last = performance.now() / 1000;
-			raf = requestAnimationFrame(loop);
-		}
-	});
-	raf = requestAnimationFrame(loop);
+
+	// wait for the background compile before touching the programs (touching them earlier would block)
+	const poll = () => {
+		if (started) return;
+		if (ready()) begin();
+		else setTimeout(poll, 30);
+	};
+	if (parallel) setTimeout(poll, 0);
+	else begin();
 }
