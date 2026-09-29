@@ -12,8 +12,7 @@
 @import '@fontsource/space-mono/400.css';
 @import '@fontsource/press-start-2p/400.css';
 @import '@fontsource/bricolage-grotesque/600.css';
-@import '@fontsource/unbounded/500.css';
-@import '@fontsource/unbounded/700.css';
+@import '@fontsource/grandstander/700.css';
 @import 'galmuri/dist/galmuri.css';
 
 :root,
@@ -56,7 +55,7 @@
 	--accent-2: #161412;
 	--on-accent: #f3efe6;
 	--shape: #ee6a1c;
-	--shape-2: #8a8277;
+	--shape-2: #161412;
 	--shape-fill: #e8341c;
 	--foam: #ffffff;
 	--grid-dot: #ddd5c4;
@@ -132,11 +131,11 @@
 	--fg: #14204a;
 	--fg-2: #34467a;
 	--fg-3: #5b77a3;
-	--accent: #0fb98f;
+	--accent: #12d6a2;
 	--accent-2: #14204a;
 	--on-accent: #ffffff;
 	--shape: #1d2d7a;
-	--shape-2: #10c49a;
+	--shape-2: #2ee8b6;
 	--shape-fill: #84b8e6;
 	--foam: #ffffff;
 	--grid-dot: #bcdcf8;
@@ -165,9 +164,9 @@
 	--shape-fill: #f7b8cf;
 	--foam: #ffffff;
 	--grid-dot: #f6cfdf;
-	--font-display: 'Unbounded', 'Pretendard Variable', sans-serif;
+	--font-display: 'Grandstander', 'Pretendard Variable', sans-serif;
 	--display-weight: 700;
-	--display-tracking: -0.04em;
+	--display-tracking: -0.02em;
 	--curtain-a: #1b1f4a;
 	--curtain-b: #f7b8cf;
 	color-scheme: light;

@@ -109,7 +109,7 @@ float figSquares(vec2 p) { // nested squares, each turned 8° and 8.5% smaller; 
 	for (int i = 0; i < 18; i++) {
 		float k = abs(sdBox(rot(0.35 + float(i) * 0.14) * p, vec2(s)));
 		d = min(d, k);
-		if (mod(float(i), 12.0) == 3.0) gAcc = min(gAcc, k);
+		if (i >= 15) gAcc = min(gAcc, k); // the innermost three
 		s *= 0.915;
 	}
 	return d;
