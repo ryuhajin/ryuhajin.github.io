@@ -4,7 +4,8 @@
 //                          dot sphere, pentagram web), cut off by the lower-right edges
 //                        · "overlap": translucent planes, a circle, long lines and an arc passing through each other,
 //                          with smaller pieces around them; placed and sized differently every time
-//                        · "scatter": a dozen small figures, with a few tiny "+" marks and sparkles around them
+//                        · "scatter": small figures spilled from the top edge like paint — a fan hanging from the
+//                          top with a few drips running down, plus a few tiny "+" marks and sparkles
 //                      one scene morphs into the next by blending their distance fields; the lines are repeated as
 //                      a stack of offset, fading echoes that unfold during the morph and fold back when it settles
 //                                                                                              (after Tobias Ahlin)
@@ -66,6 +67,7 @@ uniform float uSeedA;     // per-appearance seed (scatter layout, overlap mirror
 uniform float uSeedB;
 uniform vec2 uCompC;      // px, centre of the compositions (stretch pivot)
 uniform vec4 uRegion;     // px (x0, y0, x1, y1): the free area right of the menu, where compositions may go
+uniform vec2 uStage;      // px, canvas size
 uniform float uU;         // px per composition unit
 uniform vec2 uVel;        // px, stretch
 uniform float uPx;        // buffer px per CSS px
@@ -238,42 +240,79 @@ float sdRhombus(vec2 p, vec2 b) {
 }
 float sdSparkle(vec2 p) { return min(sdRhombus(p, vec2(1.0, 0.26)), sdRhombus(p, vec2(0.26, 1.0))); }
 
-// a dozen small figures around the composition centre, plus 3–5 tiny "+" marks and sparkles around the outside;
-// p in composition units
-float compScatter(vec2 p, float seed, float soft, out float fill) {
+// one small figure (unit size), kind picked by a hash: circle, square, triangle, outlined plus, double ring or a
+// translucent square (which also adds fill)
+float smallFigure(vec2 q, float kind, float sz, inout float fill) {
+	if (kind < 0.5) return abs(length(q) - 1.0);
+	if (kind < 1.5) return abs(sdBox(q, vec2(0.85)));
+	if (kind < 2.5) return abs(max(abs(q.x) * 0.866 + q.y * 0.5, -q.y) - 0.5);
+	if (kind < 3.5) return abs(min(sdBox(q, vec2(1.0, 0.32)), sdBox(q, vec2(0.32, 1.0))));
+	if (kind < 4.5) return min(abs(length(q) - 1.0), abs(length(q) - 0.55));
+	float b = sdBox(q, vec2(0.8));
+	fill = max(fill, inside(b * sz, 1.0));
+	return abs(b);
+}
+
+// "paint spilled from the top": a fan of small figures hanging from the top edge (densest near the top, some cut
+// off by it), three drips of shrinking figures running down from it, and 3–5 "+" / sparkle marks around the rim.
+// Everything in px; the fan's anchor sits just above the top edge, right of the menu.
+float compScatter(vec2 p, float seed, out float fill) {
 	float t = uTime;
-	float d = 1e3;
+	float d = 1e5;
 	fill = 0.0;
-	for (int i = 0; i < 12; i++) {
+	float x0 = uRegion.x;
+	float x1 = uRegion.z;
+	float top = uStage.y;
+	float Rb = min(uStage.y * 0.5, (x1 - x0) * 0.45);                     // fan radius
+	float unit = uU;                                                       // figure size unit
+	vec2 anchor = vec2(mix(x0, x1, mix(0.5, 0.66, hash(vec2(seed, 61.0)))), top + Rb * 0.06);
+
+	// the fan
+	for (int i = 0; i < 14; i++) {
 		float fi = float(i);
 		vec2 h = vec2(hash(vec2(fi, seed)), hash(vec2(fi * 1.7 + 3.0, seed)));
 		float h2 = hash(vec2(fi * 2.3 + 9.0, seed));
-		vec2 pos = vec2(mix(-1.15, 1.25, h.x), mix(-0.85, 0.85, h.y)) + 0.035 * vec2(sin(t * 0.7 + fi), cos(t * 0.6 + fi * 1.3));
-		float sz = 0.07 + 0.09 * h2;
+		float ang = -1.5707963 + (h.x - 0.5) * 2.7;                        // around "straight down", ±77°
+		float rad = Rb * (0.12 + 0.88 * sqrt(h.y));                        // denser near the top
+		vec2 pos = anchor + vec2(cos(ang) * rad * 1.25, sin(ang) * rad)
+			+ 5.0 * uPx * vec2(sin(t * 0.7 + fi), cos(t * 0.6 + fi * 1.3));
+		pos.x = clamp(pos.x, x0 + unit * 0.2, x1 - unit * 0.2);
+		float sz = unit * (0.06 + 0.08 * h2);
 		vec2 q = rot(t * (h.x - 0.5) * 0.6 + fi) * (p - pos) / sz;
 		float kind = floor(hash(vec2(fi * 3.1 + 1.0, seed)) * 6.0);
-		float k;
-		if (kind < 0.5) k = abs(length(q) - 1.0);                                           // circle
-		else if (kind < 1.5) k = abs(sdBox(q, vec2(0.85)));                                 // square
-		else if (kind < 2.5) k = abs(max(abs(q.x) * 0.866 + q.y * 0.5, -q.y) - 0.5);        // triangle
-		else if (kind < 3.5) k = abs(min(sdBox(q, vec2(1.0, 0.32)), sdBox(q, vec2(0.32, 1.0)))); // plus, outline only
-		else if (kind < 4.5) k = min(abs(length(q) - 1.0), abs(length(q) - 0.55));          // double ring
-		else { float b = sdBox(q, vec2(0.8)); k = abs(b); fill = max(fill, inside(b * sz, soft)); } // translucent square
-		d = min(d, k * sz);
+		d = min(d, smallFigure(q, kind, sz, fill) * sz);
 	}
-	// a few marks (3–5) — tiny solid "+" and twinkling sparkles — scattered around the outside of the figures
+	// drips: three streams of figures that get smaller as they run down
+	for (int j = 0; j < 3; j++) {
+		float fj = float(j) + 20.0;
+		float hx = hash(vec2(fj, seed));
+		float x = clamp(anchor.x + (hx - 0.5) * Rb * 2.0, x0 + unit * 0.25, x1 - unit * 0.25);
+		float y = top - Rb * mix(0.7, 0.95, hash(vec2(fj * 1.9, seed)));
+		float len = mix(2.0, 3.0, step(0.5, hash(vec2(fj * 2.7, seed))));  // 2 or 3 drops
+		for (int k = 0; k < 3; k++) {
+			float fk = float(k);
+			if (fk >= len) break;
+			vec2 pos = vec2(x + 6.0 * uPx * sin(t * 0.5 + fj + fk), y - fk * Rb * 0.38 - 4.0 * uPx * sin(t * 0.8 + fk));
+			float sz = unit * mix(0.09, 0.04, fk / 2.0);
+			vec2 q = rot(t * 0.3 * (hx - 0.5) + fk + fj) * (p - pos) / sz;
+			float kind = floor(hash(vec2(fj * 3.3 + fk, seed)) * 6.0);
+			d = min(d, smallFigure(q, kind, sz, fill) * sz);
+		}
+	}
+	// 3–5 marks — tiny solid "+" and twinkling sparkles — around the rim of the fan
 	for (int i = 0; i < 5; i++) {
 		float fi = float(i) + 40.0;
-		if (i > 2 && hash(vec2(fi * 3.7, seed)) < 0.5) continue; // the last two show up half the time
+		if (i > 2 && hash(vec2(fi * 3.7, seed)) < 0.5) continue;           // the last two show up half the time
 		vec2 h = vec2(hash(vec2(fi, seed)), hash(vec2(fi * 1.3 + 5.0, seed)));
-		float a = (float(i) + 0.2 + 0.6 * h.x) / 5.0 * 6.28318531 + hash(vec2(seed, 51.0)) * 6.28318531;
-		vec2 pos = vec2(0.05, 0.0) + vec2(1.3, 0.95) * mix(0.95, 1.08, h.y) * vec2(cos(a), sin(a))
-			+ 0.02 * vec2(sin(t * 0.8 + fi), cos(t * 0.7 + fi));
-		float sz = mix(0.03, 0.05, hash(vec2(fi * 2.9, seed)));
+		float ang = -1.5707963 + ((float(i) + 0.2 + 0.6 * h.x) / 5.0 - 0.5) * 2.9;
+		vec2 pos = anchor + vec2(cos(ang) * 1.25, sin(ang)) * Rb * mix(1.02, 1.18, h.y)
+			+ 0.02 * unit * vec2(sin(t * 0.8 + fi), cos(t * 0.7 + fi));
+		pos.x = clamp(pos.x, x0 + unit * 0.1, x1 - unit * 0.1);
+		float sz = unit * mix(0.03, 0.05, hash(vec2(fi * 2.9, seed)));
 		vec2 q = (p - pos) / sz;
 		float k;
 		if (hash(vec2(fi * 4.1, seed)) < 0.5) k = min(sdBox(q, vec2(1.0, 0.2)), sdBox(q, vec2(0.2, 1.0))); // +
-		else { float tw = 0.75 + 0.35 * sin(t * 2.2 + fi * 1.9); k = sdSparkle(q / tw) * tw; }              // sparkle, twinkling
+		else { float tw = 0.75 + 0.35 * sin(t * 2.2 + fi * 1.9); k = sdSparkle(q / tw) * tw; }              // sparkle
 		d = min(d, k * sz);
 	}
 	return d;
@@ -303,8 +342,7 @@ float scene(float id, float seed, vec2 fc, out float fill) {
 		vec3 f = fitRegion(want, uU * mix(0.75, 1.1, hash(vec2(seed, 33.0))), vec4(1.15, 1.72, 1.3, 1.3));
 		return compOverlap(stretch(fc - f.xy) / f.z, seed, 1.0 / f.z, fill) * f.z;
 	}
-	vec3 f = fitRegion(uCompC, uU, vec4(1.5, 1.6, 1.15, 1.15));
-	return compScatter(stretch(fc - f.xy) / f.z, seed, 1.0 / f.z, fill) * f.z;
+	return compScatter(uCompC + stretch(fc - uCompC), seed, fill);
 }
 
 // pass 1: r = ink, g = translucent fill
@@ -478,7 +516,7 @@ export function initHeroSdf() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, tri);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
-	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uSeedA', 'uSeedB', 'uCompC', 'uRegion', 'uU', 'uVel', 'uPx', 'uPixel', 'uMenuX', 'uEdges'] as const;
+	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uSeedA', 'uSeedB', 'uCompC', 'uRegion', 'uStage', 'uU', 'uVel', 'uPx', 'uPixel', 'uMenuX', 'uEdges'] as const;
 	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uMenuX', 'uLine', 'uFill'] as const;
 	let uf: Uniforms<(typeof figNames)[number]>;
 	let uc: Uniforms<(typeof compNames)[number]>;
@@ -599,6 +637,7 @@ export function initHeroSdf() {
 		// free area right of the menu (on narrow screens the menu spans the width: fall back to the right 70%)
 		const x0 = W - (menuX + 70 * dpr) < W * 0.35 ? W * 0.3 : menuX + 70 * dpr;
 		gl.uniform4f(uf.uRegion, x0, 30 * dpr, W - 20 * dpr, H - 40 * dpr);
+		gl.uniform2f(uf.uStage, W, H);
 		gl.uniform1f(uf.uU, Math.min(W * 0.24, H * 0.42));
 		gl.uniform1f(uf.uMenuX, menuX);
 		gl.uniform4fv(uf.uEdges, hypercube(t));
