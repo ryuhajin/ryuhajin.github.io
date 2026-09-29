@@ -16,7 +16,7 @@ interface Props {
 	bar?: boolean;
 }
 
-const { title, description = site.intro, current, bar = true } = Astro.props;
+const { title, description = site.intro.replaceAll('\n', ' '), current, bar = true } = Astro.props;
 const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.role}`;
 const themaIds = themas.map((t) => t.id);
 ---
