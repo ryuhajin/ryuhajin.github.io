@@ -4,7 +4,7 @@
 //                          dot sphere, pentagram web), cut off by the lower-right edges
 //                        · "overlap": translucent planes, a circle, long lines and an arc passing through each other,
 //                          with smaller pieces around them; placed and sized differently every time
-//                        · "scatter": a dozen small figures, sprinkled with tiny "+" marks and sparkles
+//                        · "scatter": a dozen small figures, with a few tiny "+" marks and sparkles around them
 //                      one scene morphs into the next by blending their distance fields; the lines are repeated as
 //                      a stack of offset, fading echoes that unfold during the morph and fold back when it settles
 //                                                                                              (after Tobias Ahlin)
@@ -238,8 +238,8 @@ float sdRhombus(vec2 p, vec2 b) {
 }
 float sdSparkle(vec2 p) { return min(sdRhombus(p, vec2(1.0, 0.26)), sdRhombus(p, vec2(0.26, 1.0))); }
 
-// a dozen small figures around the composition centre, plus a sprinkle of tiny "+" marks and sparkles in the
-// same range (jittered 6×3 split, some cells left empty); p in composition units
+// a dozen small figures around the composition centre, plus 3–5 tiny "+" marks and sparkles around the outside;
+// p in composition units
 float compScatter(vec2 p, float seed, float soft, out float fill) {
 	float t = uTime;
 	float d = 1e3;
@@ -261,15 +261,15 @@ float compScatter(vec2 p, float seed, float soft, out float fill) {
 		else { float b = sdBox(q, vec2(0.8)); k = abs(b); fill = max(fill, inside(b * sz, soft)); } // translucent square
 		d = min(d, k * sz);
 	}
-	// the sprinkle: tiny solid "+" marks and twinkling sparkles
-	for (int i = 0; i < 18; i++) {
+	// a few marks (3–5) — tiny solid "+" and twinkling sparkles — scattered around the outside of the figures
+	for (int i = 0; i < 5; i++) {
 		float fi = float(i) + 40.0;
-		if (hash(vec2(fi * 3.7, seed)) < 0.2) continue; // leave some cells empty
+		if (i > 2 && hash(vec2(fi * 3.7, seed)) < 0.5) continue; // the last two show up half the time
 		vec2 h = vec2(hash(vec2(fi, seed)), hash(vec2(fi * 1.3 + 5.0, seed)));
-		vec2 cell = vec2(mod(float(i), 6.0), floor(float(i) / 6.0));
-		vec2 pos = vec2(-1.15, -0.85) + (cell + 0.1 + 0.8 * h) / vec2(6.0, 3.0) * vec2(2.4, 1.7)
+		float a = (float(i) + 0.2 + 0.6 * h.x) / 5.0 * 6.28318531 + hash(vec2(seed, 51.0)) * 6.28318531;
+		vec2 pos = vec2(0.05, 0.0) + vec2(1.4, 1.02) * mix(0.95, 1.15, h.y) * vec2(cos(a), sin(a))
 			+ 0.02 * vec2(sin(t * 0.8 + fi), cos(t * 0.7 + fi));
-		float sz = mix(0.022, 0.045, hash(vec2(fi * 2.9, seed)));
+		float sz = mix(0.03, 0.05, hash(vec2(fi * 2.9, seed)));
 		vec2 q = (p - pos) / sz;
 		float k;
 		if (hash(vec2(fi * 4.1, seed)) < 0.5) k = min(sdBox(q, vec2(1.0, 0.2)), sdBox(q, vec2(0.2, 1.0))); // +
@@ -290,7 +290,7 @@ float scene(float id, float seed, vec2 fc, out float fill) {
 		// overlap: a different centre and size every appearance, within the area right of the menu
 		vec2 h = vec2(hash(vec2(seed, 31.0)), hash(vec2(seed, 32.0)));
 		vec2 c = mix(uRegion.xy, uRegion.zw, vec2(mix(0.42, 0.62, h.x), mix(0.35, 0.65, h.y)));
-		float u = uU * mix(0.95, 1.25, hash(vec2(seed, 33.0)));
+		float u = uU * mix(0.75, 1.1, hash(vec2(seed, 33.0)));
 		return compOverlap(stretch(fc - c) / u, seed, 1.0 / u, fill) * u;
 	}
 	return compScatter(stretch(fc - uCompC) / uU, seed, 1.0 / uU, fill) * uU;
