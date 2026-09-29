@@ -6,6 +6,7 @@ import YouTubeEmbed from '../../components/portfolio/YouTubeEmbed.astro';
 import Gallery from '../../components/portfolio/Gallery.astro';
 import CompareView from '../../components/portfolio/CompareView.astro';
 import Flipbook from '../../components/portfolio/Flipbook.astro';
+import CursorBadge from '../../components/portfolio/CursorBadge.astro';
 
 export async function getStaticPaths() {
 	const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -329,6 +330,7 @@ const videoPoster = d.video?.poster ?? d.cover.poster;
 		}
 	</nav>
 	<p class="counter mono" data-snap-counter aria-live="polite"></p>
+	<CursorBadge />
 
 	<dialog class="lightbox" data-lightbox-dialog aria-label="이미지 크게 보기">
 		<figure>

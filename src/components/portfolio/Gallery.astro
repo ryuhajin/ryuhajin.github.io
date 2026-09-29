@@ -18,7 +18,7 @@ const { items, cols = 3, ratio = 'wide' } = Astro.props;
 	{
 		items.map((it, i) => (
 			<li style={`--i: ${i}`}>
-				<button type="button" class="tile" data-lightbox={it.src} data-caption={[it.label, it.note].filter(Boolean).join(' — ')}>
+				<button type="button" class="tile" data-cursor="zoom" data-lightbox={it.src} data-caption={[it.label, it.note].filter(Boolean).join(' — ')}>
 					<img src={it.src} alt={it.label ?? ''} loading="lazy" decoding="async" />
 				</button>
 				{(it.label || it.note) && (
@@ -50,14 +50,24 @@ const { items, cols = 3, ratio = 'wide' } = Astro.props;
 		overflow: hidden;
 		border: 1px solid var(--line-2);
 		background: var(--bg-3);
+		/* hover outline = 1px border + 2px ring → 3px, without shifting the grid */
+		box-shadow: 0 0 0 0 var(--accent-p, var(--accent));
 		transition:
 			border-color var(--t-fast) var(--ease),
+			box-shadow var(--t-fast) var(--ease),
 			translate var(--t-fast) var(--ease-out);
 	}
 	.tile:hover,
 	.tile:focus-visible {
 		border-color: var(--accent-p, var(--accent));
+		box-shadow: 0 0 0 2px var(--accent-p, var(--accent));
 		translate: 0 -3px;
+	}
+	/* the shared cursor badge ("Zoom in") replaces the pointer where it can follow a mouse */
+	@media (hover: hover) and (pointer: fine) {
+		.tile {
+			cursor: none;
+		}
 	}
 	.tile img {
 		display: block;

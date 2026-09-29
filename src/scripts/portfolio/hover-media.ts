@@ -113,31 +113,51 @@ export function initHoverMedia() {
 		});
 	}
 
-	// cursor label inside cards
+	// cursor badge over project cards (data-hover-card → "view") and screenshot tiles (data-cursor="zoom")
 	const label = document.querySelector<HTMLElement>('[data-cursor-label]');
 	if (label) {
 		const f = follower(label);
 		cleanups.push(() => f.stop());
+		const ringText = label.querySelector<SVGTextPathElement>('[data-cursor-text]');
+		const ringPath = label.querySelector<SVGPathElement>('path[id]');
+		// spread the ring text so it closes the circle exactly, whatever the label
+		const fitRing = () => {
+			const text = ringText?.parentElement as SVGTextElement | null;
+			if (!text || !ringPath) return;
+			text.style.letterSpacing = '0px';
+			const chars = text.textContent?.length ?? 1;
+			text.style.letterSpacing = `${(ringPath.getTotalLength() - text.getComputedTextLength()) / chars}px`;
+		};
+		fitRing();
 		let idle = 0;
-		document.querySelectorAll<HTMLElement>('[data-hover-card]').forEach((card) => {
+		const hide = () => {
+			label.classList.remove('show');
+			idle = window.setTimeout(() => f.stop(), 300);
+		};
+		document.querySelectorAll<HTMLElement>('[data-hover-card], [data-cursor]').forEach((card) => {
 			const enter = (e: PointerEvent) => {
 				clearTimeout(idle);
+				const mode = card.dataset.cursor ?? 'view';
+				if (label.dataset.mode !== mode) {
+					label.dataset.mode = mode;
+					if (ringText) ringText.textContent = label.dataset[`text${mode[0].toUpperCase()}${mode.slice(1)}`] ?? '';
+					fitRing();
+				}
 				f.move(e.clientX, e.clientY, !label.classList.contains('show'));
 				label.classList.add('show');
 				f.start();
 			};
 			const move = (e: PointerEvent) => f.move(e.clientX, e.clientY);
-			const leave = () => {
-				label.classList.remove('show');
-				idle = window.setTimeout(() => f.stop(), 300);
-			};
 			card.addEventListener('pointerenter', enter);
 			card.addEventListener('pointermove', move);
-			card.addEventListener('pointerleave', leave);
+			card.addEventListener('pointerleave', hide);
+			// a click may open the lightbox on top without a pointerleave
+			card.addEventListener('click', hide);
 			cleanups.push(() => {
 				card.removeEventListener('pointerenter', enter);
 				card.removeEventListener('pointermove', move);
-				card.removeEventListener('pointerleave', leave);
+				card.removeEventListener('pointerleave', hide);
+				card.removeEventListener('click', hide);
 			});
 		});
 	}

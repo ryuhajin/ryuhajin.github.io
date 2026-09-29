@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import PortfolioLayout from '../../layouts/PortfolioLayout.astro';
 import ProjectMedia from '../../components/portfolio/ProjectMedia.astro';
+import CursorBadge from '../../components/portfolio/CursorBadge.astro';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -87,7 +88,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 		<img alt="" />
 		<video muted loop playsinline hidden></video>
 	</div>
-	<div class="cursor-label mono" data-cursor-label aria-hidden="true">View</div>
+	<CursorBadge />
 </PortfolioLayout>
 
 <script>
@@ -368,31 +369,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
 		display: none;
 	}
 
-	.cursor-label {
-		position: fixed;
-		left: 0;
-		top: 0;
-		z-index: 45;
-		display: grid;
-		place-items: center;
-		width: 4.5rem;
-		height: 4.5rem;
-		border-radius: 50%;
-		background: var(--fg);
-		color: var(--bg);
-		font-weight: 600;
-		pointer-events: none;
-		opacity: 0;
-		scale: 0.3;
-		transition:
-			opacity var(--t-micro) var(--ease),
-			scale var(--t-fast) var(--ease-out);
-	}
-	.cursor-label:global(.show) {
-		opacity: 1;
-		scale: 1;
-	}
-
 	.foot {
 		display: flex;
 		justify-content: space-between;
@@ -403,7 +379,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
 		.card {
 			cursor: pointer;
 		}
-		.cursor-label,
 		.follow {
 			display: none;
 		}
