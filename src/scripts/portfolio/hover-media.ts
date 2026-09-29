@@ -1,6 +1,6 @@
 // Dennis Snellenberg–style hover media:
 //  - [data-follow]      : a floating preview that trails the cursor (lerp) while hovering [data-media-src] rows
-//  - [data-cursor-label]: a small label ("View") that follows the cursor inside cards
+//  - [data-cursor-label]: the cursor badge, pinned to the pointer (no easing) over cards and screenshot tiles
 //  - video[data-hover-play] inside cards: loaded lazily and played only while hovered
 
 const LERP = 0.2;
@@ -8,15 +8,16 @@ const finePointer = () => matchMedia('(hover: hover) and (pointer: fine)').match
 
 let cleanups: (() => void)[] = [];
 
-function follower(el: HTMLElement) {
+/** Moves el toward the pointer every frame. lerp 1 = glued to the pointer (no lag, no tilt). */
+function follower(el: HTMLElement, lerp = LERP) {
 	let raf = 0;
 	const pos = { x: innerWidth / 2, y: innerHeight / 2 };
 	const target = { ...pos };
 	const loop = () => {
 		const dx = target.x - pos.x;
-		pos.x += dx * LERP;
-		pos.y += (target.y - pos.y) * LERP;
-		const tilt = Math.max(-8, Math.min(8, dx * 0.05));
+		pos.x += dx * lerp;
+		pos.y += (target.y - pos.y) * lerp;
+		const tilt = lerp < 1 ? Math.max(-8, Math.min(8, dx * 0.05)) : 0;
 		el.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, -50%) rotate(${tilt}deg)`;
 		raf = requestAnimationFrame(loop);
 	};
@@ -116,7 +117,7 @@ export function initHoverMedia() {
 	// cursor badge over project cards (data-hover-card → "view") and screenshot tiles (data-cursor="zoom")
 	const label = document.querySelector<HTMLElement>('[data-cursor-label]');
 	if (label) {
-		const f = follower(label);
+		const f = follower(label, 1);
 		cleanups.push(() => f.stop());
 		const ringText = label.querySelector<SVGTextPathElement>('[data-cursor-text]');
 		const ringPath = label.querySelector<SVGPathElement>('path[id]');
@@ -126,7 +127,8 @@ export function initHoverMedia() {
 			if (!text || !ringPath) return;
 			text.style.letterSpacing = '0px';
 			const chars = text.textContent?.length ?? 1;
-			text.style.letterSpacing = `${(ringPath.getTotalLength() - text.getComputedTextLength()) / chars}px`;
+			// a small gap keeps the last glyph from touching the first
+			text.style.letterSpacing = `${(ringPath.getTotalLength() - 3 - text.getComputedTextLength()) / chars}px`;
 		};
 		fitRing();
 		let idle = 0;

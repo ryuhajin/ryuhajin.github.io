@@ -25,8 +25,8 @@ const texts = {
 		left: 0;
 		top: 0;
 		z-index: 45;
-		width: 6.75rem;
-		height: 6.75rem;
+		width: 5.4rem;
+		height: 5.4rem;
 		display: grid;
 		place-items: center;
 		border-radius: 50%;
@@ -37,10 +37,10 @@ const texts = {
 		box-shadow: 0 18px 40px -18px #000a;
 		pointer-events: none;
 		opacity: 0;
-		scale: 0.35;
+		scale: 0.9;
 		transition:
 			opacity var(--t-micro) var(--ease),
-			scale 420ms var(--ease-out);
+			scale var(--t-fast) var(--ease);
 	}
 	.cursor-badge:global(.show) {
 		opacity: 1;
@@ -57,7 +57,8 @@ const texts = {
 	.ring text {
 		fill: var(--fg);
 		font-family: var(--mono);
-		font-size: 8.4px;
+		/* the ring is drawn in a 100-unit box, so this scales with the badge (~8px at 5.4rem) */
+		font-size: 9.4px;
 		font-weight: 600;
 		text-transform: uppercase;
 	}
@@ -70,20 +71,16 @@ const texts = {
 		position: relative;
 		display: grid;
 		place-items: center;
-		width: 2.6rem;
-		height: 2.6rem;
+		width: 2.1rem;
+		height: 2.1rem;
 		border-radius: 50%;
 		background: var(--accent);
 		color: var(--on-accent);
-		transition: scale 420ms var(--ease-out);
-	}
-	.cursor-badge:not(:global(.show)) .core {
-		scale: 0.6;
 	}
 	.core svg {
 		position: absolute;
-		width: 1.15rem;
-		height: 1.15rem;
+		width: 0.95rem;
+		height: 0.95rem;
 		fill: none;
 		stroke: currentColor;
 		stroke-width: 2.2;
