@@ -874,12 +874,16 @@ const videoPoster = d.video?.poster ?? d.cover.poster;
 		aspect-ratio: 16 / 10;
 		border-radius: 12px;
 		border: 1px solid var(--line-2);
+		/* hover outline = 1px border + 1px ring → 2px, without shifting the layout */
+		box-shadow: 0 0 0 0 var(--accent-n);
 		transition:
 			border-color var(--t-fast),
+			box-shadow var(--t-fast),
 			transform var(--t-fast) var(--ease-out);
 	}
 	.next-card:hover :global(.next-media) {
 		border-color: var(--accent-n);
+		box-shadow: 0 0 0 1px var(--accent-n);
 		transform: translateY(-4px);
 	}
 	.next-card strong {
