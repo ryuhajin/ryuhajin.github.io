@@ -31,8 +31,12 @@ const projects = defineCollection({
 		stack: z.array(z.string()),
 		accent: z.string().default('#7c9cff'),
 		cover: media,
-		/** PROJECT GOAL */
+		/** Lead sentence on the first screen (PROJECT GOAL, kept short). */
 		overview: z.string(),
+		/** Three short beats under the lead: a bold keyword and one line. Falls back to `highlights`. */
+		beats: z.array(z.object({ title: z.string(), body: z.string() })).default([]),
+		/** One mono line of facts under the beats (e.g. "60 fps", "DirectX 11"). Falls back to year · role. */
+		facts: z.array(z.string()).default([]),
 		highlights: z.array(z.string()).default([]),
 		specs: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
 		/** YouTube video id — the player is loaded only after a click (youtube-nocookie). */
@@ -49,6 +53,8 @@ const projects = defineCollection({
 					cols: z.number().default(3),
 					/** thumbnail box: 'wide' (16:9), 'square', or 'auto' (natural ratio) */
 					ratio: z.enum(['wide', 'square', 'auto']).default('wide'),
+					/** Shown on another screen instead of its own: as the photo strip of the techniques screen, or next to the before/after. */
+					with: z.enum(['techniques', 'compare']).optional(),
 					items: z.array(shot),
 				})
 			)
@@ -64,6 +70,8 @@ const projects = defineCollection({
 				kicker: z.string().optional(),
 				caption: z.string().optional(),
 				slider: z.boolean().default(false),
+				/** A few short lines next to the comparison. */
+				notes: z.array(z.string()).default([]),
 				steps: z.array(shot).min(2),
 			})
 			.optional(),
@@ -104,6 +112,8 @@ const projects = defineCollection({
 			.array(
 				z.object({
 					title: z.string(),
+					/** Headline number for the card, e.g. "18.68 → 8.64 ms". */
+					metric: z.string().optional(),
 					problem: z.string(),
 					approach: z.string(),
 					result: z.string(),
