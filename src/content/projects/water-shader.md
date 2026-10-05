@@ -1,158 +1,207 @@
 ---
 title: Water Shader
-tagline: 엔진이나 머티리얼 그래프 없이 DirectX 11 + raw HLSL로 작성한 스타일라이즈드 수면 셰이더 — 모든 파라미터를 ImGui로 실시간 조절
+tagline: DirectX 11 · HLSL로 만든 물 셰이더 — Gerstner 파도와 두 겹의 노멀맵, HDR 하늘 반사로 잔잔한 호수부터 노을 지는 바다까지 실시간으로 그립니다
 order: 2
 group: Computer Graphics
-status: Quality pass in progress
 year: '2026'
 role: Solo · 셰이더 · 셰이더 벤치 툴
 stack: [C++20, DirectX 11, HLSL SM 5.0, Dear ImGui, DirectXTK, CMake, vcpkg]
 accent: '#14b8a6'
 cover:
   poster: /projects/water-shader/cover.webp
-  alt: 청록색 수면에 잔물결과 파도 마루가 겹겹이 이어지고 멀리 해가 지는 장면
+  alt: Basic · Calm lake — 낮은 시점에서 본 호수. 잔물결 위로 하늘과 갈대가 고스란히 비친다
 overview: >-
-  물 표면의 움직임, 반사, 색 변화, 노멀 흐름을 ImGui로 실시간 조절할 수 있는 스타일라이즈드 수면 셰이더입니다.
-  셰이더 코드와 파라미터 조절로 물의 시각 요소를 단계적으로 쌓아 올리는 것을 목표로 했고,
-  2차 작업에서는 '색칠된 천'처럼 보이던 수면을 태양 반사광이 반짝이고 하늘을 비추는 '물'로 읽히도록 다듬고 있습니다.
+  "물을 표현하기 위해선 어떤 기능이 필요할까?"에서 출발한 프로젝트입니다.
+  그동안 당연하게 보던 물의 모습을 하나하나 뜯어보게 되었습니다.
+  Gerstner 파도와 두 겹의 노멀맵으로 물결을 만들고 실제 하늘(HDR)을 비춰,
+  화창한 한낮부터 노을 지는 저녁까지 서로 다른 분위기의 수면을 실시간으로 그립니다.
 highlights:
-  - Gerstner 파도 4개로 마루는 뾰족하고 골은 넓은 수면 실루엣
-  - 서로 다른 방향·속도로 스크롤하는 2-layer 노멀맵과 Fresnel 기반 큐브맵 반사
-  - HDR 태양 글린트와 하이라이트 롤오프로 반짝이는 수면
-  - Basic · Sunset · Tropical 프리셋과 Debug View, 셰이더 저장 시 약 0.2초 안에 핫 리로드
+  - 바람 방향, 세기 등 여러 파라미터로 파도 4개의 형상을 조절합니다.
+  - 가까운 파도는 수면을 직접 움직이고, 먼 물결은 거칠기로 바꿔 햇빛 반사를 넓힙니다.
+  - 두 겹의 잔물결 텍스처가 흐르며, 그 방향을 바람 방향에 맞출 수 있습니다.
+  - HDR 하늘을 큐브맵으로 반사하고, 그 하늘에서 추출한 태양의 방향·색·세기를 조명에 적용할 수 있습니다.
+  - 카메라, 라이트, 워터 디버그 패널에서 값을 조절하고, 마음에 드는 설정은 프리셋으로 저장합니다.
 specs:
   - label: Waves
-    value: Gerstner 4개 (파장 1.6 / 1.05 / 0.62 / 0.41, 방향 ±40°)
-  - label: Surface
-    value: 1024² ocean grid, 지수 매핑으로 반경 400까지 (가까울수록 촘촘)
-  - label: Shading
-    value: Lambert + Blinn-Phong + Fresnel(F0 0.05) 큐브맵 반사 + HDR 태양 글린트
-  - label: Tools
-    value: ImGui Shader Bench, 프리셋 저장/적용, Debug View 6종, 고정 카메라 캡처
+    value: Gerstner 파도 4개를 1024² 그리드(약 105만 정점)에 적용, 멀수록 작은 파도는 줄임
+  - label: Normal
+    value: 잔물결 노멀맵 5종 중 2장을 골라 섞어 사용
+  - label: Lighting
+    value: 보는 각도에 따라 반사가 달라지는 Fresnel, 하늘 반사, 에너지 보존 태양 글린트
+  - label: HDR
+    value: RGBA16F 리니어 렌더로 밝은 빛까지 담고 노출·톤 매핑으로 마무리
+  - label: Performance
+    value: 오션 그리드 GPU 약 0.2 ms (Release, 1280×720)
 video:
-  youtube: q1OxTRRmUzg
-  title: Water Shader 시연 영상 (1차 버전)
-  poster: /projects/water-shader/v1-sunset.webp
+  youtube: hAdJnM9oWXo
+  title: Water Shader 시연 영상
 techniques:
   - title: Gerstner Wave
-    sub: 정점 변위
-    body: 1차 버전의 sine wave 2개는 높이만 움직여 '텐트' 모양이 됐습니다. 정점을 수평으로도 모아 주는 Gerstner 파도 4개로 바꿔 마루는 뾰족하고 골은 넓게 만들었습니다.
+    sub: 물의 모양
+    body: 바다의 물은 위아래로만 움직이지 않고 작은 원을 그립니다. 정점을 수평으로도 모아 주는 Gerstner 파도 4개를 겹쳐 마루는 뾰족하고 골은 넓게 만들었고, 바람 방향·퍼짐·크기·높이·거칠기 값으로 4개를 한 번에 생성합니다.
     formula: |-
       θ = k(D·xz) − ωt
       P.xz += Q·A·D·cos θ ;  P.y += A·sin θ
       Qᵢ = steepnessᵢ / (kᵢ·Aᵢ·N)
+  - title: Far Waves → Roughness
+    sub: 수평선까지
+    body: 멀어서 메시로 표현할 수 없는 파도는 픽셀 단위의 기울기로, 그보다 작아지면 표면 거칠기(넓은 햇빛 반짝임)로 이어 그립니다. 그래서 수평선까지 바람 방향이 유지됩니다.
   - title: 2-layer Normal Map
-    sub: 잔물결
-    body: 노멀맵 하나를 서로 다른 방향·속도로 두 번 스크롤해 whiteout blend로 합치고, 두 번째 레이어를 3배 스케일로 올려 잔물결이 겹쳐 흐르는 표면을 만들었습니다.
+    sub: 물의 질감
+    body: 노멀맵 5종 중 두 장을 서로 다른 크기와 방향으로 흘려 겹칩니다. 한 장만 쓸 때 보이는 반복 무늬가 줄고, 흐르는 방향을 바람 방향에 맞출 수 있습니다.
     formula: N = normalize((n₁.xy + n₂.xy)·strength, n₁.z·n₂.z)
   - title: Fresnel Reflection
-    sub: 하늘 비추기
-    body: 시야각이 낮을수록 큐브맵 반사가 강해집니다. 수평선 아래를 향한 반사 벡터는 위로 접어, 초원 대신 하늘을 비추게 했습니다.
+    sub: 물의 색과 반사
+    body: 물은 내려다보면 속이 비치고, 수평에 가깝게 볼수록 하늘을 비춥니다. Fresnel로 보는 각도에 따라 물 색과 하늘 반사의 비율이 바뀌고, 프리셋마다 기본 반사율(F0)과 지수를 다르게 둡니다.
     formula: |-
-      F = F0 + (1 − F0)·(1 − N·V)^p,  F0 = 0.05, p = 5  (Schlick)
+      F = F0 + (1 − F0)·(1 − N·V)^p   (Schlick)
       envDir = (R.x, |R.y|, R.z)
-  - title: HDR Sun Glint
-    sub: 반짝임
-    body: 반사 벡터와 태양 방향이 겹치는 곳에 강한 글린트를 더하고, 0.8을 넘는 하이라이트만 지수 곡선으로 눌렀습니다. 하늘은 LDR이라 물에만 ACES를 걸면 반사가 실제 하늘보다 어두워지기 때문입니다.
-    formula: glint = pow(saturate(R·L), glintPower) · glintIntensity · F
-  - title: Ocean Grid
-    sub: 거리 LOD
-    body: 1024² 격자를 지수 함수로 펼쳐 가까운 곳은 촘촘하게, 먼 곳은 성기게 만들고, 파장의 8~14배 거리에서 파도를 서서히 줄여 중거리 모아레를 없앴습니다.
-    formula: |-
-      x = sign(t)·R·(e^{g|t|} − 1) / (e^g − 1),  R = 400, g = 6
-      waveFade = 1 − smoothstep(8λ, 14λ, dist)
+  - title: HDR Sky Lighting
+    sub: 빛
+    body: 조명 값을 임의로 정하지 않고 HDR 하늘에서 해의 방향·색·밝기와 주변광을 읽어 옵니다. 하늘을 바꾸면 물에 닿는 빛도 함께 바뀌고, RGBA16F 리니어 버퍼에 그린 뒤 노출과 톤 매핑으로 마무리합니다.
+  - title: Sun Glint
+    sub: 햇빛 반짝임
+    body: 반사 방향과 태양 방향이 겹치는 곳에 에너지가 보존되는 글린트를 더합니다. 먼 바다의 잔물결은 거칠기로 넘어가 반짝임이 넓게 퍼지도록 했습니다.
+presets:
+  title: Water Presets
+  kicker: 3 Theme Presets · Wind Waves
+  items:
+    - title: Basic
+      sub: 잔잔한 호수
+      images:
+        - src: /projects/water-shader/preset-basic-hero.webp
+          label: Ocean hero
+        - src: /projects/water-shader/preset-basic-surface.webp
+          label: Ocean surface
+        - src: /projects/water-shader/preset-basic-top.webp
+          label: 벤치 평면
+      swatches:
+        colors: ['#2e6680', '#0d263d']
+        label: 물 색  위에서 볼 때 → 낮은 각도에서 볼 때
+      specs:
+        - label: Sky
+          value: HDR Field day · 태양 고도 43.5° · 노출 −0.4 EV
+        - label: Waves
+          value: 바람 −105° · 퍼짐 25° · 파도 크기 3.6 · 높이 0.05 · 거칠기 0.30
+        - label: Ripples
+          value: Long streaks + Soft swell · 세기 0.45 · 바람 정렬
+        - label: Water
+          value: 반사 0.70 · 기본 반사율(F0) 0.04 · Fresnel 지수 5.0
+      body: 길고 낮은 파도가 바람을 따라 천천히 흐르는 호수입니다. 긴 줄무늬 잔물결을 바람 방향으로 흘려 물의 흐름이 보이게 했습니다.
+    - title: Sunset
+      sub: 바람 부는 노을 바다
+      images:
+        - src: /projects/water-shader/preset-sunset-hero.webp
+          label: Ocean hero
+        - src: /projects/water-shader/preset-sunset-surface.webp
+          label: Ocean surface
+        - src: /projects/water-shader/preset-sunset-top.webp
+          label: 벤치 평면
+      swatches:
+        colors: ['#c496ff', '#613890']
+        label: 물 색  위에서 볼 때 → 낮은 각도에서 볼 때
+      specs:
+        - label: Sky
+          value: HDR Sunset sea · 태양 고도 26° · 노출 −1.43 EV
+        - label: Waves
+          value: 바람 −125° · 퍼짐 38° · 파도 크기 4.1 · 높이 0.089 · 거칠기 0.77
+        - label: Ripples
+          value: Diagonal ripples + Fine chop · 세기 0.18
+        - label: Water
+          value: 반사 0.29 · 기본 반사율(F0) 0.15 · Fresnel 지수 3.4
+      body: 높고 거친 파도 위로 지는 해가 긴 빛의 길을 만듭니다. 반사를 줄이고 각도에 따른 반사 변화를 완만하게 해, 노을빛이 물 색에 스며들게 했습니다.
+    - title: Tropical
+      sub: 에메랄드빛 바다
+      images:
+        - src: /projects/water-shader/preset-tropical-hero.webp
+          label: Ocean hero
+        - src: /projects/water-shader/preset-tropical-surface.webp
+          label: Ocean surface
+        - src: /projects/water-shader/preset-tropical-top.webp
+          label: 벤치 평면
+      swatches:
+        colors: ['#29d1a3', '#00bdbd']
+        label: 물 색  위에서 볼 때 → 낮은 각도에서 볼 때
+      specs:
+        - label: Sky
+          value: HDR Beach day · 태양 고도 36.9° · 노출 −0.78 EV
+        - label: Waves
+          value: 바람 −80° · 퍼짐 43° · 파도 크기 3.42 · 높이 0.064 · 거칠기 0.85
+        - label: Ripples
+          value: Soft chop + Fine chop · 세기 0.70
+        - label: Water
+          value: 반사 0.80 · 기본 반사율(F0) 0.02 · Fresnel 지수 5.0
+      body: 위에서 보면 밝은 에메랄드빛, 낮은 각도에서는 청록빛으로 보이는 얕은 바다입니다. 작고 선명한 햇빛 반사로 강한 한낮 햇살을 표현했습니다.
 galleries:
-  - title: Presets
-    kicker: Basic · Sunset · Tropical
-    cols: 3
-    caption: 프리셋 하나에 물 색, Fresnel, 노멀 세기, 파도, 태양 방향과 글린트 값이 함께 저장됩니다. (Basic 맑은 호수 · Sunset 어두운 보라 · Tropical 터쿼이즈)
+  - title: Before / After
+    kicker: Water Breakdown
+    cols: 2
     items:
-      - src: /projects/water-shader/preset-basic.webp
-        label: Basic
-        note: 태양 고도 20°
-      - src: /projects/water-shader/preset-sunset.webp
-        label: Sunset
-        note: 태양 고도 5°
-      - src: /projects/water-shader/preset-tropical.webp
-        label: Tropical
-        note: 태양 고도 32°
+      - src: /projects/water-shader/before.webp
+        label: BEFORE  2026-05 · Tropical
+        note: 사인파 2개로 만든 단조로운 수면
+      - src: /projects/water-shader/after.webp
+        label: AFTER  2026-10 · Tropical
+        note: 파도와 햇빛 반사가 살아난 수면
   - title: Debug View
-    kicker: Shader Bench · ImGui
-    cols: 5
-    caption: Debug Mode 드롭다운으로 노멀맵 샘플, 월드 노멀, UV, 라이팅 항을 바로 확인하며 셰이더 단계를 검증했습니다 (Tropical 프리셋).
+    kicker: View 패널
+    cols: 6
+    caption: View 패널의 Debug View에서 노멀, UV, 조명, LOD를 나눠 볼 수 있습니다.
     items:
-      - src: /projects/water-shader/debug-0.webp
-        label: 0 Render
-      - src: /projects/water-shader/debug-1.webp
-        label: 1 Sampled Normal Map
-      - src: /projects/water-shader/debug-2.webp
-        label: 2 World-space Normal
-      - src: /projects/water-shader/debug-3.webp
-        label: 3 UV
-      - src: /projects/water-shader/debug-5.webp
-        label: 5 Lighting terms
-        note: R Lambert · G Blinn-Phong · B Fresnel
-  - title: 1차 버전
-    kicker: 2026-05 · sine wave
-    cols: 3
-    caption: 1차 버전(2026-04 ~ 05)은 sine wave 2개, 노멀맵 1장 재사용, 스타일라이즈드 반사율 0.5로 만들었습니다. 현재 품질 개선 작업의 Before입니다.
-    items:
-      - src: /projects/water-shader/v1-basic.webp
-        label: Basic
-        note: Skybox On
-      - src: /projects/water-shader/v1-sunset.webp
-        label: Sunset
-        note: Skybox On
-      - src: /projects/water-shader/v1-tropical.webp
-        label: Tropical
-        note: Skybox On
-compare:
-  title: '색칠된 천 → 물'
-  kicker: Quality pass · step by step
-  slider: true
-  caption: 같은 카메라(sunward, t = 12 s 고정)로 단계마다 캡처했습니다. 아래 단계를 고르면 왼쪽에 겹쳐지고, 가운데 핸들을 끌어 최종 결과와 비교할 수 있습니다.
-  steps:
-    - src: /projects/water-shader/step-0.webp
-      label: Before
-      note: 1차 버전. 노멀이 한쪽으로 기울어 표면이 천처럼 보임
-    - src: /projects/water-shader/step-1.webp
-      label: 버그 수정
-      note: 노멀맵 sRGB 디코딩 버그와 태양 방향 버그 수정
-    - src: /projects/water-shader/step-2.webp
-      label: 태양 글린트
-      note: HDR 글린트와 하이라이트 롤오프
-    - src: /projects/water-shader/step-3.webp
-      label: 잔물결
-      note: whiteout blend, 레이어 B 3배 스케일, 수평선 아래 반사 접기
-    - src: /projects/water-shader/step-4.webp
-      label: 물 몸체 색
-      note: F0 0.5 → 0.05, 몸체 색을 산란광 색으로 밝게, 은박지 같은 스페큘러 약화
-    - src: /projects/water-shader/step-5.webp
-      label: Gerstner
-      note: 파도 4개, 마루는 뾰족하고 골은 넓게
-    - src: /projects/water-shader/step-6.webp
-      label: 현재 (Ocean grid)
-      note: 1024² 지수 격자와 거리 LOD
+      - src: /projects/water-shader/dbg-0.webp
+        label: 1  Normal
+      - src: /projects/water-shader/dbg-1.webp
+        label: 2  World N
+      - src: /projects/water-shader/dbg-2.webp
+        label: 3  UV
+      - src: /projects/water-shader/dbg-3.webp
+        label: 4  Lighting
+      - src: /projects/water-shader/dbg-4.webp
+        label: 5  LOD
+      - src: /projects/water-shader/dbg-5.webp
+        label: 6  Final
+breakdown:
+  title: 품질 개선과 문제 해결
+  kicker: Breakdown
+  columns:
+    - title: 품질 개선 과정
+      items:
+        - 사인파 2개였던 파도를 마루가 뾰족한 Gerstner 파도 4개로 바꿨습니다.
+        - 잔물결 2겹과 태양 글린트를 더해 수면에 햇빛 반사가 살아나게 했습니다.
+        - 리니어·HDR 렌더링과 톤 매핑으로 밝은 빛이 날아가지 않게 했습니다.
+        - LOD를 추가하여 먼 물결도 깨지지 않고 수평선까지 이어지게 했습니다.
+        - 자연스러운 먼 바다를 표현할 수 있도록 원경 detail 설정을 추가했습니다.
+    - title: 문제 해결 과정
+      items:
+        - DDS 변환 때 감마가 적용돼 기울어진 노멀맵 방향을 바로잡았습니다.
+        - 노멀맵의 회전·흐름 계산 순서를 바꿔 바람 방향에 맞게 흐르게 했습니다.
+        - 물결 뒷면에 땅이 비치던 반사를 위로 뒤집어 하늘로 근사했습니다.
+        - 대기 원근에 생기던 줄무늬를 샘플 높이를 올려 없앴습니다.
 problems:
-  - title: 노멀맵이 한쪽으로 기울어 있었다
-    problem: 수면이 전체적으로 한 방향을 향해 '색칠된 천'처럼 보였습니다. DDS 노멀맵의 평균 RGB가 (128,128,255)가 아니라 (55,57,246)이었고, 월드 노멀이 (−0.37, 0.88, −0.53)으로 기울어 있었습니다.
-    approach: 128을 sRGB → linear로 바꾸면 정확히 55가 된다는 점에서 데이터 텍스처가 색 공간 변환을 거쳤다고 판단했고, texconv --ignore-srgb로 노멀맵을 다시 만들었습니다.
-    result: 노멀이 평면 기준으로 돌아왔습니다. 노멀맵·마스크 같은 데이터 텍스처는 색 공간 변환을 거치면 안 된다는 규칙을 문서로 남겼습니다.
-  - title: 태양이 수면 아래에 있었다
-    problem: 음수 pitch를 쓰는 프리셋에서 광원 방향이 뒤집혀, 태양이 수면 아래에서 비추고 있었습니다.
-    approach: 광원을 Sun Yaw / Sun Elevation으로 다시 정의하고, 스카이박스의 태양 위치(yaw ≈ 34.5°, 고도 ≈ 4°)에 맞추는 Match Skybox Sun 버튼을 만들었습니다. R Lambert / G Blinn-Phong / B Fresnel을 보여 주는 Debug Mode 5도 추가했습니다.
-    result: 스카이박스 해와 글린트 위치가 일치하고, 라이팅 항을 채널별로 바로 검증할 수 있게 됐습니다.
-  - title: 중거리 모아레
-    problem: 처음 만든 512² 격자와 10λ~18λ 페이드에서는 중거리 파도에 모아레 무늬가 생겼습니다.
-    approach: 파장당 정점이 5개 이상 되도록 격자 밀도와 페이드 구간을 다시 계산해 1024², 8λ~14λ로 바꿨습니다.
-    result: 먼 수면까지 무늬 없이 파도가 이어집니다. cbuffer 레이아웃은 32바이트를 유지하고 static_assert로 C++ 쪽 크기를 고정했습니다.
+  - title: 한쪽으로 기운 노멀맵
+    problem: 물 표면 전체가 한쪽으로 기울어 보이고, 해를 수면 아래에 둬야 반사가 보였습니다. 노멀맵의 평균 RGB가 평평한 값 (128,128,255)가 아니라 (55,57,246)이었습니다.
+    approach: 128을 sRGB → linear로 바꾸면 정확히 55가 된다는 점에서, DDS로 변환할 때 사진용 감마 보정이 데이터 텍스처에 적용됐다고 판단했습니다. 색 변환 없이(--ignore-srgb) 다시 변환했습니다.
+    result: 노멀이 평면 기준으로 돌아왔고, 노멀맵·마스크 같은 데이터 텍스처는 색 공간 변환을 거치지 않는다는 규칙을 문서로 남겼습니다.
+  - title: 바람과 다른 쪽으로 흐르는 잔물결
+    problem: 바람 정렬을 켠 잔물결이 흐름 방향 표시와 다른 쪽으로 흘렀습니다(Sunset에서 49° 어긋남).
+    approach: 텍스처를 회전한 뒤에 흐름 이동을 더해, 흐름까지 정렬 각도만큼 돌아가 있었습니다. 이동을 회전 전에 더하도록 순서를 바꿨습니다.
+    result: 두 시점의 무늬 이동을 측정해 흐름이 표시와 1° 이내로 맞는 것을 확인했습니다.
+  - title: 물결 뒷면에 비친 땅
+    problem: 물결 뒷면처럼 반사 방향이 수평선 아래로 꺾이는 곳에 하늘 대신 땅이 비쳤습니다.
+    approach: 수평선 아래를 향한 반사 방향을 위로 접어(y 성분의 절댓값) 하늘을 비추게 했습니다.
+    result: 물결 뒷면에도 하늘색이 이어져 수면이 얼룩지지 않습니다.
+  - title: 수평선 연무의 줄무늬
+    problem: 수평선 연무가 화면 세로 방향으로 방사형 줄무늬를 만들었습니다. 수평선 바로 위의 하늘을 샘플해 언덕과 나무를 화면 열마다 집어 왔기 때문입니다.
+    approach: 샘플 높이를 올려, 조금 위(앙각 약 10°)의 흐린 하늘색을 쓰도록 바꿨습니다.
+    result: 줄무늬 없이 먼 바다가 하늘에 부드럽게 녹아듭니다.
 limitations:
-  - 평면 기준 tangent frame이라 파도가 크게 휘면 노멀맵 방향이 어긋남 → 파동 도함수로 TBN 재구성 예정
-  - 다음 후보 — 마루의 fake SSS, Jacobian 기반 거품(foam), 거리별 노멀 감쇠와 두 번째 노멀맵, sRGB 스왑체인 + 선형 라이팅
-  - 진행 중(bench-tools) — 마우스 회전, 카메라 프리셋, 프리셋별 큐브맵, CPU/GPU 타이머 오버레이
+  - Foam mask — 파도 마루의 흰 거품
+  - Waterfall — 폭포 리본 메시와 가장자리 거품
+  - Ripple SDF — 시간에 따라 퍼지는 원형 물결
+  - UE5 포팅
 links:
   - label: GitHub — WaterShader
     href: https://github.com/ryuhajin/WaterShader
-  - label: YouTube — 1차 버전 시연 영상
-    href: https://www.youtube.com/watch?v=q1OxTRRmUzg
+  - label: YouTube — 시연 영상
+    href: https://youtu.be/hAdJnM9oWXo
 ---
