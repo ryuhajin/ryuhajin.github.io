@@ -12,9 +12,9 @@ cover:
   video: /projects/sdfs/cover.mp4
   alt: 흑백 SDF 패턴 카드들이 coverflow로 늘어서 있고 가운데 카드가 정면을 향한 화면
 overview: >-
-  SDF(Signed Distance Field)로 도형을 수식으로 정의하고, 연산자·좌표 변환·노이즈를 조합해 절차적 패턴을 만드는 셰이더 학습 덱입니다.
-  카드 하나가 픽셀 셰이더 하나이며, 핫 리로드와 ImGui 파라미터로 결과를 바로 확인합니다.
-  2D 도형 기초에서 시작해 노이즈·fBm 지형, 3D 레이마칭(sphere tracing, 볼륨 밀도 누적)까지 13장의 카드로 진행했습니다.
+  수식으로 도형과 무늬를 그리는 SDF의 원리를 직접 익혀 보고 싶었습니다.
+  카드 한 장이 픽셀 셰이더 하나이며,
+  2D 도형부터 노이즈 지형과 3D 레이마칭까지 13장의 카드로 실험했습니다.
 highlights:
   - coverflow 카드 덱 — 가운데 카드가 편집 대상이고, 카드마다 시간이 따로 흐름
   - 셰이더 핫 리로드 — 저장하면 재컴파일, 실패하면 마지막 정상 셰이더를 유지하고 오류 창 표시
@@ -32,25 +32,25 @@ video:
   title: SDFs Deck 시연 영상
 techniques:
   - title: Shape Library
-    body: 원·박스·라운드 박스·삼각형·선분·n각형·별·하트 2D 거리 함수
+    body: 원·박스·별·하트 등을 "경계까지의 거리" 함수로 정의
   - title: Operators
-    body: union·subtract·intersect(min/max), smooth min/max, onion·round
+    body: min/max로 합치고 빼며, smooth min으로 경계를 부드럽게 합성
     formula: |-
       h = saturate(0.5 + 0.5·(b − a) / k)
       d = lerp(b, a, h) − k·h·(1 − h)
   - title: Domain Transform
-    body: 이동·회전·스케일, fmod 반복, 미러·polar·kaleido로 좌표 공간을 접어 패턴 반복
+    body: 좌표를 이동·회전·반복하고 접어 도형 하나로 패턴을 만듦
   - title: Noise
-    body: value·gradient·3D simplex 노이즈, 6옥타브 fBm, domain warp
+    body: value·gradient·simplex 노이즈, fBm, domain warp로 불규칙함 표현
   - title: Anti-aliasing
-    body: fwidth(d) 기반 smoothstep 폭으로 해상도와 무관한 경계
+    body: fwidth로 픽셀 크기를 재 해상도와 무관하게 매끈한 경계를 만듦
     formula: aa = max(fwidth(d) · 1.5, 1e-4)
 galleries:
   - title: The Deck
     kicker: 13 cards · coverflow
     cols: 7
     ratio: square
-    caption: SDFs Deck · 셰이더 카드 13장을 coverflow 캐러셀로 넘겨 가며 비교하는 학습 앱 (ImGui로 카드 전환·파라미터 조절)
+    caption: 카드 13장을 좌우로 넘겨 보며 비교하는 SDFs Deck입니다.
     items:
       - src: /projects/sdfs/card-01.webp
         label: 01 Repetition
@@ -105,18 +105,18 @@ motion:
   - title: card 05 · Smooth Union
     sprite: /projects/sdfs/motion-smoothmin.webp
     frames: 8
-    body: 두 원을 min 대신 smooth min으로 합쳐, 가까워질수록 경계가 녹아 하나로 이어집니다. k(= Param.x)로 녹는 폭을 조절합니다.
+    body: 두 원을 smooth min으로 합쳐, 가까워질수록 경계가 녹듯이 하나로 이어집니다. 녹는 폭 k를 키우면 더 먼 거리에서부터 부드럽게 달라붙습니다.
     formula: |-
       h = saturate(0.5 + 0.5·(b − a) / k)
       d = lerp(b, a, h) − k·h·(1 − h)
   - title: card 12 · Volumetric Voronoi
     sprite: /projects/sdfs/motion-volume.webp
     frames: 8
-    body: 반지름 5인 구를 SDF 레이마칭 2패스(진입·탈출, 64 step)로 추적해 부피 구간을 구하고, 24 step으로 3D Voronoi F2 밀도(1 / F2³)를 누적합니다. 5초마다 궤도 ↔ 돌리 카메라가 전환됩니다.
+    body: 레이마칭으로 광선이 구에 들어가고 나오는 지점을 찾고, 그 사이에 3D Voronoi 밀도(1 / F2³)를 쌓아 볼륨을 그립니다. 카메라는 5초마다 구 안을 맴도는 시점과 앞뒤로 드나드는 시점으로 바뀝니다.
   - title: card 02 · Dot Grid
     sprite: /projects/sdfs/motion-dotgrid.webp
     frames: 8
-    body: 중심점이 sin·cos 궤적으로 움직이고, 5×9 격자 점이 중심과의 거리에 따라 커집니다. 반경 0.75 안의 점만 선분 SDF로 중심과 연결합니다.
+    body: 중심점이 sin·cos 궤적을 따라 움직이면, 5×9 격자 점들이 중심에 가까울수록 커집니다. 반경 0.75 안의 점은 선분 SDF로 중심과 이어집니다.
     formula: r = lerp(0.017, 0.038, 1 − smoothstep(0.10, 0.75, dist))
 architecture:
   caption: 파일 저장에서 화면까지

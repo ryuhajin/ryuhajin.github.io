@@ -31,7 +31,7 @@ specs:
   - label: Shadow
     value: 태양에서 본 구름 밀도를 512² 캐시에 미리 저장해 그림자 계산을 가볍게
   - label: Performance
-    value: 구름 패스 p95 4.56 ms · 12개 장면 모두 10 ms 이하 (RTX 4080 SUPER, 1080p)
+    value: 구름 패스 평균 4.6 ms, 12개 장면에서 10 ms 이하 유지
 video:
   youtube: 3h6GUrbkmDY
   title: Volumetric Cloud 시연 영상
@@ -80,7 +80,7 @@ galleries:
         label: Custom
         note: 시작 고도 1.5 km · 구름 두께 1,500–2,300 m · Coverage 0.59 · Density 2.83
       - src: /projects/volumetric-cloud/type-stratus-f8.webp
-        note: 바닥이 평평하고 얇게 넓게 퍼지는, 한 장의 담요처럼 평평하게 깔리는 구름입니다.
+        note: 바닥이 평평하고, 한 장의 담요처럼 얇고 넓게 깔리는 구름입니다.
       - src: /projects/volumetric-cloud/type-cumulus-f8.webp
         note: 위로 갈수록 좁아지는 형태와 넉넉한 두께감의 구름으로, 명암이 가장 뚜렷하게 드러납니다.
       - src: /projects/volumetric-cloud/type-altocumulus-f8.webp
@@ -105,7 +105,7 @@ galleries:
         label: 4 · Lavender dream
         note: 태양 고도 10.9° · 노출 1.30 EV
   - title: Debug View
-    kicker: Breakdown & Tools
+    kicker: Debug View · Profiling
     cols: 6
     caption: 숫자키 0~9로 Weather, 밀도, 노이즈, 조명 등을 분해하여 확인할 수 있습니다. F1 패널로 구름을 바로 조절하고, Performance 창에서 패스별 시간을 실시간으로 확인합니다.
     items:
@@ -135,15 +135,13 @@ galleries:
         label: F1 Cloud Formation 패널
         note: 구름 타입·밀도·프로파일을 실시간으로 조절
 compare:
-  title: 품질 개선 과정
-  kicker: Before → After
-  caption: >-
-    같은 건물 앞 시점에서 날짜별로 캡처했습니다. 그림자는 base 노이즈로만 계산하고 중간 크기 무늬를 1.5배 강조해 명암 대비를 살렸고,
-    대기 원근 거리를 2배로 늘리고 Detail 노이즈를 64³로 올려 멀어질수록 구름이 하늘에 자연스럽게 녹아들게 했습니다.
+  title: Before → After
+  kicker: Breakdown & Tools
+  caption: 같은 건물 앞 시점에서 날짜별로 캡처했습니다. 아래 단계를 고르면 그 날의 결과로 바뀝니다.
   steps:
     - src: /projects/volumetric-cloud/progress-0904.webp
-      label: 09-04
-      note: 초기 결과 (CPU Weather Map). 구름이 납작하고 명암이 흐림
+      label: BEFORE 09-04
+      note: 초기 결과 · 구름이 납작하고 명암이 흐림
     - src: /projects/volumetric-cloud/progress-0908.webp
       label: 09-08
       note: Weather Map 생성을 GPU로 옮긴 뒤(09-05)의 Urban 장면
@@ -151,13 +149,31 @@ compare:
       label: 09-14
       note: 품질 개선 라운드를 시작하기 전 기준 화면
     - src: /projects/volumetric-cloud/progress-now.webp
-      label: 현재
-      note: detail 64³, 대기 원근 거리 2배, 근경 micro detail, 샘플 지터(09-25)까지 적용한 구름 · 조명 1
+      label: AFTER 현재
+      note: 현재 · 입체감과 명암 대비가 살아난 구름
+breakdown:
+  title: 품질 개선과 최적화
+  kicker: Breakdown & Tools
+  columns:
+    - title: 품질 개선 과정
+      items:
+        - 그림자는 base 노이즈로만 계산하고 중간 크기 무늬를 1.5배 강조해 구름 덩어리의 명암 대비를 살렸습니다.
+        - 해의 고도가 5° 이하로 낮을 때 생기던 줄무늬를 그림자 캐시 간격 보정과 3~5° 구간 블렌딩으로 없앴습니다.
+        - 구름에 적용하는 대기 원근 거리를 2배로 늘려, 멀어질수록 구름이 하늘에 자연스럽게 녹아들게 했습니다.
+        - Detail 노이즈 해상도를 64³로 늘리고, 채널마다 다른 주파수를 사용해 형태를 자연스럽게 정리했습니다.
+        - 화면에서 픽셀이 덮는 크기로 거리를 판단해, 가까운 구름에만 미세 디테일을 더했습니다.
+    - title: 최적화와 툴
+      items:
+        - 구름이 없는 빈 공간은 건너뛰고, 충분히 불투명해지면 계산을 일찍 끝냅니다.
+        - 멀리 갈수록 계산 간격을 넓혀(기본 100 m, 최대 512 스텝) 성능을 지킵니다.
+        - 12개 장면 카메라를 자동으로 측정해 구름 패스를 10 ms 이하로 유지합니다.
+        - GPU 타이머로 패스별 시간을 재고, 셰이더는 저장 즉시 다시 불러옵니다.
+        - 구름 타입과 조명을 JSON 프리셋으로 저장하고, 핵심 수식은 CPU 테스트로 검증합니다.
 problems:
   - title: 동심원 모양 줄무늬
     problem: 영상 촬영 중 얇은 Stratus(850 m)를 위에서 볼 때(F7·F8) 카메라 중심의 동심원 banding이 보였습니다. 모든 픽셀이 같은 거리(구간 중앙)에서 샘플링해 급한 밀도 경계에서 에일리어싱이 생긴 것이 원인이었습니다.
     approach: 픽셀마다 Interleaved Gradient Noise로 샘플 위치를 구간 안에서 흩었습니다. TAA가 없어서 프레임마다 바뀌는 시간 지터 대신 화면 공간 고정 지터를 썼습니다.
-    result: 동심원이 사라지고 성능은 그대로(p95 4.56 ms). 오차를 없앤 것이 아니라 고르게 흩은 것이라 노이즈 형태로 남습니다.
+    result: 동심원이 사라지고 성능은 그대로 유지됐습니다. 오차를 없앤 것이 아니라 고르게 흩은 것이라 노이즈 형태로 남습니다.
   - title: 레이마칭 비용
     problem: 기준(Reference) 레이마칭은 Cumulus 지평선 시점에서 구름 패스가 18.68 ms(p95)까지 올라갔습니다.
     approach: 구름 지지 영역 사전 검사, 빈 공간 탐색(연속 빈 표본이면 2배 간격), 조기 종료, 거리별 step, 고정 golden-angle Light cone을 넣고, Reference와 결과를 SSIM·RMSE로 자동 비교했습니다. 400 m까지 건너뛰는 4배 탐색은 등고선 alias가 생겨 탈락시켰습니다.
