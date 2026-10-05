@@ -9,13 +9,14 @@ team: jonghopa — .cub 파싱 · 맵 검증
 stack: [C, MiniLibX, Makefile]
 accent: '#ef4444'
 cover:
-  poster: /projects/cub3d/cover.webp
+  poster: /projects/cub3d/hero-pdf.webp
   video: /projects/cub3d/cover.mp4
-  alt: 하늘색 천장과 갈색 바닥 사이로 벽돌 텍스처 벽과 기둥이 이어지는 1인칭 복도
+  alt: 벽 면의 방향(동서남북)마다 다른 텍스처가 입혀진 1인칭 복도
 overview: >-
-  Cub3D의 목표는 전설적인 게임 '울펜슈타인 3D'와 유사한 1인칭 시점의 3D 미로 탐험 게임을 구현하는 것입니다.
-  폴리곤 기반의 현대적인 3D 렌더링이 아닌, 레이캐스팅이라는 기법을 사용합니다.
-  2D 맵 정보만으로 3D 공간의 환영을 만들어 내는 것이 Cub3D 세계를 구현하는 핵심입니다.
+  42 서울 그래픽스 과제인 Cub3D 프로젝트로, 2인 팀으로 진행했습니다.
+  평면 지도(.cub) 한 장만으로 1인칭 3D 미로를 그리는 것이 목표입니다.
+  화면 세로줄마다 광선을 쏴 벽까지 거리를 재고, 그 거리로 벽 높이를 정합니다.
+  저는 레이캐스팅, 벽 텍스처 매핑 등 렌더링 전반을 맡았습니다.
 highlights:
   - .cub 파일 파싱 — 벽 텍스처 4방향(NO·SO·WE·EA), 바닥·천장 색(F·C), 맵과 플레이어 시작 방향
   - 벽으로 닫혀 있지 않은 맵, 중복·누락 식별자, 잘못된 RGB를 모두 오류로 처리
@@ -57,6 +58,20 @@ techniques:
       tex_x = frac(wall_x) · tex_width
       step = tex_height / line_height
 galleries:
+  - title: .cub에서 화면까지
+    kicker: Input → Render
+    cols: 2
+    ratio: auto
+    caption: .cub 파일 한 장(1 벽 · 0 빈 공간 · W 시작 위치·방향)이 2D 지도의 광선, 화면 세로줄을 거쳐 텍스처를 입힌 화면이 됩니다.
+    items:
+      - src: /projects/cub3d/flow-1-input.webp
+        label: 01 INPUT · .cub 파일
+      - src: /projects/cub3d/flow-2-map.webp
+        label: 02 2D MAP · 광선
+      - src: /projects/cub3d/flow-3-screen.webp
+        label: 03 SCREEN · 세로줄
+      - src: /projects/cub3d/flow-4-render.webp
+        label: 04 RENDER · 텍스처를 입힌 화면
   - title: In the maze
     kicker: Output
     cols: 3
@@ -69,12 +84,13 @@ galleries:
       - src: /projects/cub3d/still-3.webp
         label: 방향별 텍스처
 architecture:
-  caption: .cub에서 화면까지
+  caption: Pipeline
   points:
-    - Parse — 식별자 6개(NO·SO·WE·EA·F·C)를 순서 무관하게 읽고, 비트 마스크로 중복·누락 검사
-    - Validate — 맵 문자 검사, 플레이어 1명, 빈 칸이 가장자리나 공백에 닿지 않는지 4방향 검사
-    - Setup — MiniLibX 창·이미지 생성, 벽 텍스처 4장 로드, 키 누름/뗌 훅과 루프 훅 등록
-    - Frame — 이동·회전 적용 → 바닥·천장 채우기 → 세로줄마다 DDA와 텍스처 샘플링 → 창에 출력
+    - Parse — .cub에서 벽 텍스처 4장, 바닥·천장 색, 맵을 읽음
+    - Validate — 맵이 벽으로 닫혀 있는지, 시작 위치가 하나인지 검사
+    - Setup — 창을 열고 벽 텍스처를 불러온 뒤 키 입력을 연결
+    - Cast — 세로줄마다 광선을 쏴 격자를 한 칸씩 건너며(DDA) 첫 벽을 찾음
+    - Draw — 거리로 벽 높이를 정하고, 부딪힌 면의 방향에 맞는 텍스처를 입힘
 problems:
   - title: 맵 인덱스 뒤바뀜
     problem: 파싱된 맵을 map[x][y]로 읽어 가로·세로가 뒤바뀌고, 정사각형이 아닌 맵에서는 벽 판정이 엉뚱한 칸을 가리켰습니다.

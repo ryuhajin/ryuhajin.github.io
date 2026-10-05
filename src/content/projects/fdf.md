@@ -12,11 +12,11 @@ cover:
   video: /projects/fdf/cover.mp4
   alt: 검은 배경 위에 흰 선으로 그려진, 한쪽으로 산맥이 솟은 등각 투영 와이어프레임 지형 (t1.fdf)
 overview: >-
-  FdF 프로젝트의 목표는 입력된 텍스트 데이터를 3차원 공간상의 좌표로 인식하고,
-  이 점들을 선으로 연결하여 와이어프레임 형태의 3D 지도를 그리는 것입니다.
-  42 교육 과정에서 그래픽 프로그래밍 입문을 돕기 위해 제공되는 MiniLibX(창 생성, 키/마우스 이벤트, 이미지 버퍼 접근)만으로 구현했습니다.
+  42 서울 그래픽스 과제인 FdF 프로젝트입니다.
+  텍스트 지도(.fdf)를 읽어 3D 와이어프레임 지형으로 그리는 것이 목표입니다.
+  줄(행)의 개수가 y 방향 점 개수, 한 줄에 있는 숫자(열)의 개수가 x 방향 점 개수, 숫자 값은 높이(z)가 됩니다.
 highlights:
-  - 텍스트 지도 입력 — 행은 x축, 열은 y축, 값은 z축(고도)
+  - MiniLibX(창 생성, 키 이벤트, 이미지 버퍼 접근)만으로 구현
   - 맵 크기에 맞춰 스케일과 고도 배율을 자동으로 정하고 창 가운데에 배치
   - 실수 연산 없이 정수 오차 누적만으로 직선을 긋는 브레젠험 알고리즘
   - 행 길이·숫자·정수 범위·빈 줄까지 검사하는 입력 검증과 모든 오류 경로의 메모리 해제
@@ -47,19 +47,22 @@ techniques:
 architecture:
   caption: 텍스트에서 와이어프레임까지
   points:
-    - Read — get_next_line으로 한 줄씩 읽어 연결 리스트에 저장
-    - Validate — 행마다 열 개수 동일, 숫자와 부호만 허용, int 범위, 빈 줄 금지, 확장자 .fdf
-    - Vectorize — 공백으로 나눠 {x, y, z} 실수 벡터 리스트로 변환
-    - Fit — 자동 스케일·고도 배율 → 등각 투영 → 창 중앙 정렬
-    - Draw — 오른쪽·아래 이웃과 브레젠험으로 연결해 이미지 버퍼에 기록, 창에 출력
+    - Read — get_next_line으로 파일을 한 줄씩 읽어 저장
+    - Validate — 줄마다 숫자 개수가 같은지, 값·확장자가 올바른지 검사
+    - Vectorize — 숫자 하나를 점 하나 {x, y, z}로 바꿈
+    - Fit — 창에 맞게 크기를 정하고 비스듬히 내려다본 시점(등각 투영)으로 옮김
+    - Draw — 이웃한 점끼리 정수 계산만 쓰는 브레젠험 직선으로 연결
 galleries:
   - title: Maps
     kicker: Output
     cols: 3
-    caption: 과제 테스트 지도들을 같은 프로그램으로 렌더링한 결과입니다. macOS 전용 MiniLibX(Swift · Metal)로 만든 과제라, 코드는 그대로 두고 minilibx-linux로 포팅해 WSL2에서 이미지 버퍼를 저장했습니다. 촬영 빌드에서만 높이를 3배로 키우고 4K로 그린 뒤 축소했습니다 (성긴 42·pyra는 3px 선).
+    caption: >-
+      맨 위 화면은 t1.fdf를 등각 투영으로 그린 결과입니다. 점마다 높이값을 받아 와이어프레임 지형이 됩니다.
+      macOS 전용 MiniLibX로 만든 과제라, 코드는 그대로 두고 minilibx-linux로 포팅해 WSL2에서 촬영했습니다 (촬영 빌드에서만 높이 3배).
     items:
-      - src: /projects/fdf/cover.webp
-        label: t1.fdf
+      - src: /projects/fdf/input-42.webp
+        label: INPUT · 42.fdf
+        note: 숫자 하나가 점 하나, 값이 높이
       - src: /projects/fdf/map-42.webp
         label: 42.fdf
       - src: /projects/fdf/map-pyra.webp
