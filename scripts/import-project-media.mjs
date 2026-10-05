@@ -1,6 +1,8 @@
 // One-shot: convert project screenshots / clips from their working folders into web-sized files under
 // public/projects/<slug>/. Only the outputs are committed; re-run when the source captures change.
 //   node scripts/import-project-media.mjs [slug ...]
+// A key like 'fdf#pdf' writes into public/projects/fdf/ and runs on its own, so a set whose captures are gone can
+// still take new images; naming the slug runs all of its keys.
 // Needs sharp (dependency) and ffmpeg on PATH (for the loop clips and slideshows).
 
 import sharp from 'sharp';
@@ -15,6 +17,8 @@ const CLOUD_OLD = 'C:/Users/da171/OneDrive/Desktop/9-14일-비교용 구름';
 const WATER = 'C:/Users/da171/WaterShader/docs/features/water-polish/captures';
 const FIG = process.env.FIG_EXPORT ?? 'C:/Users/da171/AppData/Local/Temp/claude/fig-export';
 const CAP = process.env.CAPTURES ?? 'C:/Users/da171/AppData/Local/Temp/claude/mlx-captures';
+// images pulled from the portfolio Figma file (image fills at source size + 3× frame renders for the diagram panels)
+const FIG2 = process.env.FIG2 ?? 'C:/Users/da171/AppData/Local/Temp/claude/C--Users-da171-ryuhajin-github-io/71bdedfe-b71e-4e3c-b1ae-5e40ffc56f66/scratchpad/fig2/img';
 
 const W = { hero: 1920, wide: 1600, gallery: 1200, tile: 640, thumb: 480 };
 // FDF test maps. Captured at 3840×2160 with heights ×3 (capture build only); dense maps (t1, mars, julia,
@@ -73,14 +77,15 @@ const manifest = {
 	},
 	'water-shader': {
 		images: [
-			{ out: 'cover.webp', src: `${WATER}/final_breakdown/mode0_tropical_ocean_wide.jpg` },
-			...['before', 'step1_bugfix', 'step2_sun_glint', 'step3_ripple_detail', 'step4_water_body', 'step5_gerstner', 'step6_ocean_grid'].map(
-				(s, i) => ({ out: `step-${i}.webp`, src: `${WATER}/${s}/tropical_sunward.jpg` })
-			),
-			...['basic', 'sunset', 'tropical'].map((p) => ({ out: `preset-${p}.webp`, src: `${WATER}/step6_ocean_grid/${p}_ocean_wide.jpg` })),
-			...['basic', 'sunset', 'tropical'].map((p) => ({ out: `v1-${p}.webp`, src: `${SHOTS}/water/hq-${p}-reflect.png`, width: W.gallery })),
-			...[0, 1, 2, 3, 5].map((m) => ({ out: `debug-${m}.webp`, src: `${WATER}/final_breakdown/mode${m}_tropical_oblique.jpg`, width: W.tile })),
-			{ out: 'ui-panel.webp', src: `${SHOTS}/water/ui-panel-tropical.png`, width: W.wide },
+			{ out: 'cover.webp', src: `${FIG2}/water-shader/hero_full.png`, width: W.hero },
+			...['basic', 'sunset', 'tropical'].flatMap((p) => [
+				{ out: `preset-${p}-hero.webp`, src: `${FIG2}/water-shader/${p}_ocean_hero.jpg`, width: W.gallery },
+				{ out: `preset-${p}-surface.webp`, src: `${FIG2}/water-shader/${p}_ocean_surface.jpg`, width: W.gallery },
+				{ out: `preset-${p}-top.webp`, src: `${FIG2}/water-shader/${p}_top.jpg`, width: W.gallery },
+			]),
+			{ out: 'before.webp', src: `${FIG2}/water-shader/before.png`, width: W.wide },
+			{ out: 'after.webp', src: `${FIG2}/water-shader/after.png`, width: W.wide },
+			...[0, 1, 2, 3, 4, 5].map((m) => ({ out: `dbg-${m}.webp`, src: `${FIG2}/water-shader/dbg_${m}.png`, width: W.gallery })),
 		],
 	},
 	sdfs: {
@@ -146,6 +151,20 @@ const manifest = {
 			frame: true,
 		})),
 		slides: [{ out: 'cover.mp4', frames: FDF_MAPS.map((m) => `${CAP}/fdf-final/${m}.png`), hold: 1.1, fade: 0.4, bg: '#000', frame: true }],
+	},
+	// the INPUT · 42.fdf panel, cut from a 3× render of the PDF page
+	'fdf#pdf': {
+		images: [{ out: 'input-42.webp', src: `${FIG2}/frames/FDF@3x.png`, crop: [300, 2400, 780, 576], width: W.gallery }],
+	},
+	// PDF hero still and the four panels .cub → 2D map → screen columns → render (cut from a 3× render of the page)
+	'cub3d#pdf': {
+		images: [
+			{ out: 'hero-pdf.webp', src: `${FIG2}/cub3d/hero.png`, width: W.hero },
+			{ out: 'flow-1-input.webp', src: `${FIG2}/frames/CUB3D@3x.png`, crop: [300, 2400, 1140, 576], width: W.gallery },
+			{ out: 'flow-2-map.webp', src: `${FIG2}/frames/CUB3D@3x.png`, crop: [1560, 2400, 1188, 576], width: W.gallery },
+			{ out: 'flow-3-screen.webp', src: `${FIG2}/frames/CUB3D@3x.png`, crop: [2868, 2400, 1188, 576], width: W.gallery },
+			{ out: 'flow-4-render.webp', src: `${FIG2}/frames/CUB3D@3x.png`, crop: [4179, 2400, 1101, 576], width: W.gallery },
+		],
 	},
 	cub3d: {
 		images: [
@@ -262,8 +281,9 @@ async function slides(dir, { out, frames, hold, fade, bg, frame = false }) {
 
 const only = process.argv.slice(2);
 for (const [slug, m] of Object.entries(manifest)) {
-	if (only.length && !only.includes(slug)) continue;
-	const dir = join('public/projects', slug);
+	const base = slug.split('#')[0];
+	if (only.length && !only.includes(slug) && !only.includes(base)) continue;
+	const dir = join('public/projects', base);
 	mkdirSync(dir, { recursive: true });
 	console.log(slug);
 	const missing = [...(m.images ?? []).map((i) => i.src), ...(m.clips ?? []).map((c) => c.src), ...(m.slides ?? []).flatMap((sl) => sl.frames)].filter(

@@ -67,6 +67,32 @@ const projects = defineCollection({
 				steps: z.array(shot).min(2),
 			})
 			.optional(),
+		/** Presets side by side: a large shot + smaller ones, colour swatches, spec lines and a short note each. */
+		presets: z
+			.object({
+				title: z.string(),
+				kicker: z.string().optional(),
+				caption: z.string().optional(),
+				items: z.array(
+					z.object({
+						title: z.string(),
+						sub: z.string().optional(),
+						images: z.array(shot).min(1),
+						swatches: z.object({ colors: z.array(z.string()), label: z.string() }).optional(),
+						specs: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+						body: z.string().optional(),
+					})
+				),
+			})
+			.optional(),
+		/** Process notes after the before/after: a few titled bullet lists side by side. */
+		breakdown: z
+			.object({
+				title: z.string(),
+				kicker: z.string().optional(),
+				columns: z.array(z.object({ title: z.string(), items: z.array(z.string()) })).min(1),
+			})
+			.optional(),
 		architecture: z
 			.object({
 				image: z.string().optional(),

@@ -6,6 +6,7 @@ import YouTubeEmbed from '../../components/portfolio/YouTubeEmbed.astro';
 import Gallery from '../../components/portfolio/Gallery.astro';
 import CompareView from '../../components/portfolio/CompareView.astro';
 import Flipbook from '../../components/portfolio/Flipbook.astro';
+import PresetCards from '../../components/portfolio/PresetCards.astro';
 import CursorBadge from '../../components/portfolio/CursorBadge.astro';
 
 export async function getStaticPaths() {
@@ -28,16 +29,21 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 // One snap screen per entry; sections without data are left out, and the side dots follow this list.
 type Section =
-	| { kind: 'hero' | 'overview' | 'video' | 'techniques' | 'motion' | 'compare' | 'architecture' | 'problems' | 'decisions' | 'next'; label: string }
+	| {
+			kind: 'hero' | 'overview' | 'video' | 'techniques' | 'presets' | 'motion' | 'compare' | 'breakdown' | 'architecture' | 'problems' | 'decisions' | 'next';
+			label: string;
+	  }
 	| { kind: 'gallery'; label: string; gallery: (typeof d.galleries)[number] };
 const sections: Section[] = [
 	{ kind: 'hero', label: 'Intro' },
 	{ kind: 'overview', label: 'Overview' },
 	...(d.video ? [{ kind: 'video', label: 'Video' } as const] : []),
 	...(d.techniques.length ? [{ kind: 'techniques', label: 'Techniques' } as const] : []),
+	...(d.presets ? [{ kind: 'presets', label: d.presets.title } as const] : []),
 	...d.galleries.map((g) => ({ kind: 'gallery', label: g.title, gallery: g }) as const),
 	...(d.motion.length ? [{ kind: 'motion', label: 'In motion' } as const] : []),
 	...(d.compare ? [{ kind: 'compare', label: d.compare.title } as const] : []),
+	...(d.breakdown ? [{ kind: 'breakdown', label: d.breakdown.title } as const] : []),
 	...(d.architecture ? [{ kind: 'architecture', label: 'Architecture' } as const] : []),
 	...(d.problems.length ? [{ kind: 'problems', label: 'Problem solving' } as const] : []),
 	...(d.decisions.length || d.limitations.length ? [{ kind: 'decisions', label: d.decisions.length ? 'Decisions' : 'Next' } as const] : []),
@@ -153,6 +159,19 @@ const videoPoster = d.video?.poster ?? d.cover.poster;
 								</div>
 							</section>
 						);
+					case 'presets':
+						return (
+							<section class="s presets-s" data-snap-section>
+								<div class="wrap">
+									<p class="mono label">
+										{num(s)} — {d.presets!.kicker ?? 'Presets'}
+									</p>
+									<h2>{d.presets!.title}</h2>
+									<PresetCards items={d.presets!.items} />
+									{d.presets!.caption && <p class="caption">{d.presets!.caption}</p>}
+								</div>
+							</section>
+						);
 					case 'gallery':
 						return (
 							<section class="s gallery-s" data-snap-section>
@@ -195,6 +214,29 @@ const videoPoster = d.video?.poster ?? d.cover.poster;
 									<h2>{d.compare!.title}</h2>
 									<CompareView steps={d.compare!.steps} slider={d.compare!.slider} />
 									{d.compare!.caption && <p class="caption">{d.compare!.caption}</p>}
+								</div>
+							</section>
+						);
+					case 'breakdown':
+						return (
+							<section class="s breakdown" data-snap-section>
+								<div class="wrap">
+									<p class="mono label">
+										{num(s)} — {d.breakdown!.kicker ?? 'Breakdown'}
+									</p>
+									<h2>{d.breakdown!.title}</h2>
+									<div class="bd" style={`--n: ${d.breakdown!.columns.length}`}>
+										{d.breakdown!.columns.map((c, i) => (
+											<article style={`--i: ${i}`}>
+												<h3>{c.title}</h3>
+												<ul class="highlights">
+													{c.items.map((it) => (
+														<li>{it}</li>
+													))}
+												</ul>
+											</article>
+										))}
+									</div>
 								</div>
 							</section>
 						);
@@ -762,6 +804,22 @@ const videoPoster = d.video?.poster ?? d.cover.poster;
 		margin-top: 0.5rem;
 	}
 
+	/* ---------- breakdown ---------- */
+	.bd {
+		display: grid;
+		grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+		gap: clamp(1.5rem, 4vw, 3.5rem);
+	}
+	.bd h3 {
+		padding-bottom: 0.75rem;
+		border-bottom: 1px solid var(--line-2);
+	}
+	.bd .highlights {
+		margin-top: 1rem;
+		font-size: 0.9rem;
+		line-height: 1.65;
+	}
+
 	/* ---------- lightbox ---------- */
 	.lightbox {
 		width: 100vw;
@@ -972,6 +1030,7 @@ const videoPoster = d.video?.poster ?? d.cover.poster;
 			padding-right: var(--pad);
 		}
 		.two,
+		.bd,
 		.cards,
 		.tech,
 		.flips {
