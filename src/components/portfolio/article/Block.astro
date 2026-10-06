@@ -1,0 +1,27 @@
+---
+// Width wrapper for blocks that have no size of their own (YouTube, Compare, Flipbooks, PresetCards).
+interface Props {
+	size?: 'text' | 'wide' | 'full';
+	caption?: string;
+}
+const { size = 'wide', caption } = Astro.props;
+---
+
+<figure class:list={['block', size]}>
+	<slot />
+	{caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+	.block {
+		margin: 0;
+		display: grid;
+		gap: 0.6rem;
+	}
+	figcaption {
+		color: var(--fg-3);
+		font-size: 0.8rem;
+		font-weight: 300;
+		line-height: 1.5;
+	}
+</style>

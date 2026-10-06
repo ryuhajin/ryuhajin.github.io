@@ -14,6 +14,7 @@ import { tmpdir } from 'node:os';
 const SHOTS = 'C:/Users/da171/OneDrive/Desktop/figma-bridge/shots';
 const VIDEO = 'C:/Users/da171/OneDrive/Desktop/figma-bridge/video';
 const CLOUD_OLD = 'C:/Users/da171/OneDrive/Desktop/9-14일-비교용 구름';
+const CLOUD_E19 = 'C:/Users/da171/VolumetricCloud/build/captures/cloud-near-micro/21564-19674375';
 const WATER = 'C:/Users/da171/WaterShader/docs/features/water-polish/captures';
 const FIG = process.env.FIG_EXPORT ?? 'C:/Users/da171/AppData/Local/Temp/claude/fig-export';
 const CAP = process.env.CAPTURES ?? 'C:/Users/da171/AppData/Local/Temp/claude/mlx-captures';
@@ -36,27 +37,44 @@ const manifest = {
 		images: [
 			{ out: 'cover.webp', src: `${SHOTS}/cloud/f6-lavender/run3/lavender_182019.png`, width: W.hero },
 			{ out: 'sunset.webp', src: `${SHOTS}/cloud/f6-sunset/run2/sunset_180858.png`, width: W.wide },
+			// gallery shots open in the lightbox at up to 1600px, so they are stored at that width; q 90 because soft
+			// cloud gradients band at the default quality
 			...['stratus', 'cumulus', 'altocumulus', 'custom'].flatMap((t, i) => [
 				{
 					out: `type-${t}-f6.webp`,
 					src: t === 'altocumulus' ? `${SHOTS}/cloud/31-type-altocumulus-F6-hq.png` : `${SHOTS}/cloud/${String(3 + i * 2).padStart(2, '0')}-type-${t}-F6.png`,
-					width: W.gallery,
+					width: W.wide,
+					q: 90,
 				},
-				{ out: `type-${t}-f8.webp`, src: `${SHOTS}/cloud/${String(4 + i * 2).padStart(2, '0')}-type-${t}-F8.png`, width: W.gallery },
+				{ out: `type-${t}-f8.webp`, src: `${SHOTS}/cloud/${String(4 + i * 2).padStart(2, '0')}-type-${t}-F8.png`, width: W.wide, q: 90 },
 			]),
-			...[1, 2, 3, 4].map((n) => ({ out: `light-${n}.webp`, src: `${SHOTS}/cloud/${10 + n}-light-${n}-F8.png`, width: W.gallery })),
+			...[1, 2, 3, 4].map((n) => ({ out: `light-${n}.webp`, src: `${SHOTS}/cloud/${10 + n}-light-${n}-F8.png`, width: W.wide, q: 90 })),
 			...['weather', 'base', 'detail', 'final', 'direct', 'composite'].map((d, i) => ({
 				out: `dbg-${d}.webp`,
 				src: `${SHOTS}/cloud/${15 + i}-dbg-${d}.png`,
-				width: W.tile,
+				width: W.wide,
+				q: 90,
 			})),
 			{ out: 'ui-f1.webp', src: `${SHOTS}/cloud/23-ui-f1.png`, width: W.wide },
 			{ out: 'perf-panel.webp', src: `${SHOTS}/cloud/24-perf-panel.png` },
-			// progress: same camera (F5, building) — raw window captures cropped around the building, clear of the ImGui panel
-			{ out: 'progress-0904.webp', src: `${CLOUD_OLD}/2026-09-04-cpu-weahtermap.png`, crop: [500, 360, 908, 511] },
-			{ out: 'progress-0908.webp', src: `${CLOUD_OLD}/260908-20.45-Urban.png`, crop: [500, 364, 908, 511] },
-			{ out: 'progress-0914.webp', src: `${CLOUD_OLD}/user-initial-result.png`, crop: [508, 366, 908, 511] },
-			{ out: 'progress-now.webp', src: `${SHOTS}/cloud/33-after-light1-hq.png` },
+			// progress: same camera (F5, building) — the 09-04 raw window capture cropped around the building to the size
+			// of progress-now, clear of the ImGui panel (the later captures have a wider panel that a crop this size would catch)
+			{ out: 'progress-0904.webp', src: `${CLOUD_OLD}/2026-09-04-cpu-weahtermap.png`, crop: [277, 234, 1355, 762], q: 90 },
+			{ out: 'progress-now.webp', src: `${SHOTS}/cloud/33-after-light1-hq.png`, q: 90 },
+			// the textures themselves (Weather Map R, a Base and a Detail slice), rebuilt at native size by
+			// shots/cloud/textures/gen-textures.cjs from the project's generator shaders; display-256.cjs brings them to 256²
+			...['weather-coverage-256', 'base-128', 'detail-64'].map((t) => ({
+				out: `tex-${t.split('-')[0]}.webp`,
+				src: `${SHOTS}/cloud/textures/${t}-display.png`,
+				q: 90,
+			})),
+			// Near Deep Shadow Cache (512²×80 τ), dumped from the GPU and cut through the middle on each axis by
+			// shots/cloud/shadow-cache/slices.cjs; shown as transmittance exp(-τ), the vertical cuts stretched 2× in height
+			{ out: 'shadow-xy.webp', src: `${SHOTS}/cloud/shadow-cache/slice-xy-mid.png`, q: 90 },
+			...['xz', 'yz'].map((a) => ({ out: `shadow-${a}.webp`, src: `${SHOTS}/cloud/shadow-cache/slice-${a}-mid-x2.png`, q: 90 })),
+			// near micro detail off / on, from the E19 experiment run (Cumulus, close-up camera, strength 0.5)
+			{ out: 'near-micro-off.webp', src: `${CLOUD_E19}/Near75-c0-Composite.png`, width: W.wide, q: 90 },
+			{ out: 'near-micro-on.webp', src: `${CLOUD_E19}/Near75-c1-Composite.png`, width: W.wide, q: 90 },
 		],
 		clips: [
 			{
@@ -203,7 +221,8 @@ async function image(dir, { out, src, width, crop, q = 80, frame = false }) {
 	if (crop) img = img.extract({ left: crop[0], top: crop[1], width: crop[2], height: crop[3] });
 	if (width) img = img.resize({ width, withoutEnlargement: true });
 	const dest = join(dir, out);
-	await img.webp({ quality: q, effort: 5 }).toFile(dest);
+	// smartSubsample keeps colour edges (cloud rims against the sky) from smearing under 4:2:0 chroma
+	await img.webp({ quality: q, effort: 5, smartSubsample: true }).toFile(dest);
 	console.log('  ', out.padEnd(28), kb(dest));
 }
 

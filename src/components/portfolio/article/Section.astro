@@ -1,0 +1,81 @@
+---
+// One topic of a project page as a full-width band: text on the left, pictures on the right (slot "media"), and an
+// optional full-band row underneath (slot "wide"). Bands alternate their background so the page reads as a stack of
+// chapters. Numbering comes from a CSS counter in projects/[slug].astro.
+interface Props {
+	title: string;
+}
+const { title } = Astro.props;
+const id = title
+	.toLowerCase()
+	.replace(/[^a-z0-9]+/g, '-')
+	.replace(/^-|-$/g, '');
+const media = Astro.slots.has('media');
+const wide = Astro.slots.has('wide');
+---
+
+<section class="sec" id={id}>
+	<div class:list={['sec-in', { 'has-media': media }]}>
+		<div class="sec-text">
+			<h2>{title}</h2>
+			<slot />
+		</div>
+		{
+			media && (
+				<div class="sec-media">
+					<slot name="media" />
+				</div>
+			)
+		}
+	</div>
+	{
+		wide && (
+			<div class="sec-wide">
+				<slot name="wide" />
+			</div>
+		)
+	}
+</section>
+
+<style>
+	.sec {
+		padding: clamp(4rem, 11vh, 7rem) var(--pad);
+		background: var(--bg);
+	}
+	/* every other band sits on a slightly lifted tone with a soft top-down falloff */
+	.sec:nth-of-type(even) {
+		background: linear-gradient(
+			to bottom,
+			color-mix(in srgb, var(--fg) 2%, var(--bg)),
+			color-mix(in srgb, var(--fg) 5%, var(--bg))
+		);
+	}
+	.sec-in,
+	.sec-wide {
+		width: min(100%, 80rem);
+		margin-inline: auto;
+	}
+	.sec-in {
+		display: grid;
+		grid-template-columns: minmax(0, 46rem);
+	}
+	.sec-in.has-media {
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		gap: clamp(2rem, 5vw, 5rem);
+		align-items: start;
+	}
+	.sec-media {
+		display: grid;
+		gap: 1.25rem;
+	}
+	.sec-wide {
+		margin-top: clamp(2.5rem, 6vh, 4rem);
+		display: grid;
+		gap: 1.25rem;
+	}
+	@media (max-width: 900px) {
+		.sec-in.has-media {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>

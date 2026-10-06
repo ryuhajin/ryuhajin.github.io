@@ -1,0 +1,58 @@
+---
+// A row of headline numbers: big value in the display face, mono unit, one light line under it.
+interface Props {
+	items: { value: string; unit?: string; label: string }[];
+	size?: 'text' | 'wide' | 'full';
+}
+const { items, size = 'wide' } = Astro.props;
+---
+
+<dl class:list={['stats', size]} style={`--n: ${items.length}`}>
+	{
+		items.map((it) => (
+			<div>
+				<dt>
+					{it.value}
+					{it.unit && <small>{it.unit}</small>}
+				</dt>
+				<dd>{it.label}</dd>
+			</div>
+		))
+	}
+</dl>
+
+<style>
+	.stats {
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+		gap: 1.5rem clamp(1.5rem, 4vw, 3rem);
+	}
+	dt {
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+		font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+		line-height: 1.05;
+		color: var(--fg);
+	}
+	small {
+		margin-left: 0.35rem;
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		letter-spacing: 0;
+		color: var(--accent-p, var(--accent));
+	}
+	dd {
+		margin: 0.45rem 0 0;
+		color: var(--fg-2);
+		font-size: 0.85rem;
+		font-weight: 300;
+		line-height: 1.55;
+	}
+	@media (max-width: 720px) {
+		.stats {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

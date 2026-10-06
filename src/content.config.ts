@@ -15,7 +15,7 @@ const media = z.object({
 const shot = z.object({ src: z.string(), label: z.string().optional(), note: z.string().optional() });
 
 const projects = defineCollection({
-	loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
+	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
 	schema: z.object({
 		title: z.string(),
 		tagline: z.string(),
