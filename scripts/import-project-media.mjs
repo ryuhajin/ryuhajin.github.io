@@ -7,7 +7,7 @@
 
 import sharp from 'sharp';
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, existsSync, statSync, mkdtempSync, rmSync } from 'node:fs';
+import { copyFileSync, mkdirSync, existsSync, statSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
@@ -30,12 +30,16 @@ const FDF_MAPS = ['t1', '42', 'pyra', 'mars', 'julia', 'elem-fract'];
 /** @typedef {{ out: string, src: string, frames: string[], size: number }} Sprite */
 /** @typedef {{ out: string, src: string, cuts: [number, number][], crop?: string, crf?: number, height?: number, speed?: number, xfade?: number }} Clip */
 /** @typedef {{ out: string, frames: string[], hold: number, fade: number, bg: string, frame?: boolean }} Slides */
+/** @typedef {{ out: string, src: string }} Copy — already web-ready (e.g. a clip encoded straight from renderer frames) */
 
-/** @type {Record<string, { images?: Img[], sprites?: Sprite[], clips?: Clip[], slides?: Slides[] }>} */
+/** @type {Record<string, { images?: Img[], sprites?: Sprite[], clips?: Clip[], slides?: Slides[], copies?: Copy[] }>} */
 const manifest = {
 	'volumetric-cloud': {
 		images: [
-			{ out: 'cover.webp', src: `${SHOTS}/cloud/f6-lavender/run3/lavender_182019.png`, width: W.hero },
+			// hero: renderer-direct capture (shots/cloud/hq/README.md) — Cumulus, Autumn, F8 above the layer, 16:10 so the
+			// parallax has headroom; rendered at 2x and Lanczos-downsampled
+			{ out: 'cover.webp', src: `${SHOTS}/cloud/hq/hero-08-2560x1600.png`, width: 2560, q: 88 },
+			{ out: 'goals.webp', src: `${SHOTS}/cloud/hq/goals-altocumulus-sunset-building-400ms-16s-poster.png`, q: 90 },
 			{ out: 'sunset.webp', src: `${SHOTS}/cloud/f6-sunset/run2/sunset_180858.png`, width: W.wide },
 			// gallery shots open in the lightbox at up to 1600px, so they are stored at that width; q 90 because soft
 			// cloud gradients band at the default quality
@@ -60,7 +64,9 @@ const manifest = {
 			// progress: same camera (F5, building) — the 09-04 raw window capture cropped around the building to the size
 			// of progress-now, clear of the ImGui panel (the later captures have a wider panel that a crop this size would catch)
 			{ out: 'progress-0904.webp', src: `${CLOUD_OLD}/2026-09-04-cpu-weahtermap.png`, crop: [277, 234, 1355, 762], q: 90 },
-			{ out: 'progress-now.webp', src: `${SHOTS}/cloud/33-after-light1-hq.png`, q: 90 },
+			// the user's tuned Cumulus + Autumn, level camera refit to the 09-04 view (0,7.89,93.5), cropped to the same
+			// region as progress-0904 (hq/README.md)
+			{ out: 'progress-now.webp', src: `${SHOTS}/cloud/hq/now-user-cumulus-autumn-level-crop.png`, q: 90 },
 			// the textures themselves (Weather Map R, a Base and a Detail slice), rebuilt at native size by
 			// shots/cloud/textures/gen-textures.cjs from the project's generator shaders; display-256.cjs brings them to 256²
 			...['weather-coverage-256', 'base-128', 'detail-64'].map((t) => ({
@@ -75,7 +81,16 @@ const manifest = {
 			// near micro detail off / on, from the E19 experiment run (Cumulus, close-up camera, strength 0.5)
 			{ out: 'near-micro-off.webp', src: `${CLOUD_E19}/Near75-c0-Composite.png`, width: W.wide, q: 90 },
 			{ out: 'near-micro-on.webp', src: `${CLOUD_E19}/Near75-c1-Composite.png`, width: W.wide, q: 90 },
+			// ray marching, from the vc-shadow-dump worktree harness (shots/cloud/raymarch/README.md): Stratus from above
+			// with the view-sample jitter off / on (native 960×540 crops — the rings are faint), and per-pixel march
+			// counters for the Cumulus horizon frame read back from the HDR target
+			...['off', 'on'].map((s) => ({ out: `rings-${s}.webp`, src: `${SHOTS}/cloud/raymarch/rings-${s}-crop.png`, q: 95 })),
+			{ out: 'march-samples.webp', src: `${SHOTS}/cloud/raymarch/cumulus-F6-full-samples-heatmap.png`, width: W.wide, q: 90 },
+			{ out: 'march-early-exit.webp', src: `${SHOTS}/cloud/raymarch/cumulus-F6-early-exit.png`, width: W.wide, q: 90 },
 		],
+		// Goals loop: Altocumulus at sunset from F5, wind 400 m/s in real time, 16 s with a 0.5 s loop fade, rendered frame by frame at 2x and
+		// encoded at CRF 18 (hq/README.md)
+		copies: [{ out: 'goals.mp4', src: `${SHOTS}/cloud/hq/goals-altocumulus-sunset-building-400ms-16s.mp4` }],
 		clips: [
 			{
 				out: 'cover.mp4',
@@ -305,7 +320,7 @@ for (const [slug, m] of Object.entries(manifest)) {
 	const dir = join('public/projects', base);
 	mkdirSync(dir, { recursive: true });
 	console.log(slug);
-	const missing = [...(m.images ?? []).map((i) => i.src), ...(m.clips ?? []).map((c) => c.src), ...(m.slides ?? []).flatMap((sl) => sl.frames)].filter(
+	const missing = [...(m.images ?? []).map((i) => i.src), ...(m.clips ?? []).map((c) => c.src), ...(m.slides ?? []).flatMap((sl) => sl.frames), ...(m.copies ?? []).map((c) => c.src)].filter(
 		(f) => !existsSync(f)
 	);
 	if (missing.length) {
@@ -316,4 +331,8 @@ for (const [slug, m] of Object.entries(manifest)) {
 	for (const s of m.sprites ?? []) await sprite(dir, s);
 	for (const c of m.clips ?? []) clip(dir, c);
 	for (const sl of m.slides ?? []) await slides(dir, sl);
+	for (const c of m.copies ?? []) {
+		copyFileSync(c.src, join(dir, c.out));
+		console.log(`   ${c.out.padEnd(28)} ${kb(join(dir, c.out))}`);
+	}
 }

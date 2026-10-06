@@ -1,5 +1,6 @@
 ---
-// One image (opens in the page lightbox) or a looping clip, with a short mono caption.
+import Caption from './Caption.astro';
+// One image (opens in the page lightbox) or a looping clip, with a short caption (Caption.astro).
 // size: 'text' stays in the reading column, 'wide' / 'full' break out of it (see .prose in projects/[slug].astro).
 // Inside <Grid> the size is ignored and the figure fills its cell.
 interface Props {
@@ -23,7 +24,7 @@ const { src, caption, alt, video, size = 'text' } = Astro.props;
 			</button>
 		)
 	}
-	{caption && <figcaption>{caption}</figcaption>}
+	{caption && <Caption text={caption} />}
 </figure>
 
 <style>
@@ -62,11 +63,5 @@ const { src, caption, alt, video, size = 'text' } = Astro.props;
 	}
 	.shot:hover img {
 		scale: 1.03;
-	}
-	figcaption {
-		color: var(--fg-3);
-		font-size: 0.8rem;
-		font-weight: 300;
-		line-height: 1.5;
 	}
 </style>

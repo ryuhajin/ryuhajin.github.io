@@ -10,10 +10,10 @@ accent: '#8b7cf6'
 cover:
   poster: /projects/volumetric-cloud/cover.webp
   video: /projects/volumetric-cloud/cover.mp4
-  alt: 라벤더빛 노을 조명 아래 지평선 위로 뭉게구름이 겹겹이 떠 있는 장면
-overview: >-
-  엔진 없이 DirectX 11과 HLSL로 만든 실시간 볼류메트릭 구름 렌더러입니다.
-  최대 50 km까지 이어지는 구름층을 1080p에서 그립니다.
+  alt: 아침 햇빛을 받은 뭉게구름층을 구름 위에서 내려다본 장면
+overview: |-
+  게임 속 하늘에 떠 있는 구름이 어떻게 만들어지는지 늘 궁금했습니다.
+  이 프로젝트는 엔진 없이 하늘을 그려 낸 한 오픈소스 작업에 영감을 받아, 그 궁금증을 직접 풀어 보기 위해 시작했습니다.
 links:
   - label: GitHub — VolumetricCloud
     href: https://github.com/ryuhajin/VolumetricCloud
@@ -25,16 +25,13 @@ links:
 
 <Section title="Overview">
 
-게임 속 하늘에 떠 있는 구름이 어떻게 만들어지는지 늘 궁금했습니다.
+처음은 레이마칭으로 반투명한 안개 구 하나를 그리는 데서 시작했고,<br />점차 구름의 거리를 늘려 가게 되었습니다.
 
-그러다 엔진 없이 DirectX 11만으로 구름을 그려 낸 개인 프로젝트를 봤고, 저도 직접 만들어 보고 싶어졌습니다.
-처음은 레이마칭으로 반투명한 안개 구 하나를 그리는 데서 시작했고, 점차 구름의 거리를 늘려 가게 되었습니다.
+**주요 기능**
 
-- 3D Worley 노이즈와 Weather Map으로 만드는 4가지 구름 타입
-- 100 m 간격 레이마칭과 투과율 기반 조기 종료
+- 3D 노이즈와 Weather Map으로 만드는 4가지 구름 타입
 - 태양 쪽을 볼 때 구름이 밝아지는 앞·뒤 산란 (Henyey-Greenstein phase)
-- 해 높이에 따라 바뀌는 하늘색 (대기 산란 LUT)
-- 구름 속 그림자 (Deep Shadow Cache)
+- 해 높이에 따라 바뀌는 하늘색(대기 산란 LUT)과 구름 속 그림자(Deep Shadow Cache)
 - F1~F4 조절 패널, 디버그 뷰, JSON 프리셋
 
 <Fragment slot="media">
@@ -44,48 +41,57 @@ links:
 </Fragment>
 </Section>
 
-<Section title="Goals">
+<Section title="Goals" align="body">
 
-이 프로젝트는 두 가지 질문에서 출발했습니다. 레이마칭은 어떻게 동작할까? 표면이 없는 볼륨은 어떻게 화면에 그려질까?
+이 프로젝트는 두 가지 질문에서 출발했습니다.<br />레이마칭은 어떻게 동작할까? 표면이 없는 볼륨은 어떻게 화면에 그려질까?
 
-- **레이마칭 이해하기.** 픽셀마다 광선을 보내고, 공간을 조금씩 따라가며 밀도와 빛을 쌓는 과정을 직접 구현해 보기.
-- **표면이 없는 볼륨 이해하기.** 메시처럼 경계면이 없는 구름이, 빛의 흡수와 산란만으로 어떻게 형태를 갖는지 이해하기.
-- **지평선까지 이어지는 km 규모의 구름을 렌더링해 보기.**
-- **다양한 구름 쉐이프를 표현해 보기.** 낮고 평평한 구름, 높고 풍성한 구름처럼 서로 다른 모양을 같은 시스템에서 만들기.
+- **레이마칭 이해하기**<br />픽셀마다 광선을 보내고, 공간을 조금씩 따라가며 밀도와 빛을 쌓는 과정을 직접 구현해 보기.
+- **표면이 없는 볼륨 이해하기**<br />메시처럼 경계면이 없는 구름이, 빛의 흡수와 산란만으로 어떻게 형태를 갖는지 이해하기.
+- **지평선까지 이어지는 km 규모의 구름을 렌더링해 보기**
+- **다양한 구름 쉐이프를 표현해 보기**<br />낮고 평평한 구름, 높고 풍성한 구름처럼 서로 다른 모양을 같은 시스템에서 만들기.
 
 <Fragment slot="media">
-  <Figure src="/projects/volumetric-cloud/sunset.webp" caption="노을 아래 Cumulus 구름층" />
+  <Figure src="/projects/volumetric-cloud/goals.webp" video="/projects/volumetric-cloud/goals.mp4" caption="노을 아래 Altocumulus 구름층 · 바람 400 m/s" />
 </Fragment>
 </Section>
 
-<Section title="Challenges">
+<Section title="Challenges" align="body">
 
-레이마칭 자체보다 어려웠던 것은, 작은 장면에서 잘 그려지던 시스템을 km 규모로 키우는 일이었습니다.
+레이마칭 자체보다, 작은 장면에서 되던 것을 km 규모로 키우는 일이 더 어려웠습니다.
 
-**처음부터 다시 쌓기.** 기능을 얹을수록 구조가 엉켜, 처음부터 다시 만들게 되었습니다.
-그 뒤로는 단계마다 제대로 작동하는지 확인한 후 다음으로 넘어가는 습관을 들였습니다. 실패했다고 판단한 단계는 다시 계획해서 쌓았습니다.
+**처음부터 다시 쌓기**<br />
+기능을 얹을수록 구조가 엉켜 처음부터 다시 만들었습니다.
+그 뒤로는 단계마다 동작을 확인하고 넘어갔고, 실패한 단계는 다시 계획했습니다.
 
-**상자에서 하늘로.** 첫 구름은 16 m × 3 m × 16 m 크기의 작은 상자 안에 있었습니다.
-상자를 실제 하늘 크기로 바로 키우기보다, 기존 값에서 점차 키워 보는 실험을 했습니다. 그러다 10배부터 화면이 블록처럼 깨지는 현상을 발견했습니다.
-원인은 광선 생성에 있었습니다.
-카메라 위치처럼 큰 값이 섞인 float 행렬로 광선 방향을 계산하다 보니, 작은 방향 차이가 정밀도 밖으로 사라진 것입니다.
-카메라 위치를 뺀 회전만으로 방향을 계산하도록 바꿔 해결했습니다.
+**상자에서 하늘로**<br />
+첫 구름은 16 m × 3 m × 16 m 상자 안에 있었는데, 크기를 키우자 10배부터 화면이 블록처럼 깨졌습니다.
+레이 방향을 구하는 행렬에 카메라 위치까지 들어 있어서, 좌표가 커질수록 이웃 픽셀 사이의 작은 방향 차이가 float 정밀도 밖으로 사라졌기 때문입니다.
+카메라 위치를 빼고 회전만으로 방향을 구하도록 바꿔 해결했습니다.
 
-**납작하고 흐린 구름.** 한동안 구름이 드문드문하고, 몸통은 납작하고, 명암도 약했습니다.
-원인은 구름을 깎는 단계가 두 번 겹친 데 있었습니다. Weather Map이 구름이 생길 자리를 줄이고, 높이 프로파일이 위아래를 또 한 번 깎고 있었습니다.
-구름 타입마다 Weather Map의 값과 높이 프로파일을 다시 정하고, 타입을 고르면 이 값들이 한꺼번에 바뀌도록 프리셋으로 묶었습니다.
+**납작하고 흐린 구름**<br />
+렌더링되는 구름이 드문드문하고 납작하며, 명암도 약한 상태가 한동안 이어졌습니다.
+처음에는 노출 문제라고 보고 노출을 바꿔 봤지만, 구름이 차지하는 면적은 그대로였습니다.
+값을 하나씩 떼어 살펴보니 원인은 두 가지였습니다.
+
+- **납작한 모양** — Weather Map이 구름 자리를 줄이고, 높이 프로파일이 위아래를 한 번 더 깎고 있었습니다.
+- **약한 명암** — 밀도와 빛 세기가 km 규모의 구름에 비해 약했습니다.
+
+구름 타입마다 모양 값과 밀도·빛 값을 함께 다시 정하고, 프리셋으로 묶어 해결했습니다.
 
 <Fragment slot="media">
-  <Compare
-    steps={[
-      { src: '/projects/volumetric-cloud/progress-0904.webp', label: '09-04', note: '태양 쪽 명암이 약하던 때' },
-      { src: '/projects/volumetric-cloud/progress-now.webp', label: '현재', note: '구름 그림자의 진하기와 하늘·땅에서 오는 빛을 다시 맞춘 뒤' },
-    ]}
-  />
+  <Block caption="같은 시점의 09-04와 현재 · 구름 그림자의 진하기와 하늘·땅에서 오는 빛을 다시 맞춘 뒤 · 슬라이더로 비교">
+    <Compare
+      slider
+      steps={[
+        { src: '/projects/volumetric-cloud/progress-0904.webp', label: '이전' },
+        { src: '/projects/volumetric-cloud/progress-now.webp', label: '현재' },
+      ]}
+    />
+  </Block>
 </Fragment>
 </Section>
 
-<Section title="Cloud Shape">
+<Section title="Cloud Shape" align="body">
 
 구름이 어디에, 얼마나 생길지는 64 km를 덮는 256² Weather Map이 정합니다.
 Weather Map의 네 채널에는 구름 덮임, 구름 타입, 밀도, 두께가 들어 있습니다.
@@ -95,7 +101,7 @@ Weather Map의 네 채널에는 구름 덮임, 구름 타입, 밀도, 두께가 
 - **Base 노이즈** — 128³ Perlin-Worley. 12 km마다 반복되며, 구름의 큰 덩어리를 세웁니다.
 - **Detail 노이즈** — 64³ Worley. 2 km마다 반복되며, 덩어리의 가장자리를 잘게 깎아 냅니다.
 
-<Block size="text" caption="원본 텍스처 단면 · Base와 Detail은 표시용으로 대비 조정">
+<Block size="text">
   <Grid cols={3} size="text" ratio="square">
     <Figure src="/projects/volumetric-cloud/tex-weather.webp" caption="Weather Map R · 256²" />
     <Figure src="/projects/volumetric-cloud/tex-base.webp" caption="Base · 128³" />
@@ -103,9 +109,8 @@ Weather Map의 네 채널에는 구름 덮임, 구름 타입, 밀도, 두께가 
   </Grid>
 </Block>
 
-같은 노이즈라도 Weather Map 값과 높이 프로파일을 바꾸면, 낮고 평평한 구름부터 높고 풍성한 구름까지 만들 수 있습니다.
-
-**가까운 구름과 먼 구름.** 가까운 구름은 또렷하고 먼 구름은 흐려야 원근감이 삽니다. 그런데 가까이 갈수록 구름이 뭉개졌습니다.
+**가까운 구름과 먼 구름**<br />
+가까운 구름은 또렷하고 먼 구름은 흐려야 원근감이 삽니다. 그런데 가까이 갈수록 구름이 뭉개졌습니다.
 
 - **원인** — 가장 잘게 부서지는 무늬도 파장이 약 100 m라서, 2 km 앞에서는 화면에서 수십 픽셀에 퍼졌습니다.
 - **첫 시도** — Detail 노이즈 해상도를 32³에서 64³으로 올렸지만, 흐림은 남았습니다.
@@ -118,29 +123,33 @@ Weather Map의 네 채널에는 구름 덮임, 구름 타입, 밀도, 두께가 
     <Figure src="/projects/volumetric-cloud/type-altocumulus-f6.webp" caption="Altocumulus — 양떼처럼 모인 조각" />
     <Figure src="/projects/volumetric-cloud/type-custom-f6.webp" caption="Custom — 직접 조절해 저장" />
   </Grid>
-  <Block caption="가까운 구름에만 더한 미세 무늬 — 왼쪽 끔, 오른쪽 켬 (실험 캡처)">
+  <Block caption="가까운 구름에만 더한 미세 무늬 · 실험 캡처 · 슬라이더로 비교">
     <Compare
       slider
       steps={[
-        { src: '/projects/volumetric-cloud/near-micro-off.webp', label: '끔' },
-        { src: '/projects/volumetric-cloud/near-micro-on.webp', label: '켬' },
+        { src: '/projects/volumetric-cloud/near-micro-off.webp', label: '기존' },
+        { src: '/projects/volumetric-cloud/near-micro-on.webp', label: '미세 무늬 추가' },
       ]}
     />
   </Block>
 </Fragment>
 </Section>
 
-<Section title="Lighting">
+<Section title="Lighting" align="body">
 
-**Atmosphere LUT.** 대기 산란을 6장의 LUT로 미리 계산합니다. 해의 높이에 따라 하늘과 먼 구름의 색이 함께 바뀝니다.
-처음 연결했을 때는 그림자 투과율을 색 전체에 곱해서 하늘빛까지 꺼졌습니다. 직접광에만 곱하도록 고쳤습니다.
+**Atmosphere LUT**<br />
+대기 산란을 6장의 LUT로 미리 계산해 둡니다.<br />해의 높이에 따라 하늘과 먼 구름의 색이 함께 바뀝니다.
 
-**Deep Shadow Cache.** 구름 속 한 점이 태양을 얼마나 가리는지를 매번 태양 쪽으로 다시 걸어가 계산하면 비용이 큽니다.
-그래서 태양에서 본 구름 두께를 512² 텍스처에 미리 구워 두고, 그림자는 한 번만 읽습니다.
+- **문제** — LUT를 연결한 뒤 구름 명암을 다듬다 보니, 해가 가려진 구름 안쪽은 하늘에서 오는 환경광(앰비언트)까지 함께 어두워져 있었습니다. 환경광에도 태양 방향의 그림자를 곱하고 있었기 때문입니다.
+- **해결** — 태양 방향의 그림자는 태양에서 바로 오는 빛(직접광)에만 곱하고, 환경광은 주변 구름 밀도로만 가려지도록 나눴습니다.
+
+**Deep Shadow Cache**<br />
+구름 속 한 점이 태양을 얼마나 가리는지 매번 태양 쪽으로 걸어가 계산하면 비용이 커서, 태양에서 본 구름 두께를 512² 텍스처에 미리 구워 두고 읽기만 합니다.
 
 - **문제** — 해가 낮으면 텍스처 안의 높이 층 사이 간격이 250 m에서 약 2.9 km로 벌어져, 그림자에 줄무늬가 생겼습니다.
 - **해결** — 해 높이에 맞게 투영 범위를 다시 계산하고, 빛 적분을 250 m 이하 구간으로 나눴습니다. 오차가 72% 줄었습니다.
 
+<div class="narrow pin-end">
 <Block size="text" caption="Deep Shadow Cache 중앙 단면 · 흰 곳은 햇빛이 닿고, 검은 곳은 구름에 가려진 곳 · 세로 단면은 높이 2배로 표시">
   <Grid cols={2} size="text" ratio="auto">
     <Figure src="/projects/volumetric-cloud/shadow-xy.webp" caption="가로 · 높이 층 40 / 80" />
@@ -150,9 +159,10 @@ Weather Map의 네 채널에는 구름 덮임, 구름 타입, 밀도, 두께가 
     </div>
   </Grid>
 </Block>
+</div>
 
 <Fragment slot="media">
-  <Grid cols={2}>
+  <Grid cols={2} ratio="tall">
     <Figure src="/projects/volumetric-cloud/light-1.webp" caption="Autumn morning · 태양 12°" />
     <Figure src="/projects/volumetric-cloud/light-2.webp" caption="Beach sunset · 태양 11.5°" />
     <Figure src="/projects/volumetric-cloud/light-3.webp" caption="Bright noon · 태양 17.4°" />
@@ -161,30 +171,44 @@ Weather Map의 네 채널에는 구름 덮임, 구름 타입, 밀도, 두께가 
 </Fragment>
 </Section>
 
-<Section title="Ray Marching">
+<Section title="Ray Marching & Optimization" align="body">
 
-**레이마칭 줄이기.** 레이마칭의 비용은 결국 표본 수입니다. 그래서 표본을 세 가지 방법으로 줄였습니다.
+**레이마칭 줄이기**<br />
+레이마칭은 픽셀마다 레이를 따라가며 밀도를 읽기 때문에, 읽는 횟수가 곧 비용입니다. 그래서 읽지 않아도 되는 곳을 세 가지로 찾아 줄였습니다.
 
 - **빈 공간 건너뛰기** — 구름이 없는 구간은 크게 건너뜁니다.
-- **조기 종료** — 남은 투과율이 0.01 아래로 떨어지면 뒤쪽은 보이지 않으므로, 그 픽셀은 멈춥니다.
-- **거리별 간격** — 멀수록 표본 간격을 넓힙니다.
+- **조기 종료** — 구름이 충분히 불투명해지면 뒤쪽은 보이지 않으므로 거기서 멈춥니다.
+- **거리별 간격** — 멀리 있는 구름일수록 간격을 넓혀 읽습니다.
 
-표본을 줄이면 화면이 조금씩 달라질 수 있습니다. 그래서 줄이기 전 화면과 줄인 뒤 화면을 SSIM(두 이미지가 얼마나 닮았는지 0~1로 나타낸 값)으로 비교했고, 0.999999 이상으로 거의 같은 후보 가운데 가장 빠른 것을 골랐습니다.
+건너뛰는 간격, 멈추는 기준, 거리별 간격을 하나씩 바꿔 가며 여러 조합을 같은 장면에서 비교했고, 화면이 달라지지 않는 조합 가운데 가장 빠른 것을 골랐습니다.
+너무 크게 건너뛰면 카메라를 중심으로 등고선 무늬가 생겨 탈락시킨 후보도 있었습니다.
 
-**동심원 무늬.** 얇은 Stratus를 위에서 내려다보면 카메라를 중심으로 동심원이 보였습니다. 모든 픽셀이 똑같은 거리에서 표본을 뽑았기 때문입니다.
-픽셀마다 Interleaved Gradient Noise로 표본 위치를 조금씩 어긋나게 하자 동심원이 보이지 않게 됐습니다. 오차가 없어진 것은 아니고, 눈에 띄지 않게 흩어진 것입니다.
-TAA가 없어서 이 패턴은 프레임마다 바꾸지 않고 화면에 고정했습니다.
+**동심원 무늬**<br />
+얇은 구름층을 위에서 비스듬히 내려다보면, 카메라를 중심으로 밝고 어두운 동심원이 생겼습니다.
+모든 픽셀이 카메라에서 같은 거리에서만 밀도를 읽다 보니, 구름 경계에 걸리는 표본이 거리마다 한꺼번에 바뀌면서 원 모양으로 드러난 것입니다.
+픽셀마다 읽는 위치를 조금씩 흩어 주자(Interleaved Gradient Noise) 줄무늬가 사라졌습니다.
 
-</Section>
+<Fragment slot="media">
+  <Block caption="Cumulus 지평선 장면의 한 프레임 · 디버그용 셰이더로 픽셀마다 센 값">
+    <Grid cols={2}>
+      <Figure src="/projects/volumetric-cloud/march-samples.webp" caption="픽셀마다 읽은 표본 수 · 검정 0 → 노랑 256" />
+      <Figure src="/projects/volumetric-cloud/march-early-exit.webp" caption="주황: 조기 종료로 멈춘 픽셀 · 구름 픽셀의 63%" />
+    </Grid>
+  </Block>
+  <Block caption="얇은 구름층을 위에서 내려다본 화면 일부 · 슬라이더로 비교">
+    <Compare
+      slider
+      steps={[
+        { src: '/projects/volumetric-cloud/rings-off.webp', label: '동심원 무늬' },
+        { src: '/projects/volumetric-cloud/rings-on.webp', label: '해결 후' },
+      ]}
+    />
+  </Block>
+</Fragment>
 
-<Section title="Optimization">
-
-**측정 방법.** 장면 3개와 카메라 4개를 조합한 12가지 경우를 매번 같은 조건으로 쟀습니다.
-경우마다 60프레임을 먼저 돌려 안정시킨 뒤 120프레임을 기록했고, 100프레임 중 95프레임이 그 안에 끝나는 시간(p95)을 기준으로 삼았습니다.
-
-**레이마칭 줄이기.** 앞에서 설명한 세 가지 방법으로, Cumulus 지평선 장면의 구름 패스가 18.68 ms에서 8.64 ms로 줄었습니다.
-
-**그림자 미리 굽기.** Lighting에서 설명한 Deep Shadow Cache를 쓰면서, 구름 패스가 장면 7개 평균 11.29 ms에서 6.91 ms로 줄었습니다.
+**측정 방법**<br />
+장면 3개와 카메라 4개를 조합한 12가지 경우마다 화면을 120장씩 그리며, 한 장마다 구름 패스에 걸린 GPU 시간을 쟀습니다.
+기준은 평균이 아닌 p95입니다. 120장 중 95%가 이 시간 안에 끝났다는 뜻으로, 가끔 느려지는 프레임까지 놓치지 않으려고 이 값을 썼습니다.
 
 <Fragment slot="wide">
   <Stats
@@ -199,19 +223,27 @@ TAA가 없어서 이 패턴은 프레임마다 바꾸지 않고 화면에 고정
 
 <Section title="Summary & Next">
 
-레이마칭 최적화는 "얼마나 많이 샘플링하느냐"보다 "어디를 건너뛰느냐"의 문제였습니다.
-더 크게 배운 것은 진행 방식입니다. 작은 장면의 성공이 그대로 커지지 않는다는 것을 겪은 뒤로는, 단위와 검증 기준부터 세웠습니다.
-자동 테스트를 통과하는 것과 화면이 보기 좋은 것도 따로 확인했습니다.
+**배운 것**
 
-아직 풀지 못한 문제도 있습니다. 가까이 있는 구름은 여전히 부드럽게 번집니다.
-실제 구름 가장자리는 20–200 m 안에서 불투명해지지만, 제 구름은 약 1.7 km를 지나야 불투명해집니다.
-그래서 무늬가 시선 방향으로 평균됩니다. 이것을 고치려면 조명 모델을 바꿔야 합니다.
+- **구름의 인상은 노이즈가 정합니다**<br />레이마칭과 조명이 같아도, 노이즈의 크기와 반복 주기가 바뀌면 구름이 전혀 다르게 보였습니다. 가까운 구름을 다듬을 때도 결국 손댄 것은 노이즈의 해상도와 반복 크기였습니다.
+- **빛이 얼마나 빨리 사라지느냐가 화면을 바꿉니다**<br />같은 모양이라도 소멸 계수에 따라 빛이 구름 속으로 들어가는 깊이가 달라지고, 가장자리가 또렷해지기도 흐려지기도 했습니다. 구름을 키울 때 소멸 계수도 같은 비율로 줄여야 모양이 유지된 것도 같은 이유입니다.
+- **구름 속 명암을 풍성하게 만드는 일이 가장 어려웠습니다**<br />햇빛, 하늘의 환경광, 여러 번 산란한 빛의 비중을 바꿔 가며 여러 번 시도했습니다. 대부분은 화면 전체가 밝아지거나 어두워질 뿐, 속의 명암이 살아나지는 않았습니다.
+- **테스트를 통과했다고 좋은 화면은 아니었습니다**<br />자동 테스트는 값이 정상 범위인지만 알려 줍니다. 구름이 납작하고 흐렸던 때도 테스트는 모두 통과했습니다. 그래서 단계마다 화면을 직접 보고 확인한 뒤 다음으로 넘어갔습니다.
 
-다음에 해 보고 싶은 것:
+<Fragment slot="aside">
 
-- 더 진한 밀도를 견디는 조명 모델로 근경 선명도 개선
-- 두꺼운 구름 아랫면이 평평하게 보이는 원인 분리
-- TAA를 넣고, 화면에 고정된 지터를 프레임마다 바뀌는 지터로 바꾸기
+**남은 문제**
+
+가까운 구름은 아직 실제보다 부드럽게 번집니다. 실제 구름은 가장자리에서 20–200 m만 들어가도 불투명해지지만, 제 구름은 약 1.7 km를 지나야 불투명해집니다.
+시선이 구름 속 깊이까지 들어가 여러 겹의 무늬를 함께 보다 보니 가장자리가 흐려집니다. 구름을 더 진하게 만들면 번짐은 줄었지만, 속이 탁한 덩어리처럼 보여 되돌렸습니다.
+
+**다음에 해 보고 싶은 것**
+
+- 햇빛을 받은 구름 가장자리가 은빛으로 빛나는 실버 라이닝을 더 또렷하게 표현하기
+- 가까운 구름을 선명하게 만들기
+- 권운처럼 바람에 휘어진 깃털 모양의 얇고 평평한 구름 만들기
+
+</Fragment>
 
 </Section>
 
@@ -220,6 +252,6 @@ TAA가 없어서 이 패턴은 프레임마다 바꾸지 않고 화면에 고정
 - Andrew Schneider, [The Real-time Volumetric Cloudscapes of Horizon Zero Dawn](https://d3d3g8mu99pzk9.cloudfront.net/AndrewSchneider/The-Real-time-Volumetric-Cloudscapes-of-Horizon-Zero-Dawn.pdf), SIGGRAPH 2015
 - Andrew Schneider, [Nubis, Evolved](https://advances.realtimerendering.com/s2022/SIGGRAPH2022-Advances-NubisEvolved-NoVideos.pdf), SIGGRAPH 2022 Advances in Real-Time Rendering
 - Sébastien Hillaire, [A Scalable and Production Ready Sky and Atmosphere Rendering Technique](https://blog.selfshadow.com/publications/s2020-shading-course/hillaire/s2020_pbs_hillaire_slides.pdf), EGSR 2020
-- [chihirobelmo/volumetric-cloud-for-directx11](https://github.com/chihirobelmo/volumetric-cloud-for-directx11) — 이 프로젝트를 시작하게 만든 작업
+- [chihirobelmo/volumetric-cloud-for-directx11](https://github.com/chihirobelmo/volumetric-cloud-for-directx11) — 이 프로젝트를 시작하게 된 계기
 
 </Section>

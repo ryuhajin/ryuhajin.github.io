@@ -3,7 +3,7 @@
 interface Props {
 	cols?: number;
 	size?: 'text' | 'wide' | 'full';
-	ratio?: 'wide' | 'square' | 'auto';
+	ratio?: 'wide' | 'square' | 'tall' | 'auto';
 }
 const { cols = 2, size = 'wide', ratio = 'wide' } = Astro.props;
 ---
@@ -24,6 +24,10 @@ const { cols = 2, size = 'wide', ratio = 'wide' } = Astro.props;
 	}
 	.r-square :global(img) {
 		aspect-ratio: 1;
+		object-fit: cover;
+	}
+	.r-tall :global(img) {
+		aspect-ratio: 4 / 5;
 		object-fit: cover;
 	}
 	@media (max-width: 720px) {

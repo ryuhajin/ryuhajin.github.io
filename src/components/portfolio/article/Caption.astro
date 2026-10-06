@@ -1,0 +1,37 @@
+---
+// Caption under a figure or block. "Subject · detail" (or "Subject — detail"): the part before the first separator
+// reads as the title, the rest as quieter detail.
+interface Props {
+	text: string;
+}
+const m = Astro.props.text.match(/^(.+?) [·—] (.+)$/);
+const lead = m ? m[1] : Astro.props.text;
+const rest = m?.[2];
+---
+
+<figcaption class:list={['cap', { split: rest }]}>
+	<span class="lead">{lead}</span>{rest && <span class="rest">{rest}</span>}
+</figcaption>
+
+<style>
+	.cap {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.1rem 0.5rem;
+		align-items: baseline;
+		margin: 0;
+		font-family: var(--font-ui, var(--sans));
+		font-size: 0.8125rem;
+		font-weight: 400;
+		line-height: 1.55;
+		letter-spacing: -0.005em;
+		color: var(--fg-2);
+	}
+	.split .lead {
+		color: var(--fg);
+		font-weight: 550;
+	}
+	.rest {
+		color: var(--fg-2);
+	}
+</style>

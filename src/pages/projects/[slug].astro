@@ -126,15 +126,14 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 	initHoverMedia();
 	initLightbox();
 
-	// the cover drifts up slower than the page and dims as it leaves, so the page reads as scrolling down past it
+	// the cover drifts up slower than the page, so the page reads as scrolling down past it
 	const hero = document.querySelector<HTMLElement>('[data-parallax]');
 	if (hero && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
 		let raf = 0;
 		const update = () => {
 			raf = 0;
 			const y = Math.min(scrollY, innerHeight);
-			hero.style.transform = `translate3d(0, ${y * 0.4}px, 0)`;
-			hero.style.opacity = String(1 - (y / innerHeight) * 0.7);
+			hero.style.transform = `translate3d(0, ${y * 0.6}px, 0)`;
 		};
 		addEventListener('scroll', () => (raf ||= requestAnimationFrame(update)), { passive: true });
 		update();
@@ -226,6 +225,8 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 		line-height: 1.6;
 		letter-spacing: -0.015em;
 		color: var(--fg);
+		/* an `overview: |-` block keeps its line breaks; folded (>-) overviews arrive as one line */
+		white-space: pre-line;
 	}
 	/* same dt / dd row as the home page's bottom bar */
 	.meta {
@@ -290,6 +291,21 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 		display: grid;
 		gap: 0.75rem;
 		align-content: start;
+	}
+	/* `<div class="pin-end">` in the copy: pushes that last block down so its bottom lines up with the end of a
+	   taller picture column (the text column then stretches to the row and leaves the gap above it) */
+	.prose :global(.sec-text:has(> .pin-end)) {
+		align-self: stretch;
+		display: flex;
+		flex-direction: column;
+	}
+	.prose :global(.sec-text > .pin-end) {
+		margin-top: auto;
+		padding-top: 1.1rem;
+	}
+	/* `<div class="narrow">` in the copy: keeps a small figure group from filling the text column */
+	.prose :global(.narrow) {
+		max-width: 24rem;
 	}
 	/* `---` in the copy: a quiet divider between two parts of one topic */
 	.prose :global(.sec-text > hr) {
