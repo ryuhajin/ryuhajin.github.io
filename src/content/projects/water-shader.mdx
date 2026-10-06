@@ -1,0 +1,192 @@
+---
+title: Water Shader
+tagline: DirectX 11 · HLSL로 만든 물 셰이더 — Gerstner 파도와 두 겹의 노멀맵, HDR 하늘 반사로 잔잔한 호수부터 노을 지는 바다까지 실시간으로 그립니다
+order: 2
+group: Computer Graphics
+year: '2026'
+role: Solo · 셰이더 · 셰이더 벤치 툴
+stack: [C++20, DirectX 11, HLSL SM 5.0, Dear ImGui, DirectXTK, CMake, vcpkg]
+accent: '#14b8a6'
+cover:
+  poster: /projects/water-shader/cover.webp
+  alt: Basic · Calm lake — 낮은 시점에서 본 호수. 잔물결 위로 하늘과 갈대가 고스란히 비친다
+overview: |-
+  "물을 표현하기 위해선 어떤 기능이 필요할까?"라는 질문에서 출발한 프로젝트입니다.
+  엔진 없이 DirectX 11과 HLSL로, 잔잔한 호수부터 노을 지는 바다까지 실시간으로 그립니다.
+links:
+  - label: GitHub — WaterShader
+    href: https://github.com/ryuhajin/WaterShader
+  - label: YouTube — 시연 영상
+    href: https://youtu.be/hAdJnM9oWXo
+---
+
+<Section title="Overview">
+
+처음 2주 동안은 DirectX 11 기반 위에 물의 기본 요소(흐르는 노멀맵, Fresnel, 사인파)를 만드는 데서 시작했습니다.<br />그 뒤 프로젝트 보완을 위해 천처럼 보이던 수면을 햇빛이 반짝이는 물로 다듬었습니다.
+
+**주요 기능**
+
+- 바람 방향·세기 등 6개 값으로 만드는 Gerstner 파도 4개
+- 1024² 오션 그리드와 수평선까지 이어지는 원경 처리 (메시 → 픽셀 노멀 → 거칠기)
+- 노멀맵 5종 중 2장을 선택하여 잔물결을 표현 가능
+- 리니어 HDR 렌더링과 톤 매핑
+- 3가지 테마 프리셋, 디버그 뷰, 명령줄 캡처 도구
+
+<Fragment slot="media">
+  <Block caption="시연 영상 · 3가지 테마 프리셋">
+    <YouTube id="hAdJnM9oWXo" poster="/projects/water-shader/cover.webp" title="Water Shader 시연 영상" />
+  </Block>
+</Fragment>
+</Section>
+
+<Section title="Goals" align="body">
+
+이 프로젝트는 하나의 질문에서 출발했습니다.<br />물을 표현하려면 무엇이 필요할까?
+
+- **물의 모양**<br />파도가 마루와 골을 어떻게 만드는지 직접 구현해 보기.
+- **물의 질감**<br />잔물결이 반복되지 않고 바람을 따라 흐르게 하기.
+- **물과 빛의 상호작용**<br />보는 각도에 따라 물속과 하늘이 바뀌어 보이고, 하늘과 태양이 수면에 맺히는 모습을 표현하기.
+
+<Fragment slot="media">
+  <Figure src="/projects/water-shader/goals.webp" video="/projects/water-shader/goals.mp4" caption="Basic · 잔잔한 호수" />
+</Fragment>
+</Section>
+
+<Section title="Challenges" align="body">
+
+기능을 더하는 것보다, 왜 물처럼 보이지 않는지 원인을 찾는 일이 더 어려웠습니다.
+
+**서로를 가린 두 버그**<br />
+햇빛 반사가 해를 수면 아래에 둘 때만 보였습니다. 튜닝 문제라고 생각했지만, 노멀을 디버그 뷰로 보니 수면 전체가 한쪽으로 기울어 있었습니다.
+
+- **원인 1** — 노멀맵을 DDS로 변환할 때 사진용 감마 보정이 적용돼, 평평함을 뜻하는 값 128이 55로 바뀌어 있었습니다.
+- **원인 2** — 태양 방향 규약이 뒤집혀, 프리셋의 태양이 실제로는 수면 아래에 있었습니다.
+
+두 버그가 우연히 맞물려 그럭저럭 밝게 보였기 때문에 발견이 늦었습니다. 노멀맵은 색 변환 없이 다시 변환하고, 태양 방향은 방위각과 고도로 다시 정의했습니다.
+
+**실행되지 않는 코드가 바꾼 화면**<br />
+값이 0이라 실행되지 않는 분기만 추가했는데, 기존 캡처 18장 중 9장의 일부 픽셀이 1~4단계씩 달라졌습니다. 코드가 늘면서 드라이버가 명령어를 다르게 배치한 것이 원인이었습니다.
+새 기능은 같은 셰이더를 따로 컴파일한 변형으로 분리해, 기능을 껐을 때의 화면은 이전과 해시까지 같게 했습니다.
+
+<Fragment slot="media">
+  <Block caption="같은 시점의 2026-05와 2026-10 · Tropical · 슬라이더로 비교">
+    <Compare
+      slider
+      steps={[
+        { src: '/projects/water-shader/compare-before.webp', label: '이전' },
+        { src: '/projects/water-shader/compare-after.webp', label: '현재' },
+      ]}
+    />
+  </Block>
+</Fragment>
+</Section>
+
+<Section title="Waves" align="body">
+
+**Gerstner 파도**<br />
+처음에는 사인파 2개로 수면을 위아래로만 움직여, 판 전체가 텐트처럼 휘었습니다. 실제 물 입자는 작은 원을 그리며 움직이므로, 정점을 수평으로도 모아 주는 Gerstner 파도 4개로 바꿨습니다. 마루는 뾰족하고 골은 넓어집니다.
+파도 4개의 20개 값을 바람 방향·퍼짐·크기·높이·거칠기·속도 6개로 묶어 한 번에 만듭니다.
+
+**수평선까지**<br />
+오션 그리드(1024², 정점 약 105만)는 카메라 가까이에 정점이 몰려 있고, 멀어질수록 정점 사이 간격이 넓어집니다. 그래서 정점이 파도를 따라가지 못하는 먼 곳이 문제였습니다.
+
+- **문제** — 먼 곳에서 파도를 끄자 노멀맵만 남아, 가까운 물결과 먼 물결의 방향이 X자로 엇갈렸습니다.
+- **첫 시도** — 같은 파도의 기울기를 픽셀에서 다시 계산했지만, 이번엔 원경에 마름모 격자가 생겼습니다.
+- **해결** — 픽셀로도 표현하기 어려운 작은 파도는 표면 거칠기로 넘겨 햇빛 반사를 넓게 퍼뜨렸습니다. 메시 → 픽셀 노멀 → 거칠기 3단계로 이어져, 수평선까지 바람 방향이 유지됩니다.
+
+<Fragment slot="media">
+  <Figure src="/projects/water-shader/preset-sunset-hero.webp" caption="Sunset · 바람 부는 노을 바다" />
+  <Figure src="/projects/water-shader/dbg-4.webp" caption="원경 처리 디버그 뷰 · 메시 / 픽셀 노멀 / 거칠기" />
+</Fragment>
+</Section>
+
+<Section title="Ripples & Reflection" align="body">
+
+**두 겹의 잔물결**<br />
+노멀맵 5종 중 두 장을 서로 다른 크기와 방향으로 흘려 겹칩니다. 한 장을 크기만 바꿔 겹치면 같은 무늬가 반복될 뿐이라, 레이어마다 다른 맵을 고르게 했습니다.
+
+- **문제** — 바람 방향 정렬을 켜면 잔물결이 표시된 방향과 다르게 흘렀습니다.
+- **원인** — 텍스처를 회전한 뒤에 흐름을 더해, 흐름까지 정렬 각도만큼 돌아가 있었습니다.
+- **해결** — 흐름을 회전 전에 더했습니다. 두 시점의 무늬 이동을 재서, 표시한 방향과 1° 이내로 맞는 것을 확인했습니다.
+
+**각도에 따라 바뀌는 물**<br />
+물은 내려다보면 속이 비치고, 수평에 가깝게 볼수록 하늘을 비춥니다. Schlick Fresnel의 기본 반사율을 물의 실제 값인 0.02로 두었습니다.
+반사 방향이 수평선 아래로 꺾이는 물결 뒷면은, 땅 대신 하늘을 비추도록 반사 방향을 위로 접었습니다.
+
+<Fragment slot="media">
+  <Figure src="/projects/water-shader/preset-tropical-surface.webp" caption="Tropical · 에메랄드빛 바다" />
+  <Figure src="/projects/water-shader/dbg-0.webp" caption="노멀맵 디버그 뷰" />
+</Fragment>
+</Section>
+
+<Section title="Lighting" align="body">
+
+**HDR 하늘에서 읽은 빛**<br />
+조명 값을 임의로 정하지 않고, HDR 하늘에서 해의 방향·색·밝기를 측정해 씁니다.
+
+- **문제** — 수면이 지나치게 밝았습니다. 하늘에 찍힌 태양의 반사, 직접 계산한 햇빛 반짝임, 광택(Blinn-Phong)이 같은 태양을 세 번 더하고 있었습니다.
+- **해결** — 하늘 텍스처에서 태양 원반만 지우고, 지운 빛의 양을 계산해 직접 그리는 태양 하나로 합쳤습니다. 노을 하늘의 채도가 0.29에서 0.70으로 살아났습니다.
+
+**리니어 HDR과 톤 매핑**<br />
+처음에는 sRGB 숫자 그대로 빛을 더하고 섞었습니다. sRGB의 0.5는 실제 빛으로는 21%밖에 되지 않습니다. 리니어 공간의 16비트 부동소수 버퍼에 그린 뒤 톤 매핑하도록 바꿨습니다.
+톤 곡선 5종을 노을 장면에서 비교해, 보통 밝기에서는 색조를 지키고 아주 밝은 빛만 채널별로 눌러 주는 ACES 하이브리드를 골랐습니다.
+
+<Fragment slot="media">
+  <Figure src="/projects/water-shader/preset-sunset-surface.webp" caption="Sunset · 수면 가까이" />
+  <Figure src="/projects/water-shader/dbg-3.webp" caption="조명 디버그 뷰 · 확산광 / 하이라이트 / Fresnel" />
+</Fragment>
+</Section>
+
+<Section title="Tools & Performance" align="body">
+
+**같은 조건으로 비교하기**<br />
+같은 시각(t = 12초), 같은 카메라의 고정 샷 7개를 테마별로 한 번에 캡처하는 명령줄 모드를 만들었습니다.
+바꾸기 전후 캡처를 해시와 픽셀 차이로 비교해, 의도하지 않은 변화를 잡았습니다.
+
+**비용**<br />
+RTX 4080 SUPER, Release 빌드, 1280×720 기준으로 오션 그리드를 그리는 데 GPU 약 0.19 ms, 원경 처리를 더해 0.20 ms가 걸렸습니다.
+HDR 버퍼와 톤 매핑 비용은 타이머 해상도(0.01 ms)보다 작았습니다.
+
+<Fragment slot="wide">
+  <Stats
+    items={[
+      { value: '0.20', unit: 'ms', label: '오션 그리드 GPU · 원경 처리 포함' },
+      { value: '105', unit: '만', label: '그리드 정점 · 1024²' },
+      { value: '< 0.01', unit: 'ms', label: 'HDR 버퍼 + 톤 매핑' },
+    ]}
+  />
+</Fragment>
+</Section>
+
+<Section title="Summary & Next">
+
+**배운 것**
+
+- **튜닝 문제처럼 보여도 측정하면 버그일 때가 있습니다**<br />기울어진 수면은 값을 조정해서는 고쳐지지 않았습니다. 평균 색을 재 보고서야 원인이 보였습니다.
+- **HDR은 예쁜 텍스처가 아니라 단위의 문제였습니다**<br />하늘의 빛을 측정한 값으로 쓰자, 같은 태양을 여러 번 더하던 문제와 색이 바래던 문제가 함께 풀렸습니다.
+- **멀리 있는 물은 다른 방식으로 그려야 했습니다**<br />가까이선 메시로, 멀리선 픽셀로, 더 멀리선 거칠기로 같은 파도를 이어 그렸습니다.
+
+<Fragment slot="aside">
+
+**남은 문제**
+
+수평선 연무가 물에만 적용돼 물과 언덕 사이에 경계가 생기고, 그리드 끝(반경 400)이 수평선에 가는 선으로 보입니다.
+
+**다음에 해 보고 싶은 것**
+
+- 파도 마루의 흰 거품 (Foam)
+- 시간에 따라 퍼지는 원형 물결 (Ripple SDF)
+- 폭포, UE5 포팅
+
+</Fragment>
+</Section>
+
+<Section title="References">
+
+- [GPU Gems 1, Ch.1 — Effective Water Simulation from Physical Models](https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-1-effective-water-simulation-physical-models)
+- [Catlike Coding — Waves](https://catlikecoding.com/unity/tutorials/flow/waves/)
+- Bruneton et al., Real-time Realistic Ocean Lighting using Seamless Transitions from Geometry to BRDF, 2010
+- [Krzysztof Narkowicz — ACES Filmic Tone Mapping Curve](https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/)
+- 에셋 — [CADhatch Seamless Water Textures](https://www.cadhatch.com/seamless-water-textures) (노멀맵), [Poly Haven](https://polyhaven.com/hdris) HDRI (CC0)
+
+</Section>

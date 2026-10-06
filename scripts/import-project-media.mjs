@@ -14,6 +14,7 @@ import { tmpdir } from 'node:os';
 const SHOTS = 'C:/Users/da171/OneDrive/Desktop/figma-bridge/shots';
 const VIDEO = 'C:/Users/da171/OneDrive/Desktop/figma-bridge/video';
 const CLOUD_OLD = 'C:/Users/da171/OneDrive/Desktop/9-14일-비교용 구름';
+const WATER_CAP = 'C:/Users/da171/WaterShader/docs/features/ocean-hero/captures';
 const CLOUD_E19 = 'C:/Users/da171/VolumetricCloud/build/captures/cloud-near-micro/21564-19674375';
 const WATER = 'C:/Users/da171/WaterShader/docs/features/water-polish/captures';
 const FIG = process.env.FIG_EXPORT ?? 'C:/Users/da171/AppData/Local/Temp/claude/fig-export';
@@ -110,7 +111,12 @@ const manifest = {
 	},
 	'water-shader': {
 		images: [
-			{ out: 'cover.webp', src: `${FIG2}/water-shader/hero_full.png`, width: W.hero },
+			// hero: the Basic final cut (camera slot 1), captured by the app at 2560×1440 (WaterShader docs/features/ocean-hero)
+			{ out: 'cover.webp', src: `${WATER_CAP}/final_slot1/basic_slot1.png`, width: 2560, q: 88 },
+			// before/after: the same fixed `sunward` shot from the 2026-05 build and the 2026-10 gallery run
+			{ out: 'compare-before.webp', src: `${WATER}/before/tropical_sunward.jpg`, q: 90 },
+			{ out: 'compare-after.webp', src: `${WATER_CAP}/gallery_212204/tropical_sunward.png`, width: W.wide, q: 90 },
+			{ out: 'goals.webp', src: `${SHOTS}/water-hq/goals-basic-slot4-poster.png`, width: W.wide, q: 90 },
 			...['basic', 'sunset', 'tropical'].flatMap((p) => [
 				{ out: `preset-${p}-hero.webp`, src: `${FIG2}/water-shader/${p}_ocean_hero.jpg`, width: W.gallery },
 				{ out: `preset-${p}-surface.webp`, src: `${FIG2}/water-shader/${p}_ocean_surface.jpg`, width: W.gallery },
@@ -120,6 +126,9 @@ const manifest = {
 			{ out: 'after.webp', src: `${FIG2}/water-shader/after.png`, width: W.wide },
 			...[0, 1, 2, 3, 4, 5].map((m) => ({ out: `dbg-${m}.webp`, src: `${FIG2}/water-shader/dbg_${m}.png`, width: W.gallery })),
 		],
+		// Goals loop: Basic, camera slot 4, rendered frame by frame at 2560×1440 (ws-capture worktree, water-hq/README.md),
+		// 16 s with a 0.5 s fade; the page copy is a 1280-wide CRF 27 re-encode of the CRF 18 master
+		copies: [{ out: 'goals.mp4', src: `${SHOTS}/water-hq/goals-web-1280-27.mp4` }],
 	},
 	sdfs: {
 		images: [
