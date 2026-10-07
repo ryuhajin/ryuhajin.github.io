@@ -17,15 +17,10 @@ const CLOUD_OLD = 'C:/Users/da171/OneDrive/Desktop/9-14일-비교용 구름';
 const WATER_CAP = 'C:/Users/da171/WaterShader/docs/features/ocean-hero/captures';
 const CLOUD_E19 = 'C:/Users/da171/VolumetricCloud/build/captures/cloud-near-micro/21564-19674375';
 const WATER = 'C:/Users/da171/WaterShader/docs/features/water-polish/captures';
-const FIG = process.env.FIG_EXPORT ?? 'C:/Users/da171/AppData/Local/Temp/claude/fig-export';
-const CAP = process.env.CAPTURES ?? 'C:/Users/da171/AppData/Local/Temp/claude/mlx-captures';
 // images pulled from the portfolio Figma file (image fills at source size + 3× frame renders for the diagram panels)
 const FIG2 = process.env.FIG2 ?? 'C:/Users/da171/AppData/Local/Temp/claude/C--Users-da171-ryuhajin-github-io/71bdedfe-b71e-4e3c-b1ae-5e40ffc56f66/scratchpad/fig2/img';
 
 const W = { hero: 1920, wide: 1600, gallery: 1200, tile: 640, thumb: 480 };
-// FDF test maps. Captured at 3840×2160 with heights ×3 (capture build only); dense maps (t1, mars, julia,
-// elem-fract) with 1px lines, the sparse ones (42, pyra) with 3px lines so they survive the downscale.
-const FDF_MAPS = ['t1', '42', 'pyra', 'mars', 'julia', 'elem-fract'];
 
 /** @typedef {{ out: string, src: string, width?: number, crop?: [number, number, number, number], q?: number, frame?: boolean }} Img */
 /** @typedef {{ out: string, src: string, frames: string[], size: number }} Sprite */
@@ -146,91 +141,90 @@ const manifest = {
 		copies: [{ out: 'goals.mp4', src: `${SHOTS}/water-hq/goals-web-1280-27.mp4` }],
 	},
 	sdfs: {
+		// renderer-direct captures from the sdfs-capture worktree (test-only capture mode: --card --time --size --hide-ui
+		// --out, --frames/--fps/--shifts for sequences); card faces are the centre card cropped from a 5120×2880 render,
+		// except the thin-line cards 03 and 11, which are 1x crops (a 2x downsample fades their one-pixel lines)
 		images: [
-			{ out: 'cover.webp', src: `${SHOTS}/sdf/carousel-wide.png`, width: W.hero },
-			{ out: 'carousel.webp', src: `${SHOTS}/sdf/carousel-wide-v2.png` },
-			...Array.from({ length: 13 }, (_, i) => {
-				const n = String(i + 1).padStart(2, '0');
-				return { out: `card-${n}.webp`, src: `${SHOTS}/sdf/card-${n}.png`, width: W.thumb, crop: /** @type {[number,number,number,number]} */ ([1, 0, 572, 572]) };
-			}),
-			{ out: 'ui-panel.webp', src: `${SHOTS}/sdf/ui-panel-card05.png`, width: W.wide },
-			{ out: 'card11-terrain.webp', src: `${SHOTS}/sdf/card11-terrain-preview.png`, width: W.gallery },
+			{ out: 'cover.webp', src: `${SHOTS}/sdf-hq/final/cover.png`, width: 2560, q: 88 },
+			{ out: 'goals.webp', src: `${SHOTS}/sdf-hq/final/goals-poster.png`, width: W.wide, q: 90 },
+			{ out: 'deck.webp', src: `${SHOTS}/sdf-hq/final/deck-poster.png`, width: W.wide, q: 90 },
+			// early app (2026-06-05 smoke test, desktop screenshot cropped to the app's client area) and the current app
+			{ out: 'app-2026-06.webp', src: `${SHOTS}/sdf-hq/app-2026-06.png`, q: 90 },
+			{ out: 'app-2026-10.webp', src: `${SHOTS}/sdf-hq/raw/ui-c05.png`, q: 92 },
+			// the coverflow tuning section of the panel (capture build opens it and folds Cards), with the deck behind it
+			{ out: 'ui-coverflow.webp', src: `${SHOTS}/sdf-hq/final/ui-coverflow.png`, q: 92 },
+			...['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '10-full', '11', '12', '12-forward', '13-xyz', '13-zyx'].map((n) => ({
+				out: `card-${n}.webp`,
+				src: `${SHOTS}/sdf-hq/final/card-${n}.png`,
+				q: 90,
+			})),
 		],
-		sprites: [
-			{ out: 'motion-smoothmin.webp', src: `${SHOTS}/sdf`, frames: range('card05-smoothmin-seq', 8), size: 320 },
-			{ out: 'motion-volume.webp', src: `${SHOTS}/sdf`, frames: range('card12-volume-seq', 8), size: 320 },
-			{ out: 'motion-dotgrid.webp', src: `${SHOTS}/sdf`, frames: range('card02-dotgrid-seq', 8), size: 320 },
-		],
-		clips: [
-			{
-				out: 'cover.mp4',
-				src: `${VIDEO}/SDFs_Deck.mp4`,
-				cuts: [[9, 45]],
-				speed: 2.25,
-			},
+		copies: [
+			// card 10 dissolve, 10 s loop (10.5 s rendered, last 0.5 s faded into the first), 3840×2160 → 1920, CRF 18
+			{ out: 'goals.mp4', src: `${SHOTS}/sdf-hq/goals-card10-master.mp4` },
+			// the deck sliding 07 → 08 → 09 → 08 → 07 (7 s, ends on its first frame), 3840×2160 → 1920, CRF 18
+			{ out: 'deck.mp4', src: `${SHOTS}/sdf-hq/deck-slide-master.mp4` },
 		],
 	},
+	// renderer-direct captures from the toon-capture worktree (5120×2880, see shots/toon-hq): hero and loop are 16:9
+	// crops around the sphere, the step and preset tiles square crops — all 2× of the published size
 	'toon-shader': {
 		images: [
-			{ out: 'cover.webp', src: `${SHOTS}/toon/toon-final-norim-wide.png` },
-			{ out: 'final-rim.webp', src: `${SHOTS}/toon/toon-final-wide.png` },
-			{ out: 'step-1.webp', src: `${SHOTS}/toon/toon_s1_outline.png` },
-			{ out: 'step-2.webp', src: `${SHOTS}/toon/toon_s2_lambert.png` },
-			{ out: 'step-3.webp', src: `${SHOTS}/toon/toon_s3_cel.png` },
-			{ out: 'step-4.webp', src: `${SHOTS}/toon/toon_s6_spec_norim.png` },
-			{ out: 'step-5.webp', src: `${SHOTS}/toon/toon_s5_final.png` },
-			...[1, 2, 3, 4, 5].map((n) => ({ out: `exp-${n}.webp`, src: `${FIG}/toon-exp${n}.png` })),
+			{ out: 'cover.webp', src: `${SHOTS}/toon-hq/raw5k/final-rim-on.png`, crop: [960, 540, 3200, 1800], width: W.hero, q: 90 },
+			{ out: 'overview.webp', src: `${SHOTS}/toon-hq/seq5k/f_0000.png`, crop: [960, 540, 3200, 1800], width: W.wide, q: 90 },
+			...[
+				['step-outline', 'step-1-outline'],
+				['step-lambert', 'step-2-lambert'],
+				['step-bands', 'step-4-bands-gradient'],
+				['step-specular', 'step-5-specular'],
+				['step-rim', 'step-6-rim'],
+				['preset-exp1', 'experiment-1'],
+				['preset-exp2', 'experiment-2'],
+				['preset-exp3', 'experiment-3'],
+				['preset-exp4', 'experiment-4'],
+			].map(([out, src]) => ({ out: `${out}.webp`, src: `${SHOTS}/toon-hq/raw5k/${src}.png`, crop: [1780, 650, 1580, 1580], width: 790, q: 90 })),
+			// the ImGui panels drawn at 2× density into a 2560×1440 back buffer
+			{ out: 'ui.webp', src: `${SHOTS}/toon-hq/raw5k/ui-2x.png`, q: 90 },
 		],
-		// hover preview: final look, then Lambert → cel bands → two colour experiments
+		// light swinging ±50° around the preset direction, 8 s, ends on its first frame
+		copies: [{ out: 'overview.mp4', src: `${SHOTS}/toon-hq/light-swing-master.mp4` }],
+	},
+	// minilibx-linux capture port (WSL), 3840×2160, heights ×3 in the capture build (see shots/fdf-hq/README.md)
+	fdf: {
+		images: [
+			{ out: 'cover.webp', src: `${SHOTS}/fdf-hq/raw/map-t1.png`, width: W.hero, q: 90 },
+			{ out: 'overview.webp', src: `${SHOTS}/fdf-hq/raw/map-julia-t2.png`, width: W.wide, q: 90 },
+			{ out: 'step-text.webp', src: `${SHOTS}/fdf-hq/raw/step-42-a-text-dimzero.png`, q: 90 },
+			// the same 1920×1080 window region around 42.fdf for the points and the wireframe
+			{ out: 'step-points.webp', src: `${SHOTS}/fdf-hq/raw/step-42-b-points.png`, crop: [960, 477, 1920, 1080], width: W.gallery, q: 90 },
+			{ out: 'step-wire.webp', src: `${SHOTS}/fdf-hq/raw/step-42-c-wire.png`, crop: [960, 477, 1920, 1080], width: W.gallery, q: 90 },
+			{ out: 'fit-42-julia.webp', src: `${SHOTS}/fdf-hq/fit-pair-42-julia.png`, width: W.wide, q: 90 },
+		],
 		slides: [
 			{
-				out: 'cover.mp4',
-				frames: [
-					`${SHOTS}/toon/toon-final-norim-wide.png`,
-					`${SHOTS}/toon/toon_s2_lambert.png`,
-					`${SHOTS}/toon/toon_s3_cel.png`,
-					`${FIG}/toon-exp3.png`,
-					`${FIG}/toon-exp4.png`,
-				],
-				hold: 1.1,
-				fade: 0.35,
-				bg: '#7f7f7f',
-				// trim the grey around each sphere so every slide shows it at the same size
-				frame: true,
+				out: 'overview.mp4',
+				frames: ['julia-t2', 'mars-t2', 'elem-fract-t2', 'elem', 'pyramide'].map((m) => `${SHOTS}/fdf-hq/raw/map-${m}.png`),
+				hold: 1.4,
+				fade: 0.4,
+				bg: '#000',
 			},
 		],
 	},
-	fdf: {
-		images: FDF_MAPS.map((m, i) => ({
-			out: i === 0 ? 'cover.webp' : `map-${m}.webp`,
-			src: `${CAP}/fdf-final/${m}.png`,
-			width: W.hero,
-			frame: true,
-		})),
-		slides: [{ out: 'cover.mp4', frames: FDF_MAPS.map((m) => `${CAP}/fdf-final/${m}.png`), hold: 1.1, fade: 0.4, bg: '#000', frame: true }],
-	},
-	// the INPUT · 42.fdf panel, cut from a 3× render of the PDF page
-	'fdf#pdf': {
-		images: [{ out: 'input-42.webp', src: `${FIG2}/frames/FDF@3x.png`, crop: [300, 2400, 780, 576], width: W.gallery }],
-	},
-	// PDF hero still and the four panels .cub → 2D map → screen columns → render (cut from a 3× render of the page)
-	'cub3d#pdf': {
-		images: [
-			{ out: 'hero-pdf.webp', src: `${FIG2}/cub3d/hero.png`, width: W.hero },
-			{ out: 'flow-1-input.webp', src: `${FIG2}/frames/CUB3D@3x.png`, crop: [300, 2400, 1140, 576], width: W.gallery },
-			{ out: 'flow-2-map.webp', src: `${FIG2}/frames/CUB3D@3x.png`, crop: [1560, 2400, 1188, 576], width: W.gallery },
-			{ out: 'flow-3-screen.webp', src: `${FIG2}/frames/CUB3D@3x.png`, crop: [2868, 2400, 1188, 576], width: W.gallery },
-			{ out: 'flow-4-render.webp', src: `${FIG2}/frames/CUB3D@3x.png`, crop: [4179, 2400, 1101, 576], width: W.gallery },
-		],
-	},
+	// minilibx-linux capture port (WSL), 2560×1920 build of the team's final code, capture map shots/cub3d-hq/meta
 	cub3d: {
 		images: [
-			{ out: 'cover.webp', src: `${CAP}/cub3d/still-1.png`, width: W.hero },
-			{ out: 'still-2.webp', src: `${CAP}/cub3d/still-2.png`, width: W.gallery },
-			{ out: 'still-3.webp', src: `${CAP}/cub3d/still-3.png`, width: W.gallery },
+			{ out: 'cover.webp', src: `${SHOTS}/cub3d-hq/raw/H2.png`, width: W.hero, q: 88 },
+			// 16:9 centre crops (the game renders 4:3) so the side column stays level with the text
+			{ out: 'overview.webp', src: `${SHOTS}/cub3d-hq/orbit-f0.png`, crop: [0, 120, 1280, 720], q: 88 },
+			{ out: 'ray-corridor.webp', src: `${SHOTS}/cub3d-hq/raw/R1.png`, width: 1280, q: 88 },
+			{ out: 'ray-map.webp', src: `${SHOTS}/cub3d-hq/raw/R4-map.png`, crop: [600, 0, 1960, 1604], width: 1280, q: 90 },
+			{ out: 'tex-corner-1.webp', src: `${SHOTS}/cub3d-hq/raw/T1.png`, crop: [0, 240, 2560, 1440], width: 1280, q: 88 },
+			{ out: 'tex-corner-2.webp', src: `${SHOTS}/cub3d-hq/raw/T2.png`, crop: [0, 240, 2560, 1440], width: 1280, q: 88 },
+			{ out: 'color-cub.webp', src: `${SHOTS}/cub3d-hq/raw/T4.png`, crop: [0, 240, 2560, 1440], width: 1280, q: 88 },
+			{ out: 'color-subject.webp', src: `${SHOTS}/cub3d-hq/raw/T5.png`, crop: [0, 240, 2560, 1440], width: 1280, q: 88 },
 		],
-		// 1280×960 capture → 16:9 center crop
-		clips: [{ out: 'cover.mp4', src: `${CAP}/cub3d/walk.mp4`, cuts: [[3, 8]], crop: 'crop=1280:720:0:120', crf: 30, height: 540 }],
+		// one lap around the centre pillar (6 s, seamless), already 1280×960 from 2× frames
+		clips: [{ out: 'overview.mp4', src: `${SHOTS}/cub3d-hq/orbit-loop-2x.mp4`, cuts: [[0, 6]], crop: 'crop=1280:720:0:120', crf: 25, height: 720 }],
 	},
 };
 
