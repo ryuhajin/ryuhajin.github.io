@@ -114,6 +114,10 @@ const showSteps = befores.length > 1;
 	.is-slider .layer {
 		clip-path: inset(0 calc(100% - var(--pos)) 0 0);
 	}
+	/* the after image only covers its own side: under the before layer its edge pixels bled through as a 1px line */
+	.is-slider .after {
+		clip-path: inset(0 0 0 var(--pos));
+	}
 	.divider {
 		position: absolute;
 		top: 0;

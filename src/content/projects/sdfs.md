@@ -5,7 +5,7 @@ order: 3
 group: Computer Graphics
 year: '2026'
 role: Solo · 셰이더 · 앱 구조 · 툴
-stack: [C++17, DirectX 11, HLSL SM 5.0, Dear ImGui, Win32, CMake]
+stack: [C++, DirectX 11, HLSL, Dear ImGui, Win32, CMake]
 accent: '#94a3b8'
 cover:
   poster: /projects/sdfs/cover.webp

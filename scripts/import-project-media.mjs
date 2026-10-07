@@ -117,6 +117,21 @@ const manifest = {
 			{ out: 'compare-before.webp', src: `${WATER}/before/tropical_sunward.jpg`, q: 90 },
 			{ out: 'compare-after.webp', src: `${WATER_CAP}/gallery_212204/tropical_sunward.png`, width: W.wide, q: 90 },
 			{ out: 'goals.webp', src: `${SHOTS}/water-hq/goals-basic-slot4-poster.png`, width: W.wide, q: 90 },
+			// section shots: 2560×1440 Release renders from the ws-capture worktree (`--render-size`, `--debug`,
+			// `--far-waves off --align-ripples off` for the "normal map only" far field)
+			...[
+				['waves', 'waves-sunset-slot3'],
+				['waves-far-debug', 'waves-far-debug-tropical-aerial'],
+				['waves-far-off', 'waves-far-off-tropical-aerial'],
+				['waves-far-on', 'waves-far-on-tropical-aerial'],
+				['ripples', 'ripples-sunset-slot4'],
+				['ripples-normal', 'ripples-normal-sunset-slot4'],
+				['lighting', 'lighting-tropical-slot2'],
+				['tonemap-none', 'lighting-tonemap-none-basic-surface'],
+				['tonemap-aces-hue', 'lighting-tonemap-aces-hue-basic-surface'],
+			].map(([out, src]) => ({ out: `${out}.webp`, src: `${SHOTS}/water-hq/sections/${src}.png`, width: W.wide, q: 90 })),
+			// reflection detail: a 4:1 strip of camera slot 3 — the bank and its reflection, nothing below
+			{ out: 'reflect.webp', src: `${SHOTS}/water-hq/sections/reflect-basic-slot3.png`, crop: [0, 760, 2560, 640], width: W.wide, q: 90 },
 			...['basic', 'sunset', 'tropical'].flatMap((p) => [
 				{ out: `preset-${p}-hero.webp`, src: `${FIG2}/water-shader/${p}_ocean_hero.jpg`, width: W.gallery },
 				{ out: `preset-${p}-surface.webp`, src: `${FIG2}/water-shader/${p}_ocean_surface.jpg`, width: W.gallery },
