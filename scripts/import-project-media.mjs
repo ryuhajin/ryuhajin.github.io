@@ -220,6 +220,12 @@ const manifest = {
 		// one lap around the centre pillar (6 s, seamless), already 1280×960 from 2× frames
 		clips: [{ out: 'overview.mp4', src: `${SHOTS}/cub3d-hq/orbit-loop-2x.mp4`, cuts: [[0, 6]], crop: 'crop=1280:720:0:120', crf: 25, height: 720 }],
 	},
+	// list / grid hover previews: the same footage as each page's Goals (or Overview) clip, re-encoded light at 540p
+	'water-shader#hover': { clips: [{ out: 'cover.mp4', src: `${SHOTS}/water-hq/goals-web-1280-27.mp4`, cuts: [[0, 6]], crf: 28, height: 540 }] },
+	'sdfs#hover': { clips: [{ out: 'cover.mp4', src: `${SHOTS}/sdf-hq/goals-deck-08-11-master.mp4`, cuts: [[0, 6.0667]], crf: 28, height: 540 }] },
+	'toon-shader#hover': { clips: [{ out: 'cover.mp4', src: `${SHOTS}/toon-hq/light-swing-master.mp4`, cuts: [[0, 8]], crf: 28, height: 540 }] },
+	'fdf#hover': { clips: [{ out: 'cover.mp4', src: 'public/projects/fdf/overview.mp4', cuts: [[0, 7.4]], crf: 30, height: 540 }] },
+	'cub3d#hover': { clips: [{ out: 'cover.mp4', src: `${SHOTS}/cub3d-hq/orbit-loop-2x.mp4`, cuts: [[0, 6]], crop: 'crop=1280:720:0:120', crf: 34, height: 540 }] },
 };
 
 function range(prefix, n) {

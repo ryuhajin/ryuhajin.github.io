@@ -123,9 +123,14 @@ float figGlobe(vec2 p) { // wireframe globe: outline, 7 latitudes, 6 turning lon
 	}
 	for (int i = 0; i < 6; i++) {
 		float c = abs(cos(float(i) / 6.0 * 3.14159265 + uTime * 0.25));
-		// a meridian seen edge-on collapses into a straight line through the middle: fade it out on the way there
-		float away = (1.0 - smoothstep(0.06, 0.24, c)) * 0.08;
-		float k = ellipse(p, vec2(c * 0.95, 0.95)) + away;
+		// a meridian seen edge-on collapses into the vertical line through the poles. The ellipse approximation breaks
+		// down for very thin ellipses, so also take the horizontal distance to the curve (exact for thin ones, and the
+		// pole point beyond the poles); the line then stays continuous all the way through instead of fading out
+		float a = c * 0.95;
+		float h = abs(p.y) <= 0.95
+			? abs(abs(p.x) - a * sqrt(1.0 - p.y * p.y / 0.9025))
+			: length(vec2(p.x, abs(p.y) - 0.95));
+		float k = abs(p.y) <= 0.95 ? min(ellipse(p, vec2(a, 0.95)), h) : h;
 		d = min(d, k);
 		if (i == 2) gAcc = min(gAcc, k);
 	}
