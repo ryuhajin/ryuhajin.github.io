@@ -11,8 +11,8 @@ cover:
   poster: /projects/sdfs/cover.webp
   alt: 가운데 카드에 3D Voronoi 볼륨이 떠 있고, 좌우로 SDF 카드들이 비스듬히 늘어선 덱 화면
 overview: |-
-  수식 하나로 도형과 무늬를 그리는 SDF가 어떻게 동작하는지 직접 익혀 보고 싶었습니다.
-  셰이더 카드 덱 PixelSpiritDeck에 영감을 받아, 카드 한 장에 셰이더 하나씩 만들며 공부한 프로젝트입니다.
+  도형에서 패턴으로, 패턴에서 노이즈로.
+  SDF(Signed Distance Field)가 어떻게 동작하는지 이해하기 위해 도전한 프로젝트입니다.
 links:
   - label: GitHub — sdf-playground
     href: https://github.com/ryuhajin/sdf-playground
@@ -24,15 +24,13 @@ links:
 
 <Section title="Overview" align="body">
 
-처음은 카드 5장과 카드를 넘겨 보는 덱에서 시작했고,<br />점차 노이즈 지형과 3D 레이마칭까지 13장으로 늘어났습니다.
+도형 그리기, 도형 합치기, 좌표 반복 같은 기법을 익히고, 익힌 기법을 카드 한 장에 하나씩 담아 실험했습니다. 기법은 The Book of Shaders를 보며 배웠습니다.
 
 **주요 기능**
 
-- 카드 한 장에 픽셀 셰이더 하나, 모두 13장 (2D 패턴 11장, 3D 레이마칭 2장)
-- 좌우로 넘겨 보는 coverflow 덱, 가운데 온 카드만 처음부터 재생
-- 셰이더 파일을 저장하면 바로 다시 컴파일되는 핫 리로드 (실패하면 이전 화면 유지 + 오류 창)
-- 도형·연산·좌표 변환·마스크·색으로 나눈 HLSL 함수 라이브러리
-- ImGui 패널로 일부 카드의 값·위치·색 조절, 카드별 설정 저장
+- 카드 한 장에 픽셀 셰이더 하나, 현재 13장까지 구현
+- 좌우로 넘겨 볼 수 있는 형식, 가운데 카드만 재생
+- 도형 · 연산 · 좌표 변환 · 마스크 · 색으로 나눈 HLSL 함수 라이브러리
 
 <Fragment slot="media">
   <Block caption="시연 영상 · 카드 13장">
@@ -46,127 +44,94 @@ links:
 SDF를 카드 단위로 나눠, 하나씩 익혀 보는 것을 목표로 했습니다.
 
 - **SDF 함수 조합 익히기**<br />도형을 거리 함수로 정의하고, 합치고 빼고 반복하며 무늬를 만들어 보기.
-- **바로 보고 바로 고치기**<br />셰이더를 저장하면 앱을 끄지 않고 바로 결과를 확인하기.
-- **여러 실험을 나란히 비교하기**<br />카드를 좌우로 넘기며 서로 다른 셰이더를 한 화면에서 비교하기.
+- **경계를 매끄럽게 다루기**<br />거리 값으로 경계를 부드럽게 처리하고, smooth min으로 두 도형이 녹듯이 이어지게 해 보기.
+- **노이즈로 불규칙함 더하기**<br />해시와 노이즈로 규칙적인 패턴에 무작위성과 움직임을 더해 보기.
 
 <Fragment slot="media">
-  <Figure src="/projects/sdfs/goals.webp" video="/projects/sdfs/goals.mp4" caption="10 Triangle Dissolve · 10초마다 타들어 갔다 다시 채워지는 카드" />
+  <Figure src="/projects/sdfs/goals.webp" video="/projects/sdfs/goals.mp4" caption="덱 넘기기 · 08 → 09 → 10 → 11" />
 </Fragment>
 </Section>
 
-<Section title="Challenges" align="body">
+<Section title="Challenges">
 
-셰이더 하나를 쓰는 것보다, 카드가 늘어나도 무너지지 않는 구조를 만드는 일이 더 어려웠습니다.
+<Fragment slot="lead">
 
-**라이브러리를 나누자 깨진 include**
+카드가 늘어날수록 셰이더보다 구조에서 문제가 생겼고, 도형을 움직일 때는 생각과 반대로 계산해야 했습니다.
 
-- **문제** — 함수 라이브러리를 여러 .hlsli 파일로 나누자, 라이브러리 안에서 다른 라이브러리를 불러오는 곳에서 컴파일이 실패했습니다(`error X1507: failed to open source file`).
-- **원인** — 기본 include 처리기는 카드 셰이더가 있는 폴더를 기준으로 파일을 찾아서, 라이브러리 폴더 안의 include를 찾지 못했습니다.
-- **해결** — 라이브러리 폴더 → 셰이더 폴더 → 카드 폴더 순서로 파일을 찾는 include 처리기를 직접 만들어 컴파일러에 넘겼습니다.
+</Fragment>
 
-**깜빡이는 카드**
+**include가 너무 많아진 작은 카드**
 
-- **문제** — 디버그 실행 중 일부 카드가 깜빡이고, 그릴 때마다 정점·픽셀 셰이더 연결 오류(ERROR #343)가 났습니다.
-- **원인** — 카드마다 픽셀 셰이더 입력을 따로 선언해서, 정점 셰이더가 내보낸 UV와 픽셀 셰이더가 받는 UV의 레지스터 위치가 어긋났습니다.
-- **해결** — 오류 메시지만 끄는 대신, 모든 카드가 같은 입력 구조체를 쓰도록 공용 헤더에 두고 카드는 main 함수만 작성하게 규칙을 정했습니다.
+- **문제** — 도형, 연산, 좌표 변환, 애니메이션 함수를 파일별로 나눠 두었더니, 작은 카드 한 장을 만들 때도 라이브러리 파일을 3~4개씩 불러와야 했습니다.
+- **원인** — 라이브러리를 기능 종류별로 잘게 나눠서, 카드 하나가 쓰는 함수가 여러 파일에 흩어져 있었습니다.
+- **해결** — 공통 헤더 하나만 불러오고, 그 카드에서만 쓰는 도형·패턴·노이즈 함수는 셰이더 안에 직접 작성했습니다.
 
-**버그가 아니었던 버그**
+<Fragment slot="aside">
 
-- **문제** — ±1 카드 간격을 줄이자, ±2 카드가 ±1 카드 위에 그려지는 것처럼 보였습니다.
-- **원인** — 그리는 순서는 맞았습니다. 간격 슬라이더의 near 값이 실제로는 ±1 카드의 거리라서, 값을 줄이면 ±1 카드가 가운데 카드 뒤로 들어가 가려진 것이었습니다.
-- **해결** — 슬라이더를 ±1과 ±2로 나눠 이름을 분명히 하고, 편집 중인 카드도 가운데 카드를 자동으로 따라가게 했습니다.
+**도형이 아니라 좌표를 움직이기**<br />
+SDF에서 움직이는 것은 도형이 아니라 좌표입니다. 이걸 몰랐을 때는 이동과 회전을 도형을 옮기는 순서대로 적용하다 결과가 계속 어긋났습니다. 좌표를 되돌린다고 생각하니, 변환을 역순으로 적용해야 하는 이유가 보였습니다.
 
-<Fragment slot="media">
-  <Block caption="처음 버전과 지금의 앱 · 탭으로 전환">
-    <Compare
-      steps={[
-        { src: '/projects/sdfs/app-2026-06.webp', label: '2026-06 · 카드 5장' },
-        { src: '/projects/sdfs/app-2026-10.webp', label: '2026-10 · 카드 13장' },
-      ]}
-    />
-  </Block>
-  <Figure src="/projects/sdfs/ui-coverflow.webp" caption="덱 간격 설정 · ±1과 ±2로 나눈 슬라이더" />
 </Fragment>
 </Section>
 
 <Section title="Shapes & Operators" align="body">
 
-**거리로 그리는 도형**<br />
-SDF는 한 점이 도형의 경계에서 얼마나 떨어져 있는지를 돌려주는 함수입니다. 안쪽은 음수, 바깥은 양수라서 값이 0인 곳이 곧 경계입니다. 이 값 하나로 면을 채우거나 외곽선만 그릴 수 있습니다.
+**처음 그린 도형**<br />
+SDF는 한 점에서 도형의 경계까지 거리를 돌려주는 함수입니다. 거리 함수 하나로 원과 사각형이 그려지는 게 처음에는 신기했습니다. 안쪽은 음수, 바깥은 양수라서 0인 곳만 칠하면 경계가 되고, 선만 따로 그릴 수도 있습니다.
 
-**합치고, 녹이고, 반복하기**<br />
-두 도형은 거리의 최솟값으로 합치고, 최댓값으로 겹친 부분만 남깁니다. 05번 카드는 최솟값 대신 smooth min을 써서, 두 원이 가까워질수록 경계가 녹듯이 이어집니다.
-좌표를 반복하거나 극좌표로 바꾸면 도형 하나로 줄무늬(01)와 동심원(03), 타일(04)을 만들 수 있습니다.
+**합치기와 녹이기**<br />
+두 도형의 거리 중 작은 값을 고르면 하나로 합쳐지고, 큰 값을 고르면 겹친 부분만 남습니다. 작은 값 대신 smooth min을 쓰자, 두 원이 가까워질수록 녹아 붙어 합쳐지는 형태가 됐습니다.
 
-**어느 크기에서나 매끈한 경계**<br />
-경계를 부드럽게 섞는 폭을 화면 픽셀 크기(fwidth)에 맞춰서, 카드가 커지거나 비스듬히 돌아가도 선이 같은 두께로 매끈하게 보이게 했습니다.
+**도형보다 좌표**<br />
+줄무늬, 동심원, 타일은 모두 도형을 늘린 게 아니라, 좌표를 반복하거나 극좌표로 바꾼 결과였습니다.
 
 <Fragment slot="media">
   <Grid cols={3} ratio="square">
-    <Figure src="/projects/sdfs/card-01.webp" caption="01 · 반복한 세로 줄" />
-    <Figure src="/projects/sdfs/card-02.webp" caption="02 · 거리로 커지는 점" />
-    <Figure src="/projects/sdfs/card-03.webp" caption="03 · 극좌표 동심원" />
-    <Figure src="/projects/sdfs/card-04.webp" caption="04 · 밀리는 타일" />
-    <Figure src="/projects/sdfs/card-05.webp" caption="05 · smooth min" />
-    <Figure src="/projects/sdfs/card-06.webp" caption="06 · 기준점 회전" />
+    <Figure src="/projects/sdfs/card-01.webp" caption="01 Repetition · 좌표 반복" />
+    <Figure src="/projects/sdfs/card-02.webp" caption="02 Dot Grid · 거리로 정한 점 크기" />
+    <Figure src="/projects/sdfs/card-03.webp" caption="03 Polar Rings · 극좌표" />
+    <Figure src="/projects/sdfs/card-04.webp" caption="04 Tiling · 타일 반복" />
+    <Figure src="/projects/sdfs/card-05.webp" caption="05 Smooth Union · smooth min" />
+    <Figure src="/projects/sdfs/card-06.webp" caption="06 Pivot & Rotation · 기준점 회전" />
   </Grid>
 </Fragment>
 </Section>
 
 <Section title="Patterns & Noise" align="body">
 
-**무작위로 뒤집는 타일**<br />
-07번 카드는 10×10 칸마다 해시로 0~3 중 하나를 뽑아, 대각 삼각형을 네 방향 중 하나로 뒤집습니다. 08번은 같은 방식으로 행마다 다른 속도를 뽑아, 화면이 계단식으로 밀리는 글리치를 만듭니다.
+**결정론적 난수**<br />
+좌표를 넣으면 늘 같은 값을 돌려주는 난수를 결정론적 난수, 또는 의사난수라고 부릅니다. 07번은 칸마다, 08번은 행마다 이 값을 뽑아 무늬와 글리치를 만들었습니다. 무작위처럼 보여도 같은 자리에서는 항상 같은 결과가 나온다는 점이 셰이더에서 랜덤을 쓰는 방식이었습니다.
 
-**노이즈로 만드는 불규칙함**<br />
-09번은 노이즈로 좌표를 비틀어 얼룩을 만들고, 10번은 시간까지 넣은 3D 노이즈로 삼각형이 타들어 가는 순서를 정합니다. 11번은 The Book of Shaders의 fBm 예제를 HLSL로 옮겨 등고선 지도로 그렸습니다.
+**무엇을 보간하느냐의 차이**<br />
+value noise와 gradient noise는 둘 다 격자 사이를 보간하지만, 보간하는 대상이 다릅니다. value noise는 꼭짓점의 값을, gradient noise는 꼭짓점의 방향을 섞습니다. 11번의 지형은 value noise로, 09번의 얼룩과 10번의 simplex noise는 gradient noise로 만들었습니다.
 
-- **문제** — 전체 화면용 GLSL 예제에는 가로 좌표에 화면 비율을 곱하는 보정이 들어 있고, 처음 옮긴 11번 카드에도 그대로 들어가 있었습니다. 정사각형 카드에서는 이 보정 때문에 도형이 옆으로 늘어납니다.
-- **해결** — 카드 좌표는 이미 정사각형이라 보정을 빼고, 예제를 옮길 때 지킬 규칙으로 카드 작성 문서에 남겼습니다.
+**노이즈를 쌓는 fBm**<br />
+fBm이 노이즈의 한 종류인 줄 알았는데, 실제로는 같은 노이즈를 크기를 바꿔 여러 겹 더하는 방법이었습니다. 11번 카드는 6겹을 쌓아 큰 흐름과 작은 굴곡을 함께 담았습니다.
 
 <Fragment slot="media">
   <Grid cols={3} ratio="square">
-    <Figure src="/projects/sdfs/card-07.webp" caption="07 · Truchet 타일" />
-    <Figure src="/projects/sdfs/card-08.webp" caption="08 · 글리치" />
-    <Figure src="/projects/sdfs/card-09.webp" caption="09 · 노이즈로 비튼 좌표" />
-    <Figure src="/projects/sdfs/card-10-full.webp" caption="10 · 채워진 상태" />
-    <Figure src="/projects/sdfs/card-10.webp" caption="10 · 타들어 가는 중" />
-    <Figure src="/projects/sdfs/card-11.webp" caption="11 · 등고선 지도" />
+    <Figure src="/projects/sdfs/card-07.webp" caption="07 Truchet · 결정론적 난수" />
+    <Figure src="/projects/sdfs/card-08.webp" caption="08 Glitch · 행마다 뽑은 난수" />
+    <Figure src="/projects/sdfs/card-09.webp" caption="09 Domain Warp · gradient noise" />
+    <Figure src="/projects/sdfs/card-10.webp" caption="10 Triangle Dissolve · simplex noise + fBm" />
+    <Figure src="/projects/sdfs/card-11.webp" caption="11 Topographic Map · value noise + fBm" />
   </Grid>
 </Fragment>
 </Section>
 
 <Section title="Into 3D" align="body">
 
-**구 안을 채운 Voronoi 볼륨**<br />
-12번 카드는 픽셀마다 광선을 쏘아, 먼저 구의 SDF로 광선이 구에 들어가고 나가는 지점을 찾습니다. 그 구간을 24번 나눠 3D Voronoi 밀도를 쌓아, 연기가 찬 것 같은 볼륨을 그립니다.
-카메라가 구 안에 있을 때는 입구를 카메라 위치로 두고, 거리의 부호를 뒤집어 안에서 바깥으로 출구를 찾게 했습니다. 카메라는 5초마다 구 안을 맴도는 시점과 앞뒤로 드나드는 시점을 오갑니다. 밀도는 Voronoi 특징점까지의 거리로 정한 값을 그대로 쌓은 것이라, 빛의 흡수와 산란을 엄밀하게 계산한 결과라기보다 보기 좋게 다듬은 누적에 가깝습니다.
+**거리만큼 나아가는 광선**<br />
+3D에서도 SDF의 원리는 같습니다. 13번 카드의 직육면체는 메시가 아니라 거리 함수로만 존재합니다. 픽셀마다 광선을 쏘고, 표면까지의 거리만큼 나아가길 반복해 거리가 거의 0이 되는 곳을 표면으로 봅니다. 노멀은 거리 함수의 기울기로 구하고, Lambert 조명을 더했습니다.
 
-**회전 순서를 눈으로 확인하기**<br />
-13번 카드는 직육면체에 월드축과 로컬축을 함께 그려, 회전 순서에 따라 결과가 어떻게 달라지는지 보는 카드입니다. 같은 각도라도 X → Y → Z와 Z → Y → X로 돌린 자세가 다릅니다. 자전과 공전까지 7단계로 나눠, 셰이더의 출력 줄을 바꿔 가며 확인합니다. 표면은 레이마칭으로 찾고, 거리 함수의 기울기로 구한 노멀에 Lambert 조명을 더했습니다.
+**표면 대신 쌓인 양을 보기**<br />
+13번 카드가 광선이 처음 닿는 표면 하나를 찾는다면, 12번 카드는 광선이 지나가는 길 전체를 읽습니다. 구 안을 24걸음으로 나눠 걸음마다 셀룰러 노이즈 값을 밀도로 바꿔 더하고, 쌓인 양을 그대로 밝기로 씁니다. 노이즈를 평면이 아니라 공간 안에서 읽으면, 같은 무늬도 깊이가 있는 볼륨이 됩니다.
 
 <Fragment slot="media">
   <Grid cols={2} ratio="wide">
-    <Figure src="/projects/sdfs/card-12.webp" caption="12 · 구 안을 맴도는 카메라" />
-    <Figure src="/projects/sdfs/card-12-forward.webp" caption="12 · 앞뒤로 드나드는 카메라" />
-    <Figure src="/projects/sdfs/card-13-xyz.webp" caption="13 · X → Y → Z 순서" />
-    <Figure src="/projects/sdfs/card-13-zyx.webp" caption="13 · 같은 각도, Z → Y → X 순서" />
+    <Figure src="/projects/sdfs/card-13-xyz.webp" caption="13 Raymarch 3D · 레이마칭" />
+    <Figure src="/projects/sdfs/card-12.webp" caption="12 Volumetric Voronoi · 셀룰러 노이즈 볼륨" />
   </Grid>
-</Fragment>
-</Section>
-
-<Section title="The Deck" align="body">
-
-**카드를 넘기는 덱**
-
-- **문제** — 처음에는 카드 위치를 식 하나로 보간해서, 가까운 ±1 카드가 가운데 카드와 겹쳐 가려졌습니다. 카드가 5장뿐일 때는 덱 끝에서 처음으로 넘어가는 카드가 한 프레임 만에 반대편으로 순간이동했습니다.
-- **해결** — 가운데에서 ±1까지, ±1에서 ±2까지 구간을 나눠 위치·각도·깊이·크기를 따로 보간하고, 범위를 벗어난 카드는 그리지 않았습니다. 넘기는 방향에 맞춰 기준 위치도 바꿔, 새 카드가 화면 밖에서 미끄러져 들어오게 했습니다.
-
-**가운데 온 카드만 처음부터**<br />
-카드마다 시간을 따로 두고, 가운데에 있는 카드의 시간만 흐르게 했습니다. 카드를 넘기면 새 카드는 0초부터 재생되고, 떠난 카드는 멈춥니다. 카드 셰이더는 이 시간 값 하나만 쓰면 됩니다.
-
-<Fragment slot="media">
-  <Figure src="/projects/sdfs/deck.webp" video="/projects/sdfs/deck.mp4" caption="덱 넘기기 · 07 → 08 → 09 → 08 → 07" />
 </Fragment>
 </Section>
 
@@ -174,30 +139,27 @@ SDF는 한 점이 도형의 경계에서 얼마나 떨어져 있는지를 돌려
 
 **배운 것**
 
-- **보이는 증상과 원인은 달랐습니다**<br />±2 카드가 위에 그려진다고 생각했지만, 실제로는 헷갈리는 슬라이더 이름 때문에 ±1 카드를 가운데 뒤로 밀어 넣은 것이었습니다.
-- **오류 메시지를 끄는 것은 해결이 아니었습니다**<br />연결 오류는 디버그 메시지만 막으면 보이지 않지만, 깜빡임은 그대로 남습니다. 그래서 모든 카드의 입력 구조를 하나로 맞췄습니다.
-- **정해 둔 규칙 덕분에 카드를 쉽게 늘릴 수 있었습니다**<br />공용 입력 구조, 카드별 시간, 정사각형 좌표처럼 한 번 정한 규칙을 결정 기록과 작성 문서로 남겨, 새 카드를 만들 때마다 기준으로 썼습니다.
-- **예제를 옮길 때는 좌표계부터 확인해야 했습니다**<br />전체 화면용 예제의 화면비 보정을 그대로 가져오면, 정사각형 카드에서는 도형이 늘어났습니다.
+- **라이브러리는 쓰는 단위로 나누기**<br />기능 종류별로 잘게 나눈 라이브러리는 작은 카드에도 include를 늘렸습니다. 여러 카드가 함께 쓰는 것만 공통 헤더에 두고, 한 카드에서만 쓰는 함수는 카드 안에 두는 편이 읽기 쉬웠습니다.
+- **랜덤도 고르는 것입니다**<br />결정론적 난수, value noise, gradient noise, fBm의 차이를 알고 나니, 만들고 싶은 무늬에 맞춰 무작위를 고를 수 있었습니다.
+- **작게 나눠야 끝까지 익힐 수 있었습니다**<br />개념 하나를 카드 한 장에 담으니, 한 장씩 완성하며 다음 개념으로 넘어갈 수 있었습니다.
 
 <Fragment slot="aside">
 
 **다음에 해 보고 싶은 것**
 
-- 카드마다 조절 값의 이름과 범위를 보여 주는 파라미터 라벨 달기
-- 패널 값이 모든 카드에 반영되도록 카드 셰이더 정리하기
-- 마우스로 덱을 끌어서 넘기기
-- 카드 계속 늘려 가기
+- 익힌 기법을 조합해 카드 계속 늘려 가기
+- 카드마다 조절할 수 있는 값 추가하기
 
 </Fragment>
 </Section>
 
 <Section title="References">
 
+- [The Book of Shaders](https://thebookofshaders.com/) — 도형, 랜덤, 노이즈, 셀룰러 노이즈, fBm까지 이 프로젝트의 기법 대부분을 이 책으로 배웠습니다
+- [PixelSpiritDeck](https://github.com/patriciogonzalezvivo/PixelSpiritDeck) — 셰이더 하나를 카드 한 장으로 정리하는 아이디어를 얻었습니다
 - [Inigo Quilez — 2D distance functions](https://iquilezles.org/articles/distfunctions2d/)
 - [Inigo Quilez — 3D distance functions](https://iquilezles.org/articles/distfunctions/)
 - [Inigo Quilez — Smooth minimum](https://iquilezles.org/articles/smin/)
-- [The Book of Shaders](https://thebookofshaders.com/) — 랜덤·노이즈·셀룰러·fBm 장, 11번 카드의 원본 예제
-- [PixelSpiritDeck](https://github.com/patriciogonzalezvivo/PixelSpiritDeck) — 이 프로젝트를 시작하게 된 계기
 - [Dear ImGui](https://github.com/ocornut/imgui)
 
 </Section>

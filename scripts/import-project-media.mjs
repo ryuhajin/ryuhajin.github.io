@@ -146,24 +146,16 @@ const manifest = {
 		// except the thin-line cards 03 and 11, which are 1x crops (a 2x downsample fades their one-pixel lines)
 		images: [
 			{ out: 'cover.webp', src: `${SHOTS}/sdf-hq/final/cover.png`, width: 2560, q: 88 },
-			{ out: 'goals.webp', src: `${SHOTS}/sdf-hq/final/goals-poster.png`, width: W.wide, q: 90 },
-			{ out: 'deck.webp', src: `${SHOTS}/sdf-hq/final/deck-poster.png`, width: W.wide, q: 90 },
-			// early app (2026-06-05 smoke test, desktop screenshot cropped to the app's client area) and the current app
-			{ out: 'app-2026-06.webp', src: `${SHOTS}/sdf-hq/app-2026-06.png`, q: 90 },
-			{ out: 'app-2026-10.webp', src: `${SHOTS}/sdf-hq/raw/ui-c05.png`, q: 92 },
-			// the coverflow tuning section of the panel (capture build opens it and folds Cards), with the deck behind it
-			{ out: 'ui-coverflow.webp', src: `${SHOTS}/sdf-hq/final/ui-coverflow.png`, q: 92 },
-			...['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '10-full', '11', '12', '12-forward', '13-xyz', '13-zyx'].map((n) => ({
+			{ out: 'goals.webp', src: `${SHOTS}/sdf-hq/final/goals-deck-poster.png`, width: W.wide, q: 90 },
+			...['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13-xyz'].map((n) => ({
 				out: `card-${n}.webp`,
 				src: `${SHOTS}/sdf-hq/final/card-${n}.png`,
 				q: 90,
 			})),
 		],
 		copies: [
-			// card 10 dissolve, 10 s loop (10.5 s rendered, last 0.5 s faded into the first), 3840×2160 → 1920, CRF 18
-			{ out: 'goals.mp4', src: `${SHOTS}/sdf-hq/goals-card10-master.mp4` },
-			// the deck sliding 07 → 08 → 09 → 08 → 07 (7 s, ends on its first frame), 3840×2160 → 1920, CRF 18
-			{ out: 'deck.mp4', src: `${SHOTS}/sdf-hq/deck-slide-master.mp4` },
+			// the deck sliding 08 → 09 → 10 → 11 (6.7 s rendered, last 0.6 s faded into the first), 3840×2160 → 1920, CRF 18
+			{ out: 'goals.mp4', src: `${SHOTS}/sdf-hq/goals-deck-08-11-master.mp4` },
 		],
 	},
 	// renderer-direct captures from the toon-capture worktree (5120×2880, see shots/toon-hq): hero and loop are 16:9

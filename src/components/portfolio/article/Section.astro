@@ -1,7 +1,8 @@
 ---
 // One topic of a project page as a full-width band: text on the left, pictures on the right (slot "media"), and an
 // optional full-band row underneath (slot "wide"). Slot "aside" puts a second text column on the right instead of
-// pictures. `align="body"` starts the pictures level with the body text rather than with the heading. Bands
+// pictures. Slot "lead" puts an opening line under the heading, so the right column starts level with the body that
+// follows it. `align="body"` starts the pictures level with the body text rather than with the heading. Bands
 // alternate their background so the page reads as a stack of chapters. Numbering comes from a CSS counter in
 // projects/[slug].astro.
 interface Props {
@@ -18,12 +19,20 @@ const lines = title.split('\n');
 const media = Astro.slots.has('media');
 const aside = Astro.slots.has('aside');
 const wide = Astro.slots.has('wide');
+const lead = Astro.slots.has('lead');
 ---
 
 <section class="sec" id={id}>
 	<div class:list={['sec-in', { 'has-media': media, 'has-aside': aside, 'align-body': align === 'body' }]}>
 		<div class="sec-head">
 			<h2>{lines.map((l, i) => (i ? <><br />{l}</> : l))}</h2>
+			{
+				lead && (
+					<div class="sec-lead">
+						<slot name="lead" />
+					</div>
+				)
+			}
 		</div>
 		<div class="sec-text">
 			<slot />
@@ -79,6 +88,12 @@ const wide = Astro.slots.has('wide');
 	}
 	.sec-head :global(h2) {
 		margin-bottom: 1.1rem;
+	}
+	.sec-lead {
+		margin-bottom: 1.1rem;
+	}
+	.sec-lead :global(> *) {
+		margin: 0;
 	}
 	.sec-in.has-media,
 	.sec-in.has-aside {
