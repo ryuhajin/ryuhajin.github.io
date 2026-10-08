@@ -15,6 +15,7 @@ interface Props {
 const { steps, slider = false } = Astro.props;
 const after = steps[steps.length - 1];
 const befores = slider ? steps.slice(0, -1) : steps;
+const showSteps = befores.length > 1;
 ---
 
 <div class:list={['cmp', { 'is-slider': slider }]} data-compare style="--pos: 50%">
@@ -28,15 +29,19 @@ const befores = slider ? steps.slice(0, -1) : steps;
 		{
 			slider && (
 				<>
-					<span class="tag mono tag-b" data-before-label>{befores[0].label}</span>
-					<span class="tag mono tag-a">{after.label}</span>
-					<span class="divider" aria-hidden="true" />
+					<span class="tag tag-b" data-before-label>{befores[0].label}</span>
+					<span class="tag tag-a">{after.label}</span>
+					<span class="divider" aria-hidden="true">
+						<svg class="grip" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="m9 6-6 6 6 6M15 6l6 6-6 6" />
+						</svg>
+					</span>
 					<input class="range" type="range" min="0" max="100" value="50" aria-label="비교 위치 (왼쪽: 이전, 오른쪽: 이후)" />
 				</>
 			)
 		}
 	</div>
-	<div class="steps" role="tablist" aria-label={slider ? '비교할 이전 단계' : '단계'}>
+	<div class="steps" hidden={!showSteps} role="tablist" aria-label={slider ? '비교할 이전 단계' : '단계'}>
 		{
 			befores.map((s, i) => (
 				<button type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-go={i}>
@@ -46,7 +51,7 @@ const befores = slider ? steps.slice(0, -1) : steps;
 			))
 		}
 	</div>
-	<p class="step-note" data-step-note aria-live="polite">{befores[0].note}</p>
+	{showSteps || befores[0].note ? <p class="step-note" data-step-note aria-live="polite">{befores[0].note}</p> : null}
 </div>
 
 <script>
@@ -109,31 +114,34 @@ const befores = slider ? steps.slice(0, -1) : steps;
 	.is-slider .layer {
 		clip-path: inset(0 calc(100% - var(--pos)) 0 0);
 	}
+	/* the after image only covers its own side: under the before layer its edge pixels bled through as a 1px line */
+	.is-slider .after {
+		clip-path: inset(0 0 0 var(--pos));
+	}
 	.divider {
 		position: absolute;
 		top: 0;
 		bottom: 0;
 		left: var(--pos);
-		width: 2px;
-		translate: -1px 0;
-		background: #fff;
-		box-shadow: 0 0 12px #0008;
+		width: 1px;
+		background: #fffd;
+		box-shadow: 0 0 10px #0006;
 		pointer-events: none;
 	}
-	.divider::after {
-		content: '⟷';
+	.grip {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		translate: -50% -50%;
-		display: grid;
-		place-items: center;
-		width: 2.4rem;
-		height: 2.4rem;
+		box-sizing: content-box;
+		padding: 0.55rem;
 		border-radius: 50%;
-		background: #fff;
-		color: #111;
-		font-size: 1rem;
+		background: #0b0b0e99;
+		border: 1px solid #fff4;
+		color: #fff;
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		box-shadow: 0 4px 16px #0005;
 	}
 	.range {
 		position: absolute;
@@ -144,19 +152,26 @@ const befores = slider ? steps.slice(0, -1) : steps;
 		opacity: 0;
 		cursor: ew-resize;
 	}
-	.range:focus-visible ~ .divider,
-	.stage:has(.range:focus-visible) .divider {
-		background: var(--accent);
+	.stage:has(.range:focus-visible) .grip {
+		border-color: var(--accent);
 	}
+	/* labels sit on the picture: frosted pill, UI font */
 	.tag {
 		position: absolute;
 		top: 0.75rem;
-		padding: 0.2rem 0.5rem;
-		border-radius: 4px;
-		background: #000a;
-		color: #fff;
-		font-size: 0.7rem;
 		z-index: 1;
+		padding: 0.3rem 0.7rem;
+		border-radius: 999px;
+		background: #0b0b0e80;
+		border: 1px solid #fff2;
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		color: #fff;
+		font-family: var(--font-ui, var(--sans));
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: -0.005em;
+		line-height: 1.4;
 		pointer-events: none;
 	}
 	.tag-b {
@@ -164,6 +179,9 @@ const befores = slider ? steps.slice(0, -1) : steps;
 	}
 	.tag-a {
 		right: 0.75rem;
+	}
+	.steps[hidden] {
+		display: none;
 	}
 	.steps {
 		display: flex;

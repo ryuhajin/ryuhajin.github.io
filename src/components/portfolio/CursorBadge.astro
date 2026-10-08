@@ -86,6 +86,19 @@ const texts = {
 			opacity var(--t-micro),
 			rotate var(--t-fast) var(--ease-out);
 	}
+	/* over screenshots the badge sits on the picture itself, so it shrinks to 0.8 to cover less of it */
+	.cursor-badge[data-mode='zoom'] {
+		width: 4.32rem;
+		height: 4.32rem;
+	}
+	.cursor-badge[data-mode='zoom'] .core {
+		width: 1.68rem;
+		height: 1.68rem;
+	}
+	.cursor-badge[data-mode='zoom'] .core svg {
+		width: 0.76rem;
+		height: 0.76rem;
+	}
 	.cursor-badge[data-mode='view'] .i-zoom,
 	.cursor-badge[data-mode='zoom'] .i-view {
 		opacity: 0;

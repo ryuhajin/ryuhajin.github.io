@@ -1,0 +1,190 @@
+---
+// Presets side by side (Water Presets): per preset a large shot over smaller ones, colour swatches, spec lines and a
+// short note. The shots open in the page's shared lightbox like Gallery tiles (scripts/portfolio/lightbox.ts).
+interface Shot {
+	src: string;
+	label?: string;
+	note?: string;
+}
+interface Preset {
+	title: string;
+	sub?: string;
+	images: Shot[];
+	swatches?: { colors: string[]; label: string };
+	specs: { label: string; value: string }[];
+	body?: string;
+}
+interface Props {
+	items: Preset[];
+}
+const { items } = Astro.props;
+---
+
+<div class="presets" style={`--n: ${items.length}`}>
+	{
+		items.map((p, i) => (
+			<article style={`--i: ${i}`}>
+				<h3>
+					{p.title}
+					{p.sub && <span class="psub">{p.sub}</span>}
+				</h3>
+				<div class="shots">
+					{p.images.map((im, j) => (
+						<button
+							type="button"
+							class:list={['tile', { main: j === 0 }]}
+							data-cursor="zoom"
+							data-lightbox={im.src}
+							data-caption={[`${p.title}${im.label ? ` · ${im.label}` : ''}`, im.note].filter(Boolean).join(' — ')}
+						>
+							<img src={im.src} alt={`${p.title}${im.label ? ` — ${im.label}` : ''}`} loading="lazy" decoding="async" />
+						</button>
+					))}
+				</div>
+				{p.swatches && (
+					<p class="swatches">
+						{p.swatches.colors.map((c) => (
+							<span class="sw" style={`background: ${c}`} title={c} />
+						))}
+						<span class="sw-label">{p.swatches.label}</span>
+					</p>
+				)}
+				{p.specs.length > 0 && (
+					<dl class="pspecs">
+						{p.specs.map((sp) => (
+							<div>
+								<dt class="mono">{sp.label}</dt>
+								<dd>{sp.value}</dd>
+							</div>
+						))}
+					</dl>
+				)}
+				{p.body && <p class="pbody">{p.body}</p>}
+			</article>
+		))
+	}
+</div>
+
+<style>
+	.presets {
+		display: grid;
+		grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+		gap: clamp(1rem, 2vw, 1.75rem);
+	}
+	article {
+		display: grid;
+		align-content: start;
+		gap: 0.7rem;
+		transition:
+			opacity 420ms var(--ease),
+			transform 520ms var(--ease-out);
+		transition-delay: calc(var(--i, 0) * 60ms);
+	}
+	:global(.s:not(.is-active)) article {
+		opacity: 0;
+		transform: translateY(24px);
+		transition-delay: 0ms;
+	}
+	h3 {
+		margin: 0;
+		font-size: 1.05rem;
+		letter-spacing: -0.01em;
+	}
+	.psub {
+		margin-left: 0.5rem;
+		color: var(--fg-2);
+		font-size: 0.8rem;
+		font-weight: 400;
+	}
+	.shots {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.4rem;
+	}
+	.tile {
+		all: unset;
+		display: block;
+		aspect-ratio: 16 / 9;
+		cursor: zoom-in;
+		border-radius: 8px;
+		overflow: hidden;
+		border: 1px solid var(--line-2);
+		background: var(--bg-3);
+		/* hover outline = 1px border + 2px ring → 3px, same as Gallery tiles */
+		box-shadow: 0 0 0 0 var(--accent-p, var(--accent));
+		transition:
+			border-color var(--t-fast) var(--ease),
+			box-shadow var(--t-fast) var(--ease),
+			translate var(--t-fast) var(--ease-out);
+	}
+	.tile.main {
+		grid-column: 1 / -1;
+		aspect-ratio: 4 / 3;
+	}
+	.tile:hover,
+	.tile:focus-visible {
+		border-color: var(--accent-p, var(--accent));
+		box-shadow: 0 0 0 2px var(--accent-p, var(--accent));
+		translate: 0 -3px;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.tile {
+			cursor: none;
+		}
+	}
+	.tile img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.swatches {
+		margin: 0;
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		font-size: 0.75rem;
+		color: var(--fg-2);
+	}
+	.sw {
+		width: 1.1rem;
+		height: 1.1rem;
+		border-radius: 3px;
+		border: 1px solid var(--line-2);
+	}
+	.sw-label {
+		margin-left: 0.4rem;
+	}
+	.pspecs {
+		margin: 0;
+		display: grid;
+		gap: 0.25rem;
+		font-size: 0.78rem;
+		line-height: 1.5;
+	}
+	.pspecs div {
+		display: grid;
+		grid-template-columns: 4.5rem 1fr;
+		gap: 0.5rem;
+	}
+	.pspecs dt {
+		color: var(--fg);
+	}
+	.pspecs dd {
+		margin: 0;
+		color: var(--fg-2);
+	}
+	.pbody {
+		margin: 0;
+		padding-top: 0.6rem;
+		border-top: 1px solid var(--line-2);
+		color: var(--fg-2);
+		font-size: 0.82rem;
+		line-height: 1.65;
+	}
+	@media (max-width: 900px) {
+		.presets {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

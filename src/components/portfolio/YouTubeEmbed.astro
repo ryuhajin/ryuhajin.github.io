@@ -12,9 +12,12 @@ const { id, poster, title } = Astro.props;
 <div class="yt" data-yt={id} data-title={title}>
 	<img src={poster} alt="" loading="lazy" decoding="async" />
 	<button type="button" class="play" aria-label={`${title} 영상 재생 (YouTube)`}>
-		<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"></path></svg>
+		<span class="disc">
+			<!-- centroid at x 12.3: a hair right of the circle centre, where a triangle looks centred -->
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.3 6.8v10.4l9-5.2z"></path></svg>
+		</span>
 	</button>
-	<a class="mono out" href={`https://youtu.be/${id}`} target="_blank" rel="noopener">YouTube에서 보기 ↗</a>
+	<a class="out" href={`https://youtu.be/${id}`} target="_blank" rel="noopener">YouTube에서 보기 ↗</a>
 </div>
 
 <script>
@@ -68,20 +71,47 @@ const { id, poster, title } = Astro.props;
 		place-items: center;
 		cursor: pointer;
 	}
-	.play svg {
-		width: 4.5rem;
-		height: 4.5rem;
-		padding: 1.1rem 1rem 1.1rem 1.3rem;
+	/* frosted glass disc; turns solid white with a dark triangle on hover */
+	.disc {
+		display: grid;
+		place-items: center;
+		width: 4.25rem;
+		aspect-ratio: 1;
 		border-radius: 50%;
-		fill: var(--bg);
-		background: var(--fg);
-		transition: scale var(--t-fast) var(--ease-out);
+		background: rgb(255 255 255 / 0.16);
+		border: 1px solid rgb(255 255 255 / 0.38);
+		backdrop-filter: blur(10px) saturate(1.4);
+		-webkit-backdrop-filter: blur(10px) saturate(1.4);
+		box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.6);
+		transition:
+			background var(--t-fast) var(--ease),
+			border-color var(--t-fast) var(--ease),
+			scale var(--t-fast) var(--ease-out);
 	}
-	.play:hover svg,
-	.play:focus-visible svg {
-		scale: 1.1;
+	.disc svg {
+		width: 1.75rem;
+		height: 1.75rem;
+		fill: #fff;
+		/* the stroke rounds the corners without moving the centroid */
+		stroke: #fff;
+		stroke-width: 1.6;
+		stroke-linejoin: round;
+		transition:
+			fill var(--t-fast) var(--ease),
+			stroke var(--t-fast) var(--ease);
 	}
-	.play:focus-visible svg {
+	.play:hover .disc,
+	.play:focus-visible .disc {
+		background: #fff;
+		border-color: #fff;
+		scale: 1.06;
+	}
+	.play:hover .disc svg,
+	.play:focus-visible .disc svg {
+		fill: #0b0b0d;
+		stroke: #0b0b0d;
+	}
+	.play:focus-visible .disc {
 		outline: 2px solid var(--accent);
 		outline-offset: 4px;
 	}
@@ -90,7 +120,11 @@ const { id, poster, title } = Astro.props;
 		right: 0.9rem;
 		bottom: 0.75rem;
 		color: #fff;
-		font-size: 0.75rem;
+		/* Pretendard, not the mono face: the mono font has no Hangul, so "에서 보기" fell back to a thin system font */
+		font-family: var(--sans);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.01em;
 		text-shadow: 0 1px 6px #000;
 	}
 </style>

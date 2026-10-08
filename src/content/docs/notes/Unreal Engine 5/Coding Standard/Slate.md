@@ -36,7 +36,7 @@ sidebar:
 - Slate 렌더러가 DrawElement를 실제 GPU로 렌더링
 
 ## 슬레이트 다이어그램
-![](/images/SlateAhc.png)
+![](/images/SlateAhc.webp)
 
 ### 클래스 관계
 - FSlateApplication → SWindow: 여러 윈도우(에디터 창 등)를 관리

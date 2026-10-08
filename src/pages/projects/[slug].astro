@@ -1,12 +1,19 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PortfolioLayout from '../../layouts/PortfolioLayout.astro';
 import ProjectMedia from '../../components/portfolio/ProjectMedia.astro';
-import YouTubeEmbed from '../../components/portfolio/YouTubeEmbed.astro';
-import Gallery from '../../components/portfolio/Gallery.astro';
-import CompareView from '../../components/portfolio/CompareView.astro';
-import Flipbook from '../../components/portfolio/Flipbook.astro';
 import CursorBadge from '../../components/portfolio/CursorBadge.astro';
+import 'katex/dist/katex.min.css';
+// blocks the project .mdx bodies use without importing them
+import Figure from '../../components/portfolio/article/Figure.astro';
+import Grid from '../../components/portfolio/article/Grid.astro';
+import Stats from '../../components/portfolio/article/Stats.astro';
+import Block from '../../components/portfolio/article/Block.astro';
+import Section from '../../components/portfolio/article/Section.astro';
+import YouTube from '../../components/portfolio/YouTubeEmbed.astro';
+import Compare from '../../components/portfolio/CompareView.astro';
+import Flipbook from '../../components/portfolio/Flipbook.astro';
+import PresetCards from '../../components/portfolio/PresetCards.astro';
 
 export async function getStaticPaths() {
 	const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -24,312 +31,79 @@ interface Props {
 
 const { project, index, next } = Astro.props;
 const d = project.data;
+const { Content } = await render(project);
 const pad = (n: number) => String(n).padStart(2, '0');
-
-// One snap screen per entry; sections without data are left out, and the side dots follow this list.
-type Section =
-	| { kind: 'hero' | 'overview' | 'video' | 'techniques' | 'motion' | 'compare' | 'architecture' | 'problems' | 'decisions' | 'next'; label: string }
-	| { kind: 'gallery'; label: string; gallery: (typeof d.galleries)[number] };
-const sections: Section[] = [
-	{ kind: 'hero', label: 'Intro' },
-	{ kind: 'overview', label: 'Overview' },
-	...(d.video ? [{ kind: 'video', label: 'Video' } as const] : []),
-	...(d.techniques.length ? [{ kind: 'techniques', label: 'Techniques' } as const] : []),
-	...d.galleries.map((g) => ({ kind: 'gallery', label: g.title, gallery: g }) as const),
-	...(d.motion.length ? [{ kind: 'motion', label: 'In motion' } as const] : []),
-	...(d.compare ? [{ kind: 'compare', label: d.compare.title } as const] : []),
-	...(d.architecture ? [{ kind: 'architecture', label: 'Architecture' } as const] : []),
-	...(d.problems.length ? [{ kind: 'problems', label: 'Problem solving' } as const] : []),
-	...(d.decisions.length || d.limitations.length ? [{ kind: 'decisions', label: d.decisions.length ? 'Decisions' : 'Next' } as const] : []),
-	{ kind: 'next', label: 'Links' },
-];
-// "01 — Overview" style numbering for every screen after the hero
-const num = (s: Section) => pad(sections.indexOf(s));
-const videoPoster = d.video?.poster ?? d.cover.poster;
+const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', rel: 'noopener' } : {});
 ---
 
 <PortfolioLayout title={d.title} description={d.tagline} current="projects">
-	<main class="snap" data-snap style={`--accent-p: ${d.accent}`}>
-		{
-			sections.map((s) => {
-				switch (s.kind) {
-					case 'hero':
-						return (
-							<section class="s hero" data-snap-section>
-								<ProjectMedia class="hero-media" poster={d.cover.poster} video={d.cover.video} alt={d.cover.alt} autoplay eager vtName={`media-${project.id}`} />
-								<div class="hero-shade" aria-hidden="true" />
-								<div class="hero-copy">
-									<p class="mono eyebrow">
-										<span>P/{pad(index + 1)} · {d.group} · {d.year}</span>
-										{d.status && <span class="status">{d.status}</span>}
-										{d.sample && <span class="sample-badge">sample content</span>}
-									</p>
-									<h1 style={`view-transition-name: title-${project.id}`}>{d.title}</h1>
-									<p class="tagline">{d.tagline}</p>
-								</div>
-								<p class="mono scroll-hint">scroll · ↑↓ keys</p>
-							</section>
-						);
-					case 'overview':
-						return (
-							<section class="s overview" data-snap-section>
-								<div class="wrap two">
-									<div>
-										<p class="mono label">{num(s)} — Project goal</p>
-										<p class="lead">{d.overview}</p>
-										{d.highlights.length > 0 && (
-											<>
-												<p class="mono label sub">Key features</p>
-												<ul class="highlights">
-													{d.highlights.map((h) => (
-														<li>{h}</li>
-													))}
-												</ul>
-											</>
-										)}
-									</div>
-									<dl class="facts">
-										<div>
-											<dt class="mono">Year</dt>
-											<dd>{d.year}</dd>
-										</div>
-										<div>
-											<dt class="mono">Role</dt>
-											<dd>{d.role}</dd>
-										</div>
-										{d.team && (
-											<div>
-												<dt class="mono">Team</dt>
-												<dd>{d.team}</dd>
-											</div>
-										)}
-										<div>
-											<dt class="mono">Stack</dt>
-											<dd class="chips">
-												{d.stack.map((st) => (
-													<span class="chip">{st}</span>
-												))}
-											</dd>
-										</div>
-										{d.specs.map((sp) => (
-											<div>
-												<dt class="mono">{sp.label}</dt>
-												<dd>{sp.value}</dd>
-											</div>
-										))}
-									</dl>
-								</div>
-							</section>
-						);
-					case 'video':
-						return (
-							<section class="s video" data-snap-section>
-								<div class="wrap">
-									<p class="mono label">{num(s)} — Video</p>
-									<div class="video-box">
-										<YouTubeEmbed id={d.video!.youtube} poster={videoPoster} title={d.video!.title ?? `${d.title} 시연 영상`} />
-									</div>
-								</div>
-							</section>
-						);
-					case 'techniques':
-						return (
-							<section class="s techniques" data-snap-section>
-								<div class="wrap">
-									<p class="mono label">{num(s)} — Techniques</p>
-									<h2>핵심 기법</h2>
-									<div class="tech" style={`--n: ${d.techniques.length > 4 ? 3 : Math.min(d.techniques.length, 2)}`}>
-										{d.techniques.map((t, i) => (
-											<article style={`--i: ${i}`}>
-												<h3>
-													{t.title}
-													{t.sub && <span class="tsub">{t.sub}</span>}
-												</h3>
-												<p>{t.body}</p>
-												{t.formula && <pre class="formula"><code>{t.formula}</code></pre>}
-											</article>
-										))}
-									</div>
-								</div>
-							</section>
-						);
-					case 'gallery':
-						return (
-							<section class="s gallery-s" data-snap-section>
-								<div class="wrap">
-									<p class="mono label">
-										{num(s)} — {s.gallery.kicker ?? 'Gallery'}
-									</p>
-									<h2>{s.gallery.title}</h2>
-									<Gallery items={s.gallery.items} cols={s.gallery.cols} ratio={s.gallery.ratio} />
-									{s.gallery.caption && <p class="caption">{s.gallery.caption}</p>}
-								</div>
-							</section>
-						);
-					case 'motion':
-						return (
-							<section class="s motion" data-snap-section>
-								<div class="wrap">
-									<p class="mono label">{num(s)} — In motion</p>
-									<h2>움직임으로 보기</h2>
-									<div class="flips" style={`--n: ${d.motion.length}`}>
-										{d.motion.map((m, i) => (
-											<article style={`--i: ${i}`}>
-												<Flipbook sprite={m.sprite} frames={m.frames} label={m.title} />
-												<h3>{m.title}</h3>
-												<p>{m.body}</p>
-												{m.formula && <pre class="formula"><code>{m.formula}</code></pre>}
-											</article>
-										))}
-									</div>
-								</div>
-							</section>
-						);
-					case 'compare':
-						return (
-							<section class="s compare" data-snap-section>
-								<div class="wrap">
-									<p class="mono label">
-										{num(s)} — {d.compare!.kicker ?? 'Before / After'}
-									</p>
-									<h2>{d.compare!.title}</h2>
-									<CompareView steps={d.compare!.steps} slider={d.compare!.slider} />
-									{d.compare!.caption && <p class="caption">{d.compare!.caption}</p>}
-								</div>
-							</section>
-						);
-					case 'architecture':
-						return (
-							<section class="s arch" data-snap-section>
-								<div class="wrap">
-									<p class="mono label">{num(s)} — Architecture</p>
-									<h2>{d.architecture!.caption ?? 'Architecture'}</h2>
-									{d.architecture!.image && <img class="arch-img" src={d.architecture!.image} alt={d.architecture!.caption ?? ''} loading="lazy" />}
-									<ol class="flow">
-										{d.architecture!.points.map((pt, i) => {
-											const [head, ...rest] = pt.split(' — ');
-											return (
-												<li style={`--i: ${i}`}>
-													<span class="mono step">{pad(i + 1)}</span>
-													<strong>{rest.length ? head : `Step ${i + 1}`}</strong>
-													<p>{rest.length ? rest.join(' — ') : head}</p>
-												</li>
-											);
-										})}
-									</ol>
-								</div>
-							</section>
-						);
-					case 'problems':
-						return (
-							<section class="s problems" data-snap-section>
-								<div class="wrap">
-									<p class="mono label">{num(s)} — Problem solving</p>
-									<h2>문제와 해결</h2>
-									<div class="cards" style={`--n: ${Math.min(d.problems.length, 3)}`}>
-										{d.problems.map((pb, i) => (
-											<article style={`--i: ${i}`}>
-												<h3>{pb.title}</h3>
-												<dl>
-													<dt class="mono">Problem</dt>
-													<dd>{pb.problem}</dd>
-													<dt class="mono">Approach</dt>
-													<dd>{pb.approach}</dd>
-													<dt class="mono ok">Result</dt>
-													<dd>{pb.result}</dd>
-												</dl>
-											</article>
-										))}
-									</div>
-								</div>
-							</section>
-						);
-					case 'decisions':
-						return (
-							<section class="s decisions" data-snap-section>
-								<div class="wrap">
-									{d.decisions.length > 0 && (
-										<>
-											<p class="mono label">{num(s)} — Technical decisions</p>
-											<h2>기술적 의사결정</h2>
-											<ol class="adr">
-												{d.decisions.map((dc, i) => (
-													<li style={`--i: ${i}`}>
-														<span class="mono step">D{pad(i + 1)}</span>
-														<div>
-															<h3>{dc.choice}</h3>
-															<p>
-																<span class="mono">why</span> {dc.why}
-															</p>
-															{dc.tradeoff && (
-																<p class="trade">
-																	<span class="mono">trade-off</span> {dc.tradeoff}
-																</p>
-															)}
-														</div>
-													</li>
-												))}
-											</ol>
-										</>
-									)}
-									{d.limitations.length > 0 && (
-										<div class="limits">
-											<p class="mono label">{d.decisions.length ? 'Limitations & next' : `${num(s)} — Limitations & next`}</p>
-											{!d.decisions.length && <h2>한계와 다음 단계</h2>}
-											<ul class="highlights">
-												{d.limitations.map((l) => (
-													<li>{l}</li>
-												))}
-											</ul>
-										</div>
-									)}
-								</div>
-							</section>
-						);
-					case 'next':
-						return (
-							<section class="s next" data-snap-section>
-								<div class="wrap two">
-									<div>
-										<p class="mono label">{num(s)} — Links</p>
-										<ul class="links">
-											{d.links.map((l) => (
-												<li>
-													<a href={l.href} {...(/^https?:/.test(l.href) ? { target: '_blank', rel: 'noopener' } : {})}>
-														{l.label} <span aria-hidden="true">↗</span>
-													</a>
-												</li>
-											))}
-											<li>
-												<a href="/projects/">
-													All projects <span aria-hidden="true">←</span>
-												</a>
-											</li>
-										</ul>
-									</div>
-									<a href={`/projects/${next.id}/`} class="next-card" data-hover-card style={`--accent-n: ${next.data.accent}`}>
-										<span class="mono">Next project →</span>
-										<ProjectMedia class="next-media" poster={next.data.cover.poster} video={next.data.cover.video} alt={next.data.cover.alt} />
-										<strong>{next.data.title}</strong>
-									</a>
-								</div>
-							</section>
-						);
-				}
-			})
-		}
-	</main>
+	<main class="article" style={`--accent-p: ${d.accent}`}>
+		<header class="hero" aria-hidden="true">
+			<div class="hero-img" data-parallax>
+				<ProjectMedia class="media" poster={d.cover.poster} alt={d.cover.alt} eager vtName={`media-${project.id}`} />
+			</div>
+		</header>
+		<section class="intro">
+			<div class="intro-in">
+				<p class="mono eyebrow">
+					<span>
+						P/{pad(index + 1)} · {d.group} · {d.year}
+					</span>
+					{d.status && <span class="status">{d.status}</span>}
+					{d.sample && <span class="sample-badge">sample content</span>}
+				</p>
+				<h1 style={`view-transition-name: title-${project.id}`}>{d.title}</h1>
+			<div class="under">
+				<p class="lead">{d.overview}</p>
+				<dl class="meta mono">
+					<div>
+						<dt>Role</dt>
+						<dd>{d.role}</dd>
+					</div>
+					{
+						d.team && (
+							<div>
+								<dt>Team</dt>
+								<dd>{d.team}</dd>
+							</div>
+						)
+					}
+					<div>
+						<dt>Stack</dt>
+						<dd>{d.stack.join(' · ')}</dd>
+					</div>
+					{
+						d.links.length > 0 && (
+							<div>
+								<dt>Links</dt>
+								<dd class="links">
+									{d.links.map((l) => (
+										<a href={l.href} {...external(l.href)}>
+											{l.label.split(' — ')[0]} ↗
+										</a>
+									))}
+								</dd>
+							</div>
+						)
+					}
+				</dl>
+				</div>
+			</div>
+		</section>
 
-	<nav class="dots" data-snap-nav aria-label="Sections" style={`--accent-p: ${d.accent}`}>
-		{
-			sections.map((s, i) => (
-				<button type="button" data-go={i} aria-label={s.label}>
-					<span class="dot-label mono">{s.label}</span>
-				</button>
-			))
-		}
-	</nav>
-	<p class="counter mono" data-snap-counter aria-live="polite"></p>
+		<article class="prose">
+			<Content components={{ Section, Figure, Grid, Stats, Block, YouTube, Compare, Flipbook, PresetCards }} />
+		</article>
+
+		<footer class="foot">
+			<a href="/projects/" class="mono back">← All projects</a>
+			<a href={`/projects/${next.id}/`} class="next-card" data-hover-card style={`--accent-n: ${next.data.accent}`}>
+				<span class="mono">Next project →</span>
+				<ProjectMedia class="next-media" poster={next.data.cover.poster} video={next.data.cover.video} alt={next.data.cover.alt} />
+				<strong>{next.data.title}</strong>
+			</a>
+		</footer>
+	</main>
 	<CursorBadge />
 
 	<dialog class="lightbox" data-lightbox-dialog aria-label="이미지 크게 보기">
@@ -347,304 +121,79 @@ const videoPoster = d.video?.poster ?? d.cover.poster;
 </PortfolioLayout>
 
 <script>
-	import { initSnapSections } from '../../scripts/portfolio/snap-sections';
 	import { initHoverMedia } from '../../scripts/portfolio/hover-media';
 	import { initLightbox } from '../../scripts/portfolio/lightbox';
-	initSnapSections();
 	initHoverMedia();
 	initLightbox();
+
+	// the cover drifts up slower than the page, so the page reads as scrolling down past it
+	const hero = document.querySelector<HTMLElement>('[data-parallax]');
+	if (hero && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		let raf = 0;
+		const update = () => {
+			raf = 0;
+			const y = Math.min(scrollY, innerHeight);
+			hero.style.transform = `translate3d(0, ${y * 0.6}px, 0)`;
+		};
+		addEventListener('scroll', () => (raf ||= requestAnimationFrame(update)), { passive: true });
+		update();
+	}
 </script>
 
 <style>
-	.snap {
-		height: 100dvh;
-		overflow-y: auto;
-		scroll-snap-type: y mandatory;
-		scrollbar-width: none;
-		overscroll-behavior: contain;
+	/* the portfolio side locks body scrolling (portfolio.css, screen-based pages); this page is a normal long read,
+	   so it gives the document scroll back — wheel, keys and scroll restoration all behave as usual */
+	:global(body:has(main.article)) {
+		overflow: auto;
 	}
-	.snap::-webkit-scrollbar {
-		display: none;
-	}
-	.s {
-		position: relative;
-		/* one screen per section; a screen whose content is taller (short windows) grows instead of clipping */
-		min-height: 100dvh;
-		scroll-snap-align: start;
-		scroll-snap-stop: always;
-		display: grid;
-		align-items: center;
-		padding: calc(var(--nav-h) + 1rem) calc(var(--pad) + 3rem) var(--pad) var(--pad);
-		overflow: hidden;
-	}
-	.wrap {
-		width: min(100%, 72rem);
-		margin-inline: auto;
-	}
-	.two {
-		display: grid;
-		grid-template-columns: 1.4fr 1fr;
-		gap: clamp(2rem, 6vw, 6rem);
-		align-items: start;
-	}
-	.label {
-		color: var(--accent-p);
-		margin: 0 0 1rem;
-	}
-	h2 {
-		margin: 0 0 clamp(1.25rem, 4vh, 2.5rem);
-		font-size: clamp(1.75rem, 4.5vh, 3rem);
-		font-family: var(--font-display);
-		font-weight: var(--display-weight);
-		letter-spacing: var(--display-tracking);
-		line-height: 1.1;
-	}
-	h3 {
-		margin: 0;
-		font-size: 1.05rem;
-		letter-spacing: -0.01em;
+	.article {
+		padding-bottom: clamp(3rem, 8vh, 5rem);
 	}
 
-	/* reveal on entering a screen */
-	.s .wrap > *,
-	.flow li,
-	.cards article,
-	.adr li {
-		transition:
-			opacity 420ms var(--ease),
-			transform 520ms var(--ease-out);
-		transition-delay: calc(var(--i, 0) * 60ms);
-	}
-	.s:not(.is-active) .wrap > *,
-	.s:not(.is-active) .flow li,
-	.s:not(.is-active) .cards article,
-	.s:not(.is-active) .adr li {
-		opacity: 0;
-		transform: translateY(24px);
-		transition-delay: 0ms;
-	}
-
-	/* ---------- hero ---------- */
+	/* ---------- cover: edge to edge from the top, fades into the page; the intro rises over its lower edge ---------- */
+	/* fade by transparency, not by painting --bg, so the page's background texture runs on under it without a seam;
+	   the mask sits on the box (not the drifting image) so the lower edge stays soft while the image moves */
 	.hero {
-		padding: 0;
-		align-items: end;
-	}
-	.hero :global(.hero-media) {
-		position: absolute;
-		inset: 0;
-	}
-	.hero-shade {
-		position: absolute;
-		inset: 0;
-		background:
-			linear-gradient(to top, var(--bg) 0%, color-mix(in srgb, var(--bg) 60%, transparent) 30%, transparent 60%),
-			linear-gradient(to bottom, color-mix(in srgb, var(--bg) 60%, transparent), transparent 20%);
-	}
-	.hero-copy {
 		position: relative;
-		padding: 0 var(--pad) calc(var(--pad) + 2.5rem);
-		max-width: 60rem;
+		height: clamp(22rem, 78dvh, 52rem);
+		overflow: hidden;
+		-webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 97%);
+		mask-image: linear-gradient(to bottom, #000 40%, transparent 97%);
+	}
+	.hero-img {
+		position: absolute;
+		inset: 0;
+		will-change: transform;
+	}
+	.hero-img :global(.media) {
+		position: absolute;
+		inset: 0;
+	}
+	.hero::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		/* top: keeps the nav readable over bright skies */
+		background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 70%, transparent), transparent 22%);
+		pointer-events: none;
+	}
+	.intro {
+		position: relative;
+		margin-top: clamp(-11rem, -16vh, -5rem);
+		padding: 0 var(--pad) clamp(4rem, 10vh, 6rem);
+	}
+	.intro-in {
+		width: min(100%, 80rem);
+		margin-inline: auto;
 	}
 	.eyebrow {
 		display: flex;
 		gap: 0.75rem;
 		align-items: center;
+		margin: 0 0 0.6rem;
 		color: var(--fg-2);
-		margin: 0 0 0.75rem;
+		text-transform: none;
 	}
-	.hero h1 {
-		margin: 0;
-		font-size: clamp(2.5rem, 9vh, 6.5rem);
-		font-family: var(--font-display);
-		font-weight: var(--display-weight);
-		letter-spacing: var(--display-tracking);
-		line-height: 0.95;
-		width: fit-content;
-	}
-	.tagline {
-		margin: 1rem 0 0;
-		max-width: 40rem;
-		color: var(--fg-2);
-		font-size: clamp(0.95rem, 1.9vh, 1.15rem);
-		line-height: 1.6;
-	}
-	.scroll-hint {
-		position: absolute;
-		right: calc(var(--pad) + 3rem);
-		bottom: var(--pad);
-		margin: 0;
-		animation: bob 2.4s var(--ease-in-out) infinite;
-	}
-	@keyframes bob {
-		50% {
-			transform: translateY(4px);
-		}
-	}
-
-	/* ---------- overview ---------- */
-	.lead {
-		margin: 0;
-		font-size: clamp(1.1rem, 2.6vh, 1.6rem);
-		line-height: 1.6;
-		letter-spacing: -0.015em;
-		color: var(--fg);
-	}
-	.highlights {
-		margin: 2rem 0 0;
-		padding: 0;
-		list-style: none;
-		display: grid;
-		gap: 0.6rem;
-		color: var(--fg-2);
-	}
-	.highlights li::before {
-		content: '▸';
-		color: var(--accent-p);
-		margin-right: 0.6rem;
-	}
-	.facts {
-		margin: 0;
-		display: grid;
-		gap: 0;
-		border-top: 1px solid var(--line-2);
-	}
-	.facts div {
-		display: grid;
-		grid-template-columns: 5rem 1fr;
-		gap: 1rem;
-		padding: 0.9rem 0;
-		border-bottom: 1px solid var(--line-2);
-	}
-	.facts dd {
-		margin: 0;
-	}
-	.chips {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.35rem;
-	}
-
-	/* ---------- architecture ---------- */
-	.arch-img {
-		max-height: 38vh;
-		width: auto;
-		margin-bottom: 2rem;
-		border-radius: 10px;
-		border: 1px solid var(--line-2);
-	}
-	.flow {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: grid;
-		grid-auto-flow: column;
-		grid-auto-columns: 1fr;
-		gap: 0;
-		counter-reset: step;
-	}
-	.flow li {
-		position: relative;
-		padding: 1.25rem 1.25rem 1.5rem;
-		border: 1px solid var(--line-2);
-		background: var(--bg-2);
-		display: grid;
-		align-content: start;
-		gap: 0.6rem;
-	}
-	.flow li + li {
-		border-left: 0;
-	}
-	.flow li:first-child {
-		border-radius: 12px 0 0 12px;
-	}
-	.flow li:last-child {
-		border-radius: 0 12px 12px 0;
-	}
-	.flow li:not(:last-child)::after {
-		content: '→';
-		position: absolute;
-		right: -0.65rem;
-		top: 1.2rem;
-		z-index: 1;
-		background: var(--bg);
-		color: var(--accent-p);
-		font-family: var(--mono);
-		font-size: 0.8rem;
-		line-height: 1;
-		padding: 0.15rem;
-	}
-	.step {
-		color: var(--accent-p);
-	}
-	.flow p,
-	.cards dd,
-	.adr p {
-		margin: 0;
-		color: var(--fg-2);
-		font-size: 0.875rem;
-		line-height: 1.65;
-	}
-
-	/* ---------- problems ---------- */
-	.cards {
-		display: grid;
-		grid-template-columns: repeat(var(--n), 1fr);
-		gap: 1rem;
-	}
-	.cards article {
-		border: 1px solid var(--line-2);
-		border-radius: 12px;
-		background: var(--bg-2);
-		padding: 1.25rem;
-		display: grid;
-		align-content: start;
-		gap: 1rem;
-	}
-	.cards dl {
-		margin: 0;
-		display: grid;
-		gap: 0.3rem;
-	}
-	.cards dt {
-		margin-top: 0.6rem;
-	}
-	.cards dt:first-child {
-		margin-top: 0;
-	}
-	.cards dt.ok {
-		color: #4ade80;
-	}
-	.cards dd {
-		margin: 0;
-	}
-
-	/* ---------- decisions ---------- */
-	.adr {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		border-top: 1px solid var(--line-2);
-	}
-	.adr li {
-		display: grid;
-		grid-template-columns: 4rem 1fr;
-		gap: 1rem;
-		padding: clamp(1rem, 2.5vh, 1.5rem) 0;
-		border-bottom: 1px solid var(--line-2);
-	}
-	.adr h3 {
-		margin-bottom: 0.5rem;
-	}
-	.adr p .mono {
-		display: inline-block;
-		width: 5.5rem;
-		color: var(--fg-3);
-	}
-	.adr .trade {
-		margin-top: 0.25rem;
-	}
-
-	/* ---------- hero status / overview extras ---------- */
 	.status {
 		padding: 0.15rem 0.5rem;
 		border: 1px solid var(--accent-p);
@@ -652,114 +201,239 @@ const videoPoster = d.video?.poster ?? d.cover.poster;
 		color: var(--accent-p);
 		font-size: 0.7rem;
 	}
-	.label.sub {
-		margin-top: clamp(1.25rem, 3.5vh, 2.25rem);
-		margin-bottom: 0;
+	h1 {
+		margin: 0;
+		width: fit-content;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+		font-size: clamp(2.6rem, 9vh, 6rem);
+		line-height: 0.95;
 	}
-	.overview .highlights {
-		margin-top: 0.75rem;
-		font-size: 0.925rem;
-		line-height: 1.6;
-	}
-	.facts dt {
-		color: var(--fg-3);
-	}
-	.facts dd {
-		font-size: 0.875rem;
-		line-height: 1.55;
-	}
-	.facts div {
-		grid-template-columns: 6.5rem 1fr;
-		padding: 0.7rem 0;
-	}
-
-	/* ---------- video ---------- */
-	.video-box {
-		/* the whole 16:9 player fits under the top bar */
-		width: min(100%, calc((100dvh - var(--nav-h) - 9rem) * 16 / 9));
-		margin-inline: auto;
-	}
-
-	/* ---------- techniques / motion ---------- */
-	.tech,
-	.flips {
+	.under {
+		margin-top: clamp(1.25rem, 3vh, 2rem);
 		display: grid;
-		grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+		grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+		gap: clamp(2rem, 6vw, 6rem);
+		align-items: start;
+	}
+	.lead {
+		margin: 0;
+		max-width: 40rem;
+		font-size: clamp(1.15rem, 2.6vh, 1.45rem);
+		font-weight: 300;
+		line-height: 1.6;
+		letter-spacing: -0.015em;
+		color: var(--fg);
+		/* an `overview: |-` block keeps its line breaks; folded (>-) overviews arrive as one line */
+		white-space: pre-line;
+	}
+	/* same dt / dd row as the home page's bottom bar */
+	.meta {
+		margin: 0;
+		display: grid;
+		gap: 0.9rem;
+		text-transform: none;
+	}
+	.meta div {
+		display: grid;
+		grid-template-columns: 4rem 1fr;
 		gap: 1rem;
 	}
-	.tech article,
-	.flips article {
-		display: grid;
-		align-content: start;
-		gap: 0.6rem;
-		border: 1px solid var(--line-2);
-		border-radius: 12px;
-		background: var(--bg-2);
-		padding: 1.1rem 1.2rem;
+	.meta dt {
+		color: var(--fg-3);
 	}
-	.flips article {
-		padding: 0.75rem;
-	}
-	.flips {
-		max-width: 60rem;
-	}
-	.tsub {
-		display: block;
-		margin-top: 0.2rem;
-		color: var(--accent-p);
-		font-size: 0.8rem;
-		font-weight: 500;
-	}
-	.tech p,
-	.flips p {
+	/* labels stay mono like the home page; values carry Korean, so they use the text face */
+	.meta dd {
 		margin: 0;
-		color: var(--fg-2);
-		font-size: 0.85rem;
-		line-height: 1.65;
-	}
-	.formula {
-		margin: 0.2rem 0 0;
-		padding: 0.6rem 0.75rem;
-		border-radius: 8px;
-		background: var(--bg);
-		border: 1px solid var(--line);
-		overflow-x: auto;
-		white-space: pre-wrap;
-		font-family: var(--mono);
-		font-size: 0.78rem;
-		line-height: 1.6;
 		color: var(--fg);
+		font-family: var(--sans);
+		font-size: 0.875rem;
+		line-height: 1.6;
 	}
-	.tech article,
-	.flips article {
+	.meta .links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1rem;
+	}
+	.meta a {
+		color: var(--fg);
+		background: linear-gradient(var(--accent-p), var(--accent-p)) 0 100% / 0 1px no-repeat;
 		transition:
-			opacity 420ms var(--ease),
-			transform 520ms var(--ease-out);
-		transition-delay: calc(var(--i, 0) * 60ms);
+			background-size var(--t-fast) var(--ease-out),
+			color var(--t-micro);
 	}
-	.s:not(.is-active) .tech article,
-	.s:not(.is-active) .flips article {
-		opacity: 0;
-		transform: translateY(24px);
-		transition-delay: 0ms;
+	.meta a:hover {
+		color: var(--accent-p);
+		background-size: 100% 1px;
 	}
 
-	/* ---------- gallery / compare ---------- */
-	.caption {
-		margin: 1rem 0 0;
-		max-width: 60rem;
+	/* ---------- body: stacked topic bands (article/Section.astro); type rules for what the .mdx writes ---------- */
+	.prose {
+		counter-reset: sec;
 		color: var(--fg-2);
+		font-size: 1rem;
+		line-height: 1.8;
+	}
+	.prose :global(.sec-text > *) {
+		margin: 0;
+	}
+	.prose :global(.sec-text > * + *) {
+		margin-top: 1.1rem;
+	}
+	.prose :global(.sec-text > .katex-display),
+	.prose :global(.sec-text > .stats),
+	.prose :global(.sec-text > pre) {
+		margin-block: 1.75rem;
+	}
+	/* `<div class="stack">` in the copy: figures stacked inside one grid cell */
+	.prose :global(.stack) {
+		display: grid;
+		gap: 0.75rem;
+		align-content: start;
+	}
+	/* `<div class="pin-end">` in the copy: pushes that last block down so its bottom lines up with the end of a
+	   taller picture column (the text column then stretches to the row and leaves the gap above it) */
+	.prose :global(.sec-text:has(> .pin-end)) {
+		align-self: stretch;
+		display: flex;
+		flex-direction: column;
+	}
+	.prose :global(.sec-text > .pin-end) {
+		margin-top: auto;
+		padding-top: 1.1rem;
+	}
+	/* `<div class="narrow">` in the copy: keeps a small figure group from filling the text column */
+	.prose :global(.narrow) {
+		max-width: 24rem;
+	}
+	/* `---` in the copy: a quiet divider between two parts of one topic */
+	.prose :global(.sec-text > hr) {
+		margin-block: 2rem;
+		height: 1px;
+		border: 0;
+		background: color-mix(in srgb, var(--fg) 12%, transparent);
+	}
+	.prose :global(h2) {
+		margin: 0 0 1.5rem;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+		font-size: clamp(2rem, 4.2vw, 3rem);
+		line-height: 1.05;
+		color: var(--fg);
+	}
+	.prose :global(h2::before) {
+		counter-increment: sec;
+		content: counter(sec, decimal-leading-zero);
+		display: block;
+		margin-bottom: 0.75rem;
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		font-weight: 400;
+		letter-spacing: 0.04em;
+		color: var(--accent-p);
+	}
+	.prose :global(h3) {
+		margin-top: 2.25rem;
+		font-size: 1.1rem;
+		font-weight: 650;
+		letter-spacing: -0.01em;
+		color: var(--fg);
+	}
+	.prose :global(strong) {
+		color: var(--fg);
+		font-weight: 650;
+	}
+	.prose :global(a) {
+		color: var(--fg);
+		text-decoration: underline;
+		text-decoration-color: var(--accent-p);
+		text-underline-offset: 0.2em;
+	}
+	.prose :global(ul),
+	.prose :global(ol) {
+		padding-left: 1.2rem;
+		display: grid;
+		gap: 0.5rem;
+	}
+	.prose :global(ul > li::marker) {
+		content: '▸  ';
+		color: var(--accent-p);
+	}
+	.prose :global(ol > li::marker) {
+		font-family: var(--mono);
+		font-size: 0.8em;
+		color: var(--accent-p);
+	}
+	.prose :global(code) {
+		font-family: var(--mono);
+		font-size: 0.85em;
+		color: var(--fg);
+	}
+	.prose :global(pre) {
+		padding: 1rem 1.25rem;
+		border-radius: 6px;
+		overflow-x: auto;
 		font-size: 0.85rem;
-		line-height: 1.65;
+		line-height: 1.6;
 	}
-	.compare .wrap {
-		width: min(100%, calc((100dvh - var(--nav-h) - 22rem) * 16 / 9), 72rem);
+	/* the before/after keeps its 16:9 at the full column width (its own 58vh cap is for the old screens) */
+	.prose :global(.cmp .stage) {
+		max-height: none;
 	}
-	.limits {
-		margin-top: clamp(1.5rem, 4vh, 2.5rem);
+	.prose :global(.katex-display) {
+		color: var(--fg);
+		overflow-x: auto;
+		overflow-y: hidden;
 	}
-	.decisions .limits .highlights {
-		margin-top: 0.5rem;
+
+	/* ---------- foot ---------- */
+	.foot {
+		width: min(100% - 2 * var(--pad), 80rem);
+		margin: clamp(4rem, 10vh, 6rem) auto 0;
+		display: grid;
+		grid-template-columns: 1fr minmax(0, 26rem);
+		gap: 2rem;
+		align-items: end;
+	}
+	.back {
+		color: var(--fg-2);
+		text-transform: none;
+	}
+	.back:hover {
+		color: var(--fg);
+	}
+	.next-card {
+		display: grid;
+		gap: 0.75rem;
+		cursor: none;
+	}
+	.next-card > .mono {
+		color: var(--fg-3);
+		text-transform: none;
+	}
+	.next-card :global(.next-media) {
+		aspect-ratio: 16 / 10;
+		border-radius: 12px;
+		border: 1px solid var(--line-2);
+		/* hover outline = 1px border + 1px ring → 2px, without shifting the layout */
+		box-shadow: 0 0 0 0 var(--accent-n);
+		transition:
+			border-color var(--t-fast),
+			box-shadow var(--t-fast),
+			transform var(--t-fast) var(--ease-out);
+	}
+	.next-card:hover :global(.next-media) {
+		border-color: var(--accent-n);
+		box-shadow: 0 0 0 1px var(--accent-n);
+		transform: translateY(-4px);
+	}
+	.next-card strong {
+		font-size: 1.5rem;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
 	}
 
 	/* ---------- lightbox ---------- */
@@ -845,168 +519,17 @@ const videoPoster = d.video?.poster ?? d.cover.poster;
 		top: 1rem;
 	}
 
-	/* ---------- next ---------- */
-	.links {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: grid;
-		gap: 0.25rem;
-	}
-	.links a {
-		display: inline-block;
-		font-size: clamp(1.25rem, 3vh, 1.75rem);
-		font-weight: 600;
-		letter-spacing: -0.02em;
-		padding: 0.35rem 0;
-		background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
-		transition: background-size var(--t-fast) var(--ease-out);
-	}
-	.links a:hover {
-		background-size: 100% 1px;
-	}
-	.next-card {
-		display: grid;
-		gap: 0.75rem;
-		cursor: none;
-	}
-	.next-card :global(.next-media) {
-		aspect-ratio: 16 / 10;
-		border-radius: 12px;
-		border: 1px solid var(--line-2);
-		/* hover outline = 1px border + 1px ring → 2px, without shifting the layout */
-		box-shadow: 0 0 0 0 var(--accent-n);
-		transition:
-			border-color var(--t-fast),
-			box-shadow var(--t-fast),
-			transform var(--t-fast) var(--ease-out);
-	}
-	.next-card:hover :global(.next-media) {
-		border-color: var(--accent-n);
-		box-shadow: 0 0 0 1px var(--accent-n);
-		transform: translateY(-4px);
-	}
-	.next-card strong {
-		font-size: 1.5rem;
-		font-family: var(--font-display);
-		font-weight: var(--display-weight);
-		letter-spacing: var(--display-tracking);
-	}
-
-	/* ---------- side indicator ---------- */
-	.dots {
-		position: fixed;
-		right: calc(var(--pad) * 0.6);
-		top: 50%;
-		translate: 0 -50%;
-		z-index: 30;
-		display: grid;
-		gap: 0.35rem;
-	}
-	.dots button {
-		all: unset;
-		position: relative;
-		cursor: pointer;
-		width: 1.25rem;
-		height: 1.25rem;
-		display: grid;
-		place-items: center;
-	}
-	.dots button::before {
-		content: '';
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--fg-3);
-		transition:
-			background-color var(--t-micro),
-			scale var(--t-fast) var(--ease-out);
-	}
-	.dots button[aria-current]::before {
-		background: var(--accent-p, var(--accent));
-		scale: 1.6;
-	}
-	.dots button:focus-visible {
-		outline: 2px solid var(--accent);
-		border-radius: 50%;
-	}
-	.dot-label {
-		position: absolute;
-		right: 1.75rem;
-		white-space: nowrap;
-		color: var(--fg-2);
-		opacity: 0;
-		translate: 0.4rem 0;
-		transition:
-			opacity var(--t-micro),
-			translate var(--t-fast) var(--ease-out);
-		pointer-events: none;
-	}
-	.dots button:hover .dot-label,
-	.dots button:focus-visible .dot-label {
-		opacity: 1;
-		translate: 0 0;
-	}
-	.counter {
-		position: fixed;
-		left: var(--pad);
-		bottom: calc(var(--pad) * 0.6);
-		z-index: 30;
-		margin: 0;
-		color: var(--fg-2);
-		font-variant-numeric: tabular-nums;
-	}
-	:global(html[data-snap-index='0']) .counter {
-		opacity: 0;
-	}
-
-	/* ---------- responsive: let long screens grow instead of clipping ---------- */
-	@media (max-width: 900px), (max-height: 620px) {
-		.snap {
-			scroll-snap-type: y proximity;
-		}
-		.s {
-			height: auto;
-			min-height: 100dvh;
-			overflow: visible;
-			padding-right: var(--pad);
-		}
-		.two,
-		.cards,
-		.tech,
-		.flips {
+	@media (max-width: 900px) {
+		.under,
+		.foot {
 			grid-template-columns: 1fr;
 		}
-		.compare .wrap,
-		.video-box {
-			width: 100%;
+		.hero {
+			height: 56dvh;
 		}
-		.hero h1 {
+		h1 {
 			font-size: clamp(2.25rem, 11vw, 4rem);
 			overflow-wrap: anywhere;
-		}
-		.flow {
-			grid-auto-flow: row;
-		}
-		.flow li + li {
-			border-left: 1px solid var(--line-2);
-			border-top: 0;
-		}
-		.flow li:first-child {
-			border-radius: 12px 12px 0 0;
-		}
-		.flow li:last-child {
-			border-radius: 0 0 12px 12px;
-		}
-		.flow li:not(:last-child)::after {
-			content: '↓';
-			right: auto;
-			left: 1.25rem;
-			top: auto;
-			bottom: -0.6rem;
-		}
-		.dots {
-			display: none;
 		}
 	}
 </style>

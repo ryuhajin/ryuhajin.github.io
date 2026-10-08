@@ -1,0 +1,149 @@
+---
+// One topic of a project page as a full-width band: text on the left, pictures on the right (slot "media"), and an
+// optional full-band row underneath (slot "wide"). Slot "aside" puts a second text column on the right instead of
+// pictures. Slot "lead" puts an opening line under the heading, so the right column starts level with the body that
+// follows it. `align="body"` starts the pictures level with the body text rather than with the heading. Bands
+// alternate their background so the page reads as a stack of chapters. Numbering comes from a CSS counter in
+// projects/[slug].astro.
+interface Props {
+	title: string;
+	align?: 'top' | 'body';
+}
+const { title, align = 'top' } = Astro.props;
+const id = title
+	.toLowerCase()
+	.replace(/[^a-z0-9]+/g, '-')
+	.replace(/^-|-$/g, '');
+// a newline in the title (title={"A &\nB"}) breaks the heading there
+const lines = title.split('\n');
+const media = Astro.slots.has('media');
+const aside = Astro.slots.has('aside');
+const wide = Astro.slots.has('wide');
+const lead = Astro.slots.has('lead');
+---
+
+<section class="sec" id={id}>
+	<div class:list={['sec-in', { 'has-media': media, 'has-aside': aside, 'align-body': align === 'body' }]}>
+		<div class="sec-head">
+			<h2>{lines.map((l, i) => (i ? <><br />{l}</> : l))}</h2>
+			{
+				lead && (
+					<div class="sec-lead">
+						<slot name="lead" />
+					</div>
+				)
+			}
+		</div>
+		<div class="sec-text">
+			<slot />
+		</div>
+		{
+			media && (
+				<div class="sec-media">
+					<slot name="media" />
+				</div>
+			)
+		}
+		{
+			aside && (
+				<div class="sec-text sec-aside">
+					<slot name="aside" />
+				</div>
+			)
+		}
+	</div>
+	{
+		wide && (
+			<div class="sec-wide">
+				<slot name="wide" />
+			</div>
+		)
+	}
+</section>
+
+<style>
+	.sec {
+		padding: clamp(4rem, 11vh, 7rem) var(--pad);
+		background: var(--bg);
+	}
+	/* every other band sits on a slightly lifted tone with a soft top-down falloff */
+	.sec:nth-of-type(even) {
+		background: linear-gradient(
+			to bottom,
+			color-mix(in srgb, var(--fg) 2%, var(--bg)),
+			color-mix(in srgb, var(--fg) 5%, var(--bg))
+		);
+	}
+	.sec-in,
+	.sec-wide {
+		width: min(100%, 80rem);
+		margin-inline: auto;
+	}
+	.sec-in {
+		display: grid;
+		grid-template-columns: minmax(0, 46rem);
+		/* a tall right column must not push the body text down: the heading row stays as tall as the heading */
+		grid-template-rows: auto 1fr;
+		align-items: start;
+	}
+	.sec-head :global(h2) {
+		margin-bottom: 1.1rem;
+	}
+	.sec-lead {
+		margin-bottom: 1.1rem;
+	}
+	.sec-lead :global(> *) {
+		margin: 0;
+	}
+	.sec-in.has-media,
+	.sec-in.has-aside {
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		column-gap: clamp(2rem, 5vw, 5rem);
+	}
+	.sec-in.has-aside {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	}
+	.sec-head {
+		grid-column: 1;
+		grid-row: 1;
+	}
+	.sec-in > .sec-text:not(.sec-aside) {
+		grid-column: 1;
+		grid-row: 2;
+	}
+	/* right column: pictures from the heading down by default, or from the first line of body text; a second
+	   text column always starts level with the first */
+	.sec-media,
+	.sec-aside {
+		grid-column: 2;
+		grid-row: 1 / span 2;
+	}
+	.align-body > .sec-media,
+	.sec-in > .sec-aside {
+		grid-row: 2;
+	}
+	.sec-media {
+		display: grid;
+		gap: 1.25rem;
+	}
+	.sec-wide {
+		margin-top: clamp(2.5rem, 6vh, 4rem);
+		display: grid;
+		gap: 1.25rem;
+	}
+	@media (max-width: 900px) {
+		.sec-in.has-media,
+		.sec-in.has-aside {
+			grid-template-columns: minmax(0, 1fr);
+			row-gap: 2rem;
+		}
+		.sec-in > *,
+		.align-body > * {
+			grid-column: 1 !important;
+			grid-row: auto !important;
+		}
+		.sec-head {
+			margin-bottom: -2rem;
+		}
+	}
+</style>

@@ -47,8 +47,8 @@ sidebar:
 머티리얼의 색상이 **배경과 어떻게 혼합되는지를 결정**
 
 **각 블렌드 모드 반사광 확인용**
-![](/images/UE_blendmode1.jpeg)
-![](/images/UE_blendmode2.jpeg)
+![](/images/UE_blendmode1.webp)
+![](/images/UE_blendmode2.webp)
 
 ---
 

@@ -1,0 +1,43 @@
+---
+// Figures side by side. `ratio` crops every cell to the same box so mixed captures line up. `stack` drops to one
+// column on phones (for cells that need the width, like a compare slider with labels).
+interface Props {
+	cols?: number;
+	size?: 'text' | 'wide' | 'full';
+	ratio?: 'wide' | 'square' | 'tall' | 'auto';
+	stack?: boolean;
+}
+const { cols = 2, size = 'wide', ratio = 'wide', stack = false } = Astro.props;
+---
+
+<div class:list={['grid', size, `r-${ratio}`, { 'm-stack': stack }]} style={`--cols: ${cols}`}>
+	<slot />
+</div>
+
+<style>
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+		gap: 1.25rem 0.75rem;
+	}
+	.r-wide :global(img) {
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+	.r-square :global(img) {
+		aspect-ratio: 1;
+		object-fit: cover;
+	}
+	.r-tall :global(img) {
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+	}
+	@media (max-width: 720px) {
+		.grid {
+			grid-template-columns: repeat(min(var(--cols), 2), minmax(0, 1fr));
+		}
+		.grid.m-stack {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>

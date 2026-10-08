@@ -31,7 +31,7 @@ const { thema, align = 'right', placement = 'down' } = Astro.props;
 					<rect x="1.5" y="3" width="13" height="10" rx="1.5"></rect>
 					<path d="M2 4l6 4.75L14 4"></path>
 				</svg>
-				<span class:list={['tip', { up: placement === 'up' }]} aria-hidden="true">
+				<span class:list={['tip', { up: placement === 'up', end: align === 'right' }]} aria-hidden="true">
 					<span class="idle" data-mail-text>Email</span>
 					<span class="done">Copied ✓</span>
 				</span>
@@ -119,6 +119,12 @@ const { thema, align = 'right', placement = 'down' } = Astro.props;
 		transition:
 			opacity 140ms,
 			transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	/* right-aligned bars: grow leftward from the button so the address never runs off the screen edge */
+	.tip.end {
+		left: auto;
+		right: 0;
+		translate: none;
 	}
 	/* menus pinned to the bottom of the screen open upward */
 	.tip.up {

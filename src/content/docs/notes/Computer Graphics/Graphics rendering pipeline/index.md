@@ -8,7 +8,7 @@ sidebar:
 
 <br>
 
-![graphics pipeline](/images/graphics-pipeline.png)
+![graphics pipeline](/images/graphics-pipeline.webp)
 
 
 **참고 링크**

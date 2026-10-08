@@ -64,7 +64,7 @@ class UHealthComponent : public UActorComponent
 - 회전(rotation): FRotator
 - 크기(scale): FVector
 
-![](/images/SceneComponent.png)
+![](/images/SceneComponent.webp)
 > GetActorLocation() : Root Compoent인 SceneComponent에서 위치 가져옴
 
 **사용 사례**
@@ -77,7 +77,7 @@ class UHealthComponent : public UActorComponent
 - **액터의 RootComponent로 사용됨**
 
 ### Attachment
-![](/images/SceneComponent-Attachment.png)
+![](/images/SceneComponent-Attachment.webp)
 - 루트 구성요소가 이동하면 하위 SceneComponent도 같이 이동한다
 - 루트와 하위 구성요소의 상대적인 거리는 항상 유지된다
 
@@ -85,7 +85,7 @@ class UHealthComponent : public UActorComponent
 스태틱 매시 컴포넌트를 Root Component로 만들 수도 있다
 - UStaticMeshComponent는 USceneComponent를 상속받으므로 가능
 
-![](/images/SceneComponent-StaticMesh.png)
+![](/images/SceneComponent-StaticMesh.webp)
 
 ### StaticMesh 컴포넌트를 Root로 만들기
 1. 블루프린트 에디터 열기

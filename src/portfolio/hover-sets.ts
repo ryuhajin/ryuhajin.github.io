@@ -15,8 +15,8 @@ export interface HoverItem {
 export const hoverSets: Partial<Record<NavId, HoverItem[]>> = {
 	projects: [
 		{ src: '/trail/projects/earth.webp', w: 128, x: 70, y: -40 },
-		{ src: '/trail/projects/moon.webp', w: 64, x: 167, y: 42 },
-		{ src: '/trail/projects/candle.webp', w: 28, x: 52, y: 72, r: 8 },
+		{ src: '/trail/projects/prism.webp', w: 80, x: 176, y: 38, r: 6 },
+		{ src: '/trail/projects/teapot.webp', w: 92, x: 64, y: 80 },
 	],
 	notes: [
 		{ src: '/trail/notes/notebook.webp', w: 120, x: 92, y: 0, r: -7 },

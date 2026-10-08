@@ -97,7 +97,7 @@ UClass* ObjClass = Obj->GetClass(); // 데이터 추출
 - 클래스가 언리얼 모듈에 로드될 때 한 번만 생성됨
 
 #### 내부 구조와 CDO의 관계 다이어그램
-![CDO](/images/UObjectCDO.png)
+![CDO](/images/UObjectCDO.webp)
 - **UClass** : 모든 인스턴스가 공유하는 "청사진"
 - **CDO** : 인스턴스들이 참조하는 변하지 않는 원본
 - **UObject 인스턴스** : CDO의 기본값을 복사받아 생성된 개별 객체
@@ -156,7 +156,7 @@ enum EObjectFlags {
 -  `UClass`는 UObject의 **파생 클래스**이므로, **UClass도 자신만의 ObjectFlags를 가짐**
 
 #### ObjectFlags 내부 구조 다이어그램
-![내부 구조 다이어그램](/images/UObjectInside.png)
+![내부 구조 다이어그램](/images/UObjectInside.webp)
 
 - **UObject 인스턴스의 ObjectFlags**: 개별 인스턴스의 **런타임** 상태 제어
   - 이 객체만의 상태 플래그
@@ -272,7 +272,7 @@ public:
   - AActor의 경우 Components 배열에 자동 추가
 
 ### 서브오브젝트 다이어그램
-![](/images/UObjectSub.png)
+![](/images/UObjectSub.webp)
 - 실선: 명시적 참조 (AActor의 Components 배열)
 - 점선: 암시적 참조 (Outer 포인터)
 

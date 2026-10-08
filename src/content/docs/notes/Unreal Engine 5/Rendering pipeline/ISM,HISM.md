@@ -69,7 +69,7 @@ ISM/HISM은 모든 인스턴스 그룹에 대해 단일 충돌 이벤트만 발�
 2. 하지만 인스턴싱을 적용하면 단 1번의 드로우 콜로 처리됨
 > 이는 CPU가 GPU에 전송하는 명령 횟수를 획기적으로 줄여줌
 
-![](/images/ISM_drawCallInfo.png)
+![](/images/ISM_drawCallInfo.webp)
 
 ---
 

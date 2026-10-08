@@ -1,0 +1,89 @@
+---
+import Caption from './Caption.astro';
+import { imageSize } from '../../../portfolio/image-size';
+// One image (opens in the page lightbox) or a looping clip, with a short caption (Caption.astro).
+// size: 'text' stays in the reading column, 'wide' / 'full' break out of it (see .prose in projects/[slug].astro).
+// Inside <Grid> the size is ignored and the figure fills its cell.
+// Clips load and play only near the viewport (script below); width/height come from the poster or image file.
+interface Props {
+	src: string;
+	caption?: string;
+	alt?: string;
+	/** webm / mp4 clip; `src` is then its poster */
+	video?: string;
+	size?: 'text' | 'wide' | 'full';
+}
+const { src, caption, alt, video, size = 'text' } = Astro.props;
+const dims = await imageSize(src);
+---
+
+<figure class:list={['fig', size]}>
+	{
+		video ? (
+			<video data-src={video} poster={src} {...dims} muted loop playsinline preload="none" data-lazy-clip aria-label={alt ?? caption} />
+		) : (
+			<button type="button" class="shot" data-cursor="zoom" data-lightbox={src} data-caption={caption}>
+				<img src={src} {...dims} alt={alt ?? caption ?? ''} loading="lazy" decoding="async" />
+			</button>
+		)
+	}
+	{caption && <Caption text={caption} />}
+</figure>
+
+<script>
+	// clips are fetched once they come near the viewport, and pause while scrolled away
+	const io = new IntersectionObserver(
+		(entries) => {
+			for (const { target, isIntersecting } of entries) {
+				const clip = target as HTMLVideoElement;
+				if (!isIntersecting) {
+					clip.pause();
+					continue;
+				}
+				if (!clip.getAttribute('src')) clip.src = clip.dataset.src!;
+				clip.play().catch(() => {});
+			}
+		},
+		{ rootMargin: '300px 0px' }
+	);
+	for (const clip of document.querySelectorAll<HTMLVideoElement>('video[data-lazy-clip]')) io.observe(clip);
+</script>
+
+<style>
+	.fig {
+		margin: 0;
+		display: grid;
+		gap: 0.6rem;
+		align-content: start;
+	}
+	.shot {
+		all: unset;
+		display: block;
+		overflow: hidden;
+		border-radius: 6px;
+		background: var(--bg-3);
+		cursor: zoom-in;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.shot {
+			cursor: none;
+		}
+	}
+	.shot:focus-visible {
+		outline: 2px solid var(--accent-p, var(--accent));
+		outline-offset: 2px;
+	}
+	img,
+	video {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: 6px;
+	}
+	img {
+		transition: scale 600ms var(--ease-out);
+	}
+	.shot:hover img {
+		scale: 1.03;
+	}
+</style>

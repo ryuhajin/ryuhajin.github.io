@@ -1,0 +1,118 @@
+---
+title: Toon Shader
+tagline: DirectX 11 · HLSL로 만든 툰 셰이더 — 메시를 한 번 더 그려 만든 외곽선과 세 단계로 끊은 명암으로, 3D 구를 애니메이션처럼 칠합니다
+order: 4
+group: Computer Graphics
+year: '2025'
+role: Solo · HLSL 학습 프로젝트
+stack: [C++, DirectX 11, HLSL, Dear ImGui, Win32]
+accent: '#fb923c'
+cover:
+  poster: /projects/toon-shader/cover.webp
+  video: /projects/toon-shader/cover.mp4
+  alt: 회색 배경 위의 구. 진한 회색 외곽선 안쪽이 밝은 살구색 면, 주황 띠, 주황에서 보라로 이어지는 그림자로 나뉘고, 가장자리에 연노랑 림 라이트가 둘러 있다
+overview: |-
+  사실적인 빛보다, 그림 같은 빛.
+  3D 구를 애니메이션의 한 장면처럼 칠해 본 셰이더 프로젝트입니다.
+links:
+  - label: Notes — Toon Shader 구현 기록
+    href: /notes/computer-graphics/hlsl/toonshader/
+---
+
+<Section title="Overview" align="body">
+
+DirectX 11 튜토리얼로 조명 계산을 익힌 뒤 배운 것을 응용하는 연습으로 시작했습니다. 값을 바로 바꿔 보며 비교할 수 있도록 ImGui 패널과 핫 리로드, 실험 프리셋을 더했습니다.
+
+**주요 기능**
+
+- 메시를 한 번 더 그려 만드는 외곽선
+- 세 단계로 끊은 명암과 보랏빛 그림자
+- 하이라이트와 림 라이트
+- ImGui 패널, 핫 리로드, 실험 프리셋
+
+<Fragment slot="media">
+  <Figure src="/projects/toon-shader/overview.webp" video="/projects/toon-shader/overview.mp4" caption="Final · 빛 방향을 좌우로 움직였을 때의 명암 경계" />
+</Fragment>
+</Section>
+
+<Section title="Outline & Cel Shading">
+
+**뒤집은 메시로 그린 외곽선**<br />
+법선 방향으로 부풀린 구의 뒤쪽 면만 진한 회색으로 그리고, 그 위에 원래 구를 덮어 테두리만 남겼습니다.
+
+**세 단계로 끊은 명암**<br />
+빛을 받는 정도(N·L)를 0.5와 0.3에서 끊어 밝은 면, 주황 띠, 그림자로 나누고, 그림자는 주황에서 보라로 이어지게 했습니다.
+
+**하이라이트와 림 라이트**<br />
+정반사 하이라이트는 Blinn-Phong으로 계산해 더했고, 가장자리를 따라 도는 연노랑 림 라이트로 윤곽을 살렸습니다.
+
+<Fragment slot="wide">
+  <Grid cols={5} ratio="square">
+    <Figure src="/projects/toon-shader/step-outline.webp" caption="외곽선 · 부풀린 구의 뒷면만 그린 테두리" />
+    <Figure src="/projects/toon-shader/step-lambert.webp" caption="기본 조명(Lambert) · 명암이 부드럽게 이어지는 상태" />
+    <Figure src="/projects/toon-shader/step-bands.webp" caption="셀 셰이딩 · 명암을 세 단계로 끊고 그림자는 보라로" />
+    <Figure src="/projects/toon-shader/step-specular.webp" caption="하이라이트 · 정반사를 Blinn-Phong으로 추가" />
+    <Figure src="/projects/toon-shader/step-rim.webp" caption="림 라이트 · 가장자리에 연노랑 빛을 더한 최종" />
+  </Grid>
+</Fragment>
+</Section>
+
+<Section title="Challenges">
+
+**과정을 남기는 여정**
+
+- **문제** — 어떻게 하면 예쁘게 보일지 밴드 색과 그림자 색, 경계값을 바꿔 가며 여러 가지 실험을 했습니다.<br />하지만 실험 과정의 코드를 커밋으로 남기지 않아서, 결과 이미지만 남고 어떤 값으로 그렸는지는 알 수 없게 됐습니다.
+- **원인** — 값이 셰이더 안에 숫자로 직접 적혀 있어서, 실험할 때마다 코드를 고쳐 덮어썼기 때문입니다.
+- **해결** — 값을 상수 버퍼로 옮겨 ImGui에서 바꿀 수 있게 하고, 실험마다 셰이더 파일과 값을 묶어 프리셋으로 저장하게 했습니다.
+
+<Fragment slot="wide">
+  <Grid cols={4} ratio="square">
+    <Figure src="/projects/toon-shader/preset-exp1.webp" caption="실험 1 · 하이라이트를 면으로 칠한 회색 톤, 라벤더 림" />
+    <Figure src="/projects/toon-shader/preset-exp2.webp" caption="실험 2 · 하이라이트를 면으로 칠하고 그림자는 검게" />
+    <Figure src="/projects/toon-shader/preset-exp3.webp" caption="실험 3 · 주황 띠 없이 밝은 면과 어두운 그림자만" />
+    <Figure src="/projects/toon-shader/preset-exp4.webp" caption="실험 4 · 주황 띠 아래로 검정에서 회녹색으로 이어지는 그림자" />
+  </Grid>
+</Fragment>
+</Section>
+
+<Section title="Tools" align="body">
+
+**패널에서 바로 조절**<br />
+빛 방향, 밴드 색과 경계값, 하이라이트, 림 라이트, 외곽선 값을 ImGui 패널에서 바로 바꿉니다. 그림자 색은 시작과 끝 두 가지를 정해 그라데이션으로 칠합니다.
+
+**저장하면 바로 반영**<br />
+셰이더 파일을 저장하면 0.5초 안에 다시 컴파일하고, 실패하면 이전 화면을 유지한 채 오류를 보여 줍니다.
+
+**프리셋으로 비교**<br />
+셰이더 파일과 값을 묶은 프리셋을 목록에서 골라, 세 단계 셰이더와 하이라이트를 면으로 칠하는 변형 셰이더를 오가며 비교합니다.
+
+<Fragment slot="media">
+  <Figure src="/projects/toon-shader/ui.webp" caption="ImGui 패널 · 왼쪽 툰 파라미터, 오른쪽 실험 목록과 핫 리로드" />
+</Fragment>
+</Section>
+
+<Section title="Summary & Next">
+
+**배운 것**
+
+- **단순한 규칙이 만드는 스타일**<br />단순한 규칙만으로도 화면에 렌더링되는 오브젝트의 느낌을 바꿀 수 있다는 걸 배웠습니다.
+- **빛을 성분별로 나눠 보기**<br />주변광, 난반사, 정반사, 림 라이트를 따로 계산해 더한다는 걸 알고 나니, 어느 성분은 끊고 어느 성분은 그대로 둘지 고를 수 있었습니다.
+- **과정을 남겨야 다시 볼 수 있습니다**<br />결과 이미지만 남은 실험은 다시 만들 수 없었습니다. 어떤 값으로 그렸는지가 결과만큼 중요했습니다.
+
+<Fragment slot="aside">
+
+**다음에 해 보고 싶은 것**
+
+- 구가 아닌 다른 모델에도 적용해 보기
+- 반사광을 표현할 수 있는 다른 방법 탐구하기
+- 다른 물체의 그림자를 어떻게 드리울지 공부하기
+
+</Fragment>
+</Section>
+
+<Section title="References">
+
+- [RB Whitaker's Wiki — Creating a Toon Shader](http://rbwhitaker.wikidot.com/toon-shader)
+- [RasterTek — DirectX 11 Tutorials](https://www.rastertek.com/) (프로젝트 구조와 기반 코드)
+
+</Section>

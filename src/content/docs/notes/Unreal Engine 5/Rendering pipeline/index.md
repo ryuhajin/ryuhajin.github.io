@@ -15,7 +15,7 @@ UE5 렌더링 파이프라인 정리하기
 ---
 
 위 링크의 디퍼드 렌더링이 각 프레임마가 수행하는 단계
-![](/images/UE5-RenderingPass-m.png)
+![](/images/UE5-RenderingPass-m.webp)
 
 | 단계 | 그림에서의 표현  | 렌더링 패스  | 의미  |
 | ----- | --- | ------------- | ------------ |
@@ -34,7 +34,7 @@ UE5 렌더링 파이프라인 정리하기
 ---
 
 ## 렌더링 패스 정리
-<img src="/images/UE5-RenderingPass.png" alt="" style="width:30%" />
+<img src="/images/UE5-RenderingPass.webp" alt="" style="width:30%" />
 
 ---
 
