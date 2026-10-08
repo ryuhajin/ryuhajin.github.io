@@ -185,7 +185,8 @@ const manifest = {
 	fdf: {
 		images: [
 			{ out: 'cover.webp', src: `${SHOTS}/fdf-hq/raw/map-t1.png`, width: W.hero, q: 90 },
-			{ out: 'overview.webp', src: `${SHOTS}/fdf-hq/raw/map-julia-t2.png`, width: W.wide, q: 90 },
+			// overview poster and loop: sparse maps only, trimmed and padded to 16:9 so their lines stay readable at 1280
+			{ out: 'overview.webp', src: `${SHOTS}/fdf-hq/raw/map-elem.png`, frame: true, width: W.wide, q: 90 },
 			{ out: 'step-text.webp', src: `${SHOTS}/fdf-hq/raw/step-42-a-text-dimzero.png`, q: 90 },
 			// the same 1920×1080 window region around 42.fdf for the points and the wireframe
 			{ out: 'step-points.webp', src: `${SHOTS}/fdf-hq/raw/step-42-b-points.png`, crop: [960, 477, 1920, 1080], width: W.gallery, q: 90 },
@@ -195,10 +196,11 @@ const manifest = {
 		slides: [
 			{
 				out: 'overview.mp4',
-				frames: ['julia-t2', 'mars-t2', 'elem-fract-t2', 'elem', 'pyramide'].map((m) => `${SHOTS}/fdf-hq/raw/map-${m}.png`),
+				frames: ['elem', 'pyramide', 'pyra', 't2', 'basictest'].map((m) => `${SHOTS}/fdf-hq/raw/map-${m}.png`),
 				hold: 1.4,
 				fade: 0.4,
 				bg: '#000',
+				frame: true,
 			},
 		],
 	},

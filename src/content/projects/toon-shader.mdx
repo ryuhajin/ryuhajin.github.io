@@ -11,8 +11,8 @@ cover:
   poster: /projects/toon-shader/cover.webp
   alt: 회색 배경 위의 구. 진한 회색 외곽선 안쪽이 밝은 살구색 면, 주황 띠, 주황에서 보라로 이어지는 그림자로 나뉘고, 가장자리에 연노랑 림 라이트가 둘러 있다
 overview: |-
-  애니메이션처럼 렌더링되는 셰이더는 어떻게 만드는 걸까?
-  이 궁금증에서 시작해, 외곽선과 단계로 끊은 명암을 HLSL로 직접 구현해 본 프로젝트입니다.
+  사실적인 빛보다, 그림 같은 빛.
+  3D 구를 애니메이션의 한 장면처럼 칠해 본 셰이더 프로젝트입니다.
 links:
   - label: Notes — Toon Shader 구현 기록
     href: /notes/computer-graphics/hlsl/toonshader/
@@ -20,15 +20,14 @@ links:
 
 <Section title="Overview" align="body">
 
-DirectX 11 튜토리얼로 조명 계산을 익힌 뒤, 배운 것을 응용하는 연습으로 시작했습니다.<br />2026년에는 값을 바로 바꿔 보며 비교할 수 있도록 ImGui 패널과 핫 리로드, 실험 프리셋을 더했습니다.
+DirectX 11 튜토리얼로 조명 계산을 익힌 뒤 배운 것을 응용하는 연습으로 시작했습니다. 값을 바로 바꿔 보며 비교할 수 있도록 ImGui 패널과 핫 리로드, 실험 프리셋을 더했습니다.
 
 **주요 기능**
 
-- 메시를 한 번 더 그려 만드는 외곽선 (Inverted Hull)
-- 빛의 세기를 세 단계로 나누는 셀 셰이딩과, 주황에서 보라로 이어지는 그림자
-- Blinn-Phong 하이라이트와 림 라이트
-- 하이라이트까지 네 단계로 나눈 변형 셰이더
-- ImGui 패널, 셰이더 핫 리로드, 실험 프리셋 (2026년 추가)
+- 메시를 한 번 더 그려 만드는 외곽선
+- 세 단계로 끊은 명암과 보랏빛 그림자
+- 하이라이트와 림 라이트
+- ImGui 패널, 핫 리로드, 실험 프리셋
 
 <Fragment slot="media">
   <Figure src="/projects/toon-shader/overview.webp" video="/projects/toon-shader/overview.mp4" caption="Final · 빛 방향을 좌우로 움직였을 때의 명암 경계" />
@@ -37,66 +36,54 @@ DirectX 11 튜토리얼로 조명 계산을 익힌 뒤, 배운 것을 응용하�
 
 <Section title="Outline & Cel Shading">
 
-**뒤집은 메시로 그리는 외곽선**<br />
-같은 구를 두 번 그립니다. 먼저 정점을 법선 방향으로 0.03만큼 부풀린 구를, 카메라를 향한 면은 버리고(앞면 컬링) 뒤쪽 면만 진한 회색으로 그립니다. 그 위에 원래 크기의 구를 덮어 그리면, 부풀린 만큼만 테두리로 남습니다. 외곽선 전체를 오른쪽으로 0.01만큼 더 밀어서, 오른쪽 테두리가 조금 더 두껍습니다.
+**뒤집은 메시로 그린 외곽선**<br />
+법선 방향으로 부풀린 구의 뒤쪽 면만 진한 회색으로 그리고, 그 위에 원래 구를 덮어 테두리만 남겼습니다.
 
-**빛의 세기를 세 단계로 끊기**<br />
-표면이 빛을 얼마나 정면으로 받는지(N·L)를 0.5와 0.3 두 경계로 나눠, 밝은 면·주황 띠·그림자를 칠합니다. 그림자는 한 가지 색으로 칠하지 않고, 빛에서 멀어질수록 주황에서 보라로 이어지게 해 어두운 쪽에도 색이 남도록 했습니다.
+**세 단계로 끊은 명암**<br />
+빛을 받는 정도(N·L)를 0.5와 0.3에서 끊어 밝은 면, 주황 띠, 그림자로 나누고, 그림자는 주황에서 보라로 이어지게 했습니다.
 
 **하이라이트와 림 라이트**<br />
-하이라이트는 Blinn-Phong(지수 350)으로 작고 또렷한 점을 얹었고, 단계로 끊지 않아 가장자리가 부드럽습니다. 림 라이트는 시선과 거의 수직인 가장자리에만 연한 노란빛을 더해 윤곽을 살립니다.
+정반사 하이라이트는 Blinn-Phong으로 계산해 더했고, 가장자리를 따라 도는 연노랑 림 라이트로 윤곽을 살렸습니다.
 
 <Fragment slot="wide">
-  <Block caption="단계별 비교 · 비교용으로 각 단계만 켜서 렌더">
-    <Grid cols={5} ratio="square">
-      <Figure src="/projects/toon-shader/step-outline.webp" caption="외곽선 · 부풀린 구의 뒤쪽 면" />
-      <Figure src="/projects/toon-shader/step-lambert.webp" caption="Lambert · 단계로 끊기 전" />
-      <Figure src="/projects/toon-shader/step-bands.webp" caption="셀 셰이딩 · 세 단계 + 보라 그림자" />
-      <Figure src="/projects/toon-shader/step-specular.webp" caption="하이라이트 · Blinn-Phong" />
-      <Figure src="/projects/toon-shader/step-rim.webp" caption="림 라이트 · 최종" />
-    </Grid>
-  </Block>
+  <Grid cols={5} ratio="square">
+    <Figure src="/projects/toon-shader/step-outline.webp" caption="외곽선 · 부풀린 구의 뒷면만 그린 테두리" />
+    <Figure src="/projects/toon-shader/step-lambert.webp" caption="기본 조명(Lambert) · 명암이 부드럽게 이어지는 상태" />
+    <Figure src="/projects/toon-shader/step-bands.webp" caption="셀 셰이딩 · 명암을 세 단계로 끊고 그림자는 보라로" />
+    <Figure src="/projects/toon-shader/step-specular.webp" caption="하이라이트 · 정반사를 Blinn-Phong으로 추가" />
+    <Figure src="/projects/toon-shader/step-rim.webp" caption="림 라이트 · 가장자리에 연노랑 빛을 더한 최종" />
+  </Grid>
 </Fragment>
 </Section>
 
 <Section title="Challenges">
 
-셰이더를 만들 때보다, 1년 뒤 코드를 다시 정리하면서 발견한 문제가 더 컸습니다.
+**과정을 남기는 여정**
 
-**화면에서는 보이지 않던 외곽선 버그**
-
-- **문제** — 외곽선을 그리는 정점 셰이더가 월드 변환 결과를 버리고 있었습니다.
-- **원인** — 월드 행렬을 곱한 다음 줄에서, 그 결과 대신 원래 정점 위치에 뷰 행렬을 곱했습니다. 장면의 구가 움직이지 않아 월드 행렬이 늘 단위 행렬이었기 때문에, 화면에서는 차이가 드러나지 않았습니다.
-- **해결** — 월드 변환 결과에 뷰 행렬을 곱하도록 고쳐, 구를 움직여도 외곽선이 함께 따라오게 했습니다.
-
-**코드가 남지 않은 실험**
-
-- **문제** — 2025년에 밴드 색과 그림자 색을 바꿔 가며 다섯 가지 실험을 했지만, 결과 이미지만 남고 코드는 남지 않았습니다.
-- **원인** — 값이 셰이더 안에 숫자로 직접 적혀 있어서, 실험할 때마다 코드를 고쳐 덮어썼습니다.
-- **해결** — 값을 상수 버퍼로 옮기고, 실험마다 셰이더 파일과 값을 묶어 프리셋으로 저장하게 했습니다. 남아 있던 결과 이미지에서 색을 뽑아 다섯 실험을 프리셋으로 다시 만들었습니다.
+- **문제** — 어떻게 하면 예쁘게 보일지 밴드 색과 그림자 색, 경계값을 바꿔 가며 여러 가지 실험을 했습니다.<br />하지만 실험 과정의 코드를 커밋으로 남기지 않아서, 결과 이미지만 남고 어떤 값으로 그렸는지는 알 수 없게 됐습니다.
+- **원인** — 값이 셰이더 안에 숫자로 직접 적혀 있어서, 실험할 때마다 코드를 고쳐 덮어썼기 때문입니다.
+- **해결** — 값을 상수 버퍼로 옮겨 ImGui에서 바꿀 수 있게 하고, 실험마다 셰이더 파일과 값을 묶어 프리셋으로 저장하게 했습니다.
 
 <Fragment slot="wide">
-  <Block caption="결과 이미지에서 색을 뽑아 프리셋으로 다시 만든 2025년 실험">
-    <Grid cols={4} ratio="square">
-      <Figure src="/projects/toon-shader/preset-exp1.webp" caption="실험 1 · 네 단계, 라벤더 림" />
-      <Figure src="/projects/toon-shader/preset-exp2.webp" caption="실험 2 · 네 단계, 검은 그림자" />
-      <Figure src="/projects/toon-shader/preset-exp3.webp" caption="실험 3 · 어두운 중간 띠" />
-      <Figure src="/projects/toon-shader/preset-exp4.webp" caption="실험 4 · 회녹색 그림자" />
-    </Grid>
-  </Block>
+  <Grid cols={4} ratio="square">
+    <Figure src="/projects/toon-shader/preset-exp1.webp" caption="실험 1 · 하이라이트를 면으로 칠한 회색 톤, 라벤더 림" />
+    <Figure src="/projects/toon-shader/preset-exp2.webp" caption="실험 2 · 하이라이트를 면으로 칠하고 그림자는 검게" />
+    <Figure src="/projects/toon-shader/preset-exp3.webp" caption="실험 3 · 주황 띠 없이 밝은 면과 어두운 그림자만" />
+    <Figure src="/projects/toon-shader/preset-exp4.webp" caption="실험 4 · 주황 띠 아래로 검정에서 회녹색으로 이어지는 그림자" />
+  </Grid>
 </Fragment>
 </Section>
 
 <Section title="Tools" align="body">
 
-**값을 바꾸면 바로 보이게**<br />
-ImGui 패널에서 빛의 방향(방위각·고도), 하이라이트, 밴드 색과 경계값, 림 라이트, 외곽선 두께를 바로 바꿀 수 있습니다.
+**패널에서 바로 조절**<br />
+빛 방향, 밴드 색과 경계값, 하이라이트, 림 라이트, 외곽선 값을 ImGui 패널에서 바로 바꿉니다. 그림자 색은 시작과 끝 두 가지를 정해 그라데이션으로 칠합니다.
 
-**저장하면 바로 다시 컴파일**<br />
-셰이더 파일을 저장하면 0.5초 안에 다시 컴파일해 화면에 반영합니다. 컴파일에 실패하면 이전 셰이더로 계속 그리면서, 오류를 패널에 빨간 글씨로 보여 줍니다.
+**저장하면 바로 반영**<br />
+셰이더 파일을 저장하면 0.5초 안에 다시 컴파일하고, 실패하면 이전 화면을 유지한 채 오류를 보여 줍니다.
 
-**실험 프리셋**<br />
-실험 하나는 픽셀 셰이더 파일과 모든 값을 묶은 프리셋입니다. 목록에서 고르면 바로 바뀌고, 고친 값은 저장하거나 되돌릴 수 있습니다. 하이라이트까지 네 단계로 나눈 변형 셰이더도 이때 따로 분리해, 프리셋에서 셰이더 파일을 골라 비교합니다.
+**프리셋으로 비교**<br />
+셰이더 파일과 값을 묶은 프리셋을 목록에서 골라, 세 단계 셰이더와 하이라이트를 면으로 칠하는 변형 셰이더를 오가며 비교합니다.
 
 <Fragment slot="media">
   <Figure src="/projects/toon-shader/ui.webp" caption="ImGui 패널 · 왼쪽 툰 파라미터, 오른쪽 실험 목록과 핫 리로드" />
@@ -107,17 +94,17 @@ ImGui 패널에서 빛의 방향(방위각·고도), 하이라이트, 밴드 색
 
 **배운 것**
 
-- **단순한 규칙이 만드는 스타일**<br />빛의 세기를 몇 단계로 끊고 테두리를 더하는 것만으로도, 같은 구가 그림처럼 보였습니다.
-- **값은 코드 밖에 두기**<br />숫자를 셰이더에 직접 적어 두면 실험이 남지 않습니다. 값을 파일로 저장해 두어야 나중에 비교하고 되돌릴 수 있었습니다.
-- **화면이 맞아도 코드는 틀릴 수 있습니다**<br />외곽선 버그는 구가 움직이지 않는 장면이라 1년 동안 드러나지 않았습니다.
+- **단순한 규칙이 만드는 스타일**<br />단순한 규칙만으로도 화면에 렌더링되는 오브젝트의 느낌을 바꿀 수 있다는 걸 배웠습니다.
+- **빛을 성분별로 나눠 보기**<br />주변광, 난반사, 정반사, 림 라이트를 따로 계산해 더한다는 걸 알고 나니, 어느 성분은 끊고 어느 성분은 그대로 둘지 고를 수 있었습니다.
+- **과정을 남겨야 다시 볼 수 있습니다**<br />결과 이미지만 남은 실험은 다시 만들 수 없었습니다. 어떤 값으로 그렸는지가 결과만큼 중요했습니다.
 
 <Fragment slot="aside">
 
 **다음에 해 보고 싶은 것**
 
-- 언리얼 엔진 머티리얼로 옮기기 — Custom 노드로 시도했지만 셀 셰이딩이 제대로 그려지지 않아 멈춘 상태입니다
-- 구가 아닌 다른 모델에 적용해 보기
-- 화면 공간에서 윤곽을 찾는 외곽선 방식과 비교해 보기
+- 구가 아닌 다른 모델에도 적용해 보기
+- 반사광을 표현할 수 있는 다른 방법 탐구하기
+- 다른 물체의 그림자를 어떻게 드리울지 공부하기
 
 </Fragment>
 </Section>
