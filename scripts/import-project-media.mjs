@@ -36,7 +36,6 @@ const manifest = {
 			// parallax has headroom; rendered at 2x and Lanczos-downsampled
 			{ out: 'cover.webp', src: `${SHOTS}/cloud/hq/hero-08-2560x1600.png`, width: 2560, q: 88 },
 			{ out: 'goals.webp', src: `${SHOTS}/cloud/hq/goals-altocumulus-sunset-building-400ms-16s-poster.png`, q: 90 },
-			{ out: 'sunset.webp', src: `${SHOTS}/cloud/f6-sunset/run2/sunset_180858.png`, width: W.wide },
 			// gallery shots open in the lightbox at up to 1600px, so they are stored at that width; q 90 because soft
 			// cloud gradients band at the default quality
 			...['stratus', 'cumulus', 'altocumulus', 'custom'].flatMap((t, i) => [
@@ -55,8 +54,6 @@ const manifest = {
 				width: W.wide,
 				q: 90,
 			})),
-			{ out: 'ui-f1.webp', src: `${SHOTS}/cloud/23-ui-f1.png`, width: W.wide },
-			{ out: 'perf-panel.webp', src: `${SHOTS}/cloud/24-perf-panel.png` },
 			// progress: same camera (F5, building) — the 09-04 raw window capture cropped around the building to the size
 			// of progress-now, clear of the ImGui panel (the later captures have a wider panel that a crop this size would catch)
 			{ out: 'progress-0904.webp', src: `${CLOUD_OLD}/2026-09-04-cpu-weahtermap.png`, crop: [277, 234, 1355, 762], q: 90 },
@@ -86,8 +83,9 @@ const manifest = {
 		],
 		// Goals loop: Altocumulus at sunset from F5, wind 400 m/s in real time, 16 s with a 0.5 s loop fade, rendered frame by frame at 2x and
 		// encoded at CRF 18 (hq/README.md)
-		copies: [{ out: 'goals.mp4', src: `${SHOTS}/cloud/hq/goals-altocumulus-sunset-building-400ms-16s.mp4` }],
 		clips: [
+			// 1920 master → 1600×900 for the page
+			{ out: 'goals.mp4', src: `${SHOTS}/cloud/hq/goals-altocumulus-sunset-building-400ms-16s.mp4`, cuts: [[0, 16]], crf: 24, height: 900 },
 			{
 				out: 'cover.mp4',
 				src: `${VIDEO}/Volumetric_Cloud.mp4`,
@@ -132,13 +130,11 @@ const manifest = {
 				{ out: `preset-${p}-surface.webp`, src: `${FIG2}/water-shader/${p}_ocean_surface.jpg`, width: W.gallery },
 				{ out: `preset-${p}-top.webp`, src: `${FIG2}/water-shader/${p}_top.jpg`, width: W.gallery },
 			]),
-			{ out: 'before.webp', src: `${FIG2}/water-shader/before.png`, width: W.wide },
-			{ out: 'after.webp', src: `${FIG2}/water-shader/after.png`, width: W.wide },
 			...[0, 1, 2, 3, 4, 5].map((m) => ({ out: `dbg-${m}.webp`, src: `${FIG2}/water-shader/dbg_${m}.png`, width: W.gallery })),
 		],
 		// Goals loop: Basic, camera slot 4, rendered frame by frame at 2560×1440 (ws-capture worktree, water-hq/README.md),
 		// 16 s with a 0.5 s fade; the page copy is a 1280-wide CRF 27 re-encode of the CRF 18 master
-		copies: [{ out: 'goals.mp4', src: `${SHOTS}/water-hq/goals-web-1280-27.mp4` }],
+		clips: [{ out: 'goals.mp4', src: `${SHOTS}/water-hq/goals-web-1280-27.mp4`, cuts: [[0, 16]], crf: 30 }],
 	},
 	sdfs: {
 		// renderer-direct captures from the sdfs-capture worktree (test-only capture mode: --card --time --size --hide-ui
@@ -153,9 +149,9 @@ const manifest = {
 				q: 90,
 			})),
 		],
-		copies: [
-			// the deck sliding 08 → 09 → 10 → 11 (6.7 s rendered, last 0.6 s faded into the first), 3840×2160 → 1920, CRF 18
-			{ out: 'goals.mp4', src: `${SHOTS}/sdf-hq/goals-deck-08-11-master.mp4` },
+		clips: [
+			// the deck sliding 08 → 09 → 10 → 11 (6.7 s rendered, last 0.6 s faded into the first), master 1920 → 720p
+			{ out: 'goals.mp4', src: `${SHOTS}/sdf-hq/goals-deck-08-11-master.mp4`, cuts: [[0, 6.0667]], crf: 24 },
 		],
 	},
 	// renderer-direct captures from the toon-capture worktree (5120×2880, see shots/toon-hq): hero and loop are 16:9
@@ -218,7 +214,7 @@ const manifest = {
 			{ out: 'color-subject.webp', src: `${SHOTS}/cub3d-hq/raw/T5.png`, crop: [0, 240, 2560, 1440], width: 1280, q: 88 },
 		],
 		// one lap around the centre pillar (6 s, seamless), already 1280×960 from 2× frames
-		clips: [{ out: 'overview.mp4', src: `${SHOTS}/cub3d-hq/orbit-loop-2x.mp4`, cuts: [[0, 6]], crop: 'crop=1280:720:0:120', crf: 25, height: 720 }],
+		clips: [{ out: 'overview.mp4', src: `${SHOTS}/cub3d-hq/orbit-loop-2x.mp4`, cuts: [[0, 6]], crop: 'crop=1280:720:0:120', crf: 30, height: 720 }],
 	},
 	// list / grid hover previews: the same footage as each page's Goals (or Overview) clip, re-encoded light at 540p
 	'water-shader#hover': { clips: [{ out: 'cover.mp4', src: `${SHOTS}/water-hq/goals-web-1280-27.mp4`, cuts: [[0, 6]], crf: 28, height: 540 }] },

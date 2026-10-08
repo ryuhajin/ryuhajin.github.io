@@ -29,7 +29,7 @@ sidebar:
 ## Classes and Inheritance
 클래스 상속 다이어그램
 
-<img src="/images/UEClassesInheritance.png" alt="" style="width:70%" />
+<img src="/images/UEClassesInheritance.webp" alt="" style="width:70%" />
 
 ### 클래스에서 "Is A" VS "Has A"
 - Is A : 상속 관계
@@ -39,7 +39,7 @@ sidebar:
   - 예: `a Package has a World` 
   - 예: `a Level has Actors`
 
-![](/images/hasARelationships.png)
+![](/images/hasARelationships.webp)
 - 월드는 패키지의 서브 객체
 - 레벨은 월드의 서브 객체
 - 액터는 레벨의 서브 객체

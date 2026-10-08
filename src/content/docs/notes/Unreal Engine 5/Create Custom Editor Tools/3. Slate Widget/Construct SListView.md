@@ -118,7 +118,7 @@ TSharedRef<ITableRow> ReuseRow(TSharedPtr<ItemType> NewItem)
 ```
 
 ### 정리
-![](/images/SListView.png)
+![](/images/SListView.webp)
 
 1. 위젯에서 스크롤 리스트 이벤트를 부름
 - 사용자가 스크롤하거나, 데이터가 바뀌거나, 리스트가 처음 표시될 때 이벤트 발생
@@ -153,7 +153,7 @@ ConstructedAssetListView->RequestListRefresh();
 ```
 
 ### 동작
-<img src="/images/SListView-RequestListRefresh.png" alt="" style="width:50%" />
+<img src="/images/SListView-RequestListRefresh.webp" alt="" style="width:50%" />
 
 ### RebuildList()
 즉시 전체 리스트 재구성
@@ -168,7 +168,7 @@ void SListView::RebuildList()
 ```
 
 ### 동작
-<img src="/images/SListView-RebuildList.png" alt="" style="width:40%" />
+<img src="/images/SListView-RebuildList.webp" alt="" style="width:40%" />
 
 #### RebuildList() vs RequestListRefresh() 선택 가이드
 

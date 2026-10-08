@@ -61,13 +61,13 @@ sidebar:
 
 - **렌더독에서 실행하는 경우**는 `.exe` 실행 파일을 launch Applicaion에 경로 설정 해주면 됨
 
-![](/images/renderDoc_started.png)
+![](/images/renderDoc_started.webp)
 
 ---
 
 - **경로 설정 후 오른쪽 아래의 launch 버튼을 누르면 프로그램이 시작되며 왼쪽 상단에 디버깅 문구가 표시된다**
 
-![](/images/renderDoc_started_0.png)
+![](/images/renderDoc_started_0.webp)
 
 ---
 

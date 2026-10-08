@@ -40,7 +40,7 @@ sidebar:
 - 표면 반응(Surface Interaction)을 기준으로 4가지로 분리하여 처리한다
 
 
-<img src="/images/CustomLighting-category.png" alt="" style="width:80%" />
+<img src="/images/CustomLighting-category.webp" alt="" style="width:80%" />
 
 ---
 
@@ -79,7 +79,7 @@ sidebar:
 
 ## 네 가지 빛 타입
 
-<img src="/images/CustomLighting-fourLight.png" alt="" style="width:60%" />
+<img src="/images/CustomLighting-fourLight.webp" alt="" style="width:60%" />
 
 위의 논리를 바탕으로, 그래픽스 엔진은 최종 픽셀의 색상을 결정하기 위해
 - 들어오는 빛의 종류 (2가지) 와
@@ -89,7 +89,7 @@ sidebar:
 
 ### Direct Diffuse
 
-<img src="/images/CustomLighting_directiDiffuse.png" alt="" style="width:80%" />
+<img src="/images/CustomLighting_directiDiffuse.webp" alt="" style="width:80%" />
 
 - 직접 들어온 빛(단일 방향)이 사방으로 산란됨
 - 모델의 기본적인 밝은 면과 어두운 그림자 면 (형태감)
@@ -98,7 +98,7 @@ sidebar:
 
 ### Direct Specular
 
-<img src="/images/CustomLighting_directispecular.png" alt="" style="width:80%" />
+<img src="/images/CustomLighting_directispecular.webp" alt="" style="width:80%" />
 
 - 직접 들어온 빛(단일 방향)이 한 방향으로 정반사됨
 - 광원의 형태가 표면에 맺히는 하이라이트 점
@@ -107,7 +107,7 @@ sidebar:
 
 ### Indirect Diffuse
 
-<img src="/images/CustomLighting_indirectidiffuse.png" alt="" style="width:80%" />
+<img src="/images/CustomLighting_indirectidiffuse.webp" alt="" style="width:80%" />
 
 - 사방에서 들어온 빛이 다시 사방으로 산란됨
 - 직접광이 닿지 않는 그림자 영역의 은은한 밝기와 색 번짐(Color Bleeding)
@@ -116,13 +116,13 @@ sidebar:
 
 ### Indirect Specular
 
-<img src="/images/CustomLighting_indirectspecular.png" alt="" style="width:80%" />
+<img src="/images/CustomLighting_indirectspecular.webp" alt="" style="width:80%" />
 
 - 사방에서 들어온 빛이 한 방향으로 정반사됨
 - 표면에 주변 환경 전체가 거울처럼 비치는 현상 (Reflections)
 
 ---
 
-<img src="/images/CustomLighting-allLighting.png" alt="" style="width:40%" />
+<img src="/images/CustomLighting-allLighting.webp" alt="" style="width:40%" />
 
 네 가지가 모두 합쳐진 렌더링 화면

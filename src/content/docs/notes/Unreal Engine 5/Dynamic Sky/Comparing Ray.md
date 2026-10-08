@@ -673,4 +673,4 @@ Ray casting과 ray tracing은 광선을 어떻게 활용하는가에 대한 용�
 #### 부록 : 구 교차식
 ---
 
-![](/images/ray-Sphere.png)
+![](/images/ray-Sphere.webp)
