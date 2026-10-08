@@ -17,8 +17,10 @@ export default defineConfig({
 		starlight({
 			title: "RyuHaJin's Notes",
 			description: '그래픽스 · 엔진 · 수학 공부 기록',
-			favicon: '/images/cat_yellow_bg.ico',
+			favicon: '/favicon.svg',
 			head: [
+				{ tag: 'link', attrs: { rel: 'icon', href: '/favicon-32.png', type: 'image/png', sizes: '32x32' } },
+				{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' } },
 				{ tag: 'link', attrs: { rel: 'preload', href: '/fonts/pretendard-subset.woff2', as: 'font', type: 'font/woff2', crossorigin: '' } },
 			],
 			locales: { root: { label: '한국어', lang: 'ko' } },
