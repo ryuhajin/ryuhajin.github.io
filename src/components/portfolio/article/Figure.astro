@@ -1,8 +1,10 @@
 ---
 import Caption from './Caption.astro';
+import { imageSize } from '../../../portfolio/image-size';
 // One image (opens in the page lightbox) or a looping clip, with a short caption (Caption.astro).
 // size: 'text' stays in the reading column, 'wide' / 'full' break out of it (see .prose in projects/[slug].astro).
 // Inside <Grid> the size is ignored and the figure fills its cell.
+// Clips load and play only near the viewport (script below); width/height come from the poster or image file.
 interface Props {
 	src: string;
 	caption?: string;
@@ -12,20 +14,40 @@ interface Props {
 	size?: 'text' | 'wide' | 'full';
 }
 const { src, caption, alt, video, size = 'text' } = Astro.props;
+const dims = await imageSize(src);
 ---
 
 <figure class:list={['fig', size]}>
 	{
 		video ? (
-			<video src={video} poster={src} muted loop playsinline autoplay preload="metadata" aria-label={alt ?? caption} />
+			<video data-src={video} poster={src} {...dims} muted loop playsinline preload="none" data-lazy-clip aria-label={alt ?? caption} />
 		) : (
 			<button type="button" class="shot" data-cursor="zoom" data-lightbox={src} data-caption={caption}>
-				<img src={src} alt={alt ?? caption ?? ''} loading="lazy" decoding="async" />
+				<img src={src} {...dims} alt={alt ?? caption ?? ''} loading="lazy" decoding="async" />
 			</button>
 		)
 	}
 	{caption && <Caption text={caption} />}
 </figure>
+
+<script>
+	// clips are fetched once they come near the viewport, and pause while scrolled away
+	const io = new IntersectionObserver(
+		(entries) => {
+			for (const { target, isIntersecting } of entries) {
+				const clip = target as HTMLVideoElement;
+				if (!isIntersecting) {
+					clip.pause();
+					continue;
+				}
+				if (!clip.getAttribute('src')) clip.src = clip.dataset.src!;
+				clip.play().catch(() => {});
+			}
+		},
+		{ rootMargin: '300px 0px' }
+	);
+	for (const clip of document.querySelectorAll<HTMLVideoElement>('video[data-lazy-clip]')) io.observe(clip);
+</script>
 
 <style>
 	.fig {

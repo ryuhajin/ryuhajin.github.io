@@ -424,6 +424,11 @@ void main() {
 	vec2 fc = gl_FragCoord.xy;
 	bool pixel = uPixel > 1.5;
 	if (pixel) fc = (floor(fc / uPixel) + 0.5) * uPixel;
+	// left of the menu everything is masked out (keep = 0 below): skip the scene there
+	if (fc.x < uMenuX) {
+		gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+		return;
+	}
 	// 8-bit: every block the line passes through lights up, so lines stay one block thick and unbroken
 	float hw = pixel ? 0.55 * uPixel : 0.6 * uPx;
 	float aa = pixel ? 0.0 : 1.0;
@@ -494,6 +499,11 @@ void main() {
 	vec2 fc = gl_FragCoord.xy;
 	bool pixel = uPixel > 1.5;
 	if (pixel) fc = (floor(fc / uPixel) + 0.5) * uPixel;
+	// left of the menu the lines are faded out and pass 1 left no fill: fully transparent, skip the echo taps
+	if (fc.x < uMenuX) {
+		gl_FragColor = vec4(0.0);
+		return;
+	}
 
 	// figure + echoes, channel-split by velocity (only paid for while something moves); per channel: (ink, accent)
 	vec2 sG = stack(fc);
@@ -823,22 +833,32 @@ export function initHeroSdf() {
 		const start = performance.now() / 1000;
 		let last = start;
 		let raf = 0;
-		// frame-time watchdog: if the average frame is slow, render fewer pixels (down to 60% per axis)
+		// frame-time watchdog: if frames stay slow, render fewer pixels (down to 60% per axis). It never steps back up,
+		// so it ignores the first ~2 s (page load), single stalls (> 0.1 s: GC, a throttled background pane) and needs
+		// two slow windows in a row before it acts
 		let acc = 0;
 		let frames = 0;
+		let slow = 0;
+		let warmup = 120;
 		const loop = () => {
 			const now = performance.now() / 1000;
-			const dt = Math.min(0.05, Math.max(0.001, now - last));
+			const gap = now - last;
+			const dt = Math.min(0.05, Math.max(0.001, gap));
 			last = now;
 			draw(now - start, dt);
-			acc += dt;
-			if (++frames === 90) {
-				if (acc / frames > 0.024 && quality > 0.6) {
-					quality = Math.max(0.6, quality * 0.8);
-					resize();
+			if (warmup > 0) warmup--;
+			else if (gap < 0.1) {
+				acc += gap;
+				if (++frames === 90) {
+					slow = acc / frames > 0.024 ? slow + 1 : 0;
+					if (slow >= 2 && quality > 0.6) {
+						quality = Math.max(0.6, quality * 0.8);
+						resize();
+						slow = 0;
+					}
+					acc = 0;
+					frames = 0;
 				}
-				acc = 0;
-				frames = 0;
 			}
 			raf = requestAnimationFrame(loop);
 		};
@@ -848,6 +868,8 @@ export function initHeroSdf() {
 				last = performance.now() / 1000;
 				acc = 0;
 				frames = 0;
+				slow = 0;
+				warmup = 120;
 				raf = requestAnimationFrame(loop);
 			}
 		});

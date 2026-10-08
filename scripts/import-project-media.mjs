@@ -105,7 +105,7 @@ const manifest = {
 	'water-shader': {
 		images: [
 			// hero: the Basic final cut (camera slot 1), captured by the app at 2560×1440 (WaterShader docs/features/ocean-hero)
-			{ out: 'cover.webp', src: `${WATER_CAP}/final_slot1/basic_slot1.png`, width: 2560, q: 88 },
+			{ out: 'cover.webp', src: `${WATER_CAP}/final_slot1/basic_slot1.png`, width: W.hero, q: 82 },
 			// before/after: the same fixed `sunward` shot from the 2026-05 build and the 2026-10 gallery run
 			{ out: 'compare-before.webp', src: `${WATER}/before/tropical_sunward.jpg`, q: 90 },
 			{ out: 'compare-after.webp', src: `${WATER_CAP}/gallery_212204/tropical_sunward.png`, width: W.wide, q: 90 },
@@ -180,7 +180,7 @@ const manifest = {
 	// minilibx-linux capture port (WSL), 3840×2160, heights ×3 in the capture build (see shots/fdf-hq/README.md)
 	fdf: {
 		images: [
-			{ out: 'cover.webp', src: `${SHOTS}/fdf-hq/raw/map-t1.png`, width: W.hero, q: 90 },
+			{ out: 'cover.webp', src: `${SHOTS}/fdf-hq/raw/map-t1.png`, width: W.hero, q: 82 },
 			// overview poster and loop: sparse maps only, trimmed and padded to 16:9 so their lines stay readable at 1280
 			{ out: 'overview.webp', src: `${SHOTS}/fdf-hq/raw/map-elem.png`, frame: true, width: W.wide, q: 90 },
 			{ out: 'step-text.webp', src: `${SHOTS}/fdf-hq/raw/step-42-a-text-dimzero.png`, q: 90 },
@@ -203,7 +203,7 @@ const manifest = {
 	// minilibx-linux capture port (WSL), 2560×1920 build of the team's final code, capture map shots/cub3d-hq/meta
 	cub3d: {
 		images: [
-			{ out: 'cover.webp', src: `${SHOTS}/cub3d-hq/raw/H2.png`, width: W.hero, q: 88 },
+			{ out: 'cover.webp', src: `${SHOTS}/cub3d-hq/raw/H2.png`, width: W.hero, q: 80 },
 			// 16:9 centre crops (the game renders 4:3) so the side column stays level with the text
 			{ out: 'overview.webp', src: `${SHOTS}/cub3d-hq/orbit-f0.png`, crop: [0, 120, 1280, 720], q: 88 },
 			{ out: 'ray-corridor.webp', src: `${SHOTS}/cub3d-hq/raw/R1.png`, width: 1280, q: 88 },

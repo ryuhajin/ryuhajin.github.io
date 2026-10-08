@@ -17,7 +17,7 @@ const motionImage = video && !isVideo ? video : undefined; // gif / animated svg
 ---
 
 <div class:list={['pm', className]} style={vtName ? `view-transition-name: ${vtName}` : undefined}>
-	<img src={motionImage ?? poster} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+	<img src={motionImage ?? poster} alt={alt} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : undefined} decoding="async" />
 	{
 		isVideo &&
 			(autoplay ? (
