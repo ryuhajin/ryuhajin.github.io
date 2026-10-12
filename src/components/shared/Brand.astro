@@ -25,6 +25,7 @@ const reserve = Math.max(site.handle.length, hoverText.length) + 1;
 
 <script>
 	import { typeTo } from '../../scripts/typewriter';
+	import { isPhone } from '../../scripts/phone';
 
 	const INTRO_KEY = 'brand-typed';
 	let firstVisit = false;
@@ -35,7 +36,7 @@ const reserve = Math.max(site.handle.length, hoverText.length) + 1;
 
 	document.querySelectorAll<HTMLAnchorElement>('a.brand').forEach((link) => {
 		const name = link.querySelector<HTMLElement>('.name');
-		if (!name) return;
+		if (!name || isPhone()) return; // phones: the handle just sits there
 		const opts = { busy: link };
 		if (firstVisit && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
 			name.textContent = '';
@@ -103,7 +104,7 @@ const reserve = Math.max(site.handle.length, hoverText.length) + 1;
 			scale: 1.15;
 		}
 	}
-	@media (prefers-reduced-motion: reduce) {
+	@media (prefers-reduced-motion: reduce), (max-width: 820px) {
 		.spark,
 		.caret {
 			animation: none;

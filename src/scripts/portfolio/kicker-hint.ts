@@ -2,8 +2,10 @@
 // (data-hint) with a quick text-scramble, and scrambles back when the pointer leaves.
 
 import { scrambleText } from '../scramble';
+import { isPhone } from '../phone';
 
 export function initKickerHint() {
+	if (isPhone()) return;
 	const kicker = document.querySelector<HTMLElement>('[data-kicker]');
 	const items = [...document.querySelectorAll<HTMLElement>('[data-hint]')];
 	if (!kicker || !items.length) return;

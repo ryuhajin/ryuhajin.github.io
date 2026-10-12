@@ -1,6 +1,5 @@
 // Dennis Snellenberg–style hover media:
 //  - [data-follow]      : a floating preview that trails the cursor (lerp) while hovering [data-media-src] rows
-//  - [data-cursor-label]: the cursor badge, pinned to the pointer (no easing) over cards and screenshot tiles
 //  - video[data-hover-play] inside cards: loaded lazily and played only while hovered
 
 const LERP = 0.2;
@@ -110,52 +109,6 @@ export function initHoverMedia() {
 				row.removeEventListener('pointerenter', enter);
 				row.removeEventListener('pointermove', move);
 				row.removeEventListener('pointerleave', leave);
-			});
-		});
-	}
-
-	// cursor badge over project cards (data-hover-card → "view") and screenshot tiles (data-cursor="zoom")
-	const label = document.querySelector<HTMLElement>('[data-cursor-label]');
-	if (label) {
-		// positioned straight from the pointer event — no animation loop, so it never trails or catches up
-		const place = (e: PointerEvent) => {
-			label.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
-		};
-		const ringText = label.querySelector<SVGTextPathElement>('[data-cursor-text]');
-		const ringPath = label.querySelector<SVGPathElement>('path[id]');
-		// spread the ring text so it closes the circle exactly, whatever the label
-		const fitRing = () => {
-			const text = ringText?.parentElement as SVGTextElement | null;
-			if (!text || !ringPath) return;
-			text.style.letterSpacing = '0px';
-			const chars = text.textContent?.length ?? 1;
-			// a small gap keeps the last glyph from touching the first
-			text.style.letterSpacing = `${(ringPath.getTotalLength() - 3 - text.getComputedTextLength()) / chars}px`;
-		};
-		fitRing();
-		const hide = () => label.classList.remove('show');
-		document.querySelectorAll<HTMLElement>('[data-hover-card], [data-cursor]').forEach((card) => {
-			const enter = (e: PointerEvent) => {
-				const mode = card.dataset.cursor ?? 'view';
-				if (label.dataset.mode !== mode) {
-					label.dataset.mode = mode;
-					if (ringText) ringText.textContent = label.dataset[`text${mode[0].toUpperCase()}${mode.slice(1)}`] ?? '';
-					fitRing();
-				}
-				place(e);
-				label.classList.add('show');
-			};
-			const move = place;
-			card.addEventListener('pointerenter', enter);
-			card.addEventListener('pointermove', move);
-			card.addEventListener('pointerleave', hide);
-			// a click may open the lightbox on top without a pointerleave
-			card.addEventListener('click', hide);
-			cleanups.push(() => {
-				card.removeEventListener('pointerenter', enter);
-				card.removeEventListener('pointermove', move);
-				card.removeEventListener('pointerleave', hide);
-				card.removeEventListener('click', hide);
 			});
 		});
 	}

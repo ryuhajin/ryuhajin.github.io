@@ -301,6 +301,17 @@ h1#_top {
 .starlight-aside__title {
 	font-weight: 650;
 }
+/* phones: a title with inline code (each piece is its own flex item) must wrap instead of running off screen */
+@media (max-width: 820px) {
+	.starlight-aside__title {
+		display: block;
+	}
+	.starlight-aside__icon {
+		display: inline-block;
+		vertical-align: -0.2em;
+		margin-inline-end: 0.5rem;
+	}
+}
 
 /* math */
 .sl-markdown-content .katex {

@@ -48,8 +48,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
 	import { initHeroSdf } from '../scripts/portfolio/hero-sdf';
 	import { initKickerHint } from '../scripts/portfolio/kicker-hint';
 
+	import { isPhone } from '../scripts/phone';
+
 	initCursorTrail();
-	initHeroSdf();
+	if (!isPhone()) initHeroSdf(); // phones: no WebGL decoration (the stage is hidden too)
 	initKickerHint();
 
 	// date + time in Seoul (the site owner's time zone), regardless of where the visitor is
@@ -154,13 +156,37 @@ const pad = (n: number) => String(n).padStart(2, '0');
 		font-variant-numeric: tabular-nums;
 	}
 
-	@media (max-width: 720px) {
+	/* phones / narrow: a plain scrolling page — brand, menu, intro + stats; no decoration */
+	@media (max-width: 820px) {
+		.home {
+			height: auto;
+			min-height: 100vh;
+			min-height: 100dvh;
+			overflow: visible;
+			gap: 2.5rem;
+			padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom, 0px));
+		}
+		.stage {
+			display: none;
+		}
+		/* above the footer, so the Thema sheet is never painted over */
+		.menu {
+			z-index: 2;
+		}
 		.bottom {
 			flex-direction: column;
 			align-items: start;
+			gap: 1.5rem;
+			background: none;
 		}
 		.intro {
 			font-size: 0.875rem;
+		}
+		.meta {
+			display: grid;
+			grid-template-columns: repeat(2, auto);
+			justify-content: start;
+			gap: 1rem 2.5rem;
 		}
 	}
 

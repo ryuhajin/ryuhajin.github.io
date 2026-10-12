@@ -13,14 +13,16 @@
 	addEventListener('pagereveal', (event) => {
 		const vt = event.viewTransition;
 		if (!vt) return;
+		// phones / narrow: no transitions (page-transitions.css only opts in above 820px; this covers browsers that ignore that)
+		if (matchMedia('(max-width: 820px)').matches) return vt.skipTransition();
 		const nav = window.navigation && navigation.activation;
 		const fromUrl = nav && nav.from ? nav.from.url : document.referrer;
 		if (!fromUrl || new URL(fromUrl).origin !== location.origin) return vt.skipTransition();
 
 		const from = section(new URL(fromUrl).pathname);
 		const to = section(location.pathname);
-		// docs should feel instant
-		if (from === 'notes' && to === 'notes') return vt.skipTransition();
+		// docs should feel instant, and so should moving between the project list and project pages
+		if (from === to && (to === 'notes' || to === 'projects')) return vt.skipTransition();
 
 		const back = !!nav && nav.navigationType === 'traverse' && nav.entry.index < nav.from.index;
 		const dir = back ? opposite[enter[from]] : enter[to];
