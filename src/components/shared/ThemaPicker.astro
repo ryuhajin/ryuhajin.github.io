@@ -21,13 +21,15 @@ interface Props {
 	align?: 'left' | 'right';
 	/** 'up' opens above the button (e.g. mobile menu footer) */
 	placement?: 'down' | 'up';
+	/** on phones (≤820px) the panel becomes a bottom sheet over a scrim */
+	sheet?: boolean;
 }
 
-const { items, storageKey, attr, modes, align = 'right', placement = 'down' } = Astro.props;
+const { items, storageKey, attr, modes, align = 'right', placement = 'down', sheet = false } = Astro.props;
 const panelId = `thema-${attr}-${Math.random().toString(36).slice(2, 7)}`;
 ---
 
-<thema-picker data-attr={attr} data-key={storageKey} data-modes={JSON.stringify(modes ?? {})} data-align={align} data-placement={placement}>
+<thema-picker data-attr={attr} data-key={storageKey} data-modes={JSON.stringify(modes ?? {})} data-align={align} data-placement={placement} data-sheet={sheet ? '' : undefined}>
 	<button type="button" class="thema-btn" aria-expanded="false" aria-controls={panelId} aria-haspopup="true">
 		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 			<rect x="3" y="3" width="15" height="6" rx="1.5"></rect>
@@ -36,6 +38,7 @@ const panelId = `thema-${attr}-${Math.random().toString(36).slice(2, 7)}`;
 		</svg>
 		<span>Thema</span>
 	</button>
+	{sheet && <div class="thema-scrim" hidden />}
 	<div class="thema-panel" id={panelId} role="dialog" aria-label="Thema" hidden>
 		<p class="thema-title">Select Thema</p>
 		<ul class="thema-list" role="listbox" aria-label="Thema">
@@ -67,6 +70,7 @@ const panelId = `thema-${attr}-${Math.random().toString(36).slice(2, 7)}`;
 	class ThemaPicker extends HTMLElement {
 		#btn!: HTMLButtonElement;
 		#panel!: HTMLElement;
+		#scrim: HTMLElement | null = null;
 		#options: HTMLButtonElement[] = [];
 		#onDoc = (e: Event) => {
 			if (!this.contains(e.target as Node)) this.close();
@@ -75,6 +79,8 @@ const panelId = `thema-${attr}-${Math.random().toString(36).slice(2, 7)}`;
 		connectedCallback() {
 			this.#btn = this.querySelector('.thema-btn')!;
 			this.#panel = this.querySelector('.thema-panel')!;
+			this.#scrim = this.querySelector('.thema-scrim');
+			this.#scrim?.addEventListener('click', () => this.close());
 			this.#options = [...this.querySelectorAll<HTMLButtonElement>('[role="option"]')];
 			this.sync();
 			this.#btn.addEventListener('click', () => (this.#panel.hidden ? this.open() : this.close()));
@@ -105,10 +111,11 @@ const panelId = `thema-${attr}-${Math.random().toString(36).slice(2, 7)}`;
 
 		open() {
 			this.#panel.hidden = false;
+			if (this.#scrim) this.#scrim.hidden = false;
 			this.#btn.setAttribute('aria-expanded', 'true');
 			requestAnimationFrame(() => this.#panel.classList.add('open'));
 			const selected = this.#options.find((o) => o.getAttribute('aria-selected') === 'true') ?? this.#options[0];
-			selected?.scrollIntoView({ block: 'nearest', inline: 'center' });
+			if (selected) this.#reveal(selected, true);
 			selected?.focus({ preventScroll: true });
 			document.addEventListener('pointerdown', this.#onDoc);
 		}
@@ -117,6 +124,7 @@ const panelId = `thema-${attr}-${Math.random().toString(36).slice(2, 7)}`;
 			if (this.#panel.hidden) return;
 			this.#panel.classList.remove('open');
 			this.#panel.hidden = true;
+			if (this.#scrim) this.#scrim.hidden = true;
 			this.#btn.setAttribute('aria-expanded', 'false');
 			document.removeEventListener('pointerdown', this.#onDoc);
 			if (focusButton) this.#btn.focus();
@@ -131,7 +139,18 @@ const panelId = `thema-${attr}-${Math.random().toString(36).slice(2, 7)}`;
 			e.preventDefault();
 			const next = this.#options[(i + step + this.#options.length) % this.#options.length];
 			next.focus();
-			next.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+			this.#reveal(next, false);
+		}
+
+		// scroll only the card list (scrollIntoView would also scroll the page and any overflow:hidden ancestor)
+		#reveal(option: HTMLElement, center: boolean) {
+			const list = option.closest<HTMLElement>('.thema-list');
+			if (!list || list.scrollWidth <= list.clientWidth) return;
+			const l = list.getBoundingClientRect();
+			const o = option.getBoundingClientRect();
+			if (center) list.scrollLeft += o.left - l.left - (l.width - o.width) / 2;
+			else if (o.left < l.left) list.scrollLeft += o.left - l.left;
+			else if (o.right > l.right) list.scrollLeft += o.right - l.right;
 		}
 	}
 	if (!customElements.get('thema-picker')) customElements.define('thema-picker', ThemaPicker);
@@ -288,6 +307,61 @@ const panelId = `thema-${attr}-${Math.random().toString(36).slice(2, 7)}`;
 	}
 	.dots i:first-child {
 		margin-left: 0;
+	}
+	.thema-scrim {
+		display: none;
+	}
+	/* phones: a bottom sheet with every theme in a 3-column grid, over a dimmed page; no motion */
+	@media (max-width: 820px) {
+		thema-picker[data-sheet] .thema-scrim:not([hidden]) {
+			display: block;
+			position: fixed;
+			inset: 0;
+			z-index: 999;
+			background: rgb(0 0 0 / 0.4);
+		}
+		thema-picker[data-sheet] .thema-panel {
+			position: fixed;
+			top: auto;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 1000;
+			width: auto;
+			max-height: 80vh;
+			overflow-y: auto;
+			overscroll-behavior: contain;
+			padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
+			border-width: 1px 0 0;
+			border-radius: 16px 16px 0 0;
+			opacity: 1;
+			translate: none;
+			transition: none;
+		}
+		thema-picker[data-sheet] .thema-title {
+			margin-bottom: 0.85rem;
+		}
+		thema-picker[data-sheet] .thema-list {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 0.5rem;
+			padding: 0;
+			overflow: visible;
+			scroll-snap-type: none;
+		}
+		thema-picker[data-sheet] [role='option'] {
+			width: 100%;
+			padding: 0.75rem 0.25rem 0.7rem;
+		}
+		thema-picker[data-sheet] [role='option']:hover {
+			transform: none;
+		}
+		thema-picker[data-sheet] [role='option'][aria-selected='true']::after {
+			display: none;
+		}
+		thema-picker[data-sheet] .name {
+			font-size: 0.875rem;
+		}
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.thema-panel,

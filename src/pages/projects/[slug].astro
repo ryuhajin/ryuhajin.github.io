@@ -2,7 +2,6 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PortfolioLayout from '../../layouts/PortfolioLayout.astro';
 import ProjectMedia from '../../components/portfolio/ProjectMedia.astro';
-import CursorBadge from '../../components/portfolio/CursorBadge.astro';
 import 'katex/dist/katex.min.css';
 // blocks the project .mdx bodies use without importing them
 import Figure from '../../components/portfolio/article/Figure.astro';
@@ -104,7 +103,6 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 			</a>
 		</footer>
 	</main>
-	<CursorBadge />
 
 	<dialog class="lightbox" data-lightbox-dialog aria-label="이미지 크게 보기">
 		<figure>
@@ -123,12 +121,13 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 <script>
 	import { initHoverMedia } from '../../scripts/portfolio/hover-media';
 	import { initLightbox } from '../../scripts/portfolio/lightbox';
+	import { isPhone } from '../../scripts/phone';
 	initHoverMedia();
 	initLightbox();
 
 	// the cover drifts up slower than the page, so the page reads as scrolling down past it
 	const hero = document.querySelector<HTMLElement>('[data-parallax]');
-	if (hero && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+	if (hero && !matchMedia('(prefers-reduced-motion: reduce)').matches && !isPhone()) {
 		let raf = 0;
 		const update = () => {
 			raf = 0;
@@ -407,7 +406,7 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 	.next-card {
 		display: grid;
 		gap: 0.75rem;
-		cursor: none;
+		cursor: pointer;
 	}
 	.next-card > .mono {
 		color: var(--fg-3);
@@ -525,11 +524,37 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 			grid-template-columns: 1fr;
 		}
 		.hero {
+			height: 56vh;
 			height: 56dvh;
 		}
 		h1 {
 			font-size: clamp(2.25rem, 11vw, 4rem);
 			overflow-wrap: anywhere;
+		}
+	}
+	/* phones / narrow: a still cover with a fixed ratio, text sized by width (not screen height) for reading */
+	@media (max-width: 820px) {
+		.hero {
+			height: auto;
+			aspect-ratio: 4 / 3;
+			margin-top: var(--nav-h);
+			-webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+			mask-image: linear-gradient(to bottom, #000 70%, transparent);
+		}
+		.hero::after {
+			display: none;
+		}
+		.intro {
+			margin-top: -3rem;
+			padding-bottom: 3rem;
+		}
+		.lead {
+			font-size: 1.0625rem;
+			font-weight: 400;
+			line-height: 1.7;
+		}
+		.meta div {
+			grid-template-columns: 3.75rem minmax(0, 1fr);
 		}
 	}
 </style>

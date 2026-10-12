@@ -33,7 +33,6 @@ const { items } = Astro.props;
 						<button
 							type="button"
 							class:list={['tile', { main: j === 0 }]}
-							data-cursor="zoom"
 							data-lightbox={im.src}
 							data-caption={[`${p.title}${im.label ? ` · ${im.label}` : ''}`, im.note].filter(Boolean).join(' — ')}
 						>
@@ -105,7 +104,7 @@ const { items } = Astro.props;
 		all: unset;
 		display: block;
 		aspect-ratio: 16 / 9;
-		cursor: zoom-in;
+		cursor: pointer;
 		border-radius: 8px;
 		overflow: hidden;
 		border: 1px solid var(--line-2);
@@ -126,11 +125,6 @@ const { items } = Astro.props;
 		border-color: var(--accent-p, var(--accent));
 		box-shadow: 0 0 0 2px var(--accent-p, var(--accent));
 		translate: 0 -3px;
-	}
-	@media (hover: hover) and (pointer: fine) {
-		.tile {
-			cursor: none;
-		}
 	}
 	.tile img {
 		display: block;

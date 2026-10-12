@@ -6,11 +6,13 @@
  *   gray panel   trails behind: fully covers 40 → 48%, then sweeps out by 82%
  *   the old page is swapped for the new one at 44%, while the gray panel covers everything
  * Direction per destination: <html data-vt="up|down|left|right"> and .vt-curtain[data-dir].
- * Browsers without cross-document view transitions (e.g. Firefox) simply navigate instantly.
+ * Browsers without cross-document view transitions (e.g. Firefox) simply navigate instantly, and so do phones (≤820px).
  */
 
-@view-transition {
-	navigation: auto;
+@media (min-width: 821px) {
+	@view-transition {
+		navigation: auto;
+	}
 }
 
 :root {
@@ -135,6 +137,15 @@ html[data-vt]::view-transition-new(root) {
 	::view-transition-old(*),
 	::view-transition-new(*) {
 		animation: none !important;
+	}
+	.vt-curtain {
+		display: none;
+	}
+}
+/* phones / narrow: plain navigation, no shared elements or curtain */
+@media (max-width: 820px) {
+	* {
+		view-transition-name: none !important;
 	}
 	.vt-curtain {
 		display: none;
