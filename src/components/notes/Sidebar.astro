@@ -1,16 +1,32 @@
 ---
-// Search sits at the top of the sidebar, above the tree.
+// Search sits at the top of the sidebar, above the tree. Same frame as Starlight's Sidebar,
+// but the tree is our SidebarTree (folder titles link to the folder's own page).
 import Search from '@astrojs/starlight/components/Search.astro';
-import Default from '@astrojs/starlight/components/Sidebar.astro';
+import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
+import MobileMenuFooter from './MobileMenuFooter.astro';
+import SidebarTree from './SidebarTree.astro';
+
+const { sidebar } = Astro.locals.starlightRoute;
 ---
 
 <div class="sidebar-search">
 	<Search />
 </div>
-<Default />
+<SidebarPersister>
+	<SidebarTree sublist={sidebar} />
+</SidebarPersister>
+<div class="md:sl-hidden">
+	<MobileMenuFooter />
+</div>
 
 <style>
 	.sidebar-search {
 		margin: 0.25rem 0 1rem;
+	}
+	/* phones: search moves to the header (Header.astro) */
+	@media (max-width: 50rem) {
+		.sidebar-search {
+			display: none;
+		}
 	}
 </style>

@@ -1,5 +1,6 @@
 ---
-// Mobile menu footer: portfolio links + GitHub + Thema (the header hides these on small screens).
+// Mobile menu footer: portfolio links + GitHub + email (the header hides these on small screens;
+// Thema stays in the header as an icon, so it is hidden here).
 import NavTools from '../shared/NavTools.astro';
 import { nav } from '../../site';
 import { notesThema } from '../../notes/thema';
@@ -25,6 +26,9 @@ import { notesThema } from '../../notes/thema';
 	nav {
 		display: flex;
 		gap: 1rem;
+	}
+	.mobile-footer :global(thema-picker) {
+		display: none;
 	}
 	a {
 		color: var(--sl-color-gray-2);

@@ -1,0 +1,171 @@
+---
+// Starlight's SidebarSublist, except a folder title links to the folder's own page (its index.md)
+// instead of listing that page as a separate "Overview" child. The caret still opens/closes the folder.
+import { Badge, Icon } from '@astrojs/starlight/components';
+import SidebarRestorePoint from '@astrojs/starlight/components/SidebarRestorePoint.astro';
+import { hasCurrent, indexLinkOf, type SidebarEntry } from '../../notes/sidebar';
+
+interface Props {
+	sublist: SidebarEntry[];
+	nested?: boolean;
+}
+
+const { sublist, nested } = Astro.props;
+---
+
+<ul class:list={{ 'top-level': !nested }}>
+	{
+		sublist.map((entry) => {
+			const index = entry.type === 'group' ? indexLinkOf(entry) : undefined;
+			const children = entry.type === 'group' ? entry.entries.filter((e) => e !== index) : [];
+			const link = entry.type === 'link' ? entry : index && children.length === 0 ? { ...index, label: entry.label } : undefined;
+			return (
+				<li>
+					{link ? (
+						<a
+							href={link.href}
+							aria-current={link.isCurrent ? 'page' : undefined}
+							class:list={[{ large: !nested }, link.attrs.class]}
+							{...link.attrs}
+						>
+							<span>{link.label}</span>
+							{link.badge && <Badge variant={link.badge.variant} class={link.badge.class} text={link.badge.text} />}
+						</a>
+					) : entry.type === 'group' ? (
+						<details open={hasCurrent(entry) || !entry.collapsed}>
+							<summary class:list={{ linked: index }}>
+								{index ? (
+									<a href={index.href} aria-current={index.isCurrent ? 'page' : undefined} class="group-link large">
+										{entry.label}
+									</a>
+								) : (
+									<span class="group-label">
+										<span class="large">{entry.label}</span>
+										{entry.badge && <Badge variant={entry.badge.variant} class={entry.badge.class} text={entry.badge.text} />}
+									</span>
+								)}
+								<Icon name="right-caret" class="caret" size="1.25rem" />
+							</summary>
+							<SidebarRestorePoint />
+							<Astro.self sublist={children} nested />
+						</details>
+					) : null}
+				</li>
+			);
+		})
+	}
+</ul>
+
+<script>
+	// A folder title is a link inside <summary>: a click would also toggle the folder, and Starlight's
+	// persister (which records every click in a summary as a toggle) would save it closed. Navigate
+	// without toggling and remember the folder as open instead. Modified clicks (new tab) are left alone.
+	for (const a of document.querySelectorAll<HTMLAnchorElement>('a.group-link')) {
+		a.addEventListener('click', (e) => {
+			e.stopPropagation();
+			if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+			e.preventDefault();
+			const restore = a.closest('details')?.querySelector<HTMLElement>('sl-sidebar-restore');
+			const index = parseInt(restore?.dataset.index || '');
+			try {
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '{}');
+				if (Array.isArray(state.open) && !isNaN(index)) {
+					state.open[index] = true;
+					sessionStorage.setItem('sl-sidebar-state', JSON.stringify(state));
+				}
+			} catch {}
+			location.href = a.href;
+		});
+	}
+</script>
+
+<style>
+	@layer starlight.core {
+		ul {
+			--sl-sidebar-item-padding-inline: 0.5rem;
+			list-style: none;
+			padding: 0;
+		}
+
+		li {
+			overflow-wrap: anywhere;
+		}
+
+		ul ul li {
+			margin-inline-start: var(--sl-sidebar-item-padding-inline);
+			border-inline-start: 1px solid var(--sl-color-hairline-light);
+			padding-inline-start: var(--sl-sidebar-item-padding-inline);
+		}
+
+		.large {
+			font-size: var(--sl-text-lg);
+			font-weight: 600;
+			color: var(--sl-color-white);
+		}
+
+		.top-level > li + li {
+			margin-top: 0.75rem;
+		}
+
+		summary {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0.2em var(--sl-sidebar-item-padding-inline);
+			line-height: 1.4;
+			cursor: pointer;
+			user-select: none;
+		}
+		summary::marker,
+		summary::-webkit-details-marker {
+			display: none;
+		}
+
+		.caret {
+			transition: transform 0.2s ease-in-out;
+			flex-shrink: 0;
+		}
+		[open] > summary .caret {
+			transform: rotateZ(90deg);
+		}
+
+		a {
+			display: block;
+			border-radius: 0.25rem;
+			text-decoration: none;
+			color: var(--sl-color-gray-2);
+			padding: 0.3em var(--sl-sidebar-item-padding-inline);
+			line-height: 1.4;
+		}
+
+		a:hover,
+		a:focus {
+			color: var(--sl-color-white);
+		}
+
+		[aria-current='page'],
+		[aria-current='page']:hover,
+		[aria-current='page']:focus {
+			font-weight: 600;
+			color: var(--sl-color-text-invert);
+			background-color: var(--sl-color-text-accent);
+		}
+
+		a > *:not(:last-child),
+		.group-label > *:not(:last-child) {
+			margin-inline-end: 0.25em;
+		}
+
+		@media (min-width: 50rem) {
+			.top-level > li + li {
+				margin-top: 0.5rem;
+			}
+			.large {
+				font-size: var(--sl-text-base);
+			}
+			a {
+				font-size: var(--sl-text-sm);
+			}
+		}
+	}
+</style>

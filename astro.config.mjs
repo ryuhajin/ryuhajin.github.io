@@ -40,10 +40,11 @@ export default defineConfig({
 				Header: './src/components/notes/Header.astro',
 				Sidebar: './src/components/notes/Sidebar.astro',
 				MobileMenuFooter: './src/components/notes/MobileMenuFooter.astro',
+				PageTitle: './src/components/notes/PageTitle.astro',
 			},
 			tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
 			lastUpdated: false,
-			pagination: true,
+			pagination: false,
 		}),
 	],
 });
