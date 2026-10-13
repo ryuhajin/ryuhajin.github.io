@@ -1,0 +1,63 @@
+---
+// Page title with a breadcrumb above it (Notes / Math / linear algebra), so readers on phones
+// — where the tree is tucked into the menu — still see where they are.
+import { crumbsFor } from '../../notes/sidebar';
+
+// Starlight's PAGE_TITLE_ID (not exported); the TOC's "Overview" link and base.css target it
+const PAGE_TITLE_ID = '_top';
+
+const { sidebar, entry } = Astro.locals.starlightRoute;
+const crumbs = crumbsFor(sidebar);
+---
+
+{
+	crumbs.length > 0 && (
+		<nav class="crumbs" aria-label="Breadcrumb">
+			<ol>
+				{crumbs.map((c) => (
+					<li>{c.href ? <a href={c.href}>{c.label}</a> : <span>{c.label}</span>}</li>
+				))}
+			</ol>
+		</nav>
+	)
+}
+<h1 id={PAGE_TITLE_ID}>{entry.data.title}</h1>
+
+<style>
+	h1 {
+		margin-top: 1rem;
+		font-size: var(--sl-text-h1);
+		line-height: var(--sl-line-height-headings);
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+	.crumbs + h1 {
+		margin-top: 0.5rem;
+	}
+	.crumbs {
+		margin-top: 0.75rem;
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+	ol {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.15rem 0;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	li + li::before {
+		content: '/';
+		margin-inline: 0.45rem;
+		color: var(--sl-color-gray-4);
+	}
+	a,
+	span {
+		color: var(--sl-color-gray-3);
+		text-decoration: none;
+	}
+	a:hover {
+		color: var(--sl-color-accent);
+	}
+</style>

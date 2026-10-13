@@ -1,6 +1,7 @@
 ---
 // Notes header, matching the Portfolio top bar: brand · Projects / Notes / About · GitHub · Thema.
-// Search lives at the top of the sidebar instead (see Sidebar.astro).
+// Search lives at the top of the sidebar instead (see Sidebar.astro); on phones the header gets a
+// search icon and an icon-only Thema, next to Starlight's menu button.
 import Brand from '../shared/Brand.astro';
 import NavTools from '../shared/NavTools.astro';
 import { nav } from '../../site';
@@ -25,11 +26,32 @@ import { notesThema } from '../../notes/thema';
 				}
 			</ul>
 		</nav>
+		<button type="button" class="search-btn" aria-label="검색" data-open-search>
+			<svg viewBox="0 0 16 16" aria-hidden="true">
+				<circle cx="7" cy="7" r="4.75"></circle>
+				<path d="M10.5 10.5L14 14"></path>
+			</svg>
+		</button>
 		<div class="tools" style="view-transition-name: nav-tools">
-			<NavTools thema={notesThema} />
+			<NavTools thema={notesThema} sheet />
 		</div>
 	</div>
 </div>
+
+<script>
+	// One search on the page: the sidebar's. On phones the sidebar is a closed popover (display: none),
+	// so its modal is moved to <body> where it can show; the header icon just presses its button.
+	customElements.whenDefined('site-search').then(() => {
+		const dialog = document.querySelector('site-search dialog');
+		if (dialog) document.body.append(dialog);
+	});
+	document.querySelector('[data-open-search]')?.addEventListener('click', (e) => {
+		// stop here: Starlight closes the modal on any click that reaches window from outside it
+		e.stopPropagation();
+		document.querySelector<HTMLButtonElement>('site-search button[data-open-modal]')?.click();
+		document.querySelector<HTMLInputElement>('#starlight__search input')?.focus();
+	});
+</script>
 
 <style>
 	.notes-header {
@@ -68,10 +90,53 @@ import { notesThema } from '../../notes/thema';
 	a.active :global(.gl::after) {
 		background: var(--sl-color-accent);
 	}
-	/* mobile: the hamburger menu (with search, GitHub and Thema) takes over */
+	/* same round icon button as GitHub / email (NavTools .gh) */
+	.search-btn {
+		display: none;
+		place-items: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		padding: 0;
+		border: 2px solid var(--sl-color-hairline-light);
+		border-radius: 50%;
+		background: none;
+		color: var(--sl-color-gray-2);
+		cursor: pointer;
+		transition:
+			color 140ms,
+			border-color 140ms;
+	}
+	.search-btn:hover {
+		color: var(--sl-color-white);
+		border-color: var(--sl-color-accent);
+	}
+	.search-btn svg {
+		width: 1rem;
+		height: 1rem;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.6;
+		stroke-linecap: round;
+	}
+	/* phones: brand · search · Thema (icon) · menu button. Links, GitHub and email move into the menu. */
 	@media (max-width: 50rem) {
 		.right {
+			gap: 0.5rem;
+		}
+		nav,
+		.right :global(.nav-tools > .gh) {
 			display: none;
+		}
+		.search-btn {
+			display: inline-grid;
+		}
+		.right :global(.thema-btn span) {
+			display: none;
+		}
+		.right :global(.thema-btn) {
+			padding: 0;
+			width: 2.25rem;
+			justify-content: center;
 		}
 	}
 </style>

@@ -30,7 +30,7 @@ const panelId = `thema-${attr}-${Math.random().toString(36).slice(2, 7)}`;
 ---
 
 <thema-picker data-attr={attr} data-key={storageKey} data-modes={JSON.stringify(modes ?? {})} data-align={align} data-placement={placement} data-sheet={sheet ? '' : undefined}>
-	<button type="button" class="thema-btn" aria-expanded="false" aria-controls={panelId} aria-haspopup="true">
+	<button type="button" class="thema-btn" aria-label="Thema" aria-expanded="false" aria-controls={panelId} aria-haspopup="true">
 		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 			<rect x="3" y="3" width="15" height="6" rx="1.5"></rect>
 			<path d="M18 6h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-8v3"></path>
