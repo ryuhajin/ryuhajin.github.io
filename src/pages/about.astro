@@ -19,51 +19,65 @@ const contacts = [
 
 <PortfolioLayout title="About" current="about">
 	<main class="about">
-		<section class="statement">
-			<p class="mono">About</p>
-			<h1>
-				{site.name}<span class="accent">.</span>
-			</h1>
-			<p class="role">{site.role} — {site.focus}</p>
-			<p class="intro">{site.intro}</p>
-		</section>
+		<!-- arch portrait, framed like the Figma portfolio slide (cut above the legs), mirrored to face the text -->
+		<img
+			class="portrait"
+			src="/images/about/portrait-arch45-640.webp"
+			srcset="/images/about/portrait-arch45-640.webp 640w, /images/about/portrait-arch45-1280.webp 1280w"
+			sizes="(max-width: 820px) min(64vw, 17rem), clamp(16rem, 40dvh, 24rem)"
+			width="1280"
+			height="1600"
+			alt={`${site.name} 프로필 사진`}
+			decoding="async"
+		/>
 
-		<section class="side">
-			<dl class="skills">
-				{
-					skills.map(([group, items], i) => (
-						<div style={`--i: ${i}`}>
-							<dt class="mono">{group}</dt>
-							<dd>{items.join(' · ')}</dd>
-						</div>
-					))
-				}
-			</dl>
-			<ul class="contacts">
-				{
-					contacts.map((c) => (
-						<li>
-							{c.label === 'Email' ? (
-								<button class="copy" type="button" data-mail={mailData} aria-label="이메일 주소 복사">
-									<span class="mono">Email</span>
-									<span class="value">
-										<span class="idle">
-											<span data-mail-text>…</span> ⧉
+		<div class="text">
+			<section class="statement">
+				<p class="mono">About</p>
+				<h1>
+					{site.name}<span class="accent">.</span>
+				</h1>
+				<p class="role">{site.role} — {site.focus}</p>
+				<p class="intro">{site.intro}</p>
+			</section>
+
+			<section class="side">
+				<dl class="skills">
+					{
+						skills.map(([group, items], i) => (
+							<div style={`--i: ${i}`}>
+								<dt class="mono">{group}</dt>
+								<dd>{items.join(' · ')}</dd>
+							</div>
+						))
+					}
+				</dl>
+				<ul class="contacts">
+					{
+						contacts.map((c) => (
+							<li>
+								{c.label === 'Email' ? (
+									<button class="copy" type="button" data-mail={mailData} aria-label="이메일 주소 복사">
+										<span class="mono">Email</span>
+										<span class="value">
+											<span class="idle">
+												<span data-mail-text>…</span> ⧉
+											</span>
+											<span class="done">복사됨 ✓</span>
 										</span>
-										<span class="done">복사됨 ✓</span>
-									</span>
-								</button>
-							) : (
-								<a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
-									<span class="mono">{c.label}</span>
-									<span>{c.value} ↗</span>
-								</a>
-							)}
-						</li>
-					))
-				}
-			</ul>
-		</section>
+									</button>
+								) : (
+									<a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
+										<span class="mono">{c.label}</span>
+										<span>{c.value} ↗</span>
+									</a>
+								)}
+							</li>
+						))
+					}
+				</ul>
+			</section>
+		</div>
 	</main>
 </PortfolioLayout>
 
@@ -73,23 +87,51 @@ const contacts = [
 </script>
 
 <style>
+	/* arch portrait on the left; name, intro, skills and contacts stacked as one block on the right */
 	.about {
-		height: 100dvh;
+		min-height: 100vh;
+		min-height: 100dvh;
 		display: grid;
-		grid-template-columns: 1.2fr 1fr;
-		gap: clamp(2rem, 7vw, 7rem);
-		align-items: center;
+		grid-template-columns: auto minmax(0, 36rem);
+		justify-content: center;
+		align-content: center;
+		align-items: start;
+		column-gap: clamp(2.5rem, 6vw, 6rem);
 		padding: calc(var(--nav-h) + 1rem) var(--pad) var(--pad);
-		max-width: 90rem;
+		max-width: 76rem;
 		margin-inline: auto;
+		--name-size: clamp(2.75rem, min(8vh, 4.6vw), 5rem);
+	}
+	/* short desktop windows: let the page scroll instead of clipping (portfolio.css locks body scrolling) */
+	:global(body:has(main.about)) {
+		overflow-y: auto;
+	}
+	/* 4:5, framed like the Figma portfolio slide; sized by screen height so it fits next to the text.
+	   The arch's top sits level with the top of the name's capitals: pushed down by the "About" label's line, its margin,
+	   and the gap between the name's line box and its cap height (~0.075em). */
+	.portrait {
+		height: clamp(20rem, 50dvh, 30rem);
+		width: auto;
+		margin-top: calc(0.75rem * 1.5 + 1rem + var(--name-size) * 0.075);
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		border-radius: 999px 999px 14px 14px;
+		background: var(--bg-2);
+	}
+	.text {
+		display: grid;
+		gap: 2.25rem;
 	}
 	.statement .mono {
 		margin: 0 0 1rem;
+		line-height: 1.5;
 		color: var(--accent);
 	}
+	/* first and last name always stay on one line */
 	h1 {
 		margin: 0;
-		font-size: clamp(3rem, 11vh, 7.5rem);
+		white-space: nowrap;
+		font-size: var(--name-size);
 		font-family: var(--font-display);
 		font-weight: var(--display-weight);
 		letter-spacing: var(--display-tracking);
@@ -99,16 +141,15 @@ const contacts = [
 		color: var(--accent);
 	}
 	.role {
-		margin: 1.25rem 0 0;
+		margin: 1.1rem 0 0;
 		font-family: var(--mono);
 		font-size: 0.875rem;
 		color: var(--fg-2);
 	}
 	.intro {
-		margin: 1.5rem 0 0;
-		max-width: 34rem;
+		margin: 1.25rem 0 0;
 		white-space: pre-line;
-		font-size: clamp(1rem, 2.2vh, 1.25rem);
+		font-size: 1rem;
 		line-height: 1.7;
 		color: var(--fg);
 	}
@@ -120,7 +161,7 @@ const contacts = [
 		display: grid;
 		grid-template-columns: 7rem 1fr;
 		gap: 1rem;
-		padding: 1rem 0;
+		padding: 0.8rem 0;
 		border-bottom: 1px solid var(--line-2);
 		animation: rise var(--t-page) var(--ease-out) both;
 		animation-delay: calc(var(--i) * 50ms + 100ms);
@@ -136,36 +177,41 @@ const contacts = [
 		color: var(--fg-2);
 		font-size: 0.9375rem;
 	}
+	/* three cards in a row; the email card takes the width its address needs */
 	.contacts {
 		list-style: none;
-		margin: 2rem 0 0;
+		margin: 1.5rem 0 0;
 		padding: 0;
 		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
 		gap: 0.5rem;
 	}
 	.contacts a,
 	.contacts .copy {
 		display: flex;
-		justify-content: space-between;
-		padding: 0.9rem 1rem;
+		flex-direction: column;
+		gap: 0.2rem;
+		height: 100%;
+		padding: 0.8rem 1rem;
 		border: 1px solid var(--line-2);
 		border-radius: 10px;
+		font-size: 0.875rem;
+		white-space: nowrap;
 		transition:
 			border-color var(--t-micro),
-			background-color var(--t-micro),
-			padding var(--t-fast) var(--ease-out);
+			background-color var(--t-micro);
 	}
 	.contacts a:hover,
 	.contacts .copy:hover {
 		border-color: var(--accent);
 		background: var(--bg-2);
-		padding-inline: 1.25rem 1rem;
 	}
 	.contacts .copy {
 		width: 100%;
 		background: none;
 		color: inherit;
 		font: inherit;
+		font-size: 0.875rem;
 		text-align: left;
 		cursor: pointer;
 	}
@@ -180,21 +226,29 @@ const contacts = [
 	.copy.copied {
 		border-color: var(--accent);
 	}
-	/* phones / narrow: one column that scrolls (body scrolling comes from portfolio.css) */
+	/* phones / narrow: arch on top, then the text block; contacts as a list (body scrolling comes from portfolio.css) */
 	@media (max-width: 820px) {
 		.about {
-			height: auto;
-			min-height: 100vh;
-			min-height: 100dvh;
-			grid-template-columns: 1fr;
-			align-items: start;
-			gap: 2.5rem;
+			grid-template-columns: minmax(0, 1fr);
+			align-content: start;
+			row-gap: 2rem;
 			padding-bottom: calc(var(--pad) + 1rem + env(safe-area-inset-bottom, 0px));
 		}
-		h1 {
-			font-size: clamp(2.75rem, 14vw, 4.5rem);
+		.portrait {
+			height: auto;
+			width: min(64vw, 17rem);
+			margin-top: 0;
 		}
-		.intro {
+		h1 {
+			font-size: clamp(2.5rem, 13vw, 4.5rem);
+		}
+		.contacts {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.contacts a,
+		.contacts .copy {
+			flex-direction: row;
+			justify-content: space-between;
 			font-size: 1rem;
 		}
 	}
