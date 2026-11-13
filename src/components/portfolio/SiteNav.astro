@@ -24,10 +24,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
 			<ol>
 				{nav.map((item, i) => (
 					<li>
-						<a href={item.href} data-hover-set={JSON.stringify(hoverSets[item.id] ?? [])} data-hint={`${item.hint} →`}>
+						<a href={item.href} aria-label={`${pad(i)} ${item.label}`} data-hover-set={JSON.stringify(hoverSets[item.id] ?? [])} data-hint={`${item.hint} →`}>
 							<span class="idx mono">{pad(i)}</span>
 							<span class="label display gl" style={`view-transition-name: nav-${item.id}`}>
-								<span class="glitch">{item.label}</span>
+								<span class="glitch" aria-hidden="true">{Array.from(item.label).map((letter) => <span class="nav-letter">{letter}</span>)}</span>
 							</span>
 						</a>
 					</li>

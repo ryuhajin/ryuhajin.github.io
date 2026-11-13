@@ -122,6 +122,40 @@
 	color-scheme: light;
 }
 
+/* Euclid landing menu: one coloured letter, with the next primary colour on hover numbers. */
+:root[data-ptheme='euclid'] .hero-nav li:nth-child(1) .nav-letter:first-child,
+:root[data-ptheme='euclid'] .hero-nav li:nth-child(4) .nav-letter:nth-child(4) {
+	color: var(--accent);
+}
+:root[data-ptheme='euclid'] .hero-nav li:nth-child(2) .nav-letter:nth-child(4) {
+	color: var(--shape-fill);
+}
+:root[data-ptheme='euclid'] .hero-nav li:nth-child(3) .nav-letter:first-child {
+	color: var(--accent-2);
+}
+:root[data-ptheme='euclid'] .hero-nav li:nth-child(3n + 1) a:hover .idx {
+	color: var(--shape-fill);
+}
+:root[data-ptheme='euclid'] .hero-nav li:nth-child(3n + 2) a:hover .idx {
+	color: var(--accent-2);
+}
+:root[data-ptheme='euclid'] .hero-nav li:nth-child(3n) a:hover .idx {
+	color: var(--accent);
+}
+:root[data-ptheme='euclid'] .hero-tools .nav-tools > .gh,
+:root[data-ptheme='euclid'] .hero-tools .nav-tools > thema-picker > .thema-btn {
+	border-color: var(--line-2);
+}
+:root[data-ptheme='euclid'] .hero-tools .nav-tools > a.gh:hover {
+	border-color: var(--accent);
+}
+:root[data-ptheme='euclid'] .hero-tools .nav-tools > .mail:hover {
+	border-color: var(--shape-fill);
+}
+:root[data-ptheme='euclid'] .hero-tools .nav-tools > thema-picker > .thema-btn:hover {
+	border-color: var(--accent-2);
+}
+
 :root[data-ptheme='sky'] {
 	--bg: #d4ebff;
 	--bg-2: #c4e2fc;
