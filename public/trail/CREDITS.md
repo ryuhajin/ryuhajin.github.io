@@ -1,9 +1,12 @@
 # Hover image credits
 
-Menu hover images (`public/trail/<menu>/*.webp`). All but the teapot come from Wikimedia Commons and were resized, background-removed or circle-masked, and converted to WebP; the teapot is a render of the Utah teapot model made for this site.
+Menu hover images (`public/trail/<menu>/*.webp`). Projects (except the teapot), Notes, and About images come from Wikimedia Commons and were resized, background-removed or circle-masked, and converted to WebP. The teapot is a render of the Utah teapot model made for this site. Devlog images were generated for this site with OpenAI's built-in image generation tool, cropped to their transparent bounds, resized, and converted to WebP.
 
 | File | Source | Author | License |
 |---|---|---|---|
+| devlog/caliper-head.webp | Compact head-only edit of a silver vernier caliper generated for this site | AI-edited with OpenAI | Generated asset; no third-party source attribution |
+| devlog/hourglass.webp | Glass hourglass generated for this site | AI-generated with OpenAI | Generated asset; no third-party source attribution |
+| devlog/screwdriver.webp | Orange precision screwdriver generated for this site | AI-generated with OpenAI | Generated asset; no third-party source attribution |
 | projects/earth.webp | [The Earth seen from Apollo 17](https://commons.wikimedia.org/wiki/File:The_Earth_seen_from_Apollo_17.jpg) | NASA / Apollo 17 crew | Public domain |
 | projects/prism.webp | [Triangular Glass Prism](https://commons.wikimedia.org/wiki/File:Triangular_Glass_Prism.jpg) (cut out along the prism, resized) | Jeremyida002 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) — this cut-out is shared under the same licence |
 | projects/teapot.webp | Rendered for this site from the Utah teapot Bézier patch data, read from three.js [TeapotGeometry.js](https://github.com/mrdoob/three.js/blob/dev/examples/jsm/geometries/TeapotGeometry.js) | Martin Newell (model, 1975); Eric Haines (TeapotGeometry.js) | three.js code: MIT |

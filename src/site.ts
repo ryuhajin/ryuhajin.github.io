@@ -15,7 +15,7 @@ export const site = {
 // src/scripts/copy-email.ts puts it back together in the browser.
 export const mailData = btoa([...site.email].reverse().join(''));
 
-export type NavId = 'projects' | 'notes' | 'about';
+export type NavId = 'devlog' | 'projects' | 'notes' | 'about';
 
 export const nav: { id: NavId; label: string; href: string; hint: string }[] = [
 	{ id: 'projects', label: 'Projects', href: '/projects/', hint: 'selected work' },

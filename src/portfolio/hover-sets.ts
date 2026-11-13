@@ -10,9 +10,16 @@ export interface HoverItem {
 	x: number;
 	y: number;
 	r?: number;
+	/** Mirror the rotated image horizontally around its own centre. */
+	flipX?: boolean;
 }
 
 export const hoverSets: Partial<Record<NavId, HoverItem[]>> = {
+	devlog: [
+		{ src: '/trail/devlog/hourglass.webp', w: 72, x: 66, y: -50, r: 5, flipX: true },
+		{ src: '/trail/devlog/caliper-head.webp', w: 104, x: 168, y: -6, r: 74 },
+		{ src: '/trail/devlog/screwdriver.webp', w: 142, x: 125, y: 73, r: 242 },
+	],
 	projects: [
 		{ src: '/trail/projects/earth.webp', w: 128, x: 70, y: -40 },
 		{ src: '/trail/projects/prism.webp', w: 80, x: 176, y: 38, r: 6 },

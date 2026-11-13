@@ -33,6 +33,7 @@ export function initCursorTrail() {
 			img.alt = '';
 			img.decoding = 'async';
 			img.style.setProperty('--r', `${it.r ?? 0}deg`);
+			img.style.setProperty('--flip-x', it.flipX ? '-1' : '1');
 			img.style.setProperty('--i', String(i));
 			el.append(img);
 			return { img, it, lag: 0.09 + i * 0.035, x: 0, y: 0 };
