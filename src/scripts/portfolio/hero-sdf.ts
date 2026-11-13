@@ -21,6 +21,7 @@
 // scale drops if frames run slow.
 
 import { themas, type ShapeSet } from '../../portfolio/themes';
+import { onMotionChange } from '../phone';
 
 const FIGURES = { squares: 0, globe: 1, dotsphere: 2, pentagram: 3, hypercube: 4, overlap: 5, scatter: 6 } as const;
 type FigureName = keyof typeof FIGURES;
@@ -36,6 +37,8 @@ const PLAYLISTS: Record<ShapeSet, FigureName[]> = {
 const HOLD = 3.2; // s a figure rests
 const MORPH = 1.7; // s the unfold → morph → fold takes
 const ECHOES = 12;
+const FRAME_INTERVAL = 1 / 60;
+const FRAME_TOLERANCE = 0.001; // avoid dropping a 60 Hz frame due to sub-millisecond timestamp jitter
 
 const VERT = `
 attribute vec2 aPos;
@@ -608,10 +611,25 @@ function hypercube(t: number) {
 }
 
 export function initHeroSdf() {
+	let stop: (() => void) | undefined;
+	return onMotionChange((enabled) => {
+		stop?.();
+		stop = enabled ? startHeroSdf() : undefined;
+	});
+}
+
+function startHeroSdf() {
 	const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-sdf]');
 	if (!canvas) return;
 	const gl = canvas.getContext('webgl', { premultipliedAlpha: true, antialias: false, alpha: true, powerPreference: 'low-power' });
 	if (!gl) return; // decoration only — without WebGL the stage simply stays empty
+	let disposed = false;
+	let raf = 0;
+	let pollTimer = 0;
+	let observer: ResizeObserver | undefined;
+	const controller = new AbortController();
+	const options = { signal: controller.signal };
+	canvas.style.visibility = 'visible';
 
 	// compile both programs; with KHR_parallel_shader_compile the driver works in the background and we poll
 	const parallel = gl.getExtension('KHR_parallel_shader_compile');
@@ -704,7 +722,7 @@ export function initHeroSdf() {
 		pointer.x = (e.clientX - rect.left) * dpr;
 		pointer.y = (rect.bottom - e.clientY) * dpr; // GL y up
 		pointer.active = true;
-	});
+	}, options);
 	const lean = { x: 0, y: 0, vx: 0, vy: 0 };
 
 	// echo direction per morph: toward the upper left (the figure sits in the lower-right corner), turning only
@@ -811,16 +829,17 @@ export function initHeroSdf() {
 		// the theme may have changed while the shaders compiled
 		palette = readPalette(probe);
 		playlist = PLAYLISTS[palette.set];
-		new ResizeObserver(() => {
+		observer = new ResizeObserver(() => {
 			resize();
 			if (still) draw(0, 0);
-		}).observe(canvas);
+		});
+		observer.observe(canvas);
 		document.addEventListener('thema-change', () => {
 			palette = readPalette(probe);
 			playlist = PLAYLISTS[palette.set];
 			resize(); // texture filtering differs for the 8-bit theme
 			if (still) draw(0, 0);
-		});
+		}, options);
 		// test hook: render a given moment without the animation loop (hidden tabs pause rAF)
 		(canvas as HTMLCanvasElement & { renderAt?: (t: number) => string }).renderAt = (t: number) => {
 			draw(t, 1 / 60);
@@ -832,7 +851,7 @@ export function initHeroSdf() {
 		}
 		const start = performance.now() / 1000;
 		let last = start;
-		let raf = 0;
+		let nextFrame = start;
 		// frame-time watchdog: if frames stay slow, render fewer pixels (down to 60% per axis). It never steps back up,
 		// so it ignores the first ~2 s (page load), single stalls (> 0.1 s: GC, a throttled background pane) and needs
 		// two slow windows in a row before it acts
@@ -841,7 +860,15 @@ export function initHeroSdf() {
 		let slow = 0;
 		let warmup = 120;
 		const loop = () => {
+			if (disposed) return;
 			const now = performance.now() / 1000;
+			// Keep the two GPU passes at 60 fps on high-refresh displays. Preserve the deadline's
+			// phase so 120/144 Hz callbacks do not turn this into an uneven 48 fps cap.
+			if (now + FRAME_TOLERANCE < nextFrame) {
+				raf = requestAnimationFrame(loop);
+				return;
+			}
+			nextFrame += Math.max(1, Math.floor((now - nextFrame) / FRAME_INTERVAL) + 1) * FRAME_INTERVAL;
 			const gap = now - last;
 			const dt = Math.min(0.05, Math.max(0.001, gap));
 			last = now;
@@ -866,22 +893,39 @@ export function initHeroSdf() {
 			cancelAnimationFrame(raf);
 			if (!document.hidden) {
 				last = performance.now() / 1000;
+				nextFrame = last;
 				acc = 0;
 				frames = 0;
 				slow = 0;
 				warmup = 120;
 				raf = requestAnimationFrame(loop);
 			}
-		});
+		}, options);
 		raf = requestAnimationFrame(loop);
 	};
 
 	// wait for the background compile before touching the programs (touching them earlier would block)
 	const poll = () => {
-		if (started) return;
+		if (started || disposed) return;
 		if (ready()) begin();
-		else setTimeout(poll, 30);
+		else pollTimer = window.setTimeout(poll, 30);
 	};
-	if (parallel) setTimeout(poll, 0);
+	if (parallel) pollTimer = window.setTimeout(poll, 0);
 	else begin();
+	return () => {
+		disposed = true;
+		cancelAnimationFrame(raf);
+		clearTimeout(pollTimer);
+		controller.abort();
+		observer?.disconnect();
+		delete (canvas as HTMLCanvasElement & { renderAt?: (t: number) => string }).renderAt;
+		canvas.style.visibility = 'hidden';
+		gl.deleteBuffer(tri);
+		gl.deleteFramebuffer(fbo);
+		gl.deleteTexture(tex);
+		for (const program of [figureProg, compositeProg]) {
+			gl.getAttachedShaders(program)?.forEach((shader) => gl.deleteShader(shader));
+			gl.deleteProgram(program);
+		}
+	};
 }

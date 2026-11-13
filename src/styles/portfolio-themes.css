@@ -122,6 +122,10 @@
 	color-scheme: light;
 }
 
+:root[data-ptheme='euclid'] .brand .spark {
+	fill: var(--accent-2);
+}
+
 /* Euclid landing menu: one coloured letter, with the next primary colour on hover numbers. */
 :root[data-ptheme='euclid'] .hero-nav li:nth-child(1) .nav-letter:first-child,
 :root[data-ptheme='euclid'] .hero-nav li:nth-child(4) .nav-letter:nth-child(4) {

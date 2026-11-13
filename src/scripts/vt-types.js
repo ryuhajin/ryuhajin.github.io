@@ -6,15 +6,15 @@
 //   /projects → up · /notes → left · /about → down · / → right · back navigation → opposite
 (() => {
 	const section = (path) =>
-		path.startsWith('/notes') ? 'notes' : path.startsWith('/projects') ? 'projects' : path.startsWith('/about') ? 'about' : 'home';
-	const enter = { projects: 'up', notes: 'left', about: 'down', home: 'right' };
+		path.startsWith('/devlog') ? 'devlog' : path.startsWith('/notes') ? 'notes' : path.startsWith('/projects') ? 'projects' : path.startsWith('/about') ? 'about' : 'home';
+	const enter = { devlog: 'right', projects: 'up', notes: 'left', about: 'down', home: 'right' };
 	const opposite = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
 	addEventListener('pagereveal', (event) => {
 		const vt = event.viewTransition;
 		if (!vt) return;
 		// phones / narrow: no transitions (page-transitions.css only opts in above 820px; this covers browsers that ignore that)
-		if (matchMedia('(max-width: 820px)').matches) return vt.skipTransition();
+		if (matchMedia('(max-width: 820px), (max-width: 1024px) and (max-height: 500px)').matches || !matchMedia('(hover: hover) and (pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return vt.skipTransition();
 		const nav = window.navigation && navigation.activation;
 		const fromUrl = nav && nav.from ? nav.from.url : document.referrer;
 		if (!fromUrl || new URL(fromUrl).origin !== location.origin) return vt.skipTransition();
@@ -32,6 +32,13 @@
 		const curtain = document.createElement('div');
 		curtain.className = 'vt-curtain';
 		curtain.dataset.dir = dir;
+		curtain.dataset.section = to;
+		let theme = root.dataset.ptheme;
+		// Notes has its own palette; retain the landing theme for the incoming curtain only.
+		if (!theme && from === 'home') {
+			try { theme = localStorage.getItem('portfolio-theme'); } catch {}
+		}
+		if (theme === 'euclid') curtain.dataset.theme = theme;
 		curtain.setAttribute('aria-hidden', 'true');
 		curtain.innerHTML = '<i class="vt-a"></i><i class="vt-b"></i>';
 		root.append(curtain);

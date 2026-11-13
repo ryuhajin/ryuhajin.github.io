@@ -20,7 +20,10 @@ const dims = await imageSize(src);
 <figure class:list={['fig', size]}>
 	{
 		video ? (
-			<video data-src={video} poster={src} {...dims} muted loop playsinline preload="none" data-lazy-clip aria-label={alt ?? caption} />
+			<div class="clip">
+				<video data-src={video} poster={src} {...dims} muted loop playsinline preload="none" data-lazy-clip aria-label={alt ?? caption} />
+				<button type="button" class="clip-play" data-clip-play aria-label={`${alt ?? caption ?? '영상'} 재생`}>▶ 영상 재생</button>
+			</div>
 		) : (
 			<button type="button" class="shot" data-lightbox={src} data-caption={caption}>
 				<img src={src} {...dims} alt={alt ?? caption ?? ''} loading="lazy" decoding="async" />
@@ -31,22 +34,54 @@ const dims = await imageSize(src);
 </figure>
 
 <script>
-	// clips are fetched once they come near the viewport, and pause while scrolled away
-	const io = new IntersectionObserver(
-		(entries) => {
-			for (const { target, isIntersecting } of entries) {
-				const clip = target as HTMLVideoElement;
-				if (!isIntersecting) {
-					clip.pause();
-					continue;
-				}
-				if (!clip.getAttribute('src')) clip.src = clip.dataset.src!;
-				clip.play().catch(() => {});
-			}
-		},
-		{ rootMargin: '300px 0px' }
-	);
-	for (const clip of document.querySelectorAll<HTMLVideoElement>('video[data-lazy-clip]')) io.observe(clip);
+	import { onMotionChange } from '../../../scripts/phone';
+	// Desktop clips autoplay in view. Compact/touch readers explicitly start each clip.
+	const clips = [...document.querySelectorAll<HTMLVideoElement>('video[data-lazy-clip]')];
+	const visible = new Set<HTMLVideoElement>();
+	let autoplayEnabled = false;
+	const update = (clip: HTMLVideoElement) => {
+		if (document.hidden || !visible.has(clip)) {
+			clip.pause();
+			return;
+		}
+		// Once controls are shown, playback belongs to the reader: never undo a manual pause.
+		if (autoplayEnabled && !clip.controls) {
+			if (!clip.getAttribute('src')) clip.src = clip.dataset.src!;
+			clip.play().catch(() => {});
+		}
+	};
+	const io = new IntersectionObserver((entries) => {
+		for (const { target, isIntersecting } of entries) {
+			const clip = target as HTMLVideoElement;
+			if (isIntersecting) visible.add(clip);
+			else visible.delete(clip);
+			update(clip);
+		}
+	});
+	for (const clip of clips) {
+		const button = clip.parentElement!.querySelector<HTMLButtonElement>('[data-clip-play]')!;
+		button.addEventListener('click', async () => {
+			if (!clip.getAttribute('src')) clip.src = clip.dataset.src!;
+			clip.controls = true;
+			button.hidden = true;
+			clip.focus({ preventScroll: true });
+			try { await clip.play(); } catch { button.hidden = false; }
+		});
+		clip.tabIndex = 0;
+		io.observe(clip);
+	}
+	onMotionChange((enabled) => {
+		autoplayEnabled = enabled;
+		for (const clip of clips) {
+			const button = clip.parentElement!.querySelector<HTMLButtonElement>('[data-clip-play]')!;
+			clip.pause();
+			button.hidden = enabled || clip.controls;
+			update(clip);
+		}
+	});
+	document.addEventListener('visibilitychange', () => clips.forEach(update));
+	addEventListener('pagehide', () => clips.forEach((clip) => clip.pause()));
+	addEventListener('pageshow', () => clips.forEach(update));
 </script>
 
 <style>
@@ -80,5 +115,27 @@ const dims = await imageSize(src);
 	}
 	.shot:hover img {
 		scale: 1.03;
+	}
+	.clip {
+		position: relative;
+		min-width: 0;
+	}
+	.clip-play {
+		position: absolute;
+		inset: 50% auto auto 50%;
+		translate: -50% -50%;
+		min-height: 44px;
+		padding: 0.65rem 1rem;
+		border: 1px solid #ffffff70;
+		border-radius: 999px;
+		background: #000c;
+		color: #fff;
+		white-space: nowrap;
+		font: inherit;
+		cursor: pointer;
+	}
+	.clip-play[hidden] { display: none; }
+	@media (max-width: 820px), (max-width: 1024px) and (max-height: 500px), (hover: none), (pointer: coarse) {
+		.shot:hover img { scale: none; }
 	}
 </style>

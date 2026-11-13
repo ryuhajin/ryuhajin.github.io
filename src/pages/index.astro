@@ -45,13 +45,21 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 <script>
 	import { initCursorTrail } from '../scripts/portfolio/cursor-trail';
-	import { initHeroSdf } from '../scripts/portfolio/hero-sdf';
 	import { initKickerHint } from '../scripts/portfolio/kicker-hint';
+	import { onMotionChange } from '../scripts/phone';
 
-	import { isPhone } from '../scripts/phone';
 
 	initCursorTrail();
-	if (!isPhone()) initHeroSdf(); // phones: no WebGL decoration (the stage is hidden too)
+	// Touch/narrow/reduced-motion visitors never need the shader module.
+	let heroRequested = false;
+	const stopHeroLoader = onMotionChange((enabled) => {
+		if (!enabled || heroRequested) return;
+		heroRequested = true;
+		import('../scripts/portfolio/hero-sdf').then(({ initHeroSdf }) => {
+			stopHeroLoader();
+			initHeroSdf(); // Rechecks current motion preferences after loading.
+		}).catch(() => { heroRequested = false; });
+	});
 	initKickerHint();
 
 	// date + time in Seoul (the site owner's time zone), regardless of where the visitor is
@@ -157,7 +165,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 	}
 
 	/* phones / narrow: a plain scrolling page — brand, menu, intro + stats; no decoration */
-	@media (max-width: 820px) {
+	@media (max-width: 820px), (max-width: 1024px) and (max-height: 500px) {
 		.home {
 			height: auto;
 			min-height: 100vh;
