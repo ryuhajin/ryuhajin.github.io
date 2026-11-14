@@ -1,5 +1,6 @@
 // One <dialog data-lightbox-dialog> per page shows any [data-lightbox] tile large.
 // ←/→ step through every tile on the page, Esc (native) or a backdrop click closes, focus returns to the tile.
+import { lockPageScroll } from '../scroll-lock';
 
 export function initLightbox() {
 	const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
@@ -10,6 +11,7 @@ export function initLightbox() {
 	const tiles = [...document.querySelectorAll<HTMLElement>('[data-lightbox]')];
 	let index = 0;
 	let opener: HTMLElement | null = null;
+	let unlock: (() => void) | undefined;
 
 	const show = (i: number) => {
 		index = (i + tiles.length) % tiles.length;
@@ -24,6 +26,8 @@ export function initLightbox() {
 		t.addEventListener('click', () => {
 			opener = t;
 			show(i);
+			unlock?.();
+			unlock = lockPageScroll();
 			dialog.showModal();
 		})
 	);
@@ -41,5 +45,9 @@ export function initLightbox() {
 	dialog.addEventListener('click', (e) => {
 		if (e.target === dialog) dialog.close();
 	});
-	dialog.addEventListener('close', () => opener?.focus());
+	dialog.addEventListener('close', () => {
+		unlock?.();
+		unlock = undefined;
+		opener?.focus({ preventScroll: true });
+	});
 }

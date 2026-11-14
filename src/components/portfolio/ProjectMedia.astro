@@ -17,16 +17,32 @@ const motionImage = video && !isVideo ? video : undefined; // gif / animated svg
 ---
 
 <div class:list={['pm', className]} style={vtName ? `view-transition-name: ${vtName}` : undefined}>
-	<img src={motionImage ?? poster} alt={alt} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : undefined} decoding="async" />
+	<img src={poster} data-motion-src={motionImage} data-poster={motionImage ? poster : undefined} alt={alt} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : undefined} decoding="async" />
 	{
 		isVideo &&
 			(autoplay ? (
-				<video src={video} poster={poster} muted loop playsinline autoplay preload="metadata" aria-hidden="true" />
+				<video data-src={video} poster={poster} muted loop playsinline preload="none" data-decorative-clip aria-hidden="true" hidden />
 			) : (
 				<video data-src={video} poster={poster} muted loop playsinline preload="none" data-hover-play aria-hidden="true" />
 			))
 	}
 </div>
+
+<script>
+	import { onMotionChange } from '../../scripts/phone';
+	onMotionChange((enabled) => {
+		document.querySelectorAll<HTMLVideoElement>('video[data-decorative-clip]').forEach((clip) => {
+			clip.hidden = !enabled;
+			if (enabled) {
+				if (!clip.getAttribute('src')) clip.src = clip.dataset.src!;
+				clip.play().catch(() => {});
+			} else clip.pause();
+		});
+		document.querySelectorAll<HTMLImageElement>('img[data-motion-src]').forEach((img) => {
+			img.src = enabled ? img.dataset.motionSrc! : img.dataset.poster!;
+		});
+	});
+</script>
 
 <style>
 	.pm {
@@ -49,5 +65,13 @@ const motionImage = video && !isVideo ? video : undefined; // gif / animated svg
 	:global([data-hover-card]:hover) .pm video[data-hover-play],
 	:global([data-hover-card]:focus-visible) .pm video[data-hover-play] {
 		opacity: 1;
+	}
+	.pm video[hidden] {
+		display: none;
+	}
+	@media (max-width: 820px), (max-width: 1024px) and (max-height: 500px), (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+		.pm video {
+			display: none;
+		}
 	}
 </style>

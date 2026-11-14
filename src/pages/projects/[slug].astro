@@ -3,16 +3,10 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PortfolioLayout from '../../layouts/PortfolioLayout.astro';
 import ProjectMedia from '../../components/portfolio/ProjectMedia.astro';
 import 'katex/dist/katex.min.css';
-// blocks the project .mdx bodies use without importing them
-import Figure from '../../components/portfolio/article/Figure.astro';
-import Grid from '../../components/portfolio/article/Grid.astro';
-import Stats from '../../components/portfolio/article/Stats.astro';
-import Block from '../../components/portfolio/article/Block.astro';
-import Section from '../../components/portfolio/article/Section.astro';
-import YouTube from '../../components/portfolio/YouTubeEmbed.astro';
-import Compare from '../../components/portfolio/CompareView.astro';
-import Flipbook from '../../components/portfolio/Flipbook.astro';
-import PresetCards from '../../components/portfolio/PresetCards.astro';
+import { mdxComponents } from '../../portfolio/mdx-components';
+import Prose from '../../components/portfolio/article/Prose.astro';
+import Lightbox from '../../components/portfolio/Lightbox.astro';
+import { seriesOf, blockUrl } from '../../portfolio/devlog';
 
 export async function getStaticPaths() {
 	const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -33,6 +27,8 @@ const d = project.data;
 const { Content } = await render(project);
 const pad = (n: number) => String(n).padStart(2, '0');
 const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', rel: 'noopener' } : {});
+// shown only once the project has published devlog entries
+const devlogCount = (await seriesOf(project.id)).length;
 ---
 
 <PortfolioLayout title={d.title} description={d.tagline} current="projects">
@@ -85,14 +81,24 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 							</div>
 						)
 					}
+					{
+						devlogCount > 0 && (
+							<div>
+								<dt>Devlog</dt>
+								<dd>
+									<a href={blockUrl(project.id)}>{pad(devlogCount)} logs →</a>
+								</dd>
+							</div>
+						)
+					}
 				</dl>
 				</div>
 			</div>
 		</section>
 
-		<article class="prose">
-			<Content components={{ Section, Figure, Grid, Stats, Block, YouTube, Compare, Flipbook, PresetCards }} />
-		</article>
+		<Prose>
+			<Content components={mdxComponents} />
+		</Prose>
 
 		<footer class="foot">
 			<a href="/projects/" class="mono back">← All projects</a>
@@ -104,38 +110,34 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 		</footer>
 	</main>
 
-	<dialog class="lightbox" data-lightbox-dialog aria-label="이미지 크게 보기">
-		<figure>
-			<img alt="" />
-			<figcaption>
-				<span data-lightbox-caption></span>
-				<span class="mono" data-lightbox-count></span>
-			</figcaption>
-		</figure>
-		<button type="button" class="lb-btn lb-prev" data-lightbox-prev aria-label="이전 이미지">←</button>
-		<button type="button" class="lb-btn lb-next" data-lightbox-next aria-label="다음 이미지">→</button>
-		<button type="button" class="lb-btn lb-close" data-lightbox-close aria-label="닫기">✕</button>
-	</dialog>
+	<Lightbox />
 </PortfolioLayout>
 
 <script>
 	import { initHoverMedia } from '../../scripts/portfolio/hover-media';
-	import { initLightbox } from '../../scripts/portfolio/lightbox';
-	import { isPhone } from '../../scripts/phone';
+	import { onMotionChange } from '../../scripts/phone';
 	initHoverMedia();
-	initLightbox();
 
 	// the cover drifts up slower than the page, so the page reads as scrolling down past it
 	const hero = document.querySelector<HTMLElement>('[data-parallax]');
-	if (hero && !matchMedia('(prefers-reduced-motion: reduce)').matches && !isPhone()) {
+	if (hero) {
 		let raf = 0;
 		const update = () => {
 			raf = 0;
 			const y = Math.min(scrollY, innerHeight);
 			hero.style.transform = `translate3d(0, ${y * 0.6}px, 0)`;
 		};
-		addEventListener('scroll', () => (raf ||= requestAnimationFrame(update)), { passive: true });
-		update();
+		const onScroll = () => (raf ||= requestAnimationFrame(update));
+		onMotionChange((enabled) => {
+			removeEventListener('scroll', onScroll);
+			cancelAnimationFrame(raf);
+			raf = 0;
+			hero.style.transform = '';
+			if (enabled) {
+				addEventListener('scroll', onScroll, { passive: true });
+				update();
+			}
+		});
 	}
 </script>
 
@@ -267,126 +269,6 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 		background-size: 100% 1px;
 	}
 
-	/* ---------- body: stacked topic bands (article/Section.astro); type rules for what the .mdx writes ---------- */
-	.prose {
-		counter-reset: sec;
-		color: var(--fg-2);
-		font-size: 1rem;
-		line-height: 1.8;
-	}
-	.prose :global(.sec-text > *) {
-		margin: 0;
-	}
-	.prose :global(.sec-text > * + *) {
-		margin-top: 1.1rem;
-	}
-	.prose :global(.sec-text > .katex-display),
-	.prose :global(.sec-text > .stats),
-	.prose :global(.sec-text > pre) {
-		margin-block: 1.75rem;
-	}
-	/* `<div class="stack">` in the copy: figures stacked inside one grid cell */
-	.prose :global(.stack) {
-		display: grid;
-		gap: 0.75rem;
-		align-content: start;
-	}
-	/* `<div class="pin-end">` in the copy: pushes that last block down so its bottom lines up with the end of a
-	   taller picture column (the text column then stretches to the row and leaves the gap above it) */
-	.prose :global(.sec-text:has(> .pin-end)) {
-		align-self: stretch;
-		display: flex;
-		flex-direction: column;
-	}
-	.prose :global(.sec-text > .pin-end) {
-		margin-top: auto;
-		padding-top: 1.1rem;
-	}
-	/* `<div class="narrow">` in the copy: keeps a small figure group from filling the text column */
-	.prose :global(.narrow) {
-		max-width: 24rem;
-	}
-	/* `---` in the copy: a quiet divider between two parts of one topic */
-	.prose :global(.sec-text > hr) {
-		margin-block: 2rem;
-		height: 1px;
-		border: 0;
-		background: color-mix(in srgb, var(--fg) 12%, transparent);
-	}
-	.prose :global(h2) {
-		margin: 0 0 1.5rem;
-		font-family: var(--font-display);
-		font-weight: var(--display-weight);
-		letter-spacing: var(--display-tracking);
-		font-size: clamp(2rem, 4.2vw, 3rem);
-		line-height: 1.05;
-		color: var(--fg);
-	}
-	.prose :global(h2::before) {
-		counter-increment: sec;
-		content: counter(sec, decimal-leading-zero);
-		display: block;
-		margin-bottom: 0.75rem;
-		font-family: var(--mono);
-		font-size: 0.8rem;
-		font-weight: 400;
-		letter-spacing: 0.04em;
-		color: var(--accent-p);
-	}
-	.prose :global(h3) {
-		margin-top: 2.25rem;
-		font-size: 1.1rem;
-		font-weight: 650;
-		letter-spacing: -0.01em;
-		color: var(--fg);
-	}
-	.prose :global(strong) {
-		color: var(--fg);
-		font-weight: 650;
-	}
-	.prose :global(a) {
-		color: var(--fg);
-		text-decoration: underline;
-		text-decoration-color: var(--accent-p);
-		text-underline-offset: 0.2em;
-	}
-	.prose :global(ul),
-	.prose :global(ol) {
-		padding-left: 1.2rem;
-		display: grid;
-		gap: 0.5rem;
-	}
-	.prose :global(ul > li::marker) {
-		content: '▸  ';
-		color: var(--accent-p);
-	}
-	.prose :global(ol > li::marker) {
-		font-family: var(--mono);
-		font-size: 0.8em;
-		color: var(--accent-p);
-	}
-	.prose :global(code) {
-		font-family: var(--mono);
-		font-size: 0.85em;
-		color: var(--fg);
-	}
-	.prose :global(pre) {
-		padding: 1rem 1.25rem;
-		border-radius: 6px;
-		overflow-x: auto;
-		font-size: 0.85rem;
-		line-height: 1.6;
-	}
-	/* the before/after keeps its 16:9 at the full column width (its own 58vh cap is for the old screens) */
-	.prose :global(.cmp .stage) {
-		max-height: none;
-	}
-	.prose :global(.katex-display) {
-		color: var(--fg);
-		overflow-x: auto;
-		overflow-y: hidden;
-	}
-
 	/* ---------- foot ---------- */
 	.foot {
 		width: min(100% - 2 * var(--pad), 80rem);
@@ -435,89 +317,6 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 		letter-spacing: var(--display-tracking);
 	}
 
-	/* ---------- lightbox ---------- */
-	.lightbox {
-		width: 100vw;
-		height: 100dvh;
-		max-width: none;
-		max-height: none;
-		margin: 0;
-		padding: clamp(1rem, 4vw, 3rem);
-		border: 0;
-		background: transparent;
-		color: #fff;
-	}
-	.lightbox::backdrop {
-		background: #000d;
-		backdrop-filter: blur(6px);
-	}
-	.lightbox[open] {
-		display: grid;
-		place-items: center;
-		animation: lb-in var(--t-fast) var(--ease-out);
-	}
-	@keyframes lb-in {
-		from {
-			opacity: 0;
-			scale: 0.98;
-		}
-	}
-	.lightbox figure {
-		margin: 0;
-		display: grid;
-		gap: 0.75rem;
-		justify-items: center;
-		max-width: 100%;
-		max-height: 100%;
-		pointer-events: none;
-	}
-	.lightbox img {
-		max-width: min(100%, 1600px);
-		max-height: calc(100dvh - 8rem);
-		object-fit: contain;
-		border-radius: 6px;
-		pointer-events: auto;
-	}
-	.lightbox figcaption {
-		display: flex;
-		gap: 1.5rem;
-		font-size: 0.85rem;
-		color: #ddd;
-	}
-	.lb-btn {
-		all: unset;
-		position: fixed;
-		cursor: pointer;
-		display: grid;
-		place-items: center;
-		width: 2.75rem;
-		height: 2.75rem;
-		border-radius: 50%;
-		background: #fff2;
-		color: #fff;
-		font-size: 1.1rem;
-		transition: background-color var(--t-micro);
-	}
-	.lb-btn:hover,
-	.lb-btn:focus-visible {
-		background: #fff4;
-	}
-	.lb-btn:focus-visible {
-		outline: 2px solid #fff;
-	}
-	.lb-prev {
-		left: 1rem;
-		top: 50%;
-	}
-	.lb-next {
-		right: 1rem;
-		top: 50%;
-	}
-	.lb-close {
-		right: 1rem;
-		top: 1rem;
-	}
-
 	@media (max-width: 900px) {
 		.under,
 		.foot {
@@ -533,7 +332,14 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 		}
 	}
 	/* phones / narrow: a still cover with a fixed ratio, text sized by width (not screen height) for reading */
-	@media (max-width: 820px) {
+	@media (max-width: 820px), (max-width: 1024px) and (max-height: 500px) {
+		.under, .foot { grid-template-columns: 1fr; }
+		h1 {
+			font-size: clamp(2.25rem, 9vw, 4rem);
+			overflow-wrap: anywhere;
+			line-height: 1.05;
+		}
+		.eyebrow { flex-wrap: wrap; }
 		.hero {
 			height: auto;
 			aspect-ratio: 4 / 3;
@@ -556,5 +362,12 @@ const external = (href: string) => (/^https?:/.test(href) ? { target: '_blank', 
 		.meta div {
 			grid-template-columns: 3.75rem minmax(0, 1fr);
 		}
+		.meta dd { overflow-wrap: anywhere; }
+		.meta a, .back {
+			display: inline-flex;
+			align-items: center;
+			min-height: 44px;
+		}
+		.next-card:hover :global(.next-media) { transform: none; }
 	}
 </style>
