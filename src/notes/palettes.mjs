@@ -18,5 +18,5 @@ export const palettes = [
 	{ id: 'rust', label: 'mdBook Rust', mode: 'light', codeTheme: 'one-light', bg: '#e1e1db', fg: '#262625', swatches: ['#e1e1db', '#c4c2b8', '#3b3a38', '#b7410e'] },
 ];
 
-export const defaultPalette = 'obsidian';
+export const defaultPalette = 'ayu';
 export const storageKey = 'notes-palette';

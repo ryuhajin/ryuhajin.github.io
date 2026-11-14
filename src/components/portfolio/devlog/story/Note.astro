@@ -6,6 +6,7 @@
 //   warn 주의 (amber)  — a catch to watch for
 //   bug  함정 (red)    — what broke, or the trap I fell into
 // `label` replaces the default heading (메모 / 팁 / 주의 / 함정). Set in Noto Sans KR.
+// Colours per theme: --note-blue / -green / -amber / -red in portfolio-themes.css (deeper on the light themes).
 import '@fontsource-variable/noto-sans-kr';
 
 interface Props {
@@ -29,23 +30,23 @@ const { type = 'note', label } = Astro.props;
 
 <style>
 	.note {
-		--tone: #7db8ff;
+		--tone: var(--note-blue);
 		position: relative;
 		margin: 1.5rem 0 1rem 0.85rem;
 		padding: 1.5rem 1.9rem 1.55rem;
 		border-left: 2.5px solid var(--tone);
 		border-radius: 0 6px 6px 0;
-		background: color-mix(in srgb, var(--tone) 8%, #121216);
+		background: color-mix(in srgb, var(--tone) var(--note-mix, 10%), var(--note-base, var(--bg-2)));
 		font-family: 'Noto Sans KR Variable', var(--sans);
 	}
 	.is-tip {
-		--tone: #5fd3a4;
+		--tone: var(--note-green);
 	}
 	.is-warn {
-		--tone: #f2b84b;
+		--tone: var(--note-amber);
 	}
 	.is-bug {
-		--tone: #ff7b6b;
+		--tone: var(--note-red);
 	}
 	/* the icon on the corner, ringed in page colour so it reads as a notch cut into the box */
 	.note-icon {

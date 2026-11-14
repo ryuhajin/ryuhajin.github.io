@@ -39,12 +39,12 @@ const id = chapterId(title);
 		margin: 0 0 1.6rem;
 		padding: 0.8rem 1.1rem 0.8rem 1.35rem;
 		border-left: 6px solid var(--accent-p);
-		background: color-mix(in srgb, var(--fg) 16%, var(--bg));
+		background: var(--chapter-bg); /* per theme: portfolio-themes.css */
 		font-family: var(--font-display);
 		font-weight: var(--display-weight);
 		letter-spacing: var(--display-tracking);
 		font-size: clamp(1.35rem, 2.4vw, 1.7rem);
 		line-height: 1.25;
-		color: var(--fg);
+		color: var(--chapter-ink, var(--fg));
 	}
 </style>

@@ -2,14 +2,20 @@
  * Portfolio themes — <html data-ptheme="...">. List + picker previews: src/portfolio/themes.ts
  * Tokens: --bg/-2/-3 surfaces · --line/-2 borders · --fg/-2/-3 text · --accent · --accent-2
  *         --shape (decoration strokes) · --shape-2 (the few decoration pieces drawn in the theme colour) · --shape-fill · --foam (wave foam) · --font-display · --font-ui
- *         --curtain-a / --curtain-b (page-transition panels)
+ *         --curtain-a / --curtain-b (page-transition panels: quiet tones close to the page, like Mono's greys)
+ *         --code-head / --code-bg / --code-ink / --code-ink-2 (devlog code blocks: the Houston colours need a dark panel,
+ *           so light themes get one in their own ink colour) · --note-blue / -green / -amber / -red (devlog callouts;
+ *           --note-base / --note-mix: what the callout tint is mixed into, and how much) · --chip-fail / -half (+ -ink): the 실패 / 절반 chips
+ *         --chapter-bg / --chapter-ink (devlog section title bar and its text; ink defaults to --fg)
+ *         --pslot-1…4 (+ --pslot-N-ink when text on it must be dark): devlog project colours in this theme, based on
+ *           the picker swatches, brightened, none close to the text colour. Mono has none, so each project keeps its own accent. See [data-pslot] at the end.
  */
 
 @import '@fontsource-variable/geist';
 @import '@fontsource/libre-caslon-text/400.css';
 @import '@fontsource/libre-caslon-text/400-italic.css';
-@import '@fontsource/bricolage-grotesque/600.css';
-@import '@fontsource/grandstander/700.css';
+@import '@fontsource-variable/manrope';
+@import '@fontsource-variable/outfit';
 
 :root,
 :root[data-ptheme='mono'] {
@@ -35,6 +41,20 @@
 	--display-tracking: -0.035em;
 	--curtain-a: #000000;
 	--curtain-b: #2a2a31;
+	--code-head: color-mix(in srgb, var(--fg) 13%, var(--bg));
+	--code-bg: color-mix(in srgb, var(--fg) 7%, var(--bg));
+	--code-ink: var(--fg);
+	--code-ink-2: var(--fg-2);
+	--note-blue: #7db8ff;
+	--note-green: #5fd3a4;
+	--note-amber: #f2b84b;
+	--note-red: #ff7b6b;
+	--note-base: var(--bg-2);
+	--chip-fail: color-mix(in srgb, var(--note-red) 14%, transparent);
+	--chip-fail-ink: var(--note-red);
+	--chip-half: color-mix(in srgb, var(--note-amber) 16%, transparent);
+	--chip-half-ink: var(--note-amber);
+	--chapter-bg: color-mix(in srgb, var(--fg) 16%, var(--bg));
 	color-scheme: dark;
 }
 
@@ -62,8 +82,29 @@
 	--font-display: 'Libre Caslon Text', 'Pretendard Variable', serif;
 	--display-weight: 400;
 	--display-tracking: -0.01em;
-	--curtain-a: #33312b;
-	--curtain-b: #fac22b;
+	--curtain-a: #d9cba6;
+	--curtain-b: #efe1bf;
+	--chapter-bg: #141210; /* the theme's black, with cream text */
+	--chapter-ink: #fcf3d9;
+	--pslot-1: #ec3a2c;
+	--pslot-2: #ffbf1f;
+	--pslot-2-ink: var(--fg);
+	--pslot-3: #1683cc;
+	--pslot-4: #141210;
+	--code-head: color-mix(in srgb, var(--fg) 86%, var(--bg));
+	--code-bg: color-mix(in srgb, var(--fg) 93%, var(--bg));
+	--code-ink: var(--bg);
+	--code-ink-2: color-mix(in srgb, var(--bg) 65%, var(--fg));
+	--note-blue: #3b82f6;
+	--note-green: #10b981;
+	--note-amber: #f59e0b;
+	--note-red: #f04438;
+	--note-base: color-mix(in srgb, var(--bg) 55%, #ffffff);
+	--note-mix: 18%;
+	--chip-fail: var(--note-red);
+	--chip-fail-ink: #ffffff;
+	--chip-half: #ffb020;
+	--chip-half-ink: var(--fg);
 	color-scheme: light;
 }
 
@@ -122,12 +163,37 @@
 	--shape-fill: #84b8e6;
 	--foam: #ffffff;
 	--grid-dot: #bcdcf8;
-	--font-display: 'Bricolage Grotesque', 'Pretendard Variable', sans-serif;
-	--display-weight: 600;
+	--font-display: 'Manrope Variable', 'Pretendard Variable', sans-serif;
+	--display-weight: 700;
 	--display-tracking: -0.03em;
-	--curtain-a: #14204a;
-	--curtain-b: #84b8e6;
+	--curtain-a: #9fc3e6;
+	--curtain-b: #c4e2fc;
+	--chapter-bg: var(--bg-3);
+	--pslot-1: #2f8cff;
+	--pslot-2: #12d9a6;
+	--pslot-2-ink: var(--fg);
+	--pslot-3: #8b6cff;
+	--pslot-4: #ff8a5c;
+	--pslot-4-ink: var(--fg);
+	--code-head: color-mix(in srgb, var(--fg) 86%, var(--bg));
+	--code-bg: color-mix(in srgb, var(--fg) 93%, var(--bg));
+	--code-ink: var(--bg);
+	--code-ink-2: color-mix(in srgb, var(--bg) 65%, var(--fg));
+	--note-blue: #5a72a8; /* toned down: a bright blue melts into the sky background */
+	--note-green: #10b981;
+	--note-amber: #f59e0b;
+	--note-red: #f04438;
+	--note-base: color-mix(in srgb, var(--bg) 55%, #ffffff);
+	--note-mix: 18%;
+	--chip-fail: #ffdcd8;
+	--chip-fail-ink: #d92d20;
+	--chip-half: #ffeab0;
+	--chip-half-ink: #9a5b00;
 	color-scheme: light;
+}
+
+:root[data-ptheme='sky'] .hero-nav a:hover .idx {
+	color: #0a8f6c; /* the mint accent is too light on the sky background */
 }
 
 :root[data-ptheme='candy'] {
@@ -147,10 +213,53 @@
 	--shape-fill: #f7b8cf;
 	--foam: #ffffff;
 	--grid-dot: #f6cfdf;
-	--font-display: 'Grandstander', 'Pretendard Variable', sans-serif;
-	--display-weight: 700;
-	--display-tracking: -0.02em;
-	--curtain-a: #1b1f4a;
-	--curtain-b: #f7b8cf;
+	--font-display: 'Outfit Variable', 'Pretendard Variable', sans-serif;
+	--display-weight: 600;
+	--display-tracking: -0.025em;
+	--curtain-a: #e6b8cb;
+	--curtain-b: #f8d3e1;
+	--chapter-bg: var(--bg-3);
+	--pslot-1: #ff4f9e;
+	--pslot-2: #e8357a;
+	--pslot-3: #6f5ee8;
+	--pslot-4: #b07cff;
+	--code-head: color-mix(in srgb, var(--fg) 86%, var(--bg));
+	--code-bg: color-mix(in srgb, var(--fg) 93%, var(--bg));
+	--code-ink: var(--bg);
+	--code-ink-2: color-mix(in srgb, var(--bg) 65%, var(--fg));
+	--note-blue: #3b82f6;
+	--note-green: #10b981;
+	--note-amber: #f59e0b;
+	--note-red: #f04438;
+	--note-base: color-mix(in srgb, var(--bg) 55%, #ffffff);
+	--note-mix: 18%;
+	--chip-fail: #ffd9d4;
+	--chip-fail-ink: #d92d20;
+	--chip-half: #ffecbf;
+	--chip-half-ink: #9a5b00;
 	color-scheme: light;
+}
+
+/* Devlog project colour. A project block / entry page carries its own accent (--accent-own) and a slot 1–4
+   (data-pslot, portfolio/devlog.ts accentSlots). Themes with --pslot-N use those; Mono falls back to --accent-own.
+   --on-accent-p: text on a filled --accent-p (Explore button, 해결 chip). */
+[data-pslot] {
+	--accent-p: var(--accent-own);
+	--on-accent-p: var(--bg);
+}
+[data-pslot='1'] {
+	--accent-p: var(--pslot-1, var(--accent-own));
+	--on-accent-p: var(--pslot-1-ink, var(--bg));
+}
+[data-pslot='2'] {
+	--accent-p: var(--pslot-2, var(--accent-own));
+	--on-accent-p: var(--pslot-2-ink, var(--bg));
+}
+[data-pslot='3'] {
+	--accent-p: var(--pslot-3, var(--accent-own));
+	--on-accent-p: var(--pslot-3-ink, var(--bg));
+}
+[data-pslot='4'] {
+	--accent-p: var(--pslot-4, var(--accent-own));
+	--on-accent-p: var(--pslot-4-ink, var(--bg));
 }

@@ -5,12 +5,13 @@
 // Entries: src/content/devlog/.
 import PortfolioLayout from '../../layouts/PortfolioLayout.astro';
 import LogList from '../../components/portfolio/devlog/LogList.astro';
-import { devlogBlocks, getDevlogs, entryUrl, fmtDate, pad } from '../../portfolio/devlog';
+import { devlogBlocks, accentSlots, getDevlogs, entryUrl, fmtDate, pad } from '../../portfolio/devlog';
 
 const PER_PAGE = 4;
 const SERIES_PER_PAGE = 5;
 const total = (await getDevlogs()).length;
 const { inProgress, complete } = await devlogBlocks();
+const slots = await accentSlots();
 const span = (dates: Date[]) => {
 	const [a, b] = [Math.min(...dates.map(Number)), Math.max(...dates.map(Number))].map((t) => fmtDate(new Date(t)).slice(0, 7));
 	return a === b ? a : `${a} – ${b}`;
@@ -33,7 +34,7 @@ const span = (dates: Date[]) => {
 					const [latest, ...earlier] = entries;
 					const pics = latest?.data.images.length ? latest.data.images : [{ src: project.data.cover.poster, alt: project.data.cover.alt }];
 					return (
-						<details class="series live" id={project.id} open style={`--accent-p: ${project.data.accent}`}>
+						<details class="series live" id={project.id} open style={`--accent-own: ${project.data.accent}`} data-pslot={slots.get(project.id)}>
 							<summary>
 								<span class="name">{project.data.title}</span>
 								<span class="mono">{pad(entries.length)} logs</span>
@@ -83,7 +84,7 @@ const span = (dates: Date[]) => {
 						Complete <span>({pad(complete.length)})</span>
 					</h2>
 					{complete.map(({ project, entries }) => (
-						<details class="series done" id={project.id} style={`--accent-p: ${project.data.accent}`} data-page-item>
+						<details class="series done" id={project.id} style={`--accent-own: ${project.data.accent}`} data-pslot={slots.get(project.id)} data-page-item>
 							<summary>
 								<span class="name">{project.data.title}</span>
 								<span class="mono meta">
@@ -401,8 +402,8 @@ const span = (dates: Date[]) => {
 		margin: 0;
 		max-width: 34rem;
 		color: var(--fg);
-		font-size: clamp(1rem, 2.2vh, 1.2rem);
-		line-height: 1.7;
+		font-size: clamp(0.9375rem, 1.8vh, 1.0625rem);
+		line-height: 1.75;
 	}
 	/* the text column stacks the summary and, at its right edge, a square Explore button */
 	.open-text {
@@ -411,21 +412,23 @@ const span = (dates: Date[]) => {
 	}
 	.explore {
 		align-self: flex-end;
-		margin-top: 1.5rem;
-		padding: 0.65rem 1.4rem;
-		border: 2px solid var(--fg);
-		color: var(--fg);
+		margin-top: 1.25rem;
+		padding: 0.5rem 1.1rem;
+		font-size: 0.875rem;
+		border: 2px solid var(--accent-p);
+		background: var(--accent-p);
+		color: var(--on-accent-p, var(--bg));
 		font-weight: 600;
 		transition:
 			background-color var(--t-fast) var(--ease),
 			color var(--t-fast) var(--ease),
 			border-color var(--t-fast) var(--ease);
 	}
+	/* filled in the project colour by default; a touch lighter on hover */
 	.explore:hover,
 	.explore:focus-visible {
-		background: var(--accent-p);
-		border-color: var(--accent-p);
-		color: var(--bg);
+		background: color-mix(in srgb, var(--accent-p) 82%, #fff);
+		border-color: color-mix(in srgb, var(--accent-p) 82%, #fff);
 	}
 	.open-media {
 		display: grid;

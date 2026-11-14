@@ -106,7 +106,8 @@ function activateHoverMedia() {
 					video.removeAttribute('src');
 					video.load(); // drop the previous clip's last frame
 				}
-				preview.style.setProperty('--accent', row.dataset.accent ?? '');
+				// the block's colour in the current theme (portfolio-themes.css [data-pslot]); data-accent is the plain fallback
+				preview.style.setProperty('--accent', getComputedStyle(row).getPropertyValue('--accent-p').trim() || (row.dataset.accent ?? ''));
 				f.move(e.clientX, e.clientY, !active);
 				active = true;
 				preview.classList.add('show');

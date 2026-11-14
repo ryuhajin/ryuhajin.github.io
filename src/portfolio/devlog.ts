@@ -66,6 +66,14 @@ export async function neighbors(entry: Devlog): Promise<{ prev?: Devlog; next?: 
 }
 
 /** Devlog page blocks: in-progress projects (even with no entries yet) and complete ones that have entries. */
+/** Colour slot 1–4 per project for the themed devlog colours (portfolio-themes.css [data-pslot]): in-progress
+ *  projects first, by project order, so the projects being written about keep distinct, stable colours. */
+export async function accentSlots() {
+	const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+	const ranked = [...projects.filter((p) => p.data.stage === 'in-progress'), ...projects.filter((p) => p.data.stage !== 'in-progress')];
+	return new Map(ranked.map((p, i) => [p.id, (i % 4) + 1]));
+}
+
 export async function devlogBlocks() {
 	const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 	const blocks = await Promise.all(projects.map(async (project) => ({ project, entries: await seriesOf(project.id) })));

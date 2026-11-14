@@ -48,16 +48,17 @@ const { n, title, result } = Astro.props;
 		color: var(--fg-2);
 		background: color-mix(in srgb, var(--fg) 8%, transparent);
 	}
+	/* chip colours per theme (--chip-* in portfolio-themes.css): tinted on Mono, filled and bright on the light themes */
 	.is-fail .att-chip {
-		color: #ff9a8b;
-		background: rgb(255 120 100 / 0.12);
+		color: var(--chip-fail-ink);
+		background: var(--chip-fail);
 	}
 	.is-half .att-chip {
-		color: #ffd27a;
-		background: rgb(255 200 90 / 0.12);
+		color: var(--chip-half-ink);
+		background: var(--chip-half);
 	}
 	.is-ok .att-chip {
-		color: #0a0a0c;
+		color: var(--on-accent-p, var(--bg));
 		background: var(--accent-p);
 	}
 	h3 {

@@ -15,7 +15,7 @@ import Attempt from '../../../components/portfolio/devlog/story/Attempt.astro';
 import Note from '../../../components/portfolio/devlog/story/Note.astro';
 import Ref from '../../../components/portfolio/devlog/story/Ref.astro';
 import { categories } from '../../../portfolio/categories';
-import { getDevlogs, neighbors, seriesOf, chaptersOf, entrySlug, entryUrl, blockUrl, pad, fmtDate, type Devlog } from '../../../portfolio/devlog';
+import { getDevlogs, accentSlots, neighbors, seriesOf, chaptersOf, entrySlug, entryUrl, blockUrl, pad, fmtDate, type Devlog } from '../../../portfolio/devlog';
 
 export async function getStaticPaths() {
 	return (await getDevlogs()).map((entry) => ({
@@ -32,6 +32,7 @@ const { entry } = Astro.props;
 const e = entry.data;
 const project = (await getEntry(e.project))!;
 const p = project.data;
+const slot = (await accentSlots()).get(project.id);
 const { prev, next } = await neighbors(entry);
 const series = (await seriesOf(project.id)).reverse();
 const { Content } = await render(entry);
@@ -57,7 +58,7 @@ const types = p.categories.map((c) => categories.find((k) => k.id === c)?.label 
 ---
 
 <PortfolioLayout title={`${e.title} — ${p.title} ${pad(e.part)}`} description={e.summary} current="devlog" codeTheme="houston-devlog">
-	<main class="entry" style={`--accent-p: ${p.accent}`}>
+	<main class="entry" style={`--accent-own: ${p.accent}`} data-pslot={slot}>
 		<header class="e-head">
 			<nav class="crumbs" aria-label="Breadcrumb">
 				<a href="/devlog/">Devlog</a>
@@ -395,10 +396,11 @@ const types = p.categories.map((c) => categories.find((k) => k.id === c)?.label 
 		padding: 0.55rem 1.5rem !important;
 		border: 0 !important;
 		border-radius: 0 !important;
-		background: color-mix(in srgb, var(--fg) 13%, var(--bg)) !important;
+		/* panel colours per theme: --code-* in portfolio-themes.css */
+		background: var(--code-head) !important;
 		font-family: var(--sans);
 		font-size: 0.75rem;
-		color: var(--fg-2);
+		color: var(--code-ink-2);
 	}
 	.story :global(.expressive-code .frame .header::before) {
 		display: none !important;
@@ -437,7 +439,7 @@ const types = p.categories.map((c) => categories.find((k) => k.id === c)?.label 
 		background: none !important;
 		font-family: var(--mono);
 		font-size: 0.8125rem;
-		color: var(--fg);
+		color: var(--code-ink);
 	}
 	.story :global(.expressive-code .frame .header .title::after) {
 		display: none !important;
@@ -449,7 +451,7 @@ const types = p.categories.map((c) => categories.find((k) => k.id === c)?.label 
 		border-radius: 0 !important;
 		font-size: 0.875rem;
 		line-height: 1.7;
-		background: color-mix(in srgb, var(--fg) 7%, var(--bg)) !important;
+		background: var(--code-bg) !important;
 	}
 	.story :global(.expressive-code pre .ec-line .code) {
 		padding-inline: 1.5rem;
