@@ -4,18 +4,27 @@
 // fades/unblurs in with a small stagger and fades out slowly when the pointer leaves.
 
 import type { HoverItem } from '../../portfolio/hover-sets';
+import { onMotionChange } from '../phone';
 
 const DRIFT = 0.06; // how much the group leans toward the cursor
 const MAX_DRIFT = 22; // px
 
-const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-const finePointer = () => matchMedia('(hover: hover) and (pointer: fine)').matches;
 const clamp = (v: number, m: number) => Math.max(-m, Math.min(m, v));
 
 export function initCursorTrail() {
+	let stop: (() => void) | undefined;
+	return onMotionChange((enabled) => {
+		stop?.();
+		stop = enabled ? startCursorTrail() : undefined;
+	});
+}
+
+function startCursorTrail() {
 	const layer = document.getElementById('trail-layer');
 	const triggers = [...document.querySelectorAll<HTMLElement>('[data-hover-set]')];
-	if (!layer || !triggers.length || reduced() || !finePointer()) return;
+	if (!layer || !triggers.length) return;
+	const controller = new AbortController();
+	const options = { signal: controller.signal };
 
 	const scale = () => Math.min(1, innerWidth / 1440);
 
@@ -96,14 +105,20 @@ export function initCursorTrail() {
 			active = c;
 			c.el.classList.add('show');
 			run();
-		});
+		}, options);
 		c.trigger.addEventListener('pointermove', (e) => {
 			pointer = { x: e.clientX, y: e.clientY };
-		});
+		}, options);
 		c.trigger.addEventListener('pointerleave', () => {
 			c.el.classList.remove('show');
 			if (active === c) active = null;
 			park();
-		});
+		}, options);
 	}
+	return () => {
+		controller.abort();
+		clearTimeout(idleTimer);
+		cancelAnimationFrame(raf);
+		clusters.forEach((c) => c.el.remove());
+	};
 }

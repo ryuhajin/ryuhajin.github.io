@@ -57,7 +57,7 @@ body {
 	}
 }
 /* phones: keep the header's icons clear of the fixed menu button (the padding above overrides Starlight's) */
-@media (max-width: 50rem) {
+@media (width < 50rem) {
 	.header {
 		padding-inline-end: calc(var(--sl-nav-pad-x) + var(--sl-menu-button-size) + 0.5rem);
 	}
@@ -388,5 +388,99 @@ h1#_top {
 @media (prefers-reduced-motion: reduce) {
 	* {
 		transition: none !important;
+	}
+}
+
+/* Keep Starlight's 50rem navigation breakpoint; only the mobile presentation changes. */
+@media (width < 50rem) {
+	:root {
+		--sl-nav-height: calc(4rem + env(safe-area-inset-top, 0px));
+		--sl-menu-button-size: 2.75rem;
+		--sl-nav-pad-y: 0.625rem;
+		--sl-content-pad-x: clamp(1rem, 3vw, 1.5rem);
+	}
+	.header {
+		padding-block: calc(0.625rem + env(safe-area-inset-top, 0px)) 0.625rem;
+		padding-inline-start: max(1rem, env(safe-area-inset-left, 0px));
+		padding-inline-end: calc(max(1rem, env(safe-area-inset-right, 0px)) + 2.75rem + 0.5rem);
+	}
+	:root .sl-menu-button {
+		top: calc(0.625rem + env(safe-area-inset-top, 0px));
+		inset-inline-end: max(1rem, env(safe-area-inset-right, 0px));
+	}
+	.sidebar-content {
+		padding-inline: max(1rem, env(safe-area-inset-left, 0px)) max(1rem, env(safe-area-inset-right, 0px));
+		padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+	}
+	dialog[data-notes-search] {
+		height: 100dvh;
+		max-height: 100dvh;
+	}
+	dialog[data-notes-search] .dialog-frame {
+		padding: max(1rem, env(safe-area-inset-top, 0px)) max(1rem, env(safe-area-inset-right, 0px)) max(1rem, env(safe-area-inset-bottom, 0px)) max(1rem, env(safe-area-inset-left, 0px));
+		min-width: 0;
+	}
+	dialog[data-notes-search] [data-close-modal] {
+		min-width: 2.75rem;
+		min-height: 2.75rem;
+	}
+	#starlight__search input {
+		font-size: 1rem;
+	}
+}
+
+/* Touch targets are independent of the layout: a wide tablet still uses the file tree. */
+@media (width < 50rem), (pointer: coarse) {
+	.sidebar-content :is(a, summary) {
+		min-width: 0;
+		min-height: 2.75rem;
+	}
+	.sidebar-content ul a {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.9375rem;
+		padding-block: 0.375rem;
+	}
+	.sidebar-content .large {
+		font-size: 0.9375rem;
+	}
+	.sidebar-content summary {
+		padding-block: 0;
+	}
+	.sidebar-content summary .caret {
+		padding: 0.875rem;
+		margin-inline: -0.5rem 0;
+	}
+	.sidebar-content ul summary a.group-link {
+		min-width: 0;
+		padding-block: 0.375rem;
+	}
+	.sidebar-content ul a > span,
+	.sidebar-content .group-label {
+		min-width: 0;
+	}
+	.sidebar-search site-search button[data-open-modal] {
+		min-height: 2.75rem;
+	}
+	mobile-starlight-toc .dropdown a {
+		display: flex;
+		align-items: center;
+		min-height: 2.75rem;
+	}
+}
+
+@media (max-width: 820px), (max-width: 1024px) and (max-height: 500px) {
+	:root {
+		--sl-text-body: 1rem;
+	}
+	.main-frame,
+	.content-panel,
+	.sl-container,
+	.sl-markdown-content {
+		min-width: 0;
+	}
+	.sl-markdown-content :is(pre, .expressive-code, .katex-display) {
+		max-width: 100%;
 	}
 }

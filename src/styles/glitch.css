@@ -117,7 +117,7 @@
 }
 
 /* also off on phones / touch screens, where a tap would set it off */
-@media (prefers-reduced-motion: reduce), (max-width: 820px), (hover: none) {
+@media (prefers-reduced-motion: reduce), (max-width: 820px), (max-width: 1024px) and (max-height: 500px), (hover: none) {
 	.glitch,
 	.gl::after {
 		animation: none !important;

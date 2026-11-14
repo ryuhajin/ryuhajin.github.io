@@ -1,7 +1,7 @@
 // Terminal-style typing: erase back to the common prefix, then type the new text one character at a time.
 // While it runs, `busy` gets the class "typing" (so a caret can stay solid instead of blinking).
 
-import { isPhone } from './phone';
+import { canAnimate } from './phone';
 
 const running = new WeakMap<HTMLElement, number>();
 
@@ -14,8 +14,9 @@ interface Options {
 
 export function typeTo(el: HTMLElement, next: string, { busy, typeMs = 70, eraseMs = 34 }: Options = {}) {
 	clearTimeout(running.get(el));
-	if (matchMedia('(prefers-reduced-motion: reduce)').matches || isPhone()) {
+	if (!canAnimate()) {
 		el.textContent = next;
+		busy?.classList.remove('typing');
 		return;
 	}
 	busy?.classList.add('typing');

@@ -25,12 +25,19 @@ import { notesThema } from '../../notes/thema';
 	}
 	nav {
 		display: flex;
-		gap: 1rem;
+		flex-wrap: wrap;
+		gap: 0.25rem 0.5rem;
 	}
 	.mobile-footer :global(thema-picker) {
 		display: none;
 	}
 	a {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 2.75rem;
+		min-height: 2.75rem;
+		padding-inline: 0.25rem;
 		color: var(--sl-color-gray-2);
 		text-decoration: none;
 		font-weight: 500;

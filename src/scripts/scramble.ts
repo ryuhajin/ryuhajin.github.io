@@ -7,7 +7,7 @@ const running = new WeakMap<HTMLElement, number>();
 export function scrambleText(el: HTMLElement, next: string, duration = 320) {
 	cancelAnimationFrame(running.get(el) ?? 0);
 	const from = el.textContent ?? '';
-	if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+	if (duration <= 0 || matchMedia('(prefers-reduced-motion: reduce)').matches) {
 		el.textContent = next;
 		return;
 	}

@@ -39,15 +39,43 @@ import { notesThema } from '../../notes/thema';
 </div>
 
 <script>
+	// Keep Starlight's native popover, search dialog, and the shared theme sheet exclusive.
+	const sidebar = document.getElementById('starlight__sidebar');
+	const closeSidebar = () => {
+		if (sidebar?.matches(':popover-open')) sidebar.hidePopover();
+	};
+	sidebar?.addEventListener('beforetoggle', (event) => {
+		if ((event as ToggleEvent).newState === 'open') {
+			document.dispatchEvent(new CustomEvent('site-overlay-open', { detail: { kind: 'navigation', owner: sidebar } }));
+		}
+	});
+	document.addEventListener('site-overlay-open', (event) => {
+		if ((event as CustomEvent).detail?.owner !== sidebar) closeSidebar();
+	});
+
 	// One search on the page: the sidebar's. On phones the sidebar is a closed popover (display: none),
 	// so its modal is moved to <body> where it can show; the header icon just presses its button.
 	customElements.whenDefined('site-search').then(() => {
 		const dialog = document.querySelector('site-search dialog');
-		if (dialog) document.body.append(dialog);
+		if (dialog) {
+			dialog.setAttribute('data-notes-search', '');
+			document.body.append(dialog);
+			dialog.addEventListener('beforetoggle', (event) => {
+				if ((event as ToggleEvent).newState === 'open') {
+					document.dispatchEvent(new CustomEvent('site-overlay-open', { detail: { kind: 'search', owner: dialog } }));
+				}
+			});
+			// The dialog no longer lives under site-search, so focus its input here too
+			// when opened using Starlight's keyboard shortcut.
+			dialog.addEventListener('toggle', (event) => {
+				if ((event as ToggleEvent).newState === 'open') dialog.querySelector<HTMLInputElement>('input')?.focus();
+			});
+		}
 	});
 	document.querySelector('[data-open-search]')?.addEventListener('click', (e) => {
 		// stop here: Starlight closes the modal on any click that reaches window from outside it
 		e.stopPropagation();
+		document.dispatchEvent(new CustomEvent('site-overlay-open', { detail: { kind: 'search' } }));
 		document.querySelector<HTMLButtonElement>('site-search button[data-open-modal]')?.click();
 		document.querySelector<HTMLInputElement>('#starlight__search input')?.focus();
 	});
@@ -119,9 +147,17 @@ import { notesThema } from '../../notes/thema';
 		stroke-linecap: round;
 	}
 	/* phones: brand · search · Thema (icon) · menu button. Links, GitHub and email move into the menu. */
-	@media (max-width: 50rem) {
+	@media (width < 50rem) {
+		.notes-header {
+			gap: 0.5rem;
+			min-width: 0;
+		}
+		.notes-header :global(.brand-text) {
+			min-width: 0;
+		}
 		.right {
 			gap: 0.5rem;
+			flex-shrink: 0;
 		}
 		nav,
 		.right :global(.nav-tools > .gh) {
@@ -129,13 +165,16 @@ import { notesThema } from '../../notes/thema';
 		}
 		.search-btn {
 			display: inline-grid;
+			width: 2.75rem;
+			height: 2.75rem;
 		}
 		.right :global(.thema-btn span) {
 			display: none;
 		}
 		.right :global(.thema-btn) {
 			padding: 0;
-			width: 2.25rem;
+			width: 2.75rem;
+			height: 2.75rem;
 			justify-content: center;
 		}
 	}
