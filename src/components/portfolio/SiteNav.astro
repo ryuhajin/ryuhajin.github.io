@@ -140,6 +140,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
 	:global(:root[data-ptheme='sky']) .hero-nav .label {
 		font-size: clamp(2.25rem, min(9vh, 13vw), 6rem);
 	}
+	/* no hover line under the big menu (glitch.css .gl::after): it ran into the g / j descenders. The glitch stays */
+	.hero-nav .label::after {
+		display: none;
+	}
 	.hero-nav .idx {
 		transition: color var(--t-fast);
 	}
@@ -168,7 +172,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 88%, transparent), transparent);
+		/* solid on every page, so scrolled content never shows through (the Notes header copies this look) */
+		background: var(--bg);
+		border-bottom: 1px solid var(--line);
 	}
 	.bar-right {
 		display: flex;

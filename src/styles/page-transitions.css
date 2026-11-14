@@ -78,20 +78,19 @@ html[data-vt]::view-transition-new(root) {
 	inset: 0;
 	animation: var(--vt-dur) var(--vt-ease) both;
 }
-/* Match Euclid's landing letter accents, including entry into the Notes palette. */
+/* Notes pages have no portfolio theme: a curtain coming in from a themed page carries that theme's quiet tones
+   (the same values as --curtain-a / --curtain-b in portfolio-themes.css) */
 .vt-curtain[data-theme='euclid'] {
-	--vt-a: var(--curtain-a, #33312b);
+	--vt-a: #d9cba6;
+	--vt-b: #efe1bf;
 }
-.vt-curtain[data-theme='euclid'][data-section='devlog'],
-.vt-curtain[data-theme='euclid'][data-section='about'] {
-	--vt-b: #d42a20;
+.vt-curtain[data-theme='sky'] {
+	--vt-a: #9fc3e6;
+	--vt-b: #c4e2fc;
 }
-.vt-curtain[data-theme='euclid'][data-section='projects'] {
-	--vt-b: #fac22b;
-}
-.vt-curtain[data-theme='euclid'][data-section='notes'],
-.vt-curtain[data-theme='euclid'][data-section='home'] {
-	--vt-b: #0e638e;
+.vt-curtain[data-theme='candy'] {
+	--vt-a: #e6b8cb;
+	--vt-b: #f8d3e1;
 }
 .vt-curtain .vt-a {
 	z-index: 3;

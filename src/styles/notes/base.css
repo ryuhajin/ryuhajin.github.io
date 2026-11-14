@@ -7,7 +7,7 @@
 	--sl-line-height: 1.75;
 	--sl-content-width: 48rem;
 	--sl-sidebar-width: 17.5rem;
-	--sl-nav-height: 3.5rem;
+	--sl-nav-height: 4rem; /* the Portfolio top bar's height */
 	--sl-text-h1: 2rem;
 	--sl-text-h2: 1.5rem;
 	--sl-text-h3: 1.2rem;
@@ -19,7 +19,7 @@
 
 @media (min-width: 50em) {
 	:root {
-		--sl-nav-height: 3.5rem;
+		--sl-nav-height: 4rem;
 		--sl-text-h1: 2.25rem;
 		--sl-text-h2: 1.6rem;
 		--sl-text-h3: 1.25rem;
@@ -38,23 +38,28 @@ body {
 	background: color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
 }
 
-/* ---------------------------------------------------------------- header (matches the Portfolio top bar) */
+/* ---------------------------------------------------------------- header (the Portfolio top bar, same on every page)
+   Whatever the Notes palette, the header keeps the Portfolio bar's default (Mono) colours: these tokens feed the
+   shared Brand / NavTools and the header links (components/notes/Header.astro). */
 
 .header {
-	border-bottom: 1px solid var(--sl-color-hairline);
-	background: color-mix(in srgb, var(--sl-color-bg-nav) 88%, transparent);
-	backdrop-filter: saturate(1.4) blur(8px);
+	--bg: #09090b;
+	--bg-2: #111114;
+	--line: #1d1d22;
+	--line-2: #2a2a31;
+	--fg: #ededef;
+	--fg-2: #a3a3ad;
+	--fg-3: #66666f;
+	--accent: #d4ff5a;
+	--on-accent: #09090b;
+	--mono: 'JetBrains Mono Variable', 'Cascadia Code', ui-monospace, monospace;
+	color-scheme: dark;
+	border-bottom: 1px solid var(--line);
+	background: var(--bg);
 	padding-inline: clamp(1rem, 3vw, 2.5rem);
 }
 .header .brand {
 	font-size: 0.875rem;
-}
-/* phones: a solid bar — backdrop-filter would make it the containing block of the fixed Thema bottom sheet */
-@media (max-width: 820px) {
-	.header {
-		background: var(--sl-color-bg-nav);
-		backdrop-filter: none;
-	}
 }
 /* phones: keep the header's icons clear of the fixed menu button (the padding above overrides Starlight's) */
 @media (width < 50rem) {
@@ -483,4 +488,9 @@ h1#_top {
 	.sl-markdown-content :is(pre, .expressive-code, .katex-display) {
 		max-width: 100%;
 	}
+}
+
+/* Changelog dates on the Notes home are h6: no hover link icon on them */
+.sl-markdown-content .sl-heading-wrapper.level-h6 .sl-anchor-link {
+	display: none;
 }
