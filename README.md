@@ -5,8 +5,10 @@ Portfolio + Notes. [Astro](https://astro.build) + [Starlight](https://starlight.
 | 경로 | 내용 | 소스 |
 |---|---|---|
 | `/` | 랜딩 (메뉴 hover 시 커서 트레일) | `src/pages/index.astro` |
-| `/projects/` | 프로젝트 박스 3개 (Grid / List 전환) | `src/pages/projects/index.astro` |
-| `/projects/<slug>/` | 화면 단위 프로젝트 쇼케이스 | `src/pages/projects/[slug].astro` |
+| `/projects/` | 분야별로 볼 수 있는 프로젝트 목록 | `src/pages/projects/index.astro` |
+| `/projects/<slug>/` | 프로젝트 소개 글 | `src/content/projects/<slug>.mdx` |
+| `/devlog/` | 프로젝트별 개발 기록 목록 | `src/pages/devlog/index.astro` |
+| `/devlog/<project>/<entry>/` | 프로젝트의 회차별 개발 기록 | `src/content/devlog/<project>/<entry>.mdx` |
 | `/about/` | 소개 | `src/pages/about.astro` |
 | `/notes/...` | 공부 노트 (Starlight) | `src/content/docs/notes/**` |
 | `/docs/...` | 예전 Jekyll 주소 → `/notes/...` 리다이렉트 | `public/docs/**` |
@@ -49,14 +51,9 @@ Starlight aside 문법. note / tip / caution / danger
 - 이미지: `public/images/` 에 넣고 `![](/images/파일.png)` 로 참조. 크기 조절은 `<img src="/images/파일.png" style="width:60%" />`.
 - 폴더의 `index.md` 는 트리에서 `Overview` 로 표시됩니다.
 
-## 프로젝트 추가
+## 프로젝트와 데브로그 추가
 
-`src/content/projects/<slug>.md` 에 frontmatter만 채우면 목록/상세 페이지가 생성됩니다. 스키마는 `src/content.config.ts`.
-
-- 미디어: `public/projects/<slug>/` 에 두고 `cover.poster`(정지 이미지)와 `cover.video`(webm/mp4 권장, gif도 가능)를 지정.
-  영상은 hover 시점에만 로드됩니다. 가벼운 `webm`(VP9, 720p, 5~10초 루프)을 권장.
-- `sample: true` 인 항목은 SAMPLE 뱃지가 붙습니다. 지금 있는 3개는 레이아웃 확인용 샘플이니 실제 프로젝트로 교체하세요.
-- 섹션: `overview` → `architecture` → `problems` → `decisions` → `links` 순서로 한 화면씩 전환됩니다.
+포트폴리오는 `src/content/projects/`, 데브로그는 `src/content/devlog/<프로젝트 이름>/`에서 작성합니다. 사진은 `public/projects/<프로젝트 이름>/`에 두고 글에서는 `/projects/<프로젝트 이름>/파일명`으로 참조합니다.
 
 사이트 이름, 소개 문구, 메뉴는 `src/site.ts` 에서 수정합니다.
 

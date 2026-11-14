@@ -17,3 +17,6 @@ Thumbs.db
 # legacy Jekyll artifacts
 _site/
 .jekyll-cache/
+
+# private writing guide (local only)
+BLOG-GUIDE.md
