@@ -2,10 +2,12 @@
 //  - [data-follow]      : a floating preview that trails the cursor (lerp) while hovering [data-media-src] rows
 //  - video[data-hover-play] inside cards: loaded lazily and played only while hovered
 
+import { onMotionChange } from '../phone';
+
 const LERP = 0.2;
-const finePointer = () => matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 let cleanups: (() => void)[] = [];
+let stopWatching: (() => void) | undefined;
 
 /** Eases el toward the pointer every frame (used by the list preview). */
 function follower(el: HTMLElement, lerp = LERP) {
@@ -39,6 +41,7 @@ function follower(el: HTMLElement, lerp = LERP) {
 function playOnHover(card: HTMLElement) {
 	const video = card.querySelector<HTMLVideoElement>('video[data-hover-play]');
 	if (!video) return () => {};
+	video.hidden = false;
 	const enter = () => {
 		if (!video.src && video.dataset.src) video.src = video.dataset.src;
 		video.play().catch(() => {});
@@ -49,6 +52,8 @@ function playOnHover(card: HTMLElement) {
 	card.addEventListener('focusin', enter);
 	card.addEventListener('focusout', leave);
 	return () => {
+		video.pause();
+		video.hidden = true;
 		card.removeEventListener('pointerenter', enter);
 		card.removeEventListener('pointerleave', leave);
 		card.removeEventListener('focusin', enter);
@@ -57,11 +62,20 @@ function playOnHover(card: HTMLElement) {
 }
 
 export function initHoverMedia() {
-	cleanups.forEach((fn) => fn());
-	cleanups = [];
+	stopWatching?.();
+	stopWatching = onMotionChange((enabled) => {
+		cleanups.forEach((fn) => fn());
+		cleanups = [];
+		document.querySelectorAll<HTMLVideoElement>('video[data-hover-play]').forEach((video) => {
+			video.hidden = !enabled;
+			if (!enabled) video.pause();
+		});
+		if (enabled) activateHoverMedia();
+	});
+}
 
+function activateHoverMedia() {
 	document.querySelectorAll<HTMLElement>('[data-hover-card]').forEach((card) => cleanups.push(playOnHover(card)));
-	if (!finePointer()) return;
 
 	// floating preview for list rows
 	const preview = document.querySelector<HTMLElement>('[data-follow]');
@@ -72,6 +86,11 @@ export function initHoverMedia() {
 		const video = preview.querySelector('video')!;
 		let active = false;
 		let idle = 0;
+		cleanups.push(() => {
+			clearTimeout(idle);
+			preview.classList.remove('show');
+			video.pause();
+		});
 		document.querySelectorAll<HTMLElement>('[data-media-src]').forEach((row) => {
 			const enter = (e: PointerEvent) => {
 				clearTimeout(idle);

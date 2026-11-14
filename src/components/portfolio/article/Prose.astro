@@ -1,0 +1,154 @@
+---
+// Body column of a long read (project page, devlog entry): type rules for what the .mdx writes.
+// The topic bands themselves are article/Section.astro.
+---
+
+<article class="prose"><slot /></article>
+
+<style>
+	.prose {
+		counter-reset: sec;
+		color: var(--fg-2);
+		font-size: 1rem;
+		line-height: 1.8;
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
+	/* Grid children must be allowed to shrink before their own scrollers take over. */
+	.prose :global(:where(.sec-in > *, .sec-text > *, .sec-media > *, .sec-wide > *)) {
+		min-width: 0;
+	}
+	.prose :global(.sec-text > *) {
+		margin: 0;
+	}
+	.prose :global(.sec-text > * + *) {
+		margin-top: 1.1rem;
+	}
+	.prose :global(.sec-text > .katex-display),
+	.prose :global(.sec-text > .stats),
+	.prose :global(.sec-text > pre) {
+		margin-block: 1.75rem;
+	}
+	/* `<div class="stack">` in the copy: figures stacked inside one grid cell */
+	.prose :global(.stack) {
+		display: grid;
+		gap: 0.75rem;
+		align-content: start;
+	}
+	/* `<div class="pin-end">` in the copy: pushes that last block down so its bottom lines up with the end of a
+	   taller picture column (the text column then stretches to the row and leaves the gap above it) */
+	.prose :global(.sec-text:has(> .pin-end)) {
+		align-self: stretch;
+		display: flex;
+		flex-direction: column;
+	}
+	.prose :global(.sec-text > .pin-end) {
+		margin-top: auto;
+		padding-top: 1.1rem;
+	}
+	/* `<div class="narrow">` in the copy: keeps a small figure group from filling the text column */
+	.prose :global(.narrow) {
+		max-width: 24rem;
+	}
+	/* `---` in the copy: a quiet divider between two parts of one topic */
+	.prose :global(.sec-text > hr) {
+		margin-block: 2rem;
+		height: 1px;
+		border: 0;
+		background: color-mix(in srgb, var(--fg) 12%, transparent);
+	}
+	.prose :global(h2) {
+		margin: 0 0 1.5rem;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+		font-size: clamp(2rem, 4.2vw, 3rem);
+		line-height: 1.05;
+		color: var(--fg);
+	}
+	.prose :global(h2::before) {
+		counter-increment: sec;
+		content: counter(sec, decimal-leading-zero);
+		display: block;
+		margin-bottom: 0.75rem;
+		font-family: var(--label);
+		font-size: 0.8rem;
+		font-weight: 500;
+		font-variant-numeric: tabular-nums;
+		letter-spacing: 0.04em;
+		color: var(--accent-p);
+	}
+	.prose :global(h3) {
+		margin-top: 2.25rem;
+		font-size: 1.1rem;
+		font-weight: 650;
+		letter-spacing: -0.01em;
+		color: var(--fg);
+	}
+	.prose :global(strong) {
+		color: var(--fg);
+		font-weight: 650;
+	}
+	.prose :global(a) {
+		color: var(--fg);
+		text-decoration: underline;
+		text-decoration-color: var(--accent-p);
+		text-underline-offset: 0.2em;
+	}
+	.prose :global(ul),
+	.prose :global(ol) {
+		padding-left: 1.2rem;
+		display: grid;
+		gap: 0.5rem;
+	}
+	.prose :global(ul > li::marker) {
+		content: '▸  ';
+		color: var(--accent-p);
+	}
+	.prose :global(ol > li::marker) {
+		font-family: var(--label);
+		font-weight: 500;
+		font-size: 0.8em;
+		color: var(--accent-p);
+	}
+	.prose :global(code) {
+		font-family: var(--mono);
+		font-size: 0.85em;
+		color: var(--fg);
+	}
+	.prose :global(pre) {
+		padding: 1rem 1.25rem;
+		border-radius: 6px;
+		overflow-x: auto;
+		font-size: 0.85rem;
+		line-height: 1.6;
+		max-width: 100%;
+		overflow-wrap: normal;
+	}
+	.prose :global(pre code),
+	.prose :global(.katex) {
+		overflow-wrap: normal;
+	}
+	.prose :global(table) {
+		display: block;
+		max-width: 100%;
+		overflow-x: auto;
+		border-collapse: collapse;
+	}
+	.prose :global(th),
+	.prose :global(td) {
+		padding: 0.6rem 0.8rem;
+		border: 1px solid var(--line-2);
+		text-align: left;
+	}
+	/* the before/after keeps its 16:9 at the full column width (its own 58vh cap is for the old screens) */
+	.prose :global(.cmp .stage) {
+		max-height: none;
+	}
+	.prose :global(.katex-display) {
+		color: var(--fg);
+		overflow-x: auto;
+		overflow-y: hidden;
+		max-width: 100%;
+	}
+</style>

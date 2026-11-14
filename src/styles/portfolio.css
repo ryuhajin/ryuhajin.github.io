@@ -6,6 +6,8 @@
 :root {
 	--sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 	--mono: 'JetBrains Mono Variable', 'Cascadia Code', ui-monospace, monospace;
+	/* small labels (numbers, dates, counts, meta): the text face, a touch heavier, even-width digits. --mono stays for code */
+	--label: var(--sans);
 
 	/* motion — tune transition feel here */
 	--t-micro: 140ms;
@@ -17,6 +19,10 @@
 
 	--nav-h: 4rem;
 	--pad: clamp(1rem, 3vw, 2.5rem);
+	/* side margin of list pages (Projects, Devlog): wider than the bar's --pad, so the content sits inside it */
+	--gutter: max(var(--pad), min(6vw, 7.5rem));
+	/* empty band between a list page's header (title, filters) and its first block */
+	--head-gap: clamp(2.8rem, min(19.6vh, 21vw), 11.2rem);
 }
 
 *,
@@ -44,6 +50,12 @@ body {
 	transition:
 		background-color var(--t-fast) var(--ease),
 		color var(--t-fast) var(--ease);
+}
+
+/* list pages scroll long under the fixed top bar: give it a solid band so rows never show through it */
+body:has(main.projects, main.devlog) .bar {
+	background: var(--bg);
+	border-bottom: 1px solid var(--line);
 }
 
 a {
@@ -80,9 +92,11 @@ video {
 }
 
 .mono {
-	font-family: var(--mono);
+	font-family: var(--label);
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
 	font-size: 0.75rem;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.04em;
 	text-transform: uppercase;
 	color: var(--fg-3);
 }
@@ -110,7 +124,8 @@ video {
 .chip {
 	display: inline-flex;
 	align-items: center;
-	font-family: var(--mono);
+	font-family: var(--label);
+	font-weight: 500;
 	font-size: 0.6875rem;
 	padding: 0.2rem 0.5rem;
 	border: 1px solid var(--line-2);
@@ -121,7 +136,8 @@ video {
 
 .sample-badge {
 	display: inline-flex;
-	font-family: var(--mono);
+	font-family: var(--label);
+	font-weight: 500;
 	font-size: 0.625rem;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
@@ -142,7 +158,15 @@ video {
 }
 
 /* phones / narrow: a normal scrolling page, no motion. Pages add their own layout tweaks at the same width. */
-@media (max-width: 820px) {
+@media (max-width: 820px), (max-width: 1024px) and (max-height: 500px) {
+	:root {
+		--pad: clamp(1rem, 3vw, 1.5rem);
+		--gutter: var(--pad);
+		--nav-h: calc(4rem + env(safe-area-inset-top, 0px));
+		--head-gap: 2.5rem;
+	}
+	html { scroll-padding-top: calc(var(--nav-h) + 1rem); }
+	main { min-width: 0; overflow-wrap: anywhere; }
 	html,
 	body {
 		height: auto;

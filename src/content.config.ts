@@ -1,4 +1,4 @@
-import { defineCollection } from 'astro:content';
+import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { docsLoader } from '@astrojs/starlight/loaders';
@@ -25,6 +25,12 @@ const projects = defineCollection({
 		group: z.enum(['Computer Graphics', '42 Seoul']).default('Computer Graphics'),
 		/** Short work-in-progress note shown in the hero (e.g. "Quality pass in progress"). */
 		status: z.string().optional(),
+		/** Work type for the Projects filter icons (src/portfolio/categories.ts). One project can have several. */
+		categories: z.array(z.enum(['shader', 'render', 'tool'])).min(1),
+		/** 'in-progress' puts the project under Devlog → In Progress; set 'complete' when the series is done. */
+		stage: z.enum(['in-progress', 'complete']).default('complete'),
+		/** Masonry tile on /projects/: its box ratio ('4/5', '1/1', …); `src` defaults to cover.poster, cropped to fit. */
+		tile: z.object({ src: z.string().optional(), ratio: z.string().regex(/^\d+(\.\d+)?\/\d+(\.\d+)?$/) }).optional(),
 		year: z.string(),
 		role: z.string(),
 		team: z.string().optional(),
@@ -134,7 +140,29 @@ const projects = defineCollection({
 	}),
 });
 
+// Devlog entries: src/content/devlog/<project-id>/<NN-slug>.mdx. The URL slug is the file name;
+// `project` is the only link to a project (project → entries is looked up at build time, never stored).
+const devlog = defineCollection({
+	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/devlog' }),
+	schema: z.object({
+		project: reference('projects'),
+		/** Series number inside the project (01, 02, …); unique per project. */
+		part: z.number().int().positive(),
+		title: z.string(),
+		/** Short label for the row's category column (Lighting, Waves, …). */
+		topic: z.string(),
+		date: z.coerce.date(),
+		/** Shown when the entry is the open (latest) row. */
+		summary: z.string(),
+		/** Up to two pictures for the open row; falls back to the project cover. */
+		images: z.array(z.object({ src: z.string(), alt: z.string().default('') })).max(2).default([]),
+		/** Shown in `npm run dev`, left out of the production build. */
+		draft: z.boolean().default(false),
+	}),
+});
+
 export const collections = {
 	docs: defineCollection({ loader: docsLoader(), schema: docsSchema() }),
 	projects,
+	devlog,
 };

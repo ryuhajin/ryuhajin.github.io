@@ -17,7 +17,9 @@ export const mailData = btoa([...site.email].reverse().join(''));
 
 export type NavId = 'devlog' | 'projects' | 'notes' | 'about';
 
+// order = the numbers on the landing menu (00, 01, …)
 export const nav: { id: NavId; label: string; href: string; hint: string }[] = [
+	{ id: 'devlog', label: 'Devlog', href: '/devlog/', hint: 'work in progress' },
 	{ id: 'projects', label: 'Projects', href: '/projects/', hint: 'selected work' },
 	{ id: 'notes', label: 'Notes', href: '/notes/', hint: 'study log · 270+ docs' },
 	{ id: 'about', label: 'About', href: '/about/', hint: 'profile & contact' },

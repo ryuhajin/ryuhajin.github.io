@@ -1,0 +1,205 @@
+---
+// One devlog entry. Body = the same MDX blocks as a project page; prev / next stay inside the series.
+import { getEntry, render } from 'astro:content';
+import PortfolioLayout from '../../../layouts/PortfolioLayout.astro';
+import 'katex/dist/katex.min.css';
+import { mdxComponents } from '../../../portfolio/mdx-components';
+import Prose from '../../../components/portfolio/article/Prose.astro';
+import Lightbox from '../../../components/portfolio/Lightbox.astro';
+import { getDevlogs, neighbors, entrySlug, entryUrl, blockUrl, pad, fmtDate, type Devlog } from '../../../portfolio/devlog';
+
+export async function getStaticPaths() {
+	return (await getDevlogs()).map((entry) => ({
+		params: { project: entry.data.project.id, entry: entrySlug(entry) },
+		props: { entry },
+	}));
+}
+
+interface Props {
+	entry: Devlog;
+}
+
+const { entry } = Astro.props;
+const e = entry.data;
+const project = (await getEntry(e.project))!;
+const p = project.data;
+const { prev, next } = await neighbors(entry);
+const { Content } = await render(entry);
+---
+
+<PortfolioLayout title={`${e.title} — ${p.title} ${pad(e.part)}`} description={e.summary} current="devlog">
+	<main class="entry" style={`--accent-p: ${p.accent}`}>
+		<header class="e-head">
+			<nav class="mono crumbs" aria-label="Breadcrumb">
+				<a href="/devlog/">Devlog</a>
+				<span aria-hidden="true">/</span>
+				<a href={blockUrl(project.id)}>{p.title}</a>
+			</nav>
+			<p class="mono eyebrow">
+				<span class="no">{pad(e.part)}</span>
+				<span>{e.topic}</span>
+				<time datetime={e.date.toISOString().slice(0, 10)}>{fmtDate(e.date)}</time>
+			</p>
+			<h1>{e.title}</h1>
+			<p class="lead">{e.summary}</p>
+		</header>
+
+		<Prose>
+			<Content components={mdxComponents} />
+		</Prose>
+
+		<nav class="series-nav" aria-label="같은 시리즈의 이전 글과 다음 글">
+			<div>
+				{
+					prev && (
+						<a href={entryUrl(prev)} rel="prev">
+							<span class="mono">← {pad(prev.data.part)}</span>
+							<strong>{prev.data.title}</strong>
+						</a>
+					)
+				}
+			</div>
+			<div class="next">
+				{
+					next && (
+						<a href={entryUrl(next)} rel="next">
+							<span class="mono">{pad(next.data.part)} →</span>
+							<strong>{next.data.title}</strong>
+						</a>
+					)
+				}
+			</div>
+		</nav>
+	</main>
+
+	<Lightbox />
+</PortfolioLayout>
+
+<style>
+	:global(body:has(main.entry)) {
+		overflow: auto;
+	}
+	.entry {
+		padding: calc(var(--nav-h) + clamp(1.5rem, 5vh, 3rem)) 0 clamp(4rem, 10vh, 6rem);
+	}
+	.e-head,
+	.series-nav {
+		width: min(100% - 2 * var(--pad), 80rem);
+		margin-inline: auto;
+	}
+	.e-head {
+		display: grid;
+		gap: 1rem;
+		margin-bottom: clamp(2.5rem, 7vh, 4rem);
+	}
+	.crumbs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		color: var(--fg-3);
+		text-transform: none;
+	}
+	.crumbs a:hover {
+		color: var(--fg);
+	}
+	.eyebrow {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.25rem;
+		margin: 0.75rem 0 0;
+		color: var(--fg-2);
+		text-transform: none;
+	}
+	.eyebrow .no {
+		color: var(--accent-p);
+	}
+	h1 {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+		font-size: clamp(2.6rem, 9vh, 6rem);
+		line-height: 0.95;
+		overflow-wrap: anywhere;
+	}
+	.lead {
+		margin: 0;
+		max-width: 44rem;
+		font-size: clamp(1.1rem, 2.4vh, 1.35rem);
+		font-weight: 300;
+		line-height: 1.65;
+		color: var(--fg);
+	}
+
+	/* prev / next: the list-row rules, two halves */
+	.series-nav {
+		margin-top: clamp(3rem, 8vh, 5rem);
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		border-block: 2px solid var(--line-2);
+	}
+	.series-nav > div + div {
+		border-left: 2px solid var(--line-2);
+	}
+	.series-nav a {
+		display: grid;
+		gap: 0.5rem;
+		height: 100%;
+		padding: clamp(1.25rem, 3vh, 2rem) clamp(1rem, 2vw, 1.5rem);
+	}
+	.series-nav .next a {
+		text-align: right;
+	}
+	.series-nav .mono {
+		color: var(--accent-p);
+		text-transform: none;
+	}
+	.series-nav strong {
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+		font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+		line-height: 1.15;
+		overflow-wrap: anywhere;
+		transition: color var(--t-micro);
+	}
+	.series-nav a:hover strong {
+		color: var(--accent-p);
+	}
+
+	@media (max-width: 820px), (max-width: 1024px) and (max-height: 500px) {
+		h1 {
+			font-size: clamp(2rem, 9vw, 3rem);
+			line-height: 1.05;
+		}
+		.lead {
+			font-size: 1rem;
+			line-height: 1.75;
+			overflow-wrap: anywhere;
+		}
+		.crumbs {
+			align-items: center;
+		}
+		.crumbs a {
+			display: inline-flex;
+			align-items: center;
+			min-height: 44px;
+			overflow-wrap: anywhere;
+		}
+	}
+	@media (max-width: 640px) {
+		.series-nav {
+			grid-template-columns: 1fr;
+		}
+		.series-nav > div + div {
+			border-left: 0;
+			border-top: 2px solid var(--line-2);
+		}
+		.series-nav > div:empty {
+			display: none;
+		}
+		.series-nav > div:empty + div {
+			border-top: 0;
+		}
+	}
+</style>
