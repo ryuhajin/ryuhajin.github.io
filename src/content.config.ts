@@ -29,8 +29,22 @@ const projects = defineCollection({
 		categories: z.array(z.enum(['shader', 'render', 'tool'])).min(1),
 		/** 'in-progress' puts the project under Devlog → In Progress; set 'complete' when the series is done. */
 		stage: z.enum(['in-progress', 'complete']).default('complete'),
-		/** Masonry tile on /projects/: its box ratio ('4/5', '1/1', …); `src` defaults to cover.poster, cropped to fit. */
-		tile: z.object({ src: z.string().optional(), ratio: z.string().regex(/^\d+(\.\d+)?\/\d+(\.\d+)?$/) }).optional(),
+		/** The disc on /projects/. `src` defaults to cover.poster, cropped to the circle.
+		 *  `fill`: a flat colour (the cover's own background) behind the picture, so it can be shown smaller or whole.
+		 *  `fit`: 'contain' shows the whole picture (default 'cover'). `scale`: picture size inside the disc
+		 *  (0.7 = 30 % smaller). `brightness`: evens the still thumbnails out (1 = as is; the hover video plays as made).
+		 *  `blend: screen`: for a cover of light lines on pure black — the black takes the `fill` colour, so the
+		 *  disc can stand off the page. */
+		tile: z
+			.object({
+				src: z.string().optional(),
+				fill: z.string().optional(),
+				fit: z.enum(['cover', 'contain']).optional(),
+				scale: z.number().positive().optional(),
+				brightness: z.number().positive().optional(),
+				blend: z.enum(['screen']).optional(),
+			})
+			.optional(),
 		year: z.string(),
 		role: z.string(),
 		team: z.string().optional(),
