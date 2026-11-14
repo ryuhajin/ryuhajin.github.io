@@ -92,7 +92,6 @@ const showSteps = befores.length > 1;
 		position: relative;
 		aspect-ratio: 16 / 9;
 		max-height: 58vh;
-		border-radius: 12px;
 		overflow: hidden;
 		border: 1px solid var(--line-2);
 		background: var(--bg-3);
@@ -135,7 +134,6 @@ const showSteps = befores.length > 1;
 		translate: -50% -50%;
 		box-sizing: content-box;
 		padding: 0.55rem;
-		border-radius: 50%;
 		background: #0b0b0e99;
 		border: 1px solid #fff4;
 		color: #fff;
@@ -155,13 +153,12 @@ const showSteps = befores.length > 1;
 	.stage:has(.range:focus-visible) .grip {
 		border-color: var(--accent);
 	}
-	/* labels sit on the picture: frosted pill, UI font */
+	/* labels sit on the picture: a frosted square tag, UI font (square like the rest of the site) */
 	.tag {
 		position: absolute;
 		top: 0.75rem;
 		z-index: 1;
 		padding: 0.3rem 0.7rem;
-		border-radius: 999px;
 		background: #0b0b0e80;
 		border: 1px solid #fff2;
 		backdrop-filter: blur(10px);
@@ -196,7 +193,6 @@ const showSteps = befores.length > 1;
 		align-items: baseline;
 		padding: 0.4rem 0.75rem;
 		border: 1px solid var(--line-2);
-		border-radius: 999px;
 		font-size: 0.8rem;
 		color: var(--fg-2);
 		transition:

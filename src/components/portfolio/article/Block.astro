@@ -19,4 +19,24 @@ const { size = 'wide', caption } = Astro.props;
 		display: grid;
 		gap: 0.6rem;
 	}
+	/* YouTube: its "YouTube에서 보기" link shares the caption's row — caption on the left, link on the right */
+	.block:has(> :global(.yt-block)) {
+		grid-template-columns: minmax(0, 1fr) auto;
+		column-gap: 1.5rem;
+		align-items: center;
+	}
+	.block > :global(.yt-block) {
+		display: contents;
+	}
+	.block > :global(.yt-block > .yt) {
+		grid-column: 1 / -1;
+	}
+	.block:has(> :global(.yt-block)) > :global(.cap) {
+		grid-row: 2;
+		grid-column: 1;
+	}
+	.block > :global(.yt-block > .out) {
+		grid-row: 2;
+		grid-column: 2;
+	}
 </style>

@@ -52,8 +52,9 @@ body {
 		color var(--t-fast) var(--ease);
 }
 
-/* list pages scroll long under the fixed top bar: give it a solid band so rows never show through it */
-body:has(main.projects, main.devlog) .bar {
+/* long pages (lists, devlog entries) scroll under the fixed top bar: give it a solid band so content never shows
+   through it */
+body:has(main.projects, main.devlog, main.entry, main.article) .bar {
 	background: var(--bg);
 	border-bottom: 1px solid var(--line);
 }

@@ -1,6 +1,7 @@
 ---
 // Click-to-load YouTube: a poster + play button until the visitor asks for the video, so the page itself makes no
-// request to YouTube. The player comes from youtube-nocookie.com.
+// request to YouTube. The player comes from youtube-nocookie.com. The "YouTube에서 보기" link sits under the frame,
+// so it stays after the player replaces the poster.
 interface Props {
 	id: string;
 	poster: string;
@@ -9,15 +10,20 @@ interface Props {
 const { id, poster, title } = Astro.props;
 ---
 
-<div class="yt" data-yt={id} data-title={title}>
-	<img src={poster} alt="" loading="lazy" decoding="async" />
-	<button type="button" class="play" aria-label={`${title} 영상 재생 (YouTube)`}>
-		<span class="disc">
-			<!-- centroid at x 12.3: a hair right of the circle centre, where a triangle looks centred -->
-			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.3 6.8v10.4l9-5.2z"></path></svg>
-		</span>
-	</button>
-	<a class="out" href={`https://youtu.be/${id}`} target="_blank" rel="noopener">YouTube에서 보기 ↗</a>
+<div class="yt-block">
+	<div class="yt" data-yt={id} data-title={title}>
+		<img src={poster} alt="" loading="lazy" decoding="async" />
+		<button type="button" class="play" aria-label={`${title} 영상 재생 (YouTube)`}>
+			<span class="disc">
+				<!-- centroid at x 12.3: a hair right of the circle centre, where a triangle looks centred -->
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.3 6.8v10.4l9-5.2z"></path></svg>
+			</span>
+		</button>
+	</div>
+	<a class="out" href={`https://youtu.be/${id}`} target="_blank" rel="noopener">
+		<svg viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#f00"></rect><path d="M11 5.5v9l8-4.5z" fill="#fff"></path></svg>
+		YouTube에서 보기 ↗
+	</a>
 </div>
 
 <script>
@@ -39,7 +45,6 @@ const { id, poster, title } = Astro.props;
 		position: relative;
 		aspect-ratio: 16 / 9;
 		width: 100%;
-		border-radius: 12px;
 		overflow: hidden;
 		border: 1px solid var(--line-2);
 		background: #000;
@@ -115,16 +120,36 @@ const { id, poster, title } = Astro.props;
 		outline: 2px solid var(--accent);
 		outline-offset: 4px;
 	}
-	.out {
-		position: absolute;
-		right: 0.9rem;
-		bottom: 0.75rem;
-		color: #fff;
-		/* Pretendard, not the mono face: the mono font has no Hangul, so "에서 보기" fell back to a thin system font */
+	.yt-block {
+		display: grid;
+		gap: 0.7rem;
+	}
+	/* under the frame on the right: logo + quiet text, underlined on hover (.yt-block: outranks .prose a) */
+	.yt-block .out {
+		text-decoration: none;
+		justify-self: end;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding-bottom: 1px;
+		border-bottom: 1px solid transparent;
+		color: var(--fg-2);
+		/* Pretendard, not the mono face: the mono font has no Hangul */
 		font-family: var(--sans);
 		font-size: 0.8125rem;
-		font-weight: 600;
-		letter-spacing: 0.01em;
-		text-shadow: 0 1px 6px #000;
+		font-weight: 500;
+		transition:
+			color var(--t-fast) var(--ease),
+			border-color var(--t-fast) var(--ease);
+	}
+	.yt-block .out svg {
+		width: 16px;
+		height: auto;
+		flex: none;
+	}
+	.yt-block .out:hover,
+	.yt-block .out:focus-visible {
+		color: var(--fg);
+		border-color: currentColor;
 	}
 </style>

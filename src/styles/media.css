@@ -1,0 +1,83 @@
+/* Media chrome shared by project pages (article/Figure) and devlog entries (devlog/story/Shot): the "크게 보기" tag
+   on pictures that open the lightbox, and the play button on clips. */
+
+.media-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	margin: 0;
+	padding: 0.35rem 0.65rem;
+	border: 1px solid #fff3;
+	border-radius: 0;
+	background: #0b0b0ecc;
+	color: #fff;
+	font-family: var(--sans);
+	font-size: 0.75rem;
+	font-weight: 500;
+	line-height: 1.3;
+	white-space: nowrap;
+}
+.media-tag svg {
+	flex: none;
+	width: 14px;
+	height: 14px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: square;
+}
+
+/* picture → lightbox: a plain pointer (the OS zoom cursor is scaled up blurry on some screens) and the tag in the
+   top-right corner on hover */
+.media-zoom {
+	all: unset;
+	position: relative;
+	display: block;
+	width: 100%;
+	cursor: pointer;
+}
+.media-zoom:focus-visible {
+	outline: 2px solid var(--accent-p, var(--accent));
+	outline-offset: 3px;
+}
+.media-zoom > .media-tag {
+	position: absolute;
+	top: 0.75rem;
+	right: 0.75rem;
+	opacity: 0;
+	translate: 0 -0.25rem;
+	pointer-events: none;
+	transition:
+		opacity var(--t-fast) var(--ease),
+		translate var(--t-fast) var(--ease-out);
+}
+.media-zoom:hover > .media-tag,
+.media-zoom:focus-visible > .media-tag {
+	opacity: 1;
+	translate: 0 0;
+}
+
+/* clip (looping video) */
+.media-clip {
+	position: relative;
+	min-width: 0;
+}
+
+/* clip play button: shown where clips do not autoplay (phones, touch, reduced motion) — a dark pill in the middle */
+.media-play {
+	position: absolute;
+	inset: 50% auto auto 50%;
+	translate: -50% -50%;
+	min-height: 44px;
+	padding: 0.65rem 1rem;
+	border: 1px solid #ffffff70;
+	border-radius: 999px;
+	background: #000c;
+	color: #fff;
+	white-space: nowrap;
+	font: inherit;
+	cursor: pointer;
+}
+.media-play[hidden] {
+	display: none;
+}
