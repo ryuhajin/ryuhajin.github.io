@@ -82,6 +82,10 @@ uniform vec4 uEdges[32];  // hypercube edges, projected on the CPU (figure units
 // writes it in its own units and scene() scales it like the ink distance
 float gAcc;
 float gSlot; // 0 while evaluating scene A, 1 for scene B (B is the next appearance)
+// colour slot (1..3) of the solid piece under this pixel, 0 = none; pass 1 stores it in alpha for themes with
+// coloured fills (--shape-fills). gHueNext is the slot the next small figure takes.
+float gHue;
+float gHueNext;
 #define CYCLE ${(HOLD + MORPH).toFixed(3)}
 
 // ---- line figures: distance to the ink in figure units (radius ≈ 1), <= 0 on the ink ----
@@ -241,6 +245,9 @@ float compOverlap(vec2 p, float seed, float soft, out float fill) {
 	vec2 c2 = vec2(0.3 + 0.2 * (k.z - 0.5), -0.06 + 0.25 * (k.x - 0.5) + 0.07 * cos(t * 0.33));
 	float r2 = sdBox(rot(-0.24 + 0.3 * (k.y - 0.5)) * (p - c2), vec2(0.4, 0.62) * mix(0.8, 1.2, k.x));
 	fill = 0.5 * inside(r1, soft) + 0.5 * inside(r2, soft); // overlap = two layers
+	float h0 = floor(hash(vec2(seed, 25.0)) * 3.0);          // which plane gets which colour changes per appearance
+	if (inside(r1, soft) > 0.5) gHue = 1.0 + mod(h0, 3.0);
+	if (inside(r2, soft) > 0.5) gHue = 1.0 + mod(h0 + 1.0, 3.0);
 	float d = min(abs(r1), abs(r2));
 	vec2 cc = vec2(0.04 + 0.4 * (k.w - 0.5) + 0.09 * sin(t * 0.5), 0.3 + 0.2 * (k.y - 0.5));
 	float cr = mix(0.14, 0.26, k.z);
@@ -264,6 +271,8 @@ float compOverlap(vec2 p, float seed, float soft, out float fill) {
 	float dot0 = length(p - dc) - 0.075;                                               // translucent disc
 	d = min(d, abs(dot0));
 	fill = min(1.0, fill + 0.5 * inside(tri, soft) + 0.5 * inside(dot0, soft));
+	if (inside(tri, soft) > 0.5) gHue = 1.0 + mod(h0 + 2.0, 3.0);
+	if (inside(dot0, soft) > 0.5) gHue = 1.0 + mod(h0, 3.0);
 	float tsq = abs(sdBox(rot(-t * 0.25 + e.x * 2.0) * (p - vec2(1.0 + 0.2 * e.y, -1.0)), vec2(0.11))); // turning square
 	d = min(d, tsq);
 	if (e.x <= 0.0) gAcc = min(gAcc, tsq);
@@ -294,6 +303,7 @@ float smallFigure(vec2 q, float kind, float sz, inout float fill) {
 	if (kind < 4.5) return min(abs(length(q) - 1.0), abs(length(q) - 0.55));
 	float b = sdBox(q, vec2(0.8));
 	fill = max(fill, inside(b * sz, 1.0));
+	if (inside(b * sz, 1.0) > 0.5) gHue = gHueNext;
 	return abs(b);
 }
 
@@ -325,6 +335,7 @@ float compScatter(vec2 p, float seed, out float fill) {
 		float sz = unit * (0.06 + 0.08 * h2);
 		vec2 q = rot(t * (h.x - 0.5) * 0.6 + fi) * (p - pos) / sz;
 		float kind = floor(hash(vec2(fi * 3.1 + 1.0, seed)) * 6.0);
+		gHueNext = 1.0 + floor(h2 * 3.0);
 		float k = smallFigure(q, kind, sz, fill) * sz;
 		d = min(d, k);
 		if (hash(vec2(fi * 5.9 + 2.0, seed)) < 0.25) gAcc = min(gAcc, k);
@@ -343,6 +354,7 @@ float compScatter(vec2 p, float seed, out float fill) {
 			float sz = unit * mix(0.09, 0.04, fk / 2.0);
 			vec2 q = rot(t * 0.3 * (hx - 0.5) + fk + fj) * (p - pos) / sz;
 			float kind = floor(hash(vec2(fj * 3.3 + fk, seed)) * 6.0);
+			gHueNext = 1.0 + floor(hash(vec2(fj * 4.3 + fk, seed)) * 3.0);
 			d = min(d, smallFigure(q, kind, sz, fill) * sz);
 		}
 	}
@@ -402,6 +414,7 @@ vec3 fitRegion(vec2 want, float u, vec4 ext) {
 float scene(float id, float seed, vec2 fc, out float fill, out float acc) {
 	fill = 0.0;
 	gAcc = 1e5;
+	gHue = 0.0;
 	if (id < 4.5) {
 		vec2 q = rot(uRot) * stretch(fc - uCenter) / uR;
 		float d = figure(q, id) * uR;
@@ -422,7 +435,7 @@ float scene(float id, float seed, vec2 fc, out float fill, out float acc) {
 	return d;
 }
 
-// pass 1: r = ink, g = translucent fill, b = the part of the ink drawn in the accent colour
+// pass 1: r = ink, g = translucent fill, b = the part of the ink drawn in the accent colour, a = fill colour slot / 4
 void main() {
 	vec2 fc = gl_FragCoord.xy;
 	bool pixel = uPixel > 1.5;
@@ -438,10 +451,12 @@ void main() {
 	float fill, acc;
 	gSlot = 0.0;
 	float d = scene(uA, uSeedA, fc, fill, acc);
+	float hue = gHue;
 	if (uMix > 0.001) { // blending the two fields is the morph
 		float fillB, accB;
 		gSlot = 1.0;
 		float dB = scene(uB, uSeedB, fc, fillB, accB);
+		if (fillB * uMix > fill * (1.0 - uMix)) hue = gHue; // the colour of whichever plane dominates the morph
 		d = mix(d, dB, uMix);
 		fill = mix(fill, fillB, uMix);
 		float cap = 30.0 * uPx; // accent pieces without a partner fade out mid-morph instead of jumping
@@ -449,7 +464,7 @@ void main() {
 	}
 	float keep = smoothstep(uMenuX, uMenuX + 80.0 * uPx, fc.x);
 	float ink = lineAt(max(d, 0.0), hw, aa) * keep;
-	gl_FragColor = vec4(ink, fill * keep, min(ink, lineAt(max(acc, 0.0), hw, aa) * keep), 1.0);
+	gl_FragColor = vec4(ink, fill * keep, min(ink, lineAt(max(acc, 0.0), hw, aa) * keep), hue / 4.0);
 }
 `;
 
@@ -468,6 +483,11 @@ uniform vec3 uLine;       // figure + echoes
 uniform vec3 uFill;       // translucent planes
 uniform vec3 uAcc;        // the accent pieces
 uniform vec3 uBg;         // page background under the canvas
+uniform float uTint;      // 1: planes are solid, in the three --shape-fills colours (slot from pass 1 alpha)
+uniform vec3 uFillA;
+uniform vec3 uFillB;
+uniform vec3 uFillC;
+uniform float uFillAlpha;
 
 #define ECHOES ${ECHOES}
 
@@ -521,7 +541,14 @@ void main() {
 
 	// translucent planes under the lines
 	vec2 uv = fc / uRes;
-	float fillA = texture2D(uFig, uv).g * 0.14;
+	vec4 fig = texture2D(uFig, uv); // same size as this pass: read at texel centres, so the slot never blends
+	float fillA = fig.g * 0.14;
+	vec3 fillCol = uFill;
+	if (uTint > 0.5) {
+		float slot = floor(fig.a * 4.0 + 0.5);
+		fillCol = slot < 1.5 ? uFillA : (slot < 2.5 ? uFillB : uFillC);
+		fillA = smoothstep(0.05, 0.5, fig.g) * uFillAlpha;
+	}
 	if (pixel) {
 		// 8-bit: no partial alpha — fading echoes and planes become an ordered dither in the line colour
 		float th = bayer4(floor(gl_FragCoord.xy / uPixel));
@@ -538,7 +565,7 @@ void main() {
 	// the colour each channel should end up with over the page background — planes, then lines, then accent pieces.
 	// Mixing per channel keeps the split right on any background: on dark ones the channels add up (R/G/B fringes),
 	// on light ones they subtract (C/M/Y fringes, like misregistered print) instead of turning into dark smears.
-	vec3 target = mix(uBg, uFill, fillA);
+	vec3 target = mix(uBg, fillCol, fillA);
 	target = mix(target, uLine, lineA);
 	target = mix(target, uAcc, accA);
 	float alpha = max(fillA, max(max(lineA.r, lineA.g), lineA.b));
@@ -552,6 +579,9 @@ interface Palette {
 	accent: number[];
 	bg: number[];
 	fill: number[];
+	/** --shape-fills: three colours for solid planes (Euclid); null = translucent planes in the line colour */
+	fills: number[][] | null;
+	fillAlpha: number;
 	set: ShapeSet;
 }
 
@@ -568,11 +598,14 @@ function readPalette(probe: CanvasRenderingContext2D): Palette {
 	const cs = getComputedStyle(document.documentElement);
 	const v = (n: string) => cssColor(cs.getPropertyValue(n), probe);
 	const id = document.documentElement.dataset.ptheme;
+	const fills = cs.getPropertyValue('--shape-fills').split(',').map((c) => c.trim()).filter(Boolean);
 	return {
 		line: v('--shape'),
 		accent: v('--shape-2'),
 		bg: v('--bg'),
 		fill: v('--shape'),
+		fills: fills.length >= 3 ? fills.slice(0, 3).map((c) => cssColor(c, probe)) : null,
+		fillAlpha: parseFloat(cs.getPropertyValue('--shape-fill-alpha')) || 0.9,
 		set: themas.find((t) => t.id === id)?.shapes ?? 'geo',
 	};
 }
@@ -664,7 +697,7 @@ function startHeroSdf() {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
 	const figNames = ['uTime', 'uCenter', 'uR', 'uRot', 'uA', 'uB', 'uMix', 'uSeedA', 'uSeedB', 'uCompC', 'uRegion', 'uStage', 'uU', 'uVel', 'uPx', 'uPixel', 'uMenuX', 'uEdges'] as const;
-	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uMenuX', 'uLine', 'uFill', 'uAcc', 'uBg'] as const;
+	const compNames = ['uFig', 'uRes', 'uTime', 'uSpacing', 'uDir', 'uSplit', 'uPx', 'uPixel', 'uMenuX', 'uLine', 'uFill', 'uAcc', 'uBg', 'uTint', 'uFillA', 'uFillB', 'uFillC', 'uFillAlpha'] as const;
 	let uf: Uniforms<(typeof figNames)[number]>;
 	let uc: Uniforms<(typeof compNames)[number]>;
 	const locate = <T extends string>(prog: WebGLProgram, names: readonly T[]) =>
@@ -815,6 +848,12 @@ function startHeroSdf() {
 		gl.uniform3fv(uc.uFill, palette.fill);
 		gl.uniform3fv(uc.uAcc, palette.accent);
 		gl.uniform3fv(uc.uBg, palette.bg);
+		const fills = palette.fills ?? [palette.fill, palette.fill, palette.fill];
+		gl.uniform1f(uc.uTint, palette.fills ? 1 : 0);
+		gl.uniform3fv(uc.uFillA, fills[0]);
+		gl.uniform3fv(uc.uFillB, fills[1]);
+		gl.uniform3fv(uc.uFillC, fills[2]);
+		gl.uniform1f(uc.uFillAlpha, palette.fillAlpha);
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 		gl.drawArrays(gl.TRIANGLES, 0, 3);
