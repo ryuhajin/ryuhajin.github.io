@@ -1,0 +1,86 @@
+---
+// A remark set off from the story (Josh Comeau's callouts: the icon sits on the top-left corner in a notch of page
+// colour, and the line in the note's colour runs down from it), coloured by what it is:
+//   note 메모 (blue)   — a fact or number worth knowing
+//   tip  팁   (green)  — something that made the work easier
+//   warn 주의 (amber)  — a catch to watch for
+//   bug  함정 (red)    — what broke, or the trap I fell into
+// `label` replaces the default heading (메모 / 팁 / 주의 / 함정). Set in Noto Sans KR.
+import '@fontsource-variable/noto-sans-kr';
+
+interface Props {
+	type?: 'note' | 'tip' | 'warn' | 'bug';
+	label?: string;
+}
+const NAME = { note: '메모', tip: '팁', warn: '주의', bug: '함정' } as const;
+const { type = 'note', label } = Astro.props;
+---
+
+<aside class:list={['note', `is-${type}`]}>
+	<svg class="note-icon" viewBox="0 0 24 24" aria-hidden="true">
+		{type === 'note' && <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 11v5M12 7.5v.5" />}
+		{type === 'tip' && <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9V16h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3Z" />}
+		{type === 'warn' && <path d="M12 3 2.5 20h19L12 3ZM12 10v4.5M12 17v.5" />}
+		{type === 'bug' && <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM8.5 8.5l7 7M15.5 8.5l-7 7" />}
+	</svg>
+	<p class="note-label">{label ?? NAME[type]}</p>
+	<div class="note-body"><slot /></div>
+</aside>
+
+<style>
+	.note {
+		--tone: #7db8ff;
+		position: relative;
+		margin: 1.5rem 0 1rem 0.85rem;
+		padding: 1.5rem 1.9rem 1.55rem;
+		border-left: 2.5px solid var(--tone);
+		border-radius: 0 6px 6px 0;
+		background: color-mix(in srgb, var(--tone) 8%, #121216);
+		font-family: 'Noto Sans KR Variable', var(--sans);
+	}
+	.is-tip {
+		--tone: #5fd3a4;
+	}
+	.is-warn {
+		--tone: #f2b84b;
+	}
+	.is-bug {
+		--tone: #ff7b6b;
+	}
+	/* the icon on the corner, ringed in page colour so it reads as a notch cut into the box */
+	.note-icon {
+		position: absolute;
+		top: -0.95rem;
+		left: -1.2rem;
+		width: 1.9rem;
+		height: 1.9rem;
+		padding: 0.2rem;
+		border-radius: 50%;
+		background: var(--bg);
+		fill: none;
+		stroke: var(--tone);
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.note-label {
+		margin: 0 0 0.55rem;
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--fg);
+	}
+	.note-body {
+		font-size: 0.9375rem;
+		line-height: 1.75;
+		color: var(--fg-2);
+	}
+	.note-body > :global(*) {
+		margin: 0;
+	}
+	.note-body > :global(* + *) {
+		margin-top: 0.6rem;
+	}
+	.note-body :global(strong) {
+		color: var(--fg);
+	}
+</style>

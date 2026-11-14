@@ -1,0 +1,105 @@
+---
+project: water-shader
+part: 14
+title: Waves to the Horizon
+topic: Waves
+date: 2026-11-14
+summary: SAMPLE — 상세 페이지 디자인 확인용 글입니다. 내용은 Water Shader 프로젝트 페이지의 'Waves'를 이야기 순서로 다시 엮었습니다.
+images:
+  - src: /projects/water-shader/waves.webp
+    alt: 바람 부는 노을 바다
+  - src: /projects/water-shader/waves-far-debug.webp
+    alt: 원경 처리 디버그 뷰
+draft: true
+---
+
+<Chapter kind="goal" title="수평선까지 물결을 잇고 싶었다">
+
+Gerstner 파도 4개로 가까운 바다는 제법 바다다워졌습니다. 마루는 뾰족하고 골은 넓게, 바람 방향을 따라 물결이 밀려옵니다.
+
+<Shot src="/projects/water-shader/waves.webp" alt="바람 부는 노을 바다" wide>
+  Sunset 프리셋. 가까운 물결은 **바람 방향**을 따라 결이 서 있지만, 화면 위쪽 **원경**으로 갈수록 결이 흐려집니다.
+</Shot>
+
+문제는 그 너머였습니다. 바다 그리드(1024², 정점 약 105만)는 중심에서 멀어질수록 정점 간격이 넓어집니다. 이번에 바꾸고 싶었던 것은 하나, **가까운 물결과 먼 물결이 같은 방향으로 수평선까지 이어지는 것**이었습니다.
+
+</Chapter>
+
+<Chapter kind="try" title="두 번 헤맸다">
+
+<Attempt n={1} title="먼 곳에서는 파도를 끈다" result="fail">
+
+한 파장 안에 정점이 너무 적으면 마루와 골을 그리지 못하고 **모아레**가 생깁니다. 그래서 한 파장에 정점이 5개보다 적게 들어가는 먼 곳에서는 파도를 껐습니다.
+
+모아레는 사라졌지만, 노멀맵만 남은 원경에서 **가까운 물결과 먼 물결의 방향이 X자로 엇갈렸습니다.**
+
+</Attempt>
+
+<Attempt n={2} title="같은 파도를 픽셀에서 다시 계산한다" result="half">
+
+메시가 못 그리는 파도라면 픽셀 셰이더에서 같은 파도의 기울기를 계산하면 된다고 생각했습니다. 방향은 맞았지만, 비슷한 세기의 줄무늬 4개가 원근으로 눌리며 겹쳐 **원경에 마름모 격자**가 생겼습니다.
+
+</Attempt>
+
+</Chapter>
+
+<Chapter kind="cause" title="그리는 단위가 파도보다 작아지는 곳">
+
+두 번의 실패는 같은 이유였습니다. 메시는 정점 간격보다, 픽셀은 픽셀 크기보다 **작은 파도를 그릴 수 없습니다.** 거리에 따라 파도를 맡을 단계를 나눠야 했습니다.
+
+<Shot src="/projects/water-shader/waves-far-debug.webp" alt="원경 처리 디버그 뷰" wide>
+  원경 처리 디버그 뷰. **빨강**은 메시가, **초록**은 픽셀 노멀이, **파랑**은 거칠기가 파도를 맡는 구간입니다. 수평선에 가까울수록 파랑이 넓어집니다.
+</Shot>
+
+파도마다 "한 파장에 정점이 몇 개 들어가는지"를 재고, 그 값으로 다음 단계에 넘길 비율을 정합니다.
+
+```hlsl title="WaveWeights.hlsl"
+// 한 파장에 들어가는 정점 수가 5개 아래로 내려가면 메시 파도를 줄이고, 그만큼 다음 단계로 넘긴다
+float verticesPerWave = wave.length / gridSpacing(worldPos);
+float meshWeight = saturate((verticesPerWave - 5.0) / 3.0); // 5~8개 구간에서 서서히 넘김 (fade width)
+
+float3 offset = GerstnerOffset(wave, worldPos, time) * meshWeight;
+pixelNormalWeight += (1.0 - meshWeight) * wave.steepness;
+// TODO: 거칠기 단계도 같은 가중치로 묶기
+```
+
+<Note type="note" label="숫자 하나">
+  "정점 5개"는 마루·골·그 사이를 겨우 그릴 수 있는 최소치입니다. 4개 이하에서는 파도가 계단처럼 꺾이고, 거리 방향으로 줄무늬가 생깁니다.
+</Note>
+
+<Note type="warn">
+  5개에서 딱 끊으면 그 거리에 **파도가 사라지는 경계선**이 보입니다. 위 코드의 `/ 3.0`은 정점 5~8개 구간에서 서서히 넘기기 위한 폭입니다.
+</Note>
+
+</Chapter>
+
+<Chapter kind="fix" title="메시 → 픽셀 노멀 → 거칠기">
+
+픽셀로도 그리기 어려운 작은 파도는 **표면 거칠기**로 바꿔, 햇빛 반사가 넓게 퍼지게 했습니다. 가까운 곳은 메시가, 중간은 픽셀 노멀이, 먼 곳은 거칠기가 같은 파도를 이어받습니다.
+
+<Versus before="/projects/water-shader/waves-far-off.webp" after="/projects/water-shader/waves-far-on.webp" beforeLabel="원경 처리 전" afterLabel="원경 처리 후">
+  같은 시점 · Tropical. 왼쪽은 원경에서 **물결 방향이 X자로 엇갈리고**, 오른쪽은 **수평선까지 바람 방향이 한 방향**으로 이어집니다. 화면 위쪽 1/3을 보면 차이가 가장 큽니다.
+</Versus>
+
+</Chapter>
+
+<Chapter kind="next" title="남은 것">
+
+- 거칠기로 넘어간 원경은 **햇빛 반사의 모양**까지만 맞습니다. 물결 무늬 자체는 보이지 않아, 아주 가까이서 수평선을 볼 때는 조금 매끈합니다.
+- 다음 기록에서는 잔물결 노멀맵 두 장을 섞는 방식을 다룹니다.
+
+</Chapter>
+
+<Chapter kind="refs" title="참고한 자료">
+
+<Ref type="자료" title="GPU Gems 1 · Effective Water Simulation from Physical Models" href="https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-1-effective-water-simulation-physical-models">
+  Gerstner 파도의 식과, 파도 여러 개를 겹칠 때 파장·속도를 맞추는 방법.
+</Ref>
+<Ref type="자료" title="Catlike Coding · Waves" href="https://catlikecoding.com/unity/tutorials/flow/waves/">
+  정점 셰이더에서 Gerstner 파도를 단계별로 쌓아 가는 튜토리얼.
+</Ref>
+<Ref type="영감" title="Cyanilux · Shoreline Shader Breakdown" href="https://www.cyanilux.com/tutorials/shoreline-shader-breakdown/">
+  해안선 파도를 깊이와 UV 두 방식으로 나눠 설명하는 구성.
+</Ref>
+
+</Chapter>

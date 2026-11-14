@@ -14,16 +14,18 @@ interface Props {
 	current?: NavId;
 	/** false: no top bar (the landing page draws its own hero menu) */
 	bar?: boolean;
+	/** Expressive Code theme for the page's code blocks (a non-palette theme in ec.config.mjs) */
+	codeTheme?: string;
 }
 
-const { title, description = site.intro.replaceAll('\n', ' '), current, bar = true } = Astro.props;
+const { title, description = site.intro.replaceAll('\n', ' '), current, bar = true, codeTheme } = Astro.props;
 // the landing page tab reads as the site itself (a log), not the job title shown on the page
 const fullTitle = `${site.name} — ${title ?? 'Log'}`;
 const themaIds = themas.map((t) => t.id);
 ---
 
 <!doctype html>
-<html lang="ko" data-ptheme={defaultThema}>
+<html lang="ko" data-ptheme={defaultThema} data-code-theme={codeTheme}>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />

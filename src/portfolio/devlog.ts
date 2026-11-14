@@ -13,6 +13,23 @@ export const entryUrl = (e: Devlog) => `/devlog/${e.data.project.id}/${entrySlug
 /** The project's block on the Devlog page. */
 export const blockUrl = (projectId: string) => `/devlog/#${projectId}`;
 
+/** Anchor id of a story chapter's heading — shared by <Chapter> and the entry page's table of contents. */
+export const chapterId = (title: string) =>
+	title
+		.toLowerCase()
+		.replace(/[^a-z0-9가-힣]+/g, '-')
+		.replace(/^-|-$/g, '');
+
+/** The story chapters an entry's .mdx declares (<Chapter kind="…" title="…" label="…">), in order. */
+export const chaptersOf = (body = '') =>
+	[...body.matchAll(/<Chapter\b([^>]*)>/g)]
+		.map(([, attrs]) => {
+			const attr = (name: string) => attrs.match(new RegExp(`\\b${name}="([^"]*)"`))?.[1];
+			const title = attr('title') ?? '';
+			return { kind: attr('kind') ?? '', title, label: attr('label'), id: chapterId(title) };
+		})
+		.filter((c) => c.title);
+
 /** "2026.11.14" — dates are plain days, so read them in UTC. */
 export const fmtDate = (d: Date) => d.toISOString().slice(0, 10).replaceAll('-', '.');
 

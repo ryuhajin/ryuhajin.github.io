@@ -1,0 +1,96 @@
+---
+// One link in an entry's 참고 chapter: what kind of link it is (영감, 자료, 툴 …), its title, an optional one-line
+// note (the slot), and the site it lives on. Consecutive Refs read as one ruled list. Opens in a new tab.
+interface Props {
+	href: string;
+	title: string;
+	type?: string;
+}
+const { href, title, type } = Astro.props;
+let site = '';
+try {
+	site = new URL(href).hostname.replace(/^www\./, '');
+} catch {
+	site = href;
+}
+const note = Astro.slots.has('default');
+---
+
+<a class="ref" href={href} target="_blank" rel="noopener noreferrer">
+	<span class="ref-type">{type}</span>
+	<span class="ref-main">
+		<strong>{title}</strong>
+		{
+			note && (
+				<span class="ref-note">
+					<slot />
+				</span>
+			)
+		}
+	</span>
+	<span class="ref-site">
+		{site}
+		<span aria-hidden="true">↗</span>
+	</span>
+</a>
+
+<style>
+	.ref {
+		display: grid;
+		grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+		align-items: baseline;
+		gap: 0.4rem 1.25rem;
+		padding: 1rem 0.25rem;
+		border-top: 1px solid var(--line-2);
+		color: inherit;
+	}
+	/* the rows sit flush as one list, closed by a rule under the last */
+	.ref + .ref {
+		margin-top: 0;
+	}
+	.ref:not(:has(+ .ref)) {
+		border-bottom: 1px solid var(--line-2);
+	}
+	.ref-type {
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		color: var(--accent-p);
+	}
+	.ref-main {
+		display: grid;
+		gap: 0.2rem;
+		min-width: 0;
+	}
+	.ref-main strong {
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.45;
+		color: var(--fg);
+		transition: color var(--t-fast) var(--ease);
+	}
+	.ref:hover .ref-main strong {
+		color: var(--accent-p);
+	}
+	.ref-note {
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: var(--fg-2);
+	}
+	.ref-note :global(p) {
+		margin: 0;
+	}
+	.ref-site {
+		font-size: 0.8125rem;
+		white-space: nowrap;
+		color: color-mix(in srgb, var(--fg-2), var(--fg-3));
+	}
+	@media (max-width: 640px) {
+		.ref {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.ref-site {
+			white-space: normal;
+		}
+	}
+</style>

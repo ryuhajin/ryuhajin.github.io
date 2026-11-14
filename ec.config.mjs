@@ -1,9 +1,22 @@
 // Expressive Code (Notes code blocks). One Shiki theme per palette, scoped by <html data-palette>.
+// Devlog entries use their own theme, scoped by data-code-theme on the story (src/pages/devlog/[project]/[entry].astro).
 import { defineEcConfig } from '@astrojs/starlight/expressive-code';
+import houston from '@shikijs/themes/houston';
 import { palettes } from './src/notes/palettes.mjs';
 
+// Houston (Astro's theme) leaves function calls plain in HLSL (scope support.function); colour them in Houston's
+// own function cyan, as it already does for Rust.
+const houstonDevlog = {
+	...houston,
+	name: 'houston-devlog',
+	tokenColors: [
+		...houston.tokenColors,
+		{ scope: ['support.function', 'entity.name.function', 'meta.function-call.generic'], settings: { foreground: '#00DAEF' } },
+	],
+};
+
 export default defineEcConfig({
-	themes: palettes.map((p) => p.codeTheme),
+	themes: [...palettes.map((p) => p.codeTheme), houstonDevlog],
 	useStarlightDarkModeSwitch: false,
 	useStarlightUiThemeColors: false,
 	themeCssSelector: (theme) => {

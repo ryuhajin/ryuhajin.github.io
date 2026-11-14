@@ -1,0 +1,73 @@
+---
+// The before / after of a fix, as the entry's centrepiece: a full-wide slider comparison with both labels on it,
+// a numbered caption (slot) that says what to look at, and a drag hint. Needs aligned captures.
+import Compare from '../../CompareView.astro';
+
+interface Props {
+	before: string;
+	after: string;
+	beforeLabel?: string;
+	afterLabel?: string;
+}
+const { before, after, beforeLabel = 'Before', afterLabel = 'After' } = Astro.props;
+const caption = Astro.slots.has('default') ? await Astro.slots.render('default') : '';
+---
+
+<figure class="versus">
+	<Compare
+		slider
+		steps={[
+			{ src: before, label: beforeLabel },
+			{ src: after, label: afterLabel },
+		]}
+	/>
+	<figcaption>
+		<span class="fig-no"></span>
+		<span class="fig-text" set:html={caption}></span>
+		<span class="hint" aria-hidden="true">↔ 가운데 선을 끌어서 비교</span>
+	</figcaption>
+</figure>
+
+<style>
+	.versus {
+		grid-column: wide;
+		margin: 1.25rem 0;
+		counter-increment: fig;
+	}
+	figcaption {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		align-items: baseline;
+		gap: 0.75rem;
+		margin-top: 0.85rem;
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: var(--fg-2);
+	}
+	.fig-no::before {
+		content: 'Fig. ' counter(fig);
+		white-space: nowrap;
+		font-weight: 600;
+		color: var(--fg);
+	}
+	.fig-text :global(p) {
+		margin: 0;
+	}
+	.fig-text :global(strong) {
+		color: var(--fg);
+		font-weight: 600;
+	}
+	.hint {
+		white-space: nowrap;
+		font-size: 0.75rem;
+		color: var(--fg-3);
+	}
+	@media (max-width: 640px) {
+		figcaption {
+			grid-template-columns: auto minmax(0, 1fr);
+		}
+		.hint {
+			grid-column: 2;
+		}
+	}
+</style>

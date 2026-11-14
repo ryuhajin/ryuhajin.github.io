@@ -1,0 +1,82 @@
+---
+// One try inside the 시도 chapter: its number, how it went (실패 / 절반 / 해결) and what happened. The slot holds
+// the short story, usually a line, a Shot, and what it showed.
+interface Props {
+	n: number;
+	title: string;
+	result: 'fail' | 'half' | 'ok';
+}
+const RESULT = { fail: '실패', half: '절반', ok: '해결' } as const;
+const { n, title, result } = Astro.props;
+---
+
+<div class:list={['attempt', `is-${result}`]}>
+	<p class="att-head">
+		<span class="att-n">시도 {n}</span>
+		<span class="att-chip">{RESULT[result]}</span>
+	</p>
+	<h3>{title}</h3>
+	<div class="att-body"><slot /></div>
+</div>
+
+<style>
+	.attempt {
+		grid-column: col;
+		padding: 1.25rem 0 0.25rem 1.25rem;
+		border-left: 2px solid var(--line-2);
+	}
+	.attempt + :global(.attempt) {
+		margin-top: 1rem;
+	}
+	.is-ok {
+		border-left-color: var(--accent-p);
+	}
+	.att-head {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		margin: 0 0 0.4rem;
+		font-size: 0.8125rem;
+	}
+	.att-n {
+		color: color-mix(in srgb, var(--fg-2), var(--fg-3));
+	}
+	.att-chip {
+		padding: 0.15rem 0.5rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--fg-2);
+		background: color-mix(in srgb, var(--fg) 8%, transparent);
+	}
+	.is-fail .att-chip {
+		color: #ff9a8b;
+		background: rgb(255 120 100 / 0.12);
+	}
+	.is-half .att-chip {
+		color: #ffd27a;
+		background: rgb(255 200 90 / 0.12);
+	}
+	.is-ok .att-chip {
+		color: #0a0a0c;
+		background: var(--accent-p);
+	}
+	h3 {
+		margin: 0 0 0.6rem;
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+		font-size: 1.2rem;
+		line-height: 1.3;
+		color: var(--fg);
+	}
+	.att-body > :global(*) {
+		margin: 0;
+	}
+	.att-body > :global(* + *) {
+		margin-top: 0.85rem;
+	}
+	/* a Shot inside an attempt stays in the attempt's own width */
+	.att-body :global(.shot) {
+		margin: 1rem 0 0.5rem;
+	}
+</style>

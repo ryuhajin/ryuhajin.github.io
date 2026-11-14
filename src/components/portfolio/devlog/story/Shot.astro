@@ -1,0 +1,89 @@
+---
+// A numbered figure with its caption underneath; the caption is the slot, so it can carry **bold** keywords that
+// match what to look at. `wide` lets it run past the text column. Click → lightbox.
+// Zoom tag, clip and play button: styles/media.css + scripts/portfolio/clips.ts (shared with article/Figure).
+import { imageSize } from '../../../../portfolio/image-size';
+import '../../../../styles/media.css';
+
+interface Props {
+	src: string;
+	alt?: string;
+	/** motion version of the picture (mp4/webm), plays muted on a loop near the viewport */
+	video?: string;
+	wide?: boolean;
+}
+const { src, alt = '', video, wide = false } = Astro.props;
+const size = await imageSize(src);
+const caption = Astro.slots.has('default') ? await Astro.slots.render('default') : '';
+const plain = caption.replace(/<[^>]+>/g, '');
+---
+
+<figure class:list={['shot', { wide }]}>
+	{
+		video ? (
+			<div class="media-clip">
+				<video data-src={video} poster={src} width={size?.width} height={size?.height} muted loop playsinline preload="none" data-lazy-clip aria-label={alt} />
+				<button type="button" class="media-play" data-clip-play aria-label={`${alt || '영상'} 재생`}>▶ 영상 재생</button>
+			</div>
+		) : (
+			<button type="button" class="media-zoom" data-lightbox={src} data-caption={plain} aria-label="크게 보기">
+				<img src={src} alt={alt} width={size?.width} height={size?.height} loading="lazy" decoding="async" />
+				<span class="media-tag" aria-hidden="true">
+					<svg viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-6.5 6.5M4 20l6.5-6.5" /></svg>
+					크게 보기
+				</span>
+			</button>
+		)
+	}
+	{
+		caption && (
+			<figcaption>
+				<span class="fig-no" />
+				<span class="fig-text" set:html={caption} />
+			</figcaption>
+		)
+	}
+</figure>
+
+<script>
+	import '../../../../scripts/portfolio/clips';
+</script>
+
+<style>
+	.shot {
+		grid-column: col;
+		margin: 0.75rem 0;
+		counter-increment: fig;
+	}
+	.shot.wide {
+		grid-column: wide;
+	}
+	img,
+	video {
+		display: block;
+		width: 100%;
+		height: auto;
+		background: var(--bg-2);
+	}
+	figcaption {
+		display: flex;
+		gap: 0.75rem;
+		margin-top: 0.75rem;
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: var(--fg-2);
+	}
+	.fig-no::before {
+		content: 'Fig. ' counter(fig);
+		white-space: nowrap;
+		font-weight: 600;
+		color: var(--fg);
+	}
+	.fig-text :global(p) {
+		margin: 0;
+	}
+	.fig-text :global(strong) {
+		color: var(--fg);
+		font-weight: 600;
+	}
+</style>

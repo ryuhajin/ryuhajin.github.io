@@ -1,0 +1,50 @@
+---
+// One beat of a devlog entry's story — 목표 → 시도 → 원인 → 해결 → 다음 (and 참고, the links at the end) — under a
+// plain, conversational heading set on a tinted bar (Cyanilux). `kind` is for writing the story in order; it isn't
+// shown. `label` replaces the chapter's number (01, 02 …) in the table of contents.
+import { chapterId } from '../../../../portfolio/devlog';
+
+interface Props {
+	kind: 'goal' | 'try' | 'cause' | 'fix' | 'next' | 'refs';
+	title: string;
+	label?: string;
+}
+const { kind, title } = Astro.props;
+const id = chapterId(title);
+---
+
+<section class="ch" id={id} data-kind={kind}>
+	<h2>{title}</h2>
+	<slot />
+</section>
+
+<style>
+	.ch {
+		scroll-margin-top: calc(var(--nav-h) + 1.5rem);
+	}
+	/* between chapters: room, then a dotted rule above the next heading */
+	.ch + :global(.ch) {
+		margin-top: clamp(3.5rem, 9vh, 5rem);
+		padding-top: clamp(2rem, 5vh, 2.75rem);
+		border-top: 2px dotted color-mix(in srgb, var(--fg-3) 75%, var(--line-2));
+	}
+	.ch > :global(*) {
+		margin: 0;
+	}
+	.ch > :global(* + *) {
+		margin-top: 1.15rem;
+	}
+	/* the bar: a tinted band with a thick block in the project colour on its left edge */
+	h2 {
+		margin: 0 0 1.6rem;
+		padding: 0.8rem 1.1rem 0.8rem 1.35rem;
+		border-left: 6px solid var(--accent-p);
+		background: color-mix(in srgb, var(--fg) 16%, var(--bg));
+		font-family: var(--font-display);
+		font-weight: var(--display-weight);
+		letter-spacing: var(--display-tracking);
+		font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+		line-height: 1.25;
+		color: var(--fg);
+	}
+</style>
